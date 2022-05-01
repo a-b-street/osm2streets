@@ -28,6 +28,8 @@ scattered around:
 Also deliberately absent is any sort of spec describing the output of
 osm2streets, or how things should be layered. The piece that draws detailed
 lane markings, for instance, maybe belongs as an optional piece on top.
+[Current proposal
+here](https://github.com/a-b-street/osm2streets/issues/5#issuecomment-1114305718).
 
 ## Next steps
 
@@ -41,7 +43,7 @@ osm2streets a proper project:
 Then some new "features" beyond what A/B Street handles today:
 
 - placement tags
-- motorway entrance/exit geometry, based on Ben's JOSM work
+- motorway entrance/exit geometry, based on [Ben's JOSM work](https://github.com/BjornRasmussen/Lanes/pull/8)
 - merging some cases of dual carriageways and "sausage link" intersections
 
 Longer-term ambitions:
