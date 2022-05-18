@@ -1,4 +1,4 @@
-use crate::{Intersection, RoadWay};
+use crate::road_functions::{Intersection, RoadWay};
 use petgraph::algo::{dijkstra, min_spanning_tree};
 use petgraph::data::FromElements;
 use petgraph::graph::{EdgeIndex, NodeIndex};
@@ -19,7 +19,7 @@ pub struct RoadNetwork {
 }
 
 impl RoadNetwork {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             graph: StableDiGraph::new(),
             // intersections: BTreeMap::new(),
@@ -27,10 +27,10 @@ impl RoadNetwork {
         }
     }
 
-    fn add_intersection(&mut self, i: Intersection) -> IId {
+    pub fn add_intersection(&mut self, i: Intersection) -> IId {
         self.graph.add_node(i)
     }
-    fn add_road(&mut self, r: RoadWay, from: IId, to: IId) -> RId {
+    pub fn add_road(&mut self, r: RoadWay, from: IId, to: IId) -> RId {
         self.graph.add_edge(from, to, r)
     }
 }
