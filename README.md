@@ -37,8 +37,8 @@ Issues are likely to be more up-to-date. The short-term steps to make
 osm2streets a proper project:
 
 - finish making the `RawMap` abstraction "own" the geometry calculation
-- #8 set up unit tests for quickly verifying transformations
-- #13 create a slippy map to visualise and understand the resulting networks
+- [#8](https://github.com/a-b-street/osm2streets/issues/8) set up unit tests for quickly verifying transformations
+- [#13](https://github.com/a-b-street/osm2streets/issues/13) create a slippy map to visualise and understand the resulting networks
 - move all the relevant code into this repo
 
 Then some new "features" beyond what A/B Street handles today:
@@ -55,8 +55,8 @@ Longer-term ambitions:
 ## Applications
 
 - A/B Street is already "using" osm2streets (aka, the current implementation is embedded there)
-- #8 A slippy map web viewer with detailed geometry.
-  - #12 Render data as raster for a tileserver for layers.
+- [#8](https://github.com/a-b-street/osm2streets/issues/8) A slippy map web viewer with detailed geometry.
+  - [#12](https://github.com/a-b-street/osm2streets/issues/12) Render data as raster for a tileserver for layers.
   - This doesn't necessarily need to pre-generate any tiles at all. Stream in
     OSM data from Overpass, pipe through osm2streets (via WASM) and generate
     geometry, draw polygons!
