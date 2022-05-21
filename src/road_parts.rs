@@ -1,46 +1,67 @@
 use crate::road_parts::RoadEdge::Kerb;
-use crate::units::LaneSide::{Inside, Outside};
-use crate::units::{Directions, LaneSide, Meters};
+use crate::units::preamble::*;
+use crate::units::{Meters, RoadSide, TrafficDirections};
+use Carriage::*;
+use Designation::*;
 
+/// Some hunk of something hurtling or dawdling down some lane, or being stored somewhere.
+/// From train carriages, to hand drawn carts, to the sack of bones pulling it.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Carriage {
+    /// Licenced vehicles in general, but *roads are for cars*, so lets call them cars.
+    /// (Besides, that was already more times than I want to have to type or say "vehicles".)
+    Cars,
+    /// Heavy vehicles that qualify for those little pictures of trucks on road.
     Truck,
     Bus,
-    Car,
+    Taxi,
     Bike,
     Foot,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+// TODO, defer to raw_map::osm::RoadRank and others.
+pub enum RoadRanks {
+    Freeway,
+    Highway,
+    Local,
+    Rural,
+    Service,
+}
+
+/// A usage designation for an area, such as a lane.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Designation {
     /// Think "carriageway" carriages, anything from trucks to mopeds to drawn carts.
     Travel(Carriage),
     /// Loading zones for trucks too, with short stay?
     Parking(Carriage),
-    /// Verge and stuff, those outdoor eating areas
+    /// Verges without parking, those outdoor eating areas, for example.
     Amenity,
 }
 
 pub trait CrossSection {
     /// Can this buffer/line be crossed (inward, outward) (for changing lanes, overtaking, etc)
-    fn can_enter_from(&self, dir: LaneSide) -> bool;
+    fn can_enter_from(&self, dir: RoadSide) -> bool;
 
     /// How wide the created "buffer" area is.
     ///
     /// Lines have width=0, because they lay on the lane surface, instead of creating their own
-    /// "buffer" area.
+    /// "buffer" area that you can occupy.
     fn width(&self) -> Meters;
 }
 
+/// A box for elements that make up the roadway. Should I be using a trait? I don't know.
 #[derive(Clone, Debug, PartialEq)]
-pub enum CorridorElement {
+pub enum E {
     Buffer(Buffer),
     Lane(Lane),
 }
 
+/// What is the nature of the edge of this area of road?
 #[derive(Clone, Debug, PartialEq)]
 pub enum RoadEdge {
-    /// Not an edge at all, but a continuation into more road surface.
+    /// Not actually the edge of the road, but a continuation into more road surface.
     /// Expect Join to a Buffer for railings/bollards.
     Join,
     /// The road just ends and transitions into another groundcover.
@@ -56,18 +77,26 @@ pub enum RoadEdge {
 /// A single lane on the carriageway, with designation, width, etc.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Lane {
-    pub dir: Directions,
+    pub dir: TrafficDirections,
     pub designation: Designation,
     pub width: Meters,
     pub can_enter_from_inside: bool,
     pub can_enter_from_outside: bool,
 }
 
+/// These thingos
 impl Lane {
+    pub fn track() -> Self {
+        Self {
+            designation: Travel(Cars),
+            width: 4.0,
+            ..Lane::foot()
+        }
+    }
     pub fn foot() -> Self {
         Self {
-            dir: Directions::BothWays,
-            designation: Designation::Travel(Carriage::Foot),
+            dir: TrafficDirections::BothWays,
+            designation: Travel(Foot),
             width: 1.5,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
@@ -75,17 +104,24 @@ impl Lane {
     }
     pub fn bike() -> Self {
         Self {
-            dir: Directions::Forward,
-            designation: Designation::Travel(Carriage::Bike),
+            dir: TrafficDirections::Forward,
+            designation: Travel(Bike),
             width: 1.0,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
         }
     }
+    pub fn service() -> Self {
+        Self {
+            designation: Travel(Cars),
+            width: 4.0,
+            ..Lane::foot() // negotiated lane like foot traffic
+        }
+    }
     pub fn car() -> Self {
         Self {
-            dir: Directions::Forward,
-            designation: Designation::Travel(Carriage::Car),
+            dir: TrafficDirections::Forward,
+            designation: Travel(Cars),
             width: 3.5,
             can_enter_from_inside: true, // start by assume overtaking is allowed.
             can_enter_from_outside: true, // Not usually any reason to disallow entry from the outside.
@@ -93,13 +129,13 @@ impl Lane {
     }
     pub fn bus() -> Self {
         Self {
-            designation: Designation::Travel(Carriage::Bus),
+            designation: Travel(Bus),
             ..Self::car()
         }
     }
     pub fn truck() -> Self {
         Self {
-            designation: Designation::Travel(Carriage::Truck),
+            designation: Travel(Truck),
             ..Self::car()
         }
     }
@@ -132,7 +168,7 @@ pub struct BorderLine {
 }
 
 impl CrossSection for Lane {
-    fn can_enter_from(&self, dir: LaneSide) -> bool {
+    fn can_enter_from(&self, dir: RoadSide) -> bool {
         match dir {
             Inside => self.can_enter_from_inside,
             Outside => self.can_enter_from_outside,
@@ -145,7 +181,7 @@ impl CrossSection for Lane {
 }
 
 impl CrossSection for Buffer {
-    fn can_enter_from(&self, _dir: LaneSide) -> bool {
+    fn can_enter_from(&self, _dir: RoadSide) -> bool {
         false
     }
     fn width(&self) -> Meters {
@@ -154,7 +190,7 @@ impl CrossSection for Buffer {
 }
 
 impl CrossSection for BorderLine {
-    fn can_enter_from(&self, dir: LaneSide) -> bool {
+    fn can_enter_from(&self, dir: RoadSide) -> bool {
         match dir {
             Inside => self.can_enter_from_inside,
             Outside => self.can_enter_from_outside,
