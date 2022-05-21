@@ -20,6 +20,8 @@ mod tests {
 
     #[test]
     fn test_osm2streets() {
+        abstutil::logger::setup();
+
         let mut any = false;
         let mut timer = Timer::new("test osm2streets");
         for entry in std::fs::read_dir("src").unwrap() {
@@ -44,11 +46,14 @@ mod tests {
 
         let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, timer);
         let consolidate_all_intersections = false;
-        raw_map.run_all_simplifications(consolidate_all_intersections, timer);
+        // Our clipped areas are very small; this would remove part of the intended input
+        let remove_disconnected = false;
+        raw_map.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
         raw_map.save_to_geojson(format!("{path}/output.json"), timer)?;
 
         let current_output = std::fs::read_to_string(format!("{path}/output.json"))?;
         if prior_output != current_output {
+            std::fs::write("old_output.json", prior_output)?;
             bail!("{}/output.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.", path);
         }
         Ok(())

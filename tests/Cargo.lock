@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "abstio"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "abstutil",
  "anyhow",
@@ -38,7 +38,7 @@ dependencies = [
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "anyhow",
  "bincode",
@@ -215,7 +215,7 @@ dependencies = [
 [[package]]
 name = "convert_osm"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "abstio",
  "abstutil",
@@ -526,7 +526,7 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "aabb-quadtree",
  "abstutil",
@@ -804,7 +804,7 @@ dependencies = [
 [[package]]
 name = "kml"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "abstio",
  "abstutil",
@@ -851,7 +851,7 @@ dependencies = [
 [[package]]
 name = "map_model"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "abstio",
  "abstutil",
@@ -1105,7 +1105,7 @@ dependencies = [
 [[package]]
 name = "raw_map"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "aabb-quadtree",
  "abstio",
@@ -1592,7 +1592,7 @@ dependencies = [
 [[package]]
 name = "traffic_signal_data"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#2c6bfbac8c71b7881f2888af7eb3933205c28b66"
+source = "git+https://github.com/dabreegster/abstreet#a5a9415de0d04be66e76f8252ff762ce761f4cfd"
 dependencies = [
  "include_dir",
  "serde",
