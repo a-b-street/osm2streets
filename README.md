@@ -9,10 +9,10 @@ OSM into a cleaned-up street network graph with geometry.
 
 ## Project status
 
-This repository is conspicuously missing code. The osm2streets effort is
-underway, but splitting the code from the A/B Street codebase isn't easy. (It
-is the ultimate goal, though.) Currently the logical parts of osm2streets are
-scattered around:
+This repository is conspicuously missing functionality. The osm2streets effort is
+underway, but splitting the code from the A/B Street codebase will take some time.
+We will iteratively import and move in different logical parts of the sm2streets scope
+from around the place:
 
 - [osm2lanes](https://github.com/a-b-street/osm2lanes) determines the lanes
   along one OSM way
@@ -25,21 +25,25 @@ scattered around:
 - [map_gui](https://github.com/a-b-street/abstreet/tree/master/map_gui/src/render)
   contains code to draw lane markings
 
-Also deliberately absent is any sort of spec describing the output of
+Also deliberately absent is any definitive spec describing the output of
 osm2streets, or how things should be layered. The piece that draws detailed
 lane markings, for instance, maybe belongs as an optional piece on top.
-[Current proposal
-here](https://github.com/a-b-street/osm2streets/issues/5#issuecomment-1114305718).
+Looking towards [this proposal](https://github.com/a-b-street/osm2streets/issues/5#issuecomment-1114305718),
+we will iterate on types, APIs and documentation, to circle in on a sensible starting place for osm2streets.
 
 ## Next steps
 
 Issues are likely to be more up-to-date. The short-term steps to make
 osm2streets a proper project:
 
-- finish making the `RawMap` abstraction "own" the geometry calculation
+- Iterate on the api/docs, working towards [abstreet/RawMap](ttps://github.com/a-b-street/abstreet/blob/master/raw_map/src/lib.rs)
+- Iterate on `RawMap` working towards modularity and the ideas in the emerging api/docs
+  - If `RawMap` get good enough, we we can drop the experimentation on the api,
+  - otherwise, one by one, all the pieces eventully get integrated into the api
 - [#8](https://github.com/a-b-street/osm2streets/issues/8) set up unit tests for quickly verifying transformations
 - [#13](https://github.com/a-b-street/osm2streets/issues/13) create a slippy map to visualise and understand the resulting networks
-- move all the relevant code into this repo
+- (in [abstreet](https://github.com/a-b-street/abstreet)) finish making the `RawMap` abstraction "own" the geometry calculation
+- move all the relevant code into this repo piece by piece
 
 Then some new "features" beyond what A/B Street handles today:
 
