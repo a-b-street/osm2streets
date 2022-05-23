@@ -11,7 +11,7 @@ OSM into a cleaned-up street network graph with geometry.
 
 This repository is conspicuously missing functionality. The osm2streets effort is
 underway, but splitting the code from the A/B Street codebase will take some time.
-We will iteratively import and move in different logical parts of the sm2streets scope
+We will iteratively import and move in different logical parts of the osm2streets scope
 from around the place:
 
 - [osm2lanes](https://github.com/a-b-street/osm2lanes) determines the lanes
