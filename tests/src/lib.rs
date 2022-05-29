@@ -1,14 +1,3 @@
-//! This is a goldenfile test for osm2streets. Each test case has a directory with:
-//!
-//! - `input.osm`, from the export tab of https://www.openstreetmap.org
-//! - `test.json`, defining the `driving_side` and describing the situation
-//! - `raw_map.json`, a GeoJSON file showing the resulting road and intersection polygons
-//!
-//! The output can be viewed with http://geojson.io, QGIS, or similar. Most output files are not
-//! what we intend osm2streets to look like. The intention of this crate is to establish regression
-//! tests for tricky situations. When we improve RawMap transformations, we can run these tests to
-//! see what changes, and manually approve/reject any changed GeoJSON files.
-
 #[cfg(test)]
 mod tests {
     use abstio::MapName;
