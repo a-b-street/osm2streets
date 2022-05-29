@@ -71,10 +71,9 @@ existing test case, please add it!
 5.  Put your OSM XML file in that directory as `input.osm`
 6.  Copy a `test.json` file from another directory and modify accordingly. `driving_side` is, of course, important to get correct. The `notes` are free-form, but please at least include a useful link to OSM to view the area there.
 7.  Run `cargo test --release`. It will fail with something like `src/montlake_roundabout/raw_map.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.`
-8.  `raw_map.json` will be created in that directory; it should show up as a new untracked file in git. Check the current output with QGIS or <http://geojson.io>.
-9.  Add the file in git.
-10.  You can re-run `cargo test --release` to verify things now pass.
-11. Push!
+8.  Add the new `raw_map.json` file to git after viewing it.
+9.  You can re-run `cargo test --release` to verify things now pass.
+10. Push!
 
 How large should the input OSM area be? Enough to cover whatever you want to
 test, but otherwise minimal to not bloat the size of this repository. See
