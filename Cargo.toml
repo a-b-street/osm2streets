@@ -8,3 +8,15 @@ edition = "2021"
 [dependencies]
 
 petgraph = "0.6.0"
+
+# back-imports from abstreet (that can be moved here)
+abstio = { git = "https://github.com/dabreegster/abstreet" }
+abstutil = { git = "https://github.com/dabreegster/abstreet" }
+convert_osm = { git = "https://github.com/dabreegster/abstreet" }
+geom = { git = "https://github.com/dabreegster/abstreet" }
+map_model = { git = "https://github.com/dabreegster/abstreet" }
+raw_map = { git = "https://github.com/dabreegster/abstreet" }
+
+# boilerplate
+anyhow = "1.0.38"
+serde = "1.0.123"
