@@ -19,4 +19,5 @@ raw_map = { git = "https://github.com/dabreegster/abstreet" }
 
 # boilerplate
 anyhow = "1.0.38"
+enum-map = "2.3.0"
 serde = "1.0.123"

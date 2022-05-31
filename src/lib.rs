@@ -6,4 +6,4 @@ mod road_functions;
 
 mod network;
 
-mod io;
+pub mod io;

@@ -16,13 +16,13 @@ impl CrossWay {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RoadWay {
     /// Lanes, inside (fast lane) out (slow lanes, footpaths). Directions is almost always forward.
-    elements: Vec<E>,
+    pub elements: Vec<E>,
     // /// The transverse lines
     // seperators: Vec<Separator>,
     /// How this roadway transitions into the adjacent area on the inside.
-    inner: RoadEdge,
+    pub inner: RoadEdge,
     /// How this roadway transitions into the adjacent area on the outside.
-    outer: RoadEdge,
+    pub outer: RoadEdge,
 }
 
 impl RoadWay {

@@ -317,6 +317,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-map"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1284d66c2ebd284a159491ebc005c6608ef684f4f5db99c960b1837cb74b7067"
+dependencies = [
+ "enum-map-derive",
+]
+
+[[package]]
+name = "enum-map-derive"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "00d1c54e25a57236a790ecf051c2befbb57740c9b86c4273eac378ba84d620d6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "enumset"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1397,6 +1417,7 @@ dependencies = [
  "abstutil",
  "anyhow",
  "convert_osm",
+ "enum-map",
  "geom",
  "map_model",
  "petgraph",
