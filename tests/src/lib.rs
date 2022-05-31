@@ -1,14 +1,3 @@
-//! This is a goldenfile test for osm2streets. Each test case has a directory with:
-//!
-//! - `input.osm`, from the export tab of https://www.openstreetmap.org
-//! - `cfg.json`, defining the `driving_side` and describing the situation
-//! - `output.json`, a GeoJSON file showing the resulting road and intersection polygons
-//!
-//! The output can be viewed with http://geojson.io, QGIS, or similar. Most output files are not
-//! what we intend osm2streets to look like. The intention of this crate is to establish regression
-//! tests for tricky situations. When we improve RawMap transformations, we can run these tests to
-//! see what changes, and manually approve/reject any changed GeoJSON files.
-
 #[cfg(test)]
 mod tests {
     use abstio::MapName;
@@ -38,10 +27,10 @@ mod tests {
 
     fn test(path: String, timer: &mut Timer) -> Result<()> {
         println!("Working on {path}");
-        let cfg: TestCase = abstio::maybe_read_json(format!("{path}/cfg.json"), timer)?;
+        let cfg: TestCase = abstio::maybe_read_json(format!("{path}/test.json"), timer)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
-        let prior_output = std::fs::read_to_string(format!("{path}/output.json"))
+        let prior_output = std::fs::read_to_string(format!("{path}/raw_map.json"))
             .unwrap_or_else(|_| String::new());
 
         let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, timer);
@@ -49,12 +38,12 @@ mod tests {
         // Our clipped areas are very small; this would remove part of the intended input
         let remove_disconnected = false;
         raw_map.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
-        raw_map.save_to_geojson(format!("{path}/output.json"), timer)?;
+        raw_map.save_to_geojson(format!("{path}/raw_map.json"), timer)?;
 
-        let current_output = std::fs::read_to_string(format!("{path}/output.json"))?;
+        let current_output = std::fs::read_to_string(format!("{path}/raw_map.json"))?;
         if prior_output != current_output {
-            std::fs::write("old_output.json", prior_output)?;
-            bail!("{}/output.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.", path);
+            std::fs::write("old_raw_map.json", prior_output)?;
+            bail!("{}/raw_map.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.", path);
         }
         Ok(())
     }
