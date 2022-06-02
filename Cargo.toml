@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-
+itertools = "0.10.2"
 petgraph = "0.6.0"
 
 # back-imports from abstreet (that can be moved here)
@@ -19,5 +19,9 @@ raw_map = { git = "https://github.com/dabreegster/abstreet" }
 
 # boilerplate
 anyhow = "1.0.38"
-enum-map = "2.3.0"
+enum-map = "0.6.6"
 serde = "1.0.123"
+
+[patch.crates-io]
+# Waiting for a release: https://github.com/21re/rust-geo-booleanop/pull/27
+geo-booleanop = { git = "https://github.com/21re/rust-geo-booleanop" }

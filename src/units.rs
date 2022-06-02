@@ -1,24 +1,26 @@
 #[allow(dead_code, unused_imports)]
 pub mod preamble;
 
-pub type Meters = f32;
+use enum_map::Enum;
+
+pub type Meters = f64;
 
 /// Which end of the thing?
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum End {
     Front,
     Back,
 }
 
 /// Binary travel direction, frontward & backward.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum Direction {
     Forward,
     Backward,
 }
 
 /// The directions that traffic flows.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum TrafficDirections {
     /// All traffic travels forward.
     Forward,
@@ -31,7 +33,7 @@ pub enum TrafficDirections {
 }
 
 /// Which side from your perspective? Expressed as handedness, like one might learn in school.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum Side {
     /// The hand that makes an "L", "port".
     Left,
@@ -40,7 +42,7 @@ pub enum Side {
 }
 
 /// Towards which hand side, left or right?
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum SideDirection {
     Leftward,
     Rightward,
@@ -49,7 +51,7 @@ pub enum SideDirection {
 /// Which side of the roadway, in terms of lane etiquette and driving side.
 /// ```use crate::units::{RoadSide::*,DrivingSide::*};
 /// assert_eq!(LHT.get_side(Inside), Right);
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum RoadSide {
     /// The faster side of the roadway, where you'd find oncoming cars, the "off side", where overtaking happens.
     Inside,
@@ -63,7 +65,7 @@ pub enum RoadSideDirection {
 }
 
 /// Which side of the road traffic drives on.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum DrivingSide {
     /// Left hand traffic.
     LHT,
@@ -72,13 +74,13 @@ pub enum DrivingSide {
 }
 
 impl DrivingSide {
-    fn get_direction(&self, side: Side) -> Direction {
+    pub fn get_direction(&self, side: Side) -> Direction {
         match (self, side) {
             (Self::LHT, Side::Left) | (Self::RHT, Side::Right) => Direction::Forward,
             (Self::LHT, Side::Right) | (Self::RHT, Side::Left) => Direction::Backward,
         }
     }
-    fn get_side(&self, dir: Direction) -> Side {
+    pub fn get_side(&self, dir: Direction) -> Side {
         match (self, dir) {
             (Self::LHT, Direction::Forward) | (Self::RHT, Direction::Backward) => Side::Left,
             (Self::LHT, Direction::Backward) | (Self::RHT, Direction::Forward) => Side::Right,

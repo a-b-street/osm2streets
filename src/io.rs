@@ -1,4 +1,5 @@
-use std::collections::{HashMap, HashSet};
+use itertools::Itertools;
+use std::collections::HashMap;
 
 use abstio::MapName;
 use abstutil::Timer;
@@ -6,15 +7,15 @@ use anyhow::{bail, Result};
 use convert_osm::reader;
 use enum_map::{enum_map, EnumMap};
 use geom::Distance;
-use raw_map::{DrivingSide, RawIntersection, RawMap, RawRoad};
+use raw_map::{LaneSpec, LaneType, RawIntersection, RawMap, RawRoad};
 use serde::Deserialize;
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
 use crate::road_functions::{ControlType, Intersection, RoadWay};
-use crate::road_parts::RoadEdge;
-use crate::units::preamble::{Backward, Forward, Left, Right};
-use crate::units::Direction;
+use crate::road_parts::{Carriage, Designation, Lane, RoadEdge, E};
+use crate::units::preamble::{Backward, Forward, Left, Right, LHT, RHT};
+use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
 // use crate::osm_geom::{get_multipolygon_members, glue_multipolygon, multipoly_geometry};
 
@@ -24,13 +25,13 @@ use crate::units::Direction;
 /// use streets::io::load_road_network;
 /// let mut timer = Timer::new("test osm2streets");
 /// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer);
-/// println!("{}", Dot::new(&map.graph));
-pub fn load_road_network(path: String, timer: &mut Timer) -> RoadNetwork {
-    let driving_side = DrivingSide::Left; // TODO get driving side from country containing lat lon?
+/// println!("{}", net.to_dot());
+pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
+    let driving_side = raw_map::DrivingSide::Right; // TODO
     let clip = None;
 
     let mut raw_map = convert_osm::convert(
-        path,
+        osm_path.clone(),
         MapName::new("zz", "osm2streets_test", &abstutil::basename(&osm_path)),
         clip,
         convert_osm::Options {
@@ -59,21 +60,25 @@ pub fn load_road_network(path: String, timer: &mut Timer) -> RoadNetwork {
     raw_map.into()
 }
 
-impl From<&RawMap> for RoadNetwork {
-    fn from(map: &RawMap) -> Self {
+impl From<RawMap> for RoadNetwork {
+    fn from(map: RawMap) -> Self {
         let mut net = RoadNetwork::new();
         /// Intersection ids from NodeIds
-        let is = HashMap::from_iter(map.intersections.iter().map(|(node_id, raw_int)| {
+        let is = HashMap::<_, _>::from_iter(map.intersections.iter().map(|(node_id, raw_int)| {
             (node_id, net.add_intersection(Intersection::from(raw_int)))
         }));
         /// RoadWay ids from OriginalRoads
-        let rs = HashMap::from_iter(map.roads.iter().map(|(rid, raw_road)| {
-            let (fw, bw) = RoadWay::pair_from(raw_road);
+        let _rs = HashMap::<_, _>::from_iter(map.roads.iter().map(|(rid, raw_road)| {
+            let mut ways = RoadWay::pair_from(raw_road);
             (
                 rid,
                 (
-                    fw.map(|f| net.add_closing_roadway(f, is[rid.i1], is[rid.i2])),
-                    bw.map(|b| net.add_closing_roadway(b, is[rid.i2], is[rid.i1])),
+                    ways[Forward]
+                        .take()
+                        .map(|f| net.add_closing_roadway(f.clone(), is[&rid.i1], is[&rid.i2])),
+                    ways[Backward]
+                        .take()
+                        .map(|b| net.add_closing_roadway(b, is[&rid.i2], is[&rid.i1])),
                 ),
             )
         }));
@@ -84,40 +89,47 @@ impl From<&RawMap> for RoadNetwork {
 // ## Conversions
 
 impl RoadWay {
-    pub fn pair_from(r: &RawRoad) -> EmumMap<Direction, Option<RoadWay>> {
-        //
+    pub fn pair_from(r: &RawRoad) -> EnumMap<Direction, Option<RoadWay>> {
+        let ds: DrivingSide = RHT; // TODO
         let mut lanes = r.lane_specs_ltr.iter();
-        let ds: DrivingSide;
         // lanes are ltr, so take the left lanes until we see one in the direction of the traffic
         // on the right. Then the right hand lanes will be remaining.
-        let half_roads = enum_map! {
-            Left => lanes
-                .peeking_take_while(|l| l.dir == ds.direction_on(Right))
-                .map() // to forward lane or buffer
-                .collect(), // Any middle buffer would end up at the end here...
-            Right => lanes
-                .map() // to backward lane or buffer
-                .collect(),
+        let dir_on_right = match ds.get_direction(Right) {
+            Forward => raw_map::Direction::Fwd,
+            Backward => raw_map::Direction::Back,
         };
+        let left_lanes = lanes
+            .take_while_ref(|&l| l.dir == dir_on_right) // TODO car lanes only, better define
+            .map(|l| E::Lane(l.into()))
+            .collect::<Vec<_>>(); // Any middle buffer would end up at the end here...
+        let right_lanes = lanes.map(|l| E::Lane(l.into())).collect::<Vec<_>>();
+        let half_roads: EnumMap<Side, Vec<E>> = enum_map! {
+            Left => left_lanes.clone(),
+            Right => right_lanes.clone(),
+        };
+        // TODO set no overtaking for the divider if needed.
 
-        has_half = half_roads.map(|ls| ls.len() > 0);
-        let fs = ds.side_of(Forward);
-        let bs = ds.side_of(Backward);
+        let has_half = enum_map! {
+            Left => half_roads[Left].len() > 0,
+            Right => half_roads[Right].len() > 0,
+        };
+        let fs = ds.get_side(Forward);
+        let bs = ds.get_side(Backward);
         enum_map! {
             Forward => if has_half[fs] {
                 Some(RoadWay {
                     inner: if has_half[bs] { RoadEdge::Join } else { RoadEdge::Sudden },
-                    elements: half_roads[fs],
+                    elements: half_roads[fs].clone(),
                     outer: RoadEdge::Sudden,
                 })
-            },
+            } else { None},
             Backward => if has_half[bs] {
                 Some(RoadWay {
                     inner: if has_half[fs] { RoadEdge::Join } else { RoadEdge::Sudden },
-                    elements: half_roads[bs],
+                    elements: half_roads[bs].clone(),
                     outer: RoadEdge::Sudden,
                 })
-            },
+            } else { None },
         }
     }
 }
@@ -132,6 +144,37 @@ impl From<&RawIntersection> for Intersection {
                 raw_map::IntersectionType::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
+        }
+    }
+}
+
+impl From<&LaneSpec> for Lane {
+    fn from(l: &LaneSpec) -> Self {
+        Lane {
+            dir: if let LaneType::SharedLeftTurn = l.lt {
+                // Lane type is used to represent the both-ways aspect of middle turn lanes, I guess.
+                TrafficDirections::BothWays
+            } else {
+                // All our lanes are forward on their RoadWay, unless they are doing something fishy.
+                TrafficDirections::Forward
+            },
+
+            designation: match l.lt {
+                LaneType::Sidewalk => Designation::Travel(Carriage::Foot),
+                LaneType::Biking => Designation::Travel(Carriage::Bike),
+                LaneType::Driving | LaneType::SharedLeftTurn => Designation::Travel(Carriage::Cars),
+                LaneType::Bus => Designation::Travel(Carriage::Bus),
+                LaneType::LightRail => Designation::Travel(Carriage::Train),
+
+                LaneType::Buffer(_) => Designation::NoTravel,
+                LaneType::Shoulder => Designation::NoTravel, // ?
+
+                LaneType::Parking => Designation::Parking(Carriage::Cars),
+                LaneType::Construction => Designation::Amenity,
+            },
+            can_enter_from_inside: true,
+            can_enter_from_outside: false,
+            width: Meters::from(l.width.inner_meters()),
         }
     }
 }
