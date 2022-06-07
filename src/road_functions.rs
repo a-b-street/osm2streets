@@ -95,7 +95,9 @@ impl RoadWay {
 #[derive(Clone, Debug, PartialEq)]
 pub enum IntersectionType {
     /// An intersection that is missing some connected roads or data (e.g. at the edge of the map).
-    Incomplete,
+    Unknown,
+    /// The edge of the data that we have.
+    MapEdge,
     /// Turning circles, road end signs, train terminus thingos, edge of the map?
     Terminus,
     /// A slice where conditions change, but no yielding.
@@ -132,7 +134,7 @@ pub struct Intersection {
 impl Default for Intersection {
     fn default() -> Self {
         Self {
-            t: IntersectionType::Incomplete,
+            t: IntersectionType::Unknown,
             control: ControlType::Uncontrolled,
         }
     }
