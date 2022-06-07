@@ -1,23 +1,19 @@
-use itertools::Itertools;
-use std::collections::HashMap;
-
-use abstio::MapName;
-use abstutil::Timer;
-use anyhow::{bail, Result};
-use convert_osm::reader;
-use enum_map::{enum_map, EnumMap};
-use geom::Distance;
-use raw_map::{LaneSpec, LaneType, RawIntersection, RawMap, RawRoad};
-use serde::Deserialize;
+use crate::units::preamble::*;
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
 use crate::road_functions::{ControlType, Intersection, RoadWay};
 use crate::road_parts::{Carriage, Designation, Lane, RoadEdge, E};
-use crate::units::preamble::{Backward, Forward, Left, Right, LHT, RHT};
 use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
-// use crate::osm_geom::{get_multipolygon_members, glue_multipolygon, multipoly_geometry};
+use abstio::MapName;
+use abstutil::Timer;
+use geom::Distance;
+use raw_map::{LaneSpec, LaneType, RawIntersection, RawMap, RawRoad};
+
+use enum_map::{enum_map, EnumMap};
+use itertools::Itertools;
+use std::collections::HashMap;
 
 /// ```
 /// use abstutil::Timer;
@@ -63,11 +59,11 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
 impl From<RawMap> for RoadNetwork {
     fn from(map: RawMap) -> Self {
         let mut net = RoadNetwork::new();
-        /// Intersection ids from NodeIds
+        // Intersection ids from NodeIds
         let is = HashMap::<_, _>::from_iter(map.intersections.iter().map(|(node_id, raw_int)| {
             (node_id, net.add_intersection(Intersection::from(raw_int)))
         }));
-        /// RoadWay ids from OriginalRoads
+        // RoadWay ids from OriginalRoads
         let _rs = HashMap::<_, _>::from_iter(map.roads.iter().map(|(rid, raw_road)| {
             let mut ways = RoadWay::pair_from(raw_road);
             (

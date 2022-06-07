@@ -1,4 +1,4 @@
-#[allow(dead_code, unused_imports)]
+#![allow(dead_code, unused)]
 pub mod preamble;
 
 use enum_map::Enum;

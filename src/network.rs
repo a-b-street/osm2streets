@@ -1,4 +1,7 @@
+#![allow(unused)]
+
 use crate::road_functions::{Intersection, IntersectionType, RoadWay};
+
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{EdgeIndex, NodeIndex};
 use petgraph::stable_graph::StableDiGraph;
