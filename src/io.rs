@@ -65,7 +65,7 @@ impl From<RawMap> for RoadNetwork {
         }));
         // RoadWay ids from OriginalRoads
         let _rs = HashMap::<_, _>::from_iter(map.roads.iter().map(|(rid, raw_road)| {
-            let mut ways = RoadWay::pair_from(raw_road);
+            let mut ways = RoadWay::pair_from(raw_road, map.config.driving_side);
             (
                 rid,
                 (
@@ -85,8 +85,11 @@ impl From<RawMap> for RoadNetwork {
 // ## Conversions
 
 impl RoadWay {
-    pub fn pair_from(r: &RawRoad) -> EnumMap<Direction, Option<RoadWay>> {
-        let ds: DrivingSide = RHT; // TODO
+    pub fn pair_from(
+        r: &RawRoad,
+        driving_side: raw_map::DrivingSide,
+    ) -> EnumMap<Direction, Option<RoadWay>> {
+        let ds = DrivingSide::from(driving_side);
         let mut lanes = r.lane_specs_ltr.iter();
         // lanes are ltr, so take the left lanes until we see one in the direction of the traffic
         // on the right. Then the right hand lanes will be remaining.
@@ -95,7 +98,10 @@ impl RoadWay {
             Backward => raw_map::Direction::Back,
         };
         let left_lanes = lanes
-            .take_while_ref(|&l| l.dir == dir_on_right) // TODO car lanes only, better define
+            .take_while_ref(|&l| match l.lt {
+                LaneType::Driving | LaneType::Bus => l.dir != dir_on_right,
+                _ => true,
+            })
             .map(|l| E::Lane(l.into()))
             .collect::<Vec<_>>(); // Any middle buffer would end up at the end here...
         let right_lanes = lanes.map(|l| E::Lane(l.into())).collect::<Vec<_>>();
@@ -178,6 +184,15 @@ impl From<&LaneSpec> for Lane {
             can_enter_from_inside: true,
             can_enter_from_outside: false,
             width: Meters::from(l.width.inner_meters()),
+        }
+    }
+}
+
+impl From<raw_map::DrivingSide> for DrivingSide {
+    fn from(s: raw_map::DrivingSide) -> Self {
+        match s {
+            raw_map::DrivingSide::Right => RHT,
+            raw_map::DrivingSide::Left => LHT,
         }
     }
 }
