@@ -1,0 +1,13 @@
+digraph {
+    0 [ label = "Incomplete" ]
+    1 [ label = "Incomplete" ]
+    2 [ label = "Incomplete" ]
+    3 [ label = "Incomplete" ]
+    4 [ label = "Incomplete" ]
+    5 [ label = "Incomplete" ]
+    0 -> 5 [ label = "4 lanes" ]
+    3 -> 5 [ label = "4 lanes" ]
+    2 -> 5 [ label = "5 lanes" ]
+    5 -> 4 [ label = "6 lanes" ]
+    5 -> 1 [ label = "4 lanes" ]
+}

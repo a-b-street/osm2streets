@@ -6,6 +6,7 @@ mod tests {
     use geom::Distance;
     use raw_map::{DrivingSide, RawMap};
     use serde::Deserialize;
+    use streets::RoadNetwork;
 
     #[test]
     fn test_osm2streets() {
@@ -30,7 +31,9 @@ mod tests {
         let cfg: TestCase = abstio::maybe_read_json(format!("{path}/test.json"), timer)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
-        let prior_output = std::fs::read_to_string(format!("{path}/raw_map.json"))
+        let prior_json = std::fs::read_to_string(format!("{path}/raw_map.json"))
+            .unwrap_or_else(|_| String::new());
+        let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
         let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, timer);
@@ -40,10 +43,19 @@ mod tests {
         raw_map.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
         raw_map.save_to_geojson(format!("{path}/raw_map.json"), timer)?;
 
-        let current_output = std::fs::read_to_string(format!("{path}/raw_map.json"))?;
-        if prior_output != current_output {
-            std::fs::write("old_raw_map.json", prior_output)?;
-            bail!("{}/raw_map.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.", path);
+        let road_network: RoadNetwork = raw_map.into();
+        std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
+
+        let current_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))?;
+        if current_dot != current_dot {
+            std::fs::write(format!("{path}/road_network.orig.dot"), prior_dot)?;
+            bail!("{}/road_network.dot has changed. Compare it to .orig.dot: if it's OK, commit the new output to git, and this test will pass.", path);
+        }
+
+        let current_json = std::fs::read_to_string(format!("{path}/raw_map.json"))?;
+        if prior_json != current_json {
+            std::fs::write(format!("{path}/raw_map.orig.json"), prior_json)?;
+            bail!("{}/raw_map.json has changed. Compare it with .orig.json (use https://geojson.io or similar): if it's OK, commit the new output to git, and this test will pass.", path);
         }
         Ok(())
     }
