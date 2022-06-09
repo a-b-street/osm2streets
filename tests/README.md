@@ -1,18 +1,18 @@
 # osm2streets test cases
 
+`tests/> cargo test --release`
+
+## What there is
+
 This is a collection of test cases for osm2streets. Each test case has a directory with:
 
-- `input.osm`, from the export tab of <https://www.openstreetmap.org>
+- `input.osm`, from the export tab of <https://www.openstreetmap.org> or saved from JOSM
 - `test.json`, defining the `driving_side` and describing the situation
-- `raw_map.json`, a GeoJSON file showing the resulting road and intersection polygons
+- `road_network.dot` [e.g.](https://github.com/a-b-street/osm2streets/blob/main/tests/src/seattle_triangle/raw_map.json), a Graphvis of the `RoadNetwork` intersections and roadways connections
+- `raw_map.json` [e.g.](https://doctorbud.com/graphviz-viewer/?url=https:%2F%2Fraw.githubusercontent.com%2Fa-b-street%2Fosm2streets%2Fmain%2Ftests%2Fsrc%2Fseattle_triangle%2Froad_network.dot), a GeoJSON of the `RawMap` road and intersection polygons
 
-
-Most output files are not what we intend osm2streets to look like. The
-intention of this crate is to establish regression tests for tricky situations.
-When we improve RawMap transformations, we can run these tests to see what
-changes, and manually approve/reject any changed GeoJSON files.
-
-The output GeoJSON files can be viewed with <http://geojson.io>, QGIS, or similar.
+The outputs here are *current implementations*, not *gold standards* (though we could add
+some of them). Use them to observe your changes as you work. (more coming soon...)
 
 ## Running the tests
 
@@ -20,12 +20,19 @@ The output GeoJSON files can be viewed with <http://geojson.io>, QGIS, or simila
 
 ```shell
 git clone https://github.com/a-b-street/osm2streets
-cd osm2streets
+cd osm2streets/tests
 cargo test --release
 ```
 
 You can also omit `--release` for faster compilation, but slower running. Each
 test case is expensive enough to justify release mode.
+
+View `raw_map.json` files with <https://geojson.io>, QGIS, or similar.
+
+View `road_network.dot` files with <https://doctorbud.com/graphviz-viewer/>, or
+`dot -Tpng -Kneato -Goverlap=scale -O road_network.dot` or similar.
+
+TODO [osm2streets#22 make a slippy map](https://github.com/a-b-street/osm2streets/issues/22)
 
 ## Working on RawMap code and preventing regressions
 

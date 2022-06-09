@@ -1,8 +1,11 @@
-use crate::road_functions::{Intersection, IntersectionType, RoadWay};
+#![allow(unused)]
+
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{EdgeIndex, NodeIndex};
 use petgraph::stable_graph::StableDiGraph;
 use petgraph::Direction;
+
+use crate::road_functions::{Intersection, IntersectionType, RoadWay};
 
 pub struct RoadNetwork {
     graph: StableDiGraph<Intersection, RoadWay>,
@@ -74,5 +77,11 @@ fn abbigail_to_school() {
     // TODO assert some things.
 
     // Print out dot for graphviz visualisation.
-    println!("{}", Dot::new(&map.graph));
+    println!("{}", map.to_dot());
+}
+
+impl RoadNetwork {
+    pub fn to_dot(&self) -> String {
+        Dot::new(&self.graph).to_string()
+    }
 }

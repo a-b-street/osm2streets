@@ -90,6 +90,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "array-macro"
+version = "1.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "06e97b4e522f9e55523001238ac59d13a8603af57f69980de5d8de4bbbe8ada6"
+
+[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -305,6 +311,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9852635589dc9f9ea1b6fe9f05b50ef208c85c834a562f0c6abb1c475736ec2b"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "enum-map"
+version = "0.6.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23595c55d463536d70a0cc71a521d4c1040a2e03816e455c38e8bb1f0981de98"
+dependencies = [
+ "array-macro",
+ "enum-map-derive",
+]
+
+[[package]]
+name = "enum-map-derive"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5c450cf304c9e18d45db562025a14fb1ca0f5c769b6f609309f81d4c31de455"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -1364,6 +1391,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
+name = "streets"
+version = "0.1.0"
+dependencies = [
+ "abstio",
+ "abstutil",
+ "anyhow",
+ "convert_osm",
+ "enum-map",
+ "geom",
+ "itertools",
+ "map_model",
+ "petgraph",
+ "raw_map",
+ "serde",
+]
+
+[[package]]
 name = "strsim"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1455,6 +1499,7 @@ dependencies = [
  "map_model",
  "raw_map",
  "serde",
+ "streets",
 ]
 
 [[package]]

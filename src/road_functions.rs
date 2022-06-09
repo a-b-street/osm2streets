@@ -1,5 +1,8 @@
-use crate::road_parts::{Buffer, Lane, RoadEdge, E};
+#![allow(unused)]
+
 use std::fmt::{Display, Formatter};
+
+use crate::road_parts::{Buffer, Lane, RoadEdge, E};
 
 struct CrossWay(Lane);
 
@@ -16,13 +19,13 @@ impl CrossWay {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RoadWay {
     /// Lanes, inside (fast lane) out (slow lanes, footpaths). Directions is almost always forward.
-    elements: Vec<E>,
+    pub elements: Vec<E>,
     // /// The transverse lines
     // seperators: Vec<Separator>,
     /// How this roadway transitions into the adjacent area on the inside.
-    inner: RoadEdge,
+    pub inner: RoadEdge,
     /// How this roadway transitions into the adjacent area on the outside.
-    outer: RoadEdge,
+    pub outer: RoadEdge,
 }
 
 impl RoadWay {
@@ -92,7 +95,9 @@ impl RoadWay {
 #[derive(Clone, Debug, PartialEq)]
 pub enum IntersectionType {
     /// An intersection that is missing some connected roads or data (e.g. at the edge of the map).
-    Incomplete,
+    Unknown,
+    /// The edge of the data that we have.
+    MapEdge,
     /// Turning circles, road end signs, train terminus thingos, edge of the map?
     Terminus,
     /// A slice where conditions change, but no yielding.
@@ -129,7 +134,7 @@ pub struct Intersection {
 impl Default for Intersection {
     fn default() -> Self {
         Self {
-            t: IntersectionType::Incomplete,
+            t: IntersectionType::Unknown,
             control: ControlType::Uncontrolled,
         }
     }

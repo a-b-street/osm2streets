@@ -1,22 +1,29 @@
-use crate::road_parts::RoadEdge::Kerb;
+#![allow(dead_code)]
+
 use crate::units::preamble::*;
 use crate::units::{Meters, RoadSide, TrafficDirections};
+
 use Carriage::*;
 use Designation::*;
+use RoadEdge::*;
 
 /// Some hunk of something hurtling or dawdling down some lane, or being stored somewhere.
 /// From train carriages, to hand drawn carts, to the sack of bones pulling it.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Carriage {
+    /// People on foot, aka "Pedestrians".
+    Foot,
+    /// People on bikes. (Scooters too?)
+    Bike,
     /// Licenced vehicles in general, but *roads are for cars*, so lets call them cars.
     /// (Besides, that was already more times than I want to have to type or say "vehicles".)
     Cars,
     /// Heavy vehicles that qualify for those little pictures of trucks on road.
-    Truck,
-    Bus,
     Taxi,
-    Bike,
-    Foot,
+    Bus,
+    Truck,
+    /// Things on tracks, like trams and light rail. Heavy rail too, I guess.
+    Train,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -34,6 +41,9 @@ pub enum RoadRanks {
 pub enum Designation {
     /// Think "carriageway" carriages, anything from trucks to mopeds to drawn carts.
     Travel(Carriage),
+    /// Areas of the road that are explicitly not for (normal) driving.
+    /// Often painted, sometimes w/barriers.
+    NoTravel,
     /// Loading zones for trucks too, with short stay?
     Parking(Carriage),
     /// Verges without parking, those outdoor eating areas, for example.
@@ -52,6 +62,7 @@ pub trait CrossSection {
 }
 
 /// A box for elements that make up the roadway. Should I be using a trait? I don't know.
+//TODO merge Lane and Buffer to remove this indirection.
 #[derive(Clone, Debug, PartialEq)]
 pub enum E {
     Buffer(Buffer),
