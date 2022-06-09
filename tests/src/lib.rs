@@ -49,13 +49,18 @@ mod tests {
         let current_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))?;
         if current_dot != current_dot {
             std::fs::write(format!("{path}/road_network.orig.dot"), prior_dot)?;
-            bail!("{}/road_network.dot has changed. Compare it to .orig.dot: if it's OK, commit the new output to git, and this test will pass.", path);
+            bail!("./{}/road_network.dot is different! If it is OK, commit it.
+./{0}/road_network.orig.dot is previous result. Compare it on https://doctorbud.com/graphviz-viewer/", path);
         }
 
         let current_json = std::fs::read_to_string(format!("{path}/raw_map.json"))?;
         if prior_json != current_json {
             std::fs::write(format!("{path}/raw_map.orig.json"), prior_json)?;
-            bail!("{}/raw_map.json has changed. Compare it with .orig.json (use https://geojson.io or similar): if it's OK, commit the new output to git, and this test will pass.", path);
+            bail!(
+                "./{}/raw_map.json is different! If it is OK, commit it.
+./{0}/raw_map.orig.json is previous result. Compare it on https://geojson.io",
+                path
+            );
         }
         Ok(())
     }
