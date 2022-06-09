@@ -9,7 +9,7 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 use abstio::MapName;
 use abstutil::Timer;
 use geom::Distance;
-use raw_map::{LaneSpec, LaneType, RawIntersection, RawMap, RawRoad};
+use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, RawRoad};
 
 use enum_map::{enum_map, EnumMap};
 use itertools::Itertools;
@@ -59,25 +59,37 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
 impl From<RawMap> for RoadNetwork {
     fn from(map: RawMap) -> Self {
         let mut net = RoadNetwork::new();
-        // Intersection ids from NodeIds
-        let is = HashMap::<_, _>::from_iter(map.intersections.iter().map(|(node_id, raw_int)| {
-            (node_id, net.add_intersection(Intersection::from(raw_int)))
-        }));
-        // RoadWay ids from OriginalRoads
-        let _rs = HashMap::<_, _>::from_iter(map.roads.iter().map(|(rid, raw_road)| {
-            let mut ways = RoadWay::pair_from(raw_road, map.config.driving_side);
-            (
-                rid,
+        let intersections: HashMap<&osm::NodeID, _> = map
+            .intersections
+            .iter()
+            .map(|(node_id, raw_int)| (node_id, net.add_intersection(Intersection::from(raw_int))))
+            .collect();
+        let _road_ways: HashMap<&OriginalRoad, _> = map
+            .roads
+            .iter()
+            .map(|(rid, raw_road)| {
+                let mut ways = RoadWay::pair_from(raw_road, map.config.driving_side);
                 (
-                    ways[Forward]
-                        .take()
-                        .map(|f| net.add_closing_roadway(f.clone(), is[&rid.i1], is[&rid.i2])),
-                    ways[Backward]
-                        .take()
-                        .map(|b| net.add_closing_roadway(b, is[&rid.i2], is[&rid.i1])),
-                ),
-            )
-        }));
+                    rid,
+                    (
+                        ways[Forward].take().map(|f| {
+                            net.add_closing_roadway(
+                                f.clone(),
+                                intersections[&rid.i1],
+                                intersections[&rid.i2],
+                            )
+                        }),
+                        ways[Backward].take().map(|b| {
+                            net.add_closing_roadway(
+                                b,
+                                intersections[&rid.i2],
+                                intersections[&rid.i1],
+                            )
+                        }),
+                    ),
+                )
+            })
+            .collect();
         net
     }
 }
