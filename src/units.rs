@@ -74,6 +74,13 @@ pub enum DrivingSide {
 }
 
 impl DrivingSide {
+    pub fn opposite(&self) -> Self {
+        match self {
+            Self::LHT => Self::RHT,
+            Self::RHT => Self::LHT,
+        }
+    }
+
     pub fn get_direction(&self, side: Side) -> Direction {
         match (self, side) {
             (Self::LHT, Side::Left) | (Self::RHT, Side::Right) => Direction::Forward,
