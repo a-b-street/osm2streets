@@ -1,11 +1,11 @@
 #![allow(unused)]
 
-use crate::road_functions::{Intersection, IntersectionType, RoadWay};
-
 use petgraph::dot::{Config, Dot};
 use petgraph::graph::{EdgeIndex, NodeIndex};
 use petgraph::stable_graph::StableDiGraph;
 use petgraph::Direction;
+
+use crate::road_functions::{Intersection, IntersectionType, RoadWay};
 
 pub struct RoadNetwork {
     graph: StableDiGraph<Intersection, RoadWay>,

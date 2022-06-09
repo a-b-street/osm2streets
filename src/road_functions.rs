@@ -1,8 +1,8 @@
 #![allow(unused)]
 
-use crate::road_parts::{Buffer, Lane, RoadEdge, E};
-
 use std::fmt::{Display, Formatter};
+
+use crate::road_parts::{Buffer, Lane, RoadEdge, E};
 
 struct CrossWay(Lane);
 

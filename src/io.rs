@@ -1,19 +1,18 @@
-use crate::units::preamble::*;
-
-use crate::network::RoadNetwork;
-use crate::road_functions::IntersectionType;
-use crate::road_functions::{ControlType, Intersection, RoadWay};
-use crate::road_parts::{Carriage, Designation, Lane, RoadEdge, E};
-use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
+use enum_map::{enum_map, EnumMap};
+use itertools::Itertools;
+use std::collections::HashMap;
 
 use abstio::MapName;
 use abstutil::Timer;
 use geom::Distance;
 use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, RawRoad};
 
-use enum_map::{enum_map, EnumMap};
-use itertools::Itertools;
-use std::collections::HashMap;
+use crate::network::RoadNetwork;
+use crate::road_functions::IntersectionType;
+use crate::road_functions::{ControlType, Intersection, RoadWay};
+use crate::road_parts::{Carriage, Designation, Lane, RoadEdge, E};
+use crate::units::preamble::*;
+use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
 /// ```
 /// use abstutil::Timer;

@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 
 use crate::units::preamble::*;
+use crate::units::{Meters, RoadSide, TrafficDirections};
+
 use Carriage::*;
 use Designation::*;
-
-use crate::road_parts::RoadEdge::Kerb;
-use crate::units::{Meters, RoadSide, TrafficDirections};
+use RoadEdge::*;
 
 /// Some hunk of something hurtling or dawdling down some lane, or being stored somewhere.
 /// From train carriages, to hand drawn carts, to the sack of bones pulling it.
