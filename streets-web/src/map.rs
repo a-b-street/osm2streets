@@ -45,7 +45,7 @@ impl Component for MapComponent {
         let container: Element = document().create_element("div").unwrap();
         let container: HtmlElement = container.dyn_into().unwrap();
         container.set_id("map");
-        let map = Map::new_with_element(&container, &JsValue::NULL);
+        let map = Map::new_with_element(&container, &JsValue::UNDEFINED);
 
         let map_click_callback = ctx.link().callback(Msg::MapClick);
         let map_click_closure = Closure::<dyn Fn(MouseEvent)>::wrap(Box::new(move |click_event| {
