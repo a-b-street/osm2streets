@@ -1,5 +1,12 @@
 import { addGeojsonLayer, zoomToLayer } from './layers.js';
 
+export const makeLinkHandler = (map) => (link) => {
+    return fetch(link)
+        .then(body => body.json())
+        .then(json => addGeojsonLayer(map, json))
+        .then(layer => zoomToLayer(map, layer));
+};
+
 export const handleDragOver = (dragEvent) => {
     dragEvent.preventDefault(); // tells the browser that we're handling this drop.
 };

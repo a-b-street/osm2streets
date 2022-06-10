@@ -1,10 +1,12 @@
-import { makeDropHandler, handleDragOver } from "./files.js";
+import { makeDropHandler, makeLinkHandler, handleDragOver } from "./files.js";
 
 const cb = (map) => {
     const container = map.getContainer();
     container.ondrop = makeDropHandler(map);
     container.ondragover = handleDragOver;
     console.info("Ready for drops on the map!", container);
+
+    map.loadLink = makeLinkHandler(map);
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.
