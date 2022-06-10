@@ -12,6 +12,7 @@ const LM = L.Map;
 window.maps = [];
 L.Map = function(x, opts = {
     maxZoom: 21,
+}, ...args) {
     const m = new LM(x, opts, ...args)
     window.maps.push(m);
     setTimeout(() => cb(m), 0);
