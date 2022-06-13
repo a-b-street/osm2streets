@@ -19,7 +19,3 @@ raw_map = { git = "https://github.com/dabreegster/abstreet" }
 anyhow = "1.0.38"
 enum-map = "0.6.6"
 serde = "1.0.123"
-
-[patch.crates-io]
-# Waiting for a release: https://github.com/21re/rust-geo-booleanop/pull/27
-geo-booleanop = { git = "https://github.com/21re/rust-geo-booleanop" }

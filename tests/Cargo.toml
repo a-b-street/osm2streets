@@ -11,7 +11,3 @@ convert_osm = { git = "https://github.com/dabreegster/abstreet" }
 raw_map = { git = "https://github.com/dabreegster/abstreet" }
 serde = "1.0.123"
 streets = { path = "../" }
-
-[patch.crates-io]
-# Waiting for a release: https://github.com/21re/rust-geo-booleanop/pull/27
-geo-booleanop = { git = "https://github.com/21re/rust-geo-booleanop" }
