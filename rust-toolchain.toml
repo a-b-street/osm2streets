@@ -1,0 +1,4 @@
+[toolchain]
+channel = "beta"
+targets = ["wasm32-unknown-unknown", "x86_64-unknown-linux-gnu"]
+profile = "default"
