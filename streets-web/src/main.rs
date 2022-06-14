@@ -109,15 +109,16 @@ impl Component for App {
                 <menu>
                     <h1>{"StreetExplorer"}</h1>
                     <Control callback_msg={callback_msg.clone()} state={self.state.clone()}/>
-                {
-                    if let Some(message) = &state.message {
-                        html!{
-                            <aside>{message}</aside>
+                    {
+                        if let Some(message) = &state.message {
+                            html!{
+                                <aside>{message}</aside>
+                            }
+                        } else {
+                            html!{}
                         }
-                    } else {
-                        html!{}
                     }
-                }
+                    <section id="road-network" />
                 </menu>
 
                 <MapComponent callback_msg={callback_msg.clone()}/>

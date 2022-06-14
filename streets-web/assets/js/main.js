@@ -4,12 +4,14 @@ const cb = (map) => {
     const container = map.getContainer();
     container.ondrop = makeDropHandler(map);
     container.ondragover = handleDragOver;
-    console.info("Ready for drops on the map!", container);
 
     map.loadLink = makeLinkHandler(map);
+
+    console.info("New map created! File drops enabled.", container);
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.
+console.debug("Listening in on map creations...");
 const LM = L.Map;
 window.maps = [];
 L.Map = function(x, opts = {
@@ -20,3 +22,14 @@ L.Map = function(x, opts = {
     setTimeout(() => cb(m), 0);
     return m;
 }
+
+// Settings for tile layers.
+const LL = L.TileLayer;
+L.TileLayer = function(x, opts = {
+    maxNativeZoom: 18,
+    maxZoom: 21,
+}, ...args) {
+    const l = new LL(x, opts, ...args)
+    return l;
+}
+
