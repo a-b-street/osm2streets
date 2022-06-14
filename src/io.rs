@@ -4,7 +4,6 @@ use std::collections::HashMap;
 
 use abstio::MapName;
 use abstutil::Timer;
-use geom::Distance;
 use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, RawRoad};
 
 use crate::network::RoadNetwork;
@@ -29,24 +28,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
         osm_path.clone(),
         MapName::new("zz", "osm2streets_test", &abstutil::basename(&osm_path)),
         clip,
-        convert_osm::Options {
-            map_config: map_model::MapConfig {
-                driving_side,
-                bikes_can_use_bus_lanes: true,
-                inferred_sidewalks: true,
-                street_parking_spot_length: Distance::meters(8.0),
-                turn_on_red: true,
-            },
-            onstreet_parking: convert_osm::OnstreetParking::JustOSM,
-            public_offstreet_parking: convert_osm::PublicOffstreetParking::None,
-            private_offstreet_parking: convert_osm::PrivateOffstreetParking::FixedPerBldg(1),
-            include_railroads: true,
-            extra_buildings: None,
-            skip_local_roads: false,
-            filter_crosswalks: false,
-            gtfs_url: None,
-            elevation: false,
-        },
+        convert_osm::Options::default_for_side(driving_side),
         timer,
     );
 
