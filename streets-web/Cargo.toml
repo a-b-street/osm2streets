@@ -28,7 +28,3 @@ features = ["HtmlInputElement", "HtmlCanvasElement", "HtmlSelectElement"]
 
 [features]
 default = ["console_log", "wee_alloc"]
-
-[patch.crates-io]
-# Waiting for a release: https://github.com/21re/rust-geo-booleanop/pull/27
-geo-booleanop = { git = "https://github.com/21re/rust-geo-booleanop" }
