@@ -1,0 +1,103 @@
+
+body, h1, h2, h3, h4, h5, a, button, input, textarea, .button, label, p, select {
+  font-family: "Source Code Pro", monospace;
+}
+
+body {
+  background: #0e0e16;
+  color: #cccccc;
+}
+
+/* Variables */
+body {
+    --pad: 1rem;
+}
+
+/* Full screen app layout */
+body {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+
+}
+@media (orientation: portrait) {
+   body {
+     flex-direction: column;
+   }
+ }
+
+ menu {
+     padding: var(--pad);
+     margin: 0;
+ }
+
+#map {
+    flex-grow: 1;
+
+    cursor: crosshair;
+}
+
+/* Theming */
+
+button, input, textarea, .button {
+  background-color: #323253;
+}
+button:hover, input:hover, .button:hover {
+  background-color: #333;
+}
+button:active, input:active, .button:active {
+  background-color: rgb(78, 18, 18);
+}
+.button:disabled, .button.disabled {
+  background-color: #3c3c53;
+  cursor: default;
+}
+
+
+ /* The switch - the box around the slider */
+ .switch {
+  position: relative;
+  display: inline-block;
+  width: 2.4em;
+  height: 1.4em;
+  margin: 2ex 1em;
+  padding: 0;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1em;
+  width: 1em;
+  left: 0.2em;
+  bottom: 0.2em;
+  background-color: #222;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(1em);
+  -ms-transform: translateX(1em);
+  transform: translateX(1em);
+}

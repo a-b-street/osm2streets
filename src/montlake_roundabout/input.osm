@@ -1,0 +1,1417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.6 (2630583 spike-06.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="47.6390200" minlon="-122.3044500" maxlat="47.6400700" maxlon="-122.3028900"/>
+ <node id="53084804" visible="true" version="8" changeset="76116035" timestamp="2019-10-23T16:55:29Z" user="Reemal" uid="8899833" lat="47.6395593" lon="-122.3072821"/>
+ <node id="53084805" visible="true" version="5" changeset="12720010" timestamp="2012-08-13T21:22:35Z" user="compdude" uid="282329" lat="47.6395485" lon="-122.3065965"/>
+ <node id="53084808" visible="true" version="6" changeset="14815050" timestamp="2013-01-27T22:19:38Z" user="bryceco" uid="624323" lat="47.6395479" lon="-122.3055319"/>
+ <node id="53084814" visible="true" version="7" changeset="47399585" timestamp="2017-04-03T05:10:48Z" user="sctrojan79" uid="2601744" lat="47.6395281" lon="-122.3020684"/>
+ <node id="53084816" visible="true" version="5" changeset="18405621" timestamp="2013-10-17T18:54:48Z" user="STBrenden" uid="1340045" lat="47.6395231" lon="-122.3003583"/>
+ <node id="53096947" visible="true" version="5" changeset="36865766" timestamp="2016-01-28T21:16:23Z" user="sctrojan79" uid="2601744" lat="47.6355976" lon="-122.3023035"/>
+ <node id="53101726" visible="true" version="7" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6417267" lon="-122.3037977"/>
+ <node id="53128042" visible="true" version="2" changeset="3420593" timestamp="2009-12-21T14:50:21Z" user="woodpeck_fixbot" uid="147510" lat="47.6379200" lon="-122.3044370"/>
+ <node id="53128043" visible="true" version="4" changeset="112427907" timestamp="2021-10-12T17:26:11Z" user="austinsnow" uid="11517143" lat="47.6383216" lon="-122.3039853"/>
+ <node id="53128048" visible="true" version="7" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6402708" lon="-122.3038159"/>
+ <node id="53128049" visible="true" version="7" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6409996" lon="-122.3038010"/>
+ <node id="53211701" visible="true" version="4" changeset="18405621" timestamp="2013-10-17T18:14:28Z" user="STBrenden" uid="1340045" lat="47.6368049" lon="-122.3022688"/>
+ <node id="53211702" visible="true" version="4" changeset="18405621" timestamp="2013-10-17T18:14:28Z" user="STBrenden" uid="1340045" lat="47.6369918" lon="-122.3023600"/>
+ <node id="53211703" visible="true" version="3" changeset="18405621" timestamp="2013-10-17T18:14:28Z" user="STBrenden" uid="1340045" lat="47.6377574" lon="-122.3028970"/>
+ <node id="59710416" visible="true" version="8" changeset="18405621" timestamp="2013-10-17T18:38:45Z" user="STBrenden" uid="1340045" lat="47.6395202" lon="-122.3004973"/>
+ <node id="429678949" visible="true" version="3" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6393647" lon="-122.3034591"/>
+ <node id="429678952" visible="true" version="2" changeset="11206792" timestamp="2012-04-06T20:45:08Z" user="Baloo Uriza" uid="92286" lat="47.6393875" lon="-122.3039319"/>
+ <node id="429678953" visible="true" version="3" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394633" lon="-122.3036720"/>
+ <node id="429678954" visible="true" version="3" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394711" lon="-122.3033119"/>
+ <node id="429678955" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394149" lon="-122.3033019"/>
+ <node id="429678956" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6393307" lon="-122.3032794"/>
+ <node id="429678957" visible="true" version="2" changeset="18405621" timestamp="2013-10-17T18:38:45Z" user="STBrenden" uid="1340045" lat="47.6393037" lon="-122.3033988"/>
+ <node id="429678958" visible="true" version="2" changeset="18405621" timestamp="2013-10-17T18:38:45Z" user="STBrenden" uid="1340045" lat="47.6395318" lon="-122.3028191"/>
+ <node id="1705063684" visible="true" version="2" changeset="18405621" timestamp="2013-10-17T18:38:45Z" user="STBrenden" uid="1340045" lat="47.6394219" lon="-122.3035554"/>
+ <node id="2131544354" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:14Z" user="Glassman" uid="447903" lat="47.6400103" lon="-122.3033408"/>
+ <node id="2131544362" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:14Z" user="Glassman" uid="447903" lat="47.6400090" lon="-122.3034651"/>
+ <node id="2131544364" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:14Z" user="Glassman" uid="447903" lat="47.6401245" lon="-122.3034572"/>
+ <node id="2131544366" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:14Z" user="Glassman" uid="447903" lat="47.6401396" lon="-122.3034576"/>
+ <node id="2131544370" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:15Z" user="Glassman" uid="447903" lat="47.6401244" lon="-122.3034678"/>
+ <node id="2131544374" visible="true" version="2" changeset="15756807" timestamp="2013-04-16T23:43:15Z" user="Glassman" uid="447903" lat="47.6401281" lon="-122.3033428"/>
+ <node id="2270109266" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396536" lon="-122.3036470"/>
+ <node id="2270109267" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396544" lon="-122.3035669"/>
+ <node id="2270109268" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396565" lon="-122.3033971"/>
+ <node id="2270109269" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396565" lon="-122.3034648"/>
+ <node id="2270109272" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396650" lon="-122.3031972"/>
+ <node id="2270109274" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396657" lon="-122.3032483"/>
+ <node id="2270109276" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396679" lon="-122.3028526"/>
+ <node id="2270109277" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396682" lon="-122.3028068"/>
+ <node id="2270109282" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396717" lon="-122.3041974"/>
+ <node id="2270109283" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396721" lon="-122.3041364"/>
+ <node id="2270109286" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396752" lon="-122.3042936"/>
+ <node id="2270109287" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396753" lon="-122.3035674"/>
+ <node id="2270109288" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396758" lon="-122.3035169"/>
+ <node id="2270109289" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396758" lon="-122.3041975"/>
+ <node id="2270109290" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396770" lon="-122.3033971"/>
+ <node id="2270109291" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396771" lon="-122.3033384"/>
+ <node id="2270109292" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396777" lon="-122.3041365"/>
+ <node id="2270109293" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396779" lon="-122.3032479"/>
+ <node id="2270109294" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396780" lon="-122.3040952"/>
+ <node id="2270109295" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396786" lon="-122.3032994"/>
+ <node id="2270109296" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396793" lon="-122.3031553"/>
+ <node id="2270109298" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396799" lon="-122.3031968"/>
+ <node id="2270109300" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:44Z" user="Glassman" uid="447903" lat="47.6396806" lon="-122.3030220"/>
+ <node id="2270109302" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396818" lon="-122.3029535"/>
+ <node id="2270109306" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396840" lon="-122.3028071"/>
+ <node id="2270109307" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396841" lon="-122.3027959"/>
+ <node id="2270109308" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396844" lon="-122.3029311"/>
+ <node id="2270109310" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396850" lon="-122.3028529"/>
+ <node id="2270109319" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396915" lon="-122.3040954"/>
+ <node id="2270109323" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396919" lon="-122.3040369"/>
+ <node id="2270109327" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396929" lon="-122.3044328"/>
+ <node id="2270109329" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396933" lon="-122.3044896"/>
+ <node id="2270109340" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396976" lon="-122.3030462"/>
+ <node id="2270109342" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396978" lon="-122.3030907"/>
+ <node id="2270109345" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396981" lon="-122.3030227"/>
+ <node id="2270109346" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:45Z" user="Glassman" uid="447903" lat="47.6396986" lon="-122.3030463"/>
+ <node id="2270109364" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:46Z" user="Glassman" uid="447903" lat="47.6397014" lon="-122.3043801"/>
+ <node id="2270109366" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:46Z" user="Glassman" uid="447903" lat="47.6397017" lon="-122.3044327"/>
+ <node id="2270109392" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397158" lon="-122.3032983"/>
+ <node id="2270109393" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397159" lon="-122.3033049"/>
+ <node id="2270109396" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397187" lon="-122.3033310"/>
+ <node id="2270109397" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397187" lon="-122.3033384"/>
+ <node id="2270109402" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397262" lon="-122.3043666"/>
+ <node id="2270109403" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397263" lon="-122.3043797"/>
+ <node id="2270109404" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397296" lon="-122.3043024"/>
+ <node id="2270109405" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397297" lon="-122.3042943"/>
+ <node id="2270109412" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397367" lon="-122.3035182"/>
+ <node id="2270109413" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397368" lon="-122.3035076"/>
+ <node id="2270109416" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397390" lon="-122.3027968"/>
+ <node id="2270109417" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397393" lon="-122.3027606"/>
+ <node id="2270109418" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397393" lon="-122.3036662"/>
+ <node id="2270109419" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397394" lon="-122.3036488"/>
+ <node id="2270109428" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397485" lon="-122.3043663"/>
+ <node id="2270109429" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397485" lon="-122.3043734"/>
+ <node id="2270109432" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397494" lon="-122.3031532"/>
+ <node id="2270109433" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:47Z" user="Glassman" uid="447903" lat="47.6397496" lon="-122.3031676"/>
+ <node id="2270109440" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397579" lon="-122.3033311"/>
+ <node id="2270109441" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397579" lon="-122.3033397"/>
+ <node id="2270109444" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397663" lon="-122.3035083"/>
+ <node id="2270109445" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397663" lon="-122.3035146"/>
+ <node id="2270109454" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397760" lon="-122.3036670"/>
+ <node id="2270109455" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397762" lon="-122.3036482"/>
+ <node id="2270109456" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397764" lon="-122.3033288"/>
+ <node id="2270109457" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397764" lon="-122.3033398"/>
+ <node id="2270109460" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397795" lon="-122.3030939"/>
+ <node id="2270109463" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397819" lon="-122.3029574"/>
+ <node id="2270109466" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397847" lon="-122.3040763"/>
+ <node id="2270109467" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397849" lon="-122.3040382"/>
+ <node id="2270109472" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397869" lon="-122.3043032"/>
+ <node id="2270109473" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397880" lon="-122.3041169"/>
+ <node id="2270109474" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397885" lon="-122.3032545"/>
+ <node id="2270109475" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397889" lon="-122.3031664"/>
+ <node id="2270109476" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397890" lon="-122.3031746"/>
+ <node id="2270109477" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397892" lon="-122.3033027"/>
+ <node id="2270109480" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397906" lon="-122.3041169"/>
+ <node id="2270109481" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397909" lon="-122.3040764"/>
+ <node id="2270109482" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397917" lon="-122.3027975"/>
+ <node id="2270109483" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:48Z" user="Glassman" uid="447903" lat="47.6397920" lon="-122.3027616"/>
+ <node id="2270109488" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397970" lon="-122.3029330"/>
+ <node id="2270109489" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397976" lon="-122.3028639"/>
+ <node id="2270109492" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397982" lon="-122.3033288"/>
+ <node id="2270109493" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397982" lon="-122.3033430"/>
+ <node id="2270109495" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397989" lon="-122.3044429"/>
+ <node id="2270109496" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6397992" lon="-122.3044880"/>
+ <node id="2270109500" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398013" lon="-122.3043726"/>
+ <node id="2270109502" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398014" lon="-122.3043824"/>
+ <node id="2270109516" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398108" lon="-122.3042069"/>
+ <node id="2270109517" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398119" lon="-122.3028641"/>
+ <node id="2270109518" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398123" lon="-122.3040418"/>
+ <node id="2270109519" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398124" lon="-122.3027979"/>
+ <node id="2270109520" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398124" lon="-122.3034649"/>
+ <node id="2270109521" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398125" lon="-122.3033430"/>
+ <node id="2270109526" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398171" lon="-122.3036491"/>
+ <node id="2270109527" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:49Z" user="Glassman" uid="447903" lat="47.6398184" lon="-122.3035157"/>
+ <node id="2270109533" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398211" lon="-122.3031736"/>
+ <node id="2270109535" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398215" lon="-122.3042732"/>
+ <node id="2270109536" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398216" lon="-122.3043821"/>
+ <node id="2270109537" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398221" lon="-122.3044426"/>
+ <node id="2270109538" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398221" lon="-122.3042071"/>
+ <node id="2270109539" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398222" lon="-122.3032535"/>
+ <node id="2270109551" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398265" lon="-122.3043076"/>
+ <node id="2270109552" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398268" lon="-122.3042733"/>
+ <node id="2270109572" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:50Z" user="Glassman" uid="447903" lat="47.6398431" lon="-122.3033598"/>
+ <node id="2270109574" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398436" lon="-122.3032988"/>
+ <node id="2270109575" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398437" lon="-122.3043079"/>
+ <node id="2270109576" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398440" lon="-122.3042799"/>
+ <node id="2270109595" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398521" lon="-122.3030756"/>
+ <node id="2270109597" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398524" lon="-122.3031609"/>
+ <node id="2270109598" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398564" lon="-122.3035666"/>
+ <node id="2270109599" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:51Z" user="Glassman" uid="447903" lat="47.6398576" lon="-122.3036443"/>
+ <node id="2270109621" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398747" lon="-122.3030755"/>
+ <node id="2270109622" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398747" lon="-122.3030927"/>
+ <node id="2270109625" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398823" lon="-122.3042807"/>
+ <node id="2270109626" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398826" lon="-122.3042426"/>
+ <node id="2270109627" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398895" lon="-122.3042427"/>
+ <node id="2270109628" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6398898" lon="-122.3042100"/>
+ <node id="2270109633" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399010" lon="-122.3042102"/>
+ <node id="2270109634" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399025" lon="-122.3040437"/>
+ <node id="2270109635" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399041" lon="-122.3033609"/>
+ <node id="2270109636" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399041" lon="-122.3033644"/>
+ <node id="2270109637" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399049" lon="-122.3033212"/>
+ <node id="2270109638" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399051" lon="-122.3032999"/>
+ <node id="2270109639" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399091" lon="-122.3030925"/>
+ <node id="2270109640" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399093" lon="-122.3031605"/>
+ <node id="2270109645" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399153" lon="-122.3042563"/>
+ <node id="2270109646" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399167" lon="-122.3033646"/>
+ <node id="2270109647" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399171" lon="-122.3033215"/>
+ <node id="2270109648" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399175" lon="-122.3040342"/>
+ <node id="2270109649" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399194" lon="-122.3042947"/>
+ <node id="2270109650" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399198" lon="-122.3042564"/>
+ <node id="2270109657" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399542" lon="-122.3035633"/>
+ <node id="2270109658" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399554" lon="-122.3036410"/>
+ <node id="2270109661" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399619" lon="-122.3042957"/>
+ <node id="2270109662" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399624" lon="-122.3042522"/>
+ <node id="2270109663" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399667" lon="-122.3035137"/>
+ <node id="2270109664" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:52Z" user="Glassman" uid="447903" lat="47.6399666" lon="-122.3035653"/>
+ <node id="2270109667" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399818" lon="-122.3035654"/>
+ <node id="2270109668" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399818" lon="-122.3035734"/>
+ <node id="2270109670" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399819" lon="-122.3045453"/>
+ <node id="2270109672" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399824" lon="-122.3044994"/>
+ <node id="2270109675" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399827" lon="-122.3041188"/>
+ <node id="2270109678" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399836" lon="-122.3040356"/>
+ <node id="2270109680" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399851" lon="-122.3035077"/>
+ <node id="2270109681" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399851" lon="-122.3035138"/>
+ <node id="2270109703" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399948" lon="-122.3029972"/>
+ <node id="2270109704" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399949" lon="-122.3031137"/>
+ <node id="2270109707" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399961" lon="-122.3028349"/>
+ <node id="2270109708" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399966" lon="-122.3031431"/>
+ <node id="2270109709" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399970" lon="-122.3027659"/>
+ <node id="2270109710" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:53Z" user="Glassman" uid="447903" lat="47.6399976" lon="-122.3032253"/>
+ <node id="2270109717" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400003" lon="-122.3044997"/>
+ <node id="2270109718" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400005" lon="-122.3044853"/>
+ <node id="2270109729" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400054" lon="-122.3042532"/>
+ <node id="2270109732" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400068" lon="-122.3041193"/>
+ <node id="2270109735" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400093" lon="-122.3029079"/>
+ <node id="2270109736" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400102" lon="-122.3028353"/>
+ <node id="2270109743" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400126" lon="-122.3044855"/>
+ <node id="2270109744" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400131" lon="-122.3044322"/>
+ <node id="2270109754" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:54Z" user="Glassman" uid="447903" lat="47.6400195" lon="-122.3042689"/>
+ <node id="2270109758" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400202" lon="-122.3031267"/>
+ <node id="2270109759" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400204" lon="-122.3031425"/>
+ <node id="2270109764" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400226" lon="-122.3040264"/>
+ <node id="2270109767" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400251" lon="-122.3036292"/>
+ <node id="2270109768" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400252" lon="-122.3035735"/>
+ <node id="2270109780" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400336" lon="-122.3034991"/>
+ <node id="2270109781" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400336" lon="-122.3035078"/>
+ <node id="2270109783" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400383" lon="-122.3032243"/>
+ <node id="2270109784" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400392" lon="-122.3033015"/>
+ <node id="2270109789" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400448" lon="-122.3034928"/>
+ <node id="2270109790" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:55Z" user="Glassman" uid="447903" lat="47.6400448" lon="-122.3034992"/>
+ <node id="2270109795" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400480" lon="-122.3033416"/>
+ <node id="2270109796" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400481" lon="-122.3033319"/>
+ <node id="2270109805" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400590" lon="-122.3036293"/>
+ <node id="2270109806" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400590" lon="-122.3036434"/>
+ <node id="2270109811" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400690" lon="-122.3029232"/>
+ <node id="2270109812" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:56Z" user="Glassman" uid="447903" lat="47.6400692" lon="-122.3029096"/>
+ <node id="2270109845" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401030" lon="-122.3034929"/>
+ <node id="2270109846" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401030" lon="-122.3035094"/>
+ <node id="2270109849" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401051" lon="-122.3045479"/>
+ <node id="2270109850" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401058" lon="-122.3042713"/>
+ <node id="2270109851" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401060" lon="-122.3044609"/>
+ <node id="2270109852" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401061" lon="-122.3042529"/>
+ <node id="2270109860" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401111" lon="-122.3044610"/>
+ <node id="2270109862" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401113" lon="-122.3044343"/>
+ <node id="2270109864" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401115" lon="-122.3036436"/>
+ <node id="2270109866" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401116" lon="-122.3036226"/>
+ <node id="2270109879" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401159" lon="-122.3030681"/>
+ <node id="2270109880" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401160" lon="-122.3031135"/>
+ <node id="2270109881" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401171" lon="-122.3029970"/>
+ <node id="2270109882" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:57Z" user="Glassman" uid="447903" lat="47.6401171" lon="-122.3030386"/>
+ <node id="2270109891" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401208" lon="-122.3031242"/>
+ <node id="2270109893" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401215" lon="-122.3030386"/>
+ <node id="2270109894" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401216" lon="-122.3030681"/>
+ <node id="2270109895" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401216" lon="-122.3031983"/>
+ <node id="2270109899" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401234" lon="-122.3029247"/>
+ <node id="2270109901" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401241" lon="-122.3028692"/>
+ <node id="2270109905" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401248" lon="-122.3031982"/>
+ <node id="2270109908" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401260" lon="-122.3032993"/>
+ <node id="2270109911" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401267" lon="-122.3028167"/>
+ <node id="2270109913" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401273" lon="-122.3027651"/>
+ <node id="2270109915" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401281" lon="-122.3033338"/>
+ <node id="2270109924" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401350" lon="-122.3028695"/>
+ <node id="2270109927" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:58Z" user="Glassman" uid="447903" lat="47.6401357" lon="-122.3028170"/>
+ <node id="2270109935" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401404" lon="-122.3035094"/>
+ <node id="2270109936" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401404" lon="-122.3035185"/>
+ <node id="2270109938" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401408" lon="-122.3033431"/>
+ <node id="2270109951" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401487" lon="-122.3036227"/>
+ <node id="2270109952" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401488" lon="-122.3035186"/>
+ <node id="2270109953" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401522" lon="-122.3042542"/>
+ <node id="2270109954" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:41:59Z" user="Glassman" uid="447903" lat="47.6401551" lon="-122.3040301"/>
+ <node id="2270140770" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:49Z" user="Glassman" uid="447903" lat="47.6389589" lon="-122.3044638"/>
+ <node id="2270140771" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:49Z" user="Glassman" uid="447903" lat="47.6389593" lon="-122.3044127"/>
+ <node id="2270140783" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:49Z" user="Glassman" uid="447903" lat="47.6389785" lon="-122.3043814"/>
+ <node id="2270140784" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:49Z" user="Glassman" uid="447903" lat="47.6389794" lon="-122.3044140"/>
+ <node id="2270140785" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:49Z" user="Glassman" uid="447903" lat="47.6389819" lon="-122.3030484"/>
+ <node id="2270140797" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390031" lon="-122.3029048"/>
+ <node id="2270140800" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390064" lon="-122.3037334"/>
+ <node id="2270140801" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390066" lon="-122.3037567"/>
+ <node id="2270140806" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390111" lon="-122.3044527"/>
+ <node id="2270140807" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390113" lon="-122.3044604"/>
+ <node id="2270140808" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390115" lon="-122.3037567"/>
+ <node id="2270140809" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390118" lon="-122.3037975"/>
+ <node id="2270140812" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390128" lon="-122.3036804"/>
+ <node id="2270140813" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390131" lon="-122.3037333"/>
+ <node id="2270140820" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390199" lon="-122.3043576"/>
+ <node id="2270140821" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390211" lon="-122.3041225"/>
+ <node id="2270140825" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390282" lon="-122.3035888"/>
+ <node id="2270140834" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390462" lon="-122.3044525"/>
+ <node id="2270140835" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:50Z" user="Glassman" uid="447903" lat="47.6390463" lon="-122.3043770"/>
+ <node id="2270140839" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390494" lon="-122.3034644"/>
+ <node id="2270140842" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390541" lon="-122.3030717"/>
+ <node id="2270140847" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390600" lon="-122.3030320"/>
+ <node id="2270140848" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390602" lon="-122.3036798"/>
+ <node id="2270140849" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390603" lon="-122.3036889"/>
+ <node id="2270140853" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390682" lon="-122.3030346"/>
+ <node id="2270140854" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390687" lon="-122.3029814"/>
+ <node id="2270140856" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390757" lon="-122.3029837"/>
+ <node id="2270140858" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390765" lon="-122.3029285"/>
+ <node id="2270140860" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390781" lon="-122.3030811"/>
+ <node id="2270140863" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390941" lon="-122.3029635"/>
+ <node id="2270140864" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6390975" lon="-122.3029645"/>
+ <node id="2270140865" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391002" lon="-122.3029448"/>
+ <node id="2270140866" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391067" lon="-122.3043585"/>
+ <node id="2270140867" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391079" lon="-122.3041235"/>
+ <node id="2270140868" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391117" lon="-122.3029103"/>
+ <node id="2270140869" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391132" lon="-122.3030987"/>
+ <node id="2270140870" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391134" lon="-122.3028975"/>
+ <node id="2270140871" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391141" lon="-122.3030919"/>
+ <node id="2270140872" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391144" lon="-122.3029491"/>
+ <node id="2270140874" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391165" lon="-122.3036882"/>
+ <node id="2270140875" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391171" lon="-122.3037962"/>
+ <node id="2270140876" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391178" lon="-122.3029241"/>
+ <node id="2270140877" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391200" lon="-122.3028876"/>
+ <node id="2270140878" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391256" lon="-122.3036252"/>
+ <node id="2270140880" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:51Z" user="Glassman" uid="447903" lat="47.6391285" lon="-122.3042940"/>
+ <node id="2270140882" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391292" lon="-122.3042485"/>
+ <node id="2270140883" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391300" lon="-122.3028906"/>
+ <node id="2270140884" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391333" lon="-122.3029028"/>
+ <node id="2270140885" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391356" lon="-122.3043629"/>
+ <node id="2270140886" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391366" lon="-122.3042943"/>
+ <node id="2270140887" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391369" lon="-122.3031057"/>
+ <node id="2270140888" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391370" lon="-122.3042487"/>
+ <node id="2270140889" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391373" lon="-122.3031028"/>
+ <node id="2270140890" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391390" lon="-122.3041205"/>
+ <node id="2270140891" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391469" lon="-122.3035009"/>
+ <node id="2270140897" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391519" lon="-122.3029593"/>
+ <node id="2270140899" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391586" lon="-122.3029103"/>
+ <node id="2270140900" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391632" lon="-122.3036480"/>
+ <node id="2270140901" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391665" lon="-122.3043829"/>
+ <node id="2270140902" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391668" lon="-122.3043640"/>
+ <node id="2270140905" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391737" lon="-122.3035587"/>
+ <node id="2270140906" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391758" lon="-122.3031142"/>
+ <node id="2270140909" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391895" lon="-122.3031311"/>
+ <node id="2270140910" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391932" lon="-122.3043838"/>
+ <node id="2270140911" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391936" lon="-122.3043596"/>
+ <node id="2270140915" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6391952" lon="-122.3029722"/>
+ <node id="2270140922" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6392107" lon="-122.3035899"/>
+ <node id="2270140923" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6392132" lon="-122.3035689"/>
+ <node id="2270140924" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6392158" lon="-122.3029574"/>
+ <node id="2270140925" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:52Z" user="Glassman" uid="447903" lat="47.6392164" lon="-122.3043603"/>
+ <node id="2270140932" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392200" lon="-122.3035923"/>
+ <node id="2270140933" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392200" lon="-122.3041233"/>
+ <node id="2270140935" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392237" lon="-122.3035605"/>
+ <node id="2270140939" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392271" lon="-122.3036808"/>
+ <node id="2270140941" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392301" lon="-122.3029622"/>
+ <node id="2270140942" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392333" lon="-122.3029407"/>
+ <node id="2270140945" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392393" lon="-122.3042863"/>
+ <node id="2270140946" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392394" lon="-122.3036677"/>
+ <node id="2270140948" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392407" lon="-122.3041401"/>
+ <node id="2270140951" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392582" lon="-122.3041344"/>
+ <node id="2270140952" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392582" lon="-122.3041404"/>
+ <node id="2270140960" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392689" lon="-122.3029525"/>
+ <node id="2270140961" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392709" lon="-122.3029394"/>
+ <node id="2270140963" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:53Z" user="Glassman" uid="447903" lat="47.6392720" lon="-122.3036924"/>
+ <node id="2270140965" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392730" lon="-122.3043329"/>
+ <node id="2270140966" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392731" lon="-122.3036838"/>
+ <node id="2270140967" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392734" lon="-122.3042871"/>
+ <node id="2270140969" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392780" lon="-122.3035745"/>
+ <node id="2270140970" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392784" lon="-122.3035708"/>
+ <node id="2270140972" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6392853" lon="-122.3031628"/>
+ <node id="2270140976" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393020" lon="-122.3029920"/>
+ <node id="2270140977" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393056" lon="-122.3031598"/>
+ <node id="2270140978" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393081" lon="-122.3029517"/>
+ <node id="2270140979" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393107" lon="-122.3029948"/>
+ <node id="2270140980" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393150" lon="-122.3036946"/>
+ <node id="2270140981" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393228" lon="-122.3043340"/>
+ <node id="2270140982" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393247" lon="-122.3041358"/>
+ <node id="2270140984" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393281" lon="-122.3035837"/>
+ <node id="2270140985" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393290" lon="-122.3030015"/>
+ <node id="2270140987" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393375" lon="-122.3030042"/>
+ <node id="2270140989" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393426" lon="-122.3029701"/>
+ <node id="2270140990" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393471" lon="-122.3043686"/>
+ <node id="2270140991" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:54Z" user="Glassman" uid="447903" lat="47.6393473" lon="-122.3041592"/>
+ <node id="2270141000" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6393617" lon="-122.3041203"/>
+ <node id="2270141001" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6393617" lon="-122.3041592"/>
+ <node id="2270141017" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394052" lon="-122.3030565"/>
+ <node id="2270141019" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394131" lon="-122.3031945"/>
+ <node id="2270141020" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394145" lon="-122.3029933"/>
+ <node id="2270141021" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394271" lon="-122.3043688"/>
+ <node id="2270141022" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394272" lon="-122.3042161"/>
+ <node id="2270141023" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394321" lon="-122.3030652"/>
+ <node id="2270141025" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394407" lon="-122.3042161"/>
+ <node id="2270141026" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:30:55Z" user="Glassman" uid="447903" lat="47.6394408" lon="-122.3041205"/>
+ <node id="2499799819" visible="true" version="2" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6373459" lon="-122.3025838">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="2499843139" visible="true" version="2" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394434" lon="-122.3039136"/>
+ <node id="3127042441" visible="true" version="4" changeset="88319163" timestamp="2020-07-22T03:12:36Z" user="Dustin C" uid="449970" lat="47.6398796" lon="-122.3039420">
+  <tag k="amenity" v="public_bookcase"/>
+  <tag k="brand" v="Little Free Library"/>
+  <tag k="brand:wikidata" v="Q6650101"/>
+  <tag k="brand:wikipedia" v="en:Little Free Library"/>
+  <tag k="description" v="A little box to borrow and trade books."/>
+  <tag k="name" v="Little Free Library"/>
+  <tag k="website" v="https://littlefreelibrary.org/"/>
+ </node>
+ <node id="3974693320" visible="true" version="1" changeset="36865766" timestamp="2016-01-28T21:14:13Z" user="sctrojan79" uid="2601744" lat="47.6395616" lon="-122.3071929"/>
+ <node id="5766943067" visible="true" version="2" changeset="112427907" timestamp="2021-10-12T17:26:11Z" user="austinsnow" uid="11517143" lat="47.6395565" lon="-122.3071783"/>
+ <node id="5766943075" visible="true" version="1" changeset="60815771" timestamp="2018-07-17T23:32:29Z" user="NickBolten" uid="2773196" lat="47.6395474" lon="-122.3054556"/>
+ <node id="5766943077" visible="true" version="1" changeset="60815771" timestamp="2018-07-17T23:32:29Z" user="NickBolten" uid="2773196" lat="47.6395479" lon="-122.3056193"/>
+ <node id="5766943083" visible="true" version="2" changeset="96273962" timestamp="2020-12-22T17:36:47Z" user="Omnific" uid="1408522" lat="47.6395003" lon="-122.3054641">
+  <tag k="barrier" v="kerb"/>
+  <tag k="kerb" v="lowered"/>
+ </node>
+ <node id="5766943084" visible="true" version="1" changeset="60815771" timestamp="2018-07-17T23:32:30Z" user="NickBolten" uid="2773196" lat="47.6396151" lon="-122.3054434"/>
+ <node id="6212789145" visible="true" version="1" changeset="66356521" timestamp="2019-01-16T09:34:23Z" user="NickBolten" uid="2773196" lat="47.6395204" lon="-122.3005312"/>
+ <node id="6212817307" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6395289" lon="-122.3022025"/>
+ <node id="6212817309" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6395276" lon="-122.3019476"/>
+ <node id="6212817315" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394674" lon="-122.3021916"/>
+ <node id="6231361832" visible="true" version="2" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6403432" lon="-122.3038160"/>
+ <node id="6231361834" visible="true" version="2" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6402127" lon="-122.3038150"/>
+ <node id="6231361848" visible="true" version="3" changeset="112427432" timestamp="2021-10-12T17:12:42Z" user="austinsnow" uid="11517143" lat="47.6410710" lon="-122.3038038"/>
+ <node id="6231361850" visible="true" version="2" changeset="112427432" timestamp="2021-10-12T17:12:42Z" user="austinsnow" uid="11517143" lat="47.6409402" lon="-122.3038005"/>
+ <node id="6231361864" visible="true" version="2" changeset="108674642" timestamp="2021-07-27T09:15:38Z" user="AmyCupcake" uid="406589" lat="47.6418041" lon="-122.3037960"/>
+ <node id="6231361866" visible="true" version="2" changeset="108674642" timestamp="2021-07-27T09:15:38Z" user="AmyCupcake" uid="406589" lat="47.6416697" lon="-122.3037960"/>
+ <node id="6231361883" visible="true" version="2" changeset="112427432" timestamp="2021-10-12T17:12:42Z" user="austinsnow" uid="11517143" lat="47.6423997" lon="-122.3037900"/>
+ <node id="7165853345" visible="true" version="1" changeset="80186607" timestamp="2020-01-28T09:20:20Z" user="vaidhev" uid="10145809" lat="47.6395255" lon="-122.3015520"/>
+ <node id="8557965337" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6395980" lon="-122.3022089"/>
+ <node id="8557965338" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6395986" lon="-122.3024128"/>
+ <node id="8557965339" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6395976" lon="-122.3028881"/>
+ <node id="8557965340" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6396010" lon="-122.3037541"/>
+ <node id="8557965341" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6396001" lon="-122.3034251"/>
+ <node id="8557965342" visible="true" version="2" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6396021" lon="-122.3038181">
+  <tag k="crossing" v="unmarked"/>
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="8557965343" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6396028" lon="-122.3038994"/>
+ <node id="8557965344" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512" lat="47.6396070" lon="-122.3048982"/>
+ <node id="8558162208" visible="true" version="1" changeset="101670944" timestamp="2021-03-24T19:44:35Z" user="VLD083" uid="9233512" lat="47.6394849" lon="-122.3043862"/>
+ <node id="8558162209" visible="true" version="1" changeset="101670944" timestamp="2021-03-24T19:44:35Z" user="VLD083" uid="9233512" lat="47.6394886" lon="-122.3047845"/>
+ <node id="8558162210" visible="true" version="1" changeset="101670944" timestamp="2021-03-24T19:44:35Z" user="VLD083" uid="9233512" lat="47.6394870" lon="-122.3054207"/>
+ <node id="8558162211" visible="true" version="1" changeset="101670944" timestamp="2021-03-24T19:44:35Z" user="VLD083" uid="9233512" lat="47.6394922" lon="-122.3054546"/>
+ <node id="8579979822" visible="true" version="1" changeset="102073510" timestamp="2021-03-31T18:30:01Z" user="VLD083" uid="9233512" lat="47.6382677" lon="-122.3040475">
+  <tag k="crossing" v="unmarked"/>
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="8815740555" visible="true" version="1" changeset="106057337" timestamp="2021-06-08T21:08:37Z" user="austinsnow" uid="11517143" lat="47.6356443" lon="-122.3023016"/>
+ <node id="8821419611" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6395340" lon="-122.3032550"/>
+ <node id="8821419612" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6391763" lon="-122.3032475"/>
+ <node id="8821419613" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394715" lon="-122.3034315"/>
+ <node id="8821419614" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394934" lon="-122.3035779"/>
+ <node id="8821419615" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394927" lon="-122.3036307"/>
+ <node id="8821419616" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394626" lon="-122.3035453"/>
+ <node id="8821442717" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394379" lon="-122.3034894"/>
+ <node id="8821442718" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6393811" lon="-122.3034041"/>
+ <node id="8821442719" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6393249" lon="-122.3033492"/>
+ <node id="8821442720" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6392873" lon="-122.3033146"/>
+ <node id="8821442721" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6390825" lon="-122.3031795"/>
+ <node id="8821442722" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6388058" lon="-122.3030819"/>
+ <node id="8821442723" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6384216" lon="-122.3029701"/>
+ <node id="8821442724" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6378649" lon="-122.3027729"/>
+ <node id="8821442725" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6377539" lon="-122.3027383"/>
+ <node id="8821442726" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6376861" lon="-122.3027028"/>
+ <node id="8821442727" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6371841" lon="-122.3023877"/>
+ <node id="8821442728" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6368889" lon="-122.3022474"/>
+ <node id="8821442729" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6371963" lon="-122.3023567"/>
+ <node id="8821442738" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143" lat="47.6394694" lon="-122.3027949">
+  <tag k="highway" v="crossing"/>
+ </node>
+ <node id="8953622914" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6394731" lon="-122.3054675"/>
+ <node id="8953622915" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6392801" lon="-122.3054761"/>
+ <node id="8953622916" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6392171" lon="-122.3054615"/>
+ <node id="8953625417" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6391612" lon="-122.3054277"/>
+ <node id="8953625418" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6391322" lon="-122.3054012"/>
+ <node id="8953625419" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6391025" lon="-122.3053521"/>
+ <node id="8953625420" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6388735" lon="-122.3049177"/>
+ <node id="8953625421" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6386746" lon="-122.3045240"/>
+ <node id="8953625422" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6384751" lon="-122.3041518"/>
+ <node id="8953625423" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6384682" lon="-122.3040798"/>
+ <node id="8953625424" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6384861" lon="-122.3040388"/>
+ <node id="8953625425" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6385153" lon="-122.3040199"/>
+ <node id="8953625426" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6389454" lon="-122.3040443"/>
+ <node id="8953625427" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6393123" lon="-122.3040437"/>
+ <node id="8953625428" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6394602" lon="-122.3040370"/>
+ <node id="8953625429" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6394749" lon="-122.3040629"/>
+ <node id="8953625430" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589" lat="47.6394874" lon="-122.3041113"/>
+ <node id="8953629439" visible="true" version="2" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395368" lon="-122.3039818"/>
+ <node id="9167872266" visible="true" version="1" changeset="112427432" timestamp="2021-10-12T17:12:42Z" user="austinsnow" uid="11517143" lat="47.6424188" lon="-122.3037888"/>
+ <node id="9167872287" visible="true" version="1" changeset="112427432" timestamp="2021-10-12T17:12:42Z" user="austinsnow" uid="11517143" lat="47.6419032" lon="-122.3037945">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="9167886569" visible="true" version="1" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6412486" lon="-122.3038009">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="9167886570" visible="true" version="1" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6405457" lon="-122.3038105">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="9167886571" visible="true" version="1" changeset="112427551" timestamp="2021-10-12T17:16:17Z" user="austinsnow" uid="11517143" lat="47.6398072" lon="-122.3038143">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="9167886982" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395344" lon="-122.3039017"/>
+ <node id="9167886983" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394835" lon="-122.3038788"/>
+ <node id="9167886984" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394870" lon="-122.3037540"/>
+ <node id="9167886985" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395802" lon="-122.3038179"/>
+ <node id="9167886986" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395313" lon="-122.3037356"/>
+ <node id="9167886987" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395659" lon="-122.3038753"/>
+ <node id="9167886988" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395516" lon="-122.3038923"/>
+ <node id="9167886989" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394846" lon="-122.3037564"/>
+ <node id="9167886990" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395008" lon="-122.3037407"/>
+ <node id="9167886991" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395160" lon="-122.3039024"/>
+ <node id="9167886992" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394984" lon="-122.3038945"/>
+ <node id="9167886993" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394726" lon="-122.3038568"/>
+ <node id="9167886994" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394670" lon="-122.3038308"/>
+ <node id="9167886995" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394673" lon="-122.3038036"/>
+ <node id="9167886996" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6394734" lon="-122.3037779"/>
+ <node id="9167886997" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395195" lon="-122.3037338"/>
+ <node id="9167886998" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395387" lon="-122.3037367"/>
+ <node id="9167886999" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395562" lon="-122.3037488"/>
+ <node id="9167887000" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395699" lon="-122.3037689"/>
+ <node id="9167887001" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395784" lon="-122.3037947"/>
+ <node id="9167887002" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395806" lon="-122.3038232"/>
+ <node id="9167887003" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395763" lon="-122.3038511"/>
+ <node id="9167887004" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6395391" lon="-122.3036427"/>
+ <node id="9167887005" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6392269" lon="-122.3033495"/>
+ <node id="9167887006" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6391266" lon="-122.3033186">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <node id="9167887007" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6371578" lon="-122.3024527"/>
+ <node id="9167887008" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143" lat="47.6365412" lon="-122.3022755">
+  <tag k="traffic_calming" v="hump"/>
+ </node>
+ <way id="6348168" visible="true" version="24" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="53084804"/>
+  <nd ref="3974693320"/>
+  <nd ref="5766943067"/>
+  <nd ref="53084805"/>
+  <nd ref="5766943077"/>
+  <nd ref="53084808"/>
+  <nd ref="5766943075"/>
+  <nd ref="8953629439"/>
+  <nd ref="9167886982"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="25 mph"/>
+  <tag k="name" v="East Lynn Street"/>
+  <tag k="tiger:cfcc" v="A41"/>
+  <tag k="tiger:county" v="King, WA"/>
+  <tag k="tiger:name_base" v="Lynn"/>
+  <tag k="tiger:name_direction_prefix" v="E"/>
+  <tag k="tiger:name_type" v="St"/>
+ </way>
+ <way id="6383154" visible="true" version="11" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="53128042"/>
+  <nd ref="8579979822"/>
+  <nd ref="53128043"/>
+  <nd ref="429678952"/>
+  <nd ref="2499843139"/>
+  <nd ref="9167886983"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="25 mph"/>
+  <tag k="name" v="22nd Avenue East"/>
+  <tag k="tiger:cfcc" v="A41"/>
+  <tag k="tiger:county" v="King, WA"/>
+  <tag k="tiger:name_base" v="22nd"/>
+  <tag k="tiger:name_direction_suffix" v="E"/>
+  <tag k="tiger:name_type" v="Ave"/>
+  <tag k="tiger:reviewed" v="yes"/>
+ </way>
+ <way id="6460090" visible="true" version="14" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="53096947"/>
+  <nd ref="8815740555"/>
+  <nd ref="9167887008"/>
+  <nd ref="53211701"/>
+  <nd ref="53211702"/>
+  <nd ref="9167887007"/>
+  <nd ref="2499799819"/>
+  <nd ref="53211703"/>
+  <nd ref="9167887006"/>
+  <nd ref="9167887005"/>
+  <nd ref="429678957"/>
+  <nd ref="429678949"/>
+  <nd ref="1705063684"/>
+  <nd ref="429678953"/>
+  <nd ref="9167886984"/>
+  <tag k="bicycle" v="designated"/>
+  <tag k="cycleway" v="shared_lane"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="25 mph"/>
+  <tag k="name" v="23rd Avenue East"/>
+  <tag k="parking:condition:right:maxstay" v="3 days"/>
+  <tag k="parking:lane:left" v="no_stopping"/>
+  <tag k="parking:lane:right" v="parallel"/>
+  <tag k="tiger:cfcc" v="A41"/>
+  <tag k="tiger:county" v="King, WA"/>
+  <tag k="tiger:name_base" v="23rd"/>
+  <tag k="tiger:name_direction_suffix" v="E"/>
+  <tag k="tiger:name_type" v="Ave"/>
+  <tag k="tiger:reviewed" v="yes"/>
+ </way>
+ <way id="36952952" visible="true" version="19" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="9167886985"/>
+  <nd ref="8557965342"/>
+  <nd ref="9167886571"/>
+  <nd ref="6231361834"/>
+  <nd ref="53128048"/>
+  <nd ref="6231361832"/>
+  <nd ref="9167886570"/>
+  <nd ref="6231361850"/>
+  <nd ref="53128049"/>
+  <nd ref="6231361848"/>
+  <nd ref="9167886569"/>
+  <nd ref="6231361866"/>
+  <nd ref="53101726"/>
+  <nd ref="6231361864"/>
+  <nd ref="9167872287"/>
+  <nd ref="6231361883"/>
+  <nd ref="9167872266"/>
+  <tag k="cycleway" v="shared_lane"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="25 mph"/>
+  <tag k="name" v="22nd Avenue East"/>
+  <tag k="old_name:1875-1895" v="Summit St"/>
+  <tag k="parking:lane:both" v="parallel"/>
+  <tag k="tiger:cfcc" v="A41"/>
+  <tag k="tiger:county" v="King, WA"/>
+  <tag k="tiger:name_base" v="22nd"/>
+  <tag k="tiger:name_direction_suffix" v="E"/>
+  <tag k="tiger:name_type" v="Ave"/>
+ </way>
+ <way id="36952953" visible="true" version="2" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143">
+  <nd ref="429678954"/>
+  <nd ref="429678955"/>
+  <nd ref="429678956"/>
+  <nd ref="8821419612"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+  <tag k="source" v="survey"/>
+ </way>
+ <way id="203174605" visible="true" version="3" changeset="22116518" timestamp="2014-05-04T00:35:07Z" user="Glassman" uid="447903">
+  <nd ref="2131544370"/>
+  <nd ref="2131544364"/>
+  <nd ref="2131544366"/>
+  <nd ref="2270109938"/>
+  <nd ref="2131544374"/>
+  <nd ref="2270109915"/>
+  <nd ref="2270109796"/>
+  <nd ref="2270109795"/>
+  <nd ref="2131544354"/>
+  <nd ref="2131544362"/>
+  <nd ref="2131544370"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2207"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East McGraw Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700454" visible="true" version="2" changeset="22116518" timestamp="2014-05-04T00:35:06Z" user="Glassman" uid="447903">
+  <nd ref="2270109849"/>
+  <nd ref="2270109851"/>
+  <nd ref="2270109860"/>
+  <nd ref="2270109862"/>
+  <nd ref="2270109744"/>
+  <nd ref="2270109743"/>
+  <nd ref="2270109718"/>
+  <nd ref="2270109717"/>
+  <nd ref="2270109672"/>
+  <nd ref="2270109670"/>
+  <nd ref="2270109849"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2023"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East McGraw Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700455" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:50Z" user="Glassman" uid="447903">
+  <nd ref="2270109496"/>
+  <nd ref="2270109495"/>
+  <nd ref="2270109537"/>
+  <nd ref="2270109536"/>
+  <nd ref="2270109502"/>
+  <nd ref="2270109500"/>
+  <nd ref="2270109429"/>
+  <nd ref="2270109428"/>
+  <nd ref="2270109402"/>
+  <nd ref="2270109403"/>
+  <nd ref="2270109364"/>
+  <nd ref="2270109366"/>
+  <nd ref="2270109327"/>
+  <nd ref="2270109329"/>
+  <nd ref="2270109496"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2024"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East Lynn Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700465" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:52Z" user="Glassman" uid="447903">
+  <nd ref="2270109520"/>
+  <nd ref="2270109521"/>
+  <nd ref="2270109493"/>
+  <nd ref="2270109492"/>
+  <nd ref="2270109456"/>
+  <nd ref="2270109457"/>
+  <nd ref="2270109441"/>
+  <nd ref="2270109440"/>
+  <nd ref="2270109396"/>
+  <nd ref="2270109397"/>
+  <nd ref="2270109291"/>
+  <nd ref="2270109290"/>
+  <nd ref="2270109268"/>
+  <nd ref="2270109269"/>
+  <nd ref="2270109520"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2206"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East Lynn Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700469" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:52Z" user="Glassman" uid="447903">
+  <nd ref="2270109477"/>
+  <nd ref="2270109474"/>
+  <nd ref="2270109539"/>
+  <nd ref="2270109533"/>
+  <nd ref="2270109476"/>
+  <nd ref="2270109475"/>
+  <nd ref="2270109433"/>
+  <nd ref="2270109432"/>
+  <nd ref="2270109296"/>
+  <nd ref="2270109298"/>
+  <nd ref="2270109272"/>
+  <nd ref="2270109274"/>
+  <nd ref="2270109293"/>
+  <nd ref="2270109295"/>
+  <nd ref="2270109392"/>
+  <nd ref="2270109393"/>
+  <nd ref="2270109477"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2210"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East Lynn Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700471" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:52Z" user="Glassman" uid="447903">
+  <nd ref="2270109758"/>
+  <nd ref="2270109759"/>
+  <nd ref="2270109708"/>
+  <nd ref="2270109710"/>
+  <nd ref="2270109783"/>
+  <nd ref="2270109784"/>
+  <nd ref="2270109908"/>
+  <nd ref="2270109905"/>
+  <nd ref="2270109895"/>
+  <nd ref="2270109891"/>
+  <nd ref="2270109758"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2211"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East McGraw Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700475" visible="true" version="2" changeset="22116518" timestamp="2014-05-04T00:35:07Z" user="Glassman" uid="447903">
+  <nd ref="2270109703"/>
+  <nd ref="2270109704"/>
+  <nd ref="2270109880"/>
+  <nd ref="2270109879"/>
+  <nd ref="2270109894"/>
+  <nd ref="2270109893"/>
+  <nd ref="2270109882"/>
+  <nd ref="2270109881"/>
+  <nd ref="2270109703"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2215"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East McGraw Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700480" visible="true" version="2" changeset="22116518" timestamp="2014-05-04T00:35:07Z" user="Glassman" uid="447903">
+  <nd ref="2270109709"/>
+  <nd ref="2270109707"/>
+  <nd ref="2270109736"/>
+  <nd ref="2270109735"/>
+  <nd ref="2270109812"/>
+  <nd ref="2270109811"/>
+  <nd ref="2270109899"/>
+  <nd ref="2270109901"/>
+  <nd ref="2270109924"/>
+  <nd ref="2270109927"/>
+  <nd ref="2270109911"/>
+  <nd ref="2270109913"/>
+  <nd ref="2270109709"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2219"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East McGraw Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700491" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:55Z" user="Glassman" uid="447903">
+  <nd ref="2270109473"/>
+  <nd ref="2270109480"/>
+  <nd ref="2270109481"/>
+  <nd ref="2270109466"/>
+  <nd ref="2270109467"/>
+  <nd ref="2270109323"/>
+  <nd ref="2270109319"/>
+  <nd ref="2270109294"/>
+  <nd ref="2270109292"/>
+  <nd ref="2270109283"/>
+  <nd ref="2270109282"/>
+  <nd ref="2270109289"/>
+  <nd ref="2270109286"/>
+  <nd ref="2270109405"/>
+  <nd ref="2270109404"/>
+  <nd ref="2270109472"/>
+  <nd ref="2270109473"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2303"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700493" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:56Z" user="Glassman" uid="447903">
+  <nd ref="2270109527"/>
+  <nd ref="2270109445"/>
+  <nd ref="2270109444"/>
+  <nd ref="2270109413"/>
+  <nd ref="2270109412"/>
+  <nd ref="2270109288"/>
+  <nd ref="2270109287"/>
+  <nd ref="2270109267"/>
+  <nd ref="2270109266"/>
+  <nd ref="2270109419"/>
+  <nd ref="2270109418"/>
+  <nd ref="2270109454"/>
+  <nd ref="2270109455"/>
+  <nd ref="2270109526"/>
+  <nd ref="2270109527"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2304"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700494" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:56Z" user="Glassman" uid="447903">
+  <nd ref="2270109302"/>
+  <nd ref="2270109300"/>
+  <nd ref="2270109345"/>
+  <nd ref="2270109340"/>
+  <nd ref="2270109346"/>
+  <nd ref="2270109342"/>
+  <nd ref="2270109460"/>
+  <nd ref="2270109463"/>
+  <nd ref="2270109302"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2304"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East Lynn Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700495" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:56Z" user="Glassman" uid="447903">
+  <nd ref="2270109634"/>
+  <nd ref="2270109518"/>
+  <nd ref="2270109516"/>
+  <nd ref="2270109538"/>
+  <nd ref="2270109535"/>
+  <nd ref="2270109552"/>
+  <nd ref="2270109551"/>
+  <nd ref="2270109575"/>
+  <nd ref="2270109576"/>
+  <nd ref="2270109625"/>
+  <nd ref="2270109626"/>
+  <nd ref="2270109627"/>
+  <nd ref="2270109628"/>
+  <nd ref="2270109633"/>
+  <nd ref="2270109634"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2307"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700497" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:56Z" user="Glassman" uid="447903">
+  <nd ref="2270109488"/>
+  <nd ref="2270109489"/>
+  <nd ref="2270109517"/>
+  <nd ref="2270109519"/>
+  <nd ref="2270109482"/>
+  <nd ref="2270109483"/>
+  <nd ref="2270109417"/>
+  <nd ref="2270109416"/>
+  <nd ref="2270109307"/>
+  <nd ref="2270109306"/>
+  <nd ref="2270109277"/>
+  <nd ref="2270109276"/>
+  <nd ref="2270109310"/>
+  <nd ref="2270109308"/>
+  <nd ref="2270109488"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2310"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="East Lynn Street"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700499" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:56Z" user="Glassman" uid="447903">
+  <nd ref="2270109645"/>
+  <nd ref="2270109650"/>
+  <nd ref="2270109649"/>
+  <nd ref="2270109661"/>
+  <nd ref="2270109662"/>
+  <nd ref="2270109729"/>
+  <nd ref="2270109732"/>
+  <nd ref="2270109675"/>
+  <nd ref="2270109678"/>
+  <nd ref="2270109648"/>
+  <nd ref="2270109645"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2313"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700500" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:57Z" user="Glassman" uid="447903">
+  <nd ref="2270109952"/>
+  <nd ref="2270109936"/>
+  <nd ref="2270109935"/>
+  <nd ref="2270109846"/>
+  <nd ref="2270109845"/>
+  <nd ref="2270109789"/>
+  <nd ref="2270109790"/>
+  <nd ref="2270109780"/>
+  <nd ref="2270109781"/>
+  <nd ref="2270109680"/>
+  <nd ref="2270109681"/>
+  <nd ref="2270109663"/>
+  <nd ref="2270109664"/>
+  <nd ref="2270109667"/>
+  <nd ref="2270109668"/>
+  <nd ref="2270109768"/>
+  <nd ref="2270109767"/>
+  <nd ref="2270109805"/>
+  <nd ref="2270109806"/>
+  <nd ref="2270109864"/>
+  <nd ref="2270109866"/>
+  <nd ref="2270109951"/>
+  <nd ref="2270109952"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2314"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700502" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:42:57Z" user="Glassman" uid="447903">
+  <nd ref="2270109754"/>
+  <nd ref="2270109850"/>
+  <nd ref="2270109852"/>
+  <nd ref="2270109953"/>
+  <nd ref="2270109954"/>
+  <nd ref="2270109764"/>
+  <nd ref="2270109754"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2317"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217700606" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:43:11Z" user="Glassman" uid="447903">
+  <nd ref="2270109599"/>
+  <nd ref="2270109658"/>
+  <nd ref="2270109657"/>
+  <nd ref="2270109598"/>
+  <nd ref="2270109599"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="data.seattle.gov"/>
+ </way>
+ <way id="217700626" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:43:12Z" user="Glassman" uid="447903">
+  <nd ref="2270109597"/>
+  <nd ref="2270109640"/>
+  <nd ref="2270109639"/>
+  <nd ref="2270109622"/>
+  <nd ref="2270109621"/>
+  <nd ref="2270109595"/>
+  <nd ref="2270109597"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="data.seattle.gov"/>
+ </way>
+ <way id="217700631" visible="true" version="1" changeset="15756807" timestamp="2013-04-16T23:43:13Z" user="Glassman" uid="447903">
+  <nd ref="2270109574"/>
+  <nd ref="2270109572"/>
+  <nd ref="2270109635"/>
+  <nd ref="2270109636"/>
+  <nd ref="2270109646"/>
+  <nd ref="2270109647"/>
+  <nd ref="2270109637"/>
+  <nd ref="2270109638"/>
+  <nd ref="2270109574"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="data.seattle.gov"/>
+ </way>
+ <way id="217703100" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:03Z" user="Glassman" uid="447903">
+  <nd ref="2270140825"/>
+  <nd ref="2270140878"/>
+  <nd ref="2270140891"/>
+  <nd ref="2270140839"/>
+  <nd ref="2270140825"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2043"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703103" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:03Z" user="Glassman" uid="447903">
+  <nd ref="2270140984"/>
+  <nd ref="2270140970"/>
+  <nd ref="2270140969"/>
+  <nd ref="2270140935"/>
+  <nd ref="2270140932"/>
+  <nd ref="2270140922"/>
+  <nd ref="2270140923"/>
+  <nd ref="2270140905"/>
+  <nd ref="2270140900"/>
+  <nd ref="2270140946"/>
+  <nd ref="2270140939"/>
+  <nd ref="2270140963"/>
+  <nd ref="2270140966"/>
+  <nd ref="2270140980"/>
+  <nd ref="2270140984"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2047"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703113" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:05Z" user="Glassman" uid="447903">
+  <nd ref="2270140785"/>
+  <nd ref="2270140842"/>
+  <nd ref="2270140847"/>
+  <nd ref="2270140853"/>
+  <nd ref="2270140856"/>
+  <nd ref="2270140854"/>
+  <nd ref="2270140858"/>
+  <nd ref="2270140797"/>
+  <nd ref="2270140785"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2068"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703114" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:05Z" user="Glassman" uid="447903">
+  <nd ref="2270140915"/>
+  <nd ref="2270140897"/>
+  <nd ref="2270140899"/>
+  <nd ref="2270140884"/>
+  <nd ref="2270140883"/>
+  <nd ref="2270140877"/>
+  <nd ref="2270140870"/>
+  <nd ref="2270140868"/>
+  <nd ref="2270140876"/>
+  <nd ref="2270140872"/>
+  <nd ref="2270140865"/>
+  <nd ref="2270140864"/>
+  <nd ref="2270140863"/>
+  <nd ref="2270140860"/>
+  <nd ref="2270140871"/>
+  <nd ref="2270140869"/>
+  <nd ref="2270140887"/>
+  <nd ref="2270140889"/>
+  <nd ref="2270140906"/>
+  <nd ref="2270140915"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2070"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703115" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:05Z" user="Glassman" uid="447903">
+  <nd ref="2270140909"/>
+  <nd ref="2270140972"/>
+  <nd ref="2270140979"/>
+  <nd ref="2270140976"/>
+  <nd ref="2270140978"/>
+  <nd ref="2270140961"/>
+  <nd ref="2270140960"/>
+  <nd ref="2270140942"/>
+  <nd ref="2270140941"/>
+  <nd ref="2270140924"/>
+  <nd ref="2270140909"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2074"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703116" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:05Z" user="Glassman" uid="447903">
+  <nd ref="2270141019"/>
+  <nd ref="2270141023"/>
+  <nd ref="2270141017"/>
+  <nd ref="2270141020"/>
+  <nd ref="2270140989"/>
+  <nd ref="2270140987"/>
+  <nd ref="2270140985"/>
+  <nd ref="2270140977"/>
+  <nd ref="2270141019"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2080"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="23rd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703129" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:07Z" user="Glassman" uid="447903">
+  <nd ref="2270140867"/>
+  <nd ref="2270140821"/>
+  <nd ref="2270140820"/>
+  <nd ref="2270140866"/>
+  <nd ref="2270140867"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2221"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703130" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:07Z" user="Glassman" uid="447903">
+  <nd ref="2270140875"/>
+  <nd ref="2270140874"/>
+  <nd ref="2270140849"/>
+  <nd ref="2270140848"/>
+  <nd ref="2270140812"/>
+  <nd ref="2270140813"/>
+  <nd ref="2270140800"/>
+  <nd ref="2270140801"/>
+  <nd ref="2270140808"/>
+  <nd ref="2270140809"/>
+  <nd ref="2270140875"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2222"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703131" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:07Z" user="Glassman" uid="447903">
+  <nd ref="2270140933"/>
+  <nd ref="2270140890"/>
+  <nd ref="2270140888"/>
+  <nd ref="2270140882"/>
+  <nd ref="2270140880"/>
+  <nd ref="2270140886"/>
+  <nd ref="2270140885"/>
+  <nd ref="2270140902"/>
+  <nd ref="2270140901"/>
+  <nd ref="2270140910"/>
+  <nd ref="2270140911"/>
+  <nd ref="2270140925"/>
+  <nd ref="2270140933"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2227"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703132" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:07Z" user="Glassman" uid="447903">
+  <nd ref="2270140982"/>
+  <nd ref="2270140951"/>
+  <nd ref="2270140952"/>
+  <nd ref="2270140948"/>
+  <nd ref="2270140945"/>
+  <nd ref="2270140967"/>
+  <nd ref="2270140965"/>
+  <nd ref="2270140981"/>
+  <nd ref="2270140982"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2229"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703133" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:07Z" user="Glassman" uid="447903">
+  <nd ref="2270140990"/>
+  <nd ref="2270141021"/>
+  <nd ref="2270141022"/>
+  <nd ref="2270141025"/>
+  <nd ref="2270141026"/>
+  <nd ref="2270141000"/>
+  <nd ref="2270141001"/>
+  <nd ref="2270140991"/>
+  <nd ref="2270140990"/>
+  <tag k="addr:city" v="Seattle"/>
+  <tag k="addr:housenumber" v="2235"/>
+  <tag k="addr:postcode" v="98112"/>
+  <tag k="addr:street" v="22nd Avenue East"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="King County GIS;data.seattle.gov"/>
+ </way>
+ <way id="217703173" visible="true" version="1" changeset="15756984" timestamp="2013-04-17T00:31:11Z" user="Glassman" uid="447903">
+  <nd ref="2270140783"/>
+  <nd ref="2270140784"/>
+  <nd ref="2270140771"/>
+  <nd ref="2270140770"/>
+  <nd ref="2270140807"/>
+  <nd ref="2270140806"/>
+  <nd ref="2270140834"/>
+  <nd ref="2270140835"/>
+  <nd ref="2270140783"/>
+  <tag k="building" v="yes"/>
+  <tag k="source" v="data.seattle.gov"/>
+ </way>
+ <way id="921813793" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512">
+  <nd ref="8557965343"/>
+  <nd ref="8557965342"/>
+  <nd ref="8557965340"/>
+  <tag k="crossing" v="unmarked"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="921813794" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512">
+  <nd ref="8557965340"/>
+  <nd ref="8557965341"/>
+  <nd ref="8557965339"/>
+  <nd ref="8557965338"/>
+  <nd ref="8557965337"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="921813795" visible="true" version="1" changeset="101668663" timestamp="2021-03-24T18:45:12Z" user="VLD083" uid="9233512">
+  <nd ref="5766943084"/>
+  <nd ref="8557965344"/>
+  <nd ref="8557965343"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="921831201" visible="true" version="1" changeset="101670944" timestamp="2021-03-24T19:44:35Z" user="VLD083" uid="9233512">
+  <nd ref="5766943083"/>
+  <nd ref="8558162211"/>
+  <nd ref="8558162210"/>
+  <nd ref="8558162209"/>
+  <nd ref="8558162208"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="953062661" visible="true" version="1" changeset="106166319" timestamp="2021-06-10T16:05:46Z" user="austinsnow" uid="11517143">
+  <nd ref="6212817315"/>
+  <nd ref="8821442738"/>
+  <nd ref="429678954"/>
+  <nd ref="8821419613"/>
+  <nd ref="8821419614"/>
+  <nd ref="8821419615"/>
+  <nd ref="8821419616"/>
+  <nd ref="8821442717"/>
+  <nd ref="8821442718"/>
+  <nd ref="8821442719"/>
+  <nd ref="8821442720"/>
+  <nd ref="8821419612"/>
+  <nd ref="8821442721"/>
+  <nd ref="8821442722"/>
+  <nd ref="8821442723"/>
+  <nd ref="8821442724"/>
+  <nd ref="8821442725"/>
+  <nd ref="8821442726"/>
+  <nd ref="8821442729"/>
+  <nd ref="8821442727"/>
+  <nd ref="8821442728"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="967797928" visible="true" version="1" changeset="108675452" timestamp="2021-07-27T09:26:48Z" user="AmyCupcake" uid="406589">
+  <nd ref="8558162211"/>
+  <nd ref="8953622914"/>
+  <nd ref="8953622915"/>
+  <nd ref="8953622916"/>
+  <nd ref="8953625417"/>
+  <nd ref="8953625418"/>
+  <nd ref="8953625419"/>
+  <nd ref="8953625420"/>
+  <nd ref="8953625421"/>
+  <nd ref="8953625422"/>
+  <nd ref="8953625423"/>
+  <nd ref="8953625424"/>
+  <nd ref="8953625425"/>
+  <nd ref="8953625426"/>
+  <nd ref="8953625427"/>
+  <nd ref="8953625428"/>
+  <nd ref="8953625429"/>
+  <nd ref="8953625430"/>
+  <nd ref="8558162208"/>
+  <tag k="footway" v="sidewalk"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="967798877" visible="true" version="1" changeset="108675701" timestamp="2021-07-27T09:29:56Z" user="AmyCupcake" uid="406589">
+  <nd ref="8557965343"/>
+  <nd ref="8953629439"/>
+  <nd ref="8953625429"/>
+  <tag k="crossing" v="marked"/>
+  <tag k="footway" v="crossing"/>
+  <tag k="highway" v="footway"/>
+ </way>
+ <way id="992268928" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="9167886986"/>
+  <nd ref="9167887004"/>
+  <nd ref="8821419611"/>
+  <nd ref="429678958"/>
+  <nd ref="6212817307"/>
+  <nd ref="53084814"/>
+  <nd ref="6212817309"/>
+  <nd ref="7165853345"/>
+  <nd ref="6212789145"/>
+  <nd ref="59710416"/>
+  <nd ref="53084816"/>
+  <tag k="highway" v="residential"/>
+  <tag k="lanes" v="2"/>
+  <tag k="maxspeed" v="25 mph"/>
+  <tag k="name" v="East Lynn Street"/>
+  <tag k="tiger:cfcc" v="A41"/>
+  <tag k="tiger:county" v="King, WA"/>
+  <tag k="tiger:name_base" v="Lynn"/>
+  <tag k="tiger:name_direction_prefix" v="E"/>
+  <tag k="tiger:name_type" v="St"/>
+ </way>
+ <way id="992268929" visible="true" version="1" changeset="112427730" timestamp="2021-10-12T17:21:15Z" user="austinsnow" uid="11517143">
+  <nd ref="9167886997"/>
+  <nd ref="9167886986"/>
+  <nd ref="9167886998"/>
+  <nd ref="9167886999"/>
+  <nd ref="9167887000"/>
+  <nd ref="9167887001"/>
+  <nd ref="9167886985"/>
+  <nd ref="9167887002"/>
+  <nd ref="9167887003"/>
+  <nd ref="9167886987"/>
+  <nd ref="9167886988"/>
+  <nd ref="9167886982"/>
+  <nd ref="9167886991"/>
+  <nd ref="9167886992"/>
+  <nd ref="9167886983"/>
+  <nd ref="9167886993"/>
+  <nd ref="9167886994"/>
+  <nd ref="9167886995"/>
+  <nd ref="9167886996"/>
+  <nd ref="9167886989"/>
+  <nd ref="9167886984"/>
+  <nd ref="9167886990"/>
+  <nd ref="9167886997"/>
+  <tag k="highway" v="residential"/>
+  <tag k="junction" v="roundabout"/>
+  <tag k="lanes" v="1"/>
+  <tag k="maxspeed" v="20 mph"/>
+  <tag k="oneway" v="yes"/>
+ </way>
+ <relation id="7084597" visible="true" version="25" changeset="112760302" timestamp="2021-10-20T19:39:15Z" user="austinsnow" uid="11517143">
+  <member type="way" ref="642732922" role=""/>
+  <member type="way" ref="476409334" role=""/>
+  <member type="way" ref="481291019" role=""/>
+  <member type="way" ref="481291018" role=""/>
+  <member type="way" ref="296370678" role=""/>
+  <member type="way" ref="904889848" role=""/>
+  <member type="way" ref="6450315" role=""/>
+  <member type="way" ref="481291026" role=""/>
+  <member type="way" ref="157280021" role=""/>
+  <member type="way" ref="284562212" role=""/>
+  <member type="way" ref="162602170" role=""/>
+  <member type="way" ref="284562218" role=""/>
+  <member type="way" ref="952482824" role=""/>
+  <member type="way" ref="952482823" role=""/>
+  <member type="way" ref="952482825" role=""/>
+  <member type="way" ref="481291024" role=""/>
+  <member type="way" ref="6438239" role=""/>
+  <member type="way" ref="992373816" role=""/>
+  <member type="way" ref="158782224" role=""/>
+  <member type="way" ref="36952952" role=""/>
+  <member type="way" ref="14379281" role=""/>
+  <member type="way" ref="460418988" role=""/>
+  <member type="way" ref="460418982" role=""/>
+  <member type="way" ref="158123769" role=""/>
+  <member type="way" ref="481291011" role=""/>
+  <member type="way" ref="795846818" role=""/>
+  <member type="way" ref="995016487" role=""/>
+  <member type="way" ref="995016482" role=""/>
+  <member type="way" ref="6449462" role=""/>
+  <member type="way" ref="993794946" role=""/>
+  <member type="way" ref="994924634" role=""/>
+  <member type="way" ref="993793503" role=""/>
+  <member type="way" ref="486875123" role=""/>
+  <member type="way" ref="353690153" role=""/>
+  <member type="way" ref="481291014" role=""/>
+  <member type="way" ref="801995082" role=""/>
+  <member type="way" ref="992266392" role=""/>
+  <member type="way" ref="992268929" role=""/>
+  <member type="way" ref="6460090" role=""/>
+  <member type="way" ref="992373817" role=""/>
+  <member type="way" ref="6434058" role=""/>
+  <member type="way" ref="992590078" role=""/>
+  <member type="way" ref="791722143" role=""/>
+  <member type="way" ref="992590085" role=""/>
+  <member type="way" ref="993537842" role=""/>
+  <member type="way" ref="481291013" role=""/>
+  <member type="way" ref="481291015" role=""/>
+  <member type="way" ref="6444677" role=""/>
+  <member type="way" ref="476409328" role=""/>
+  <member type="way" ref="993537843" role=""/>
+  <member type="way" ref="993538763" role=""/>
+  <member type="way" ref="993538764" role=""/>
+  <member type="way" ref="801995081" role=""/>
+  <member type="way" ref="993770002" role=""/>
+  <member type="way" ref="993793504" role=""/>
+  <member type="way" ref="993794343" role=""/>
+  <member type="way" ref="185485118" role=""/>
+  <member type="way" ref="993794948" role=""/>
+  <member type="way" ref="6452520" role=""/>
+  <member type="way" ref="994924635" role=""/>
+  <member type="way" ref="995016483" role=""/>
+  <member type="way" ref="995016489" role=""/>
+  <member type="way" ref="995016491" role=""/>
+  <member type="way" ref="995016492" role=""/>
+  <member type="way" ref="795669782" role=""/>
+  <tag k="cycle_network" v="US:WA:Seattle_Neighborhood_Greenway"/>
+  <tag k="name" v="Beacon Hill - Central District Greenway"/>
+  <tag k="network" v="lcn"/>
+  <tag k="route" v="bicycle"/>
+  <tag k="type" v="route"/>
+ </relation>
+ <relation id="10200017" visible="true" version="1" changeset="76116035" timestamp="2019-10-23T16:55:29Z" user="Reemal" uid="8899833">
+  <member type="way" ref="6381501" role="from"/>
+  <member type="node" ref="53084804" role="via"/>
+  <member type="way" ref="6381501" role="to"/>
+  <tag k="restriction" v="no_u_turn"/>
+  <tag k="type" v="restriction"/>
+ </relation>
+</osm>
