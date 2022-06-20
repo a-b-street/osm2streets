@@ -1,6 +1,7 @@
 import { makeDropHandler, makeLinkHandler, handleDragOver } from "./files.js";
+import { makeOpenTest } from "./tests.js";
 
-const cb = (map) => {
+const useMap = (map) => {
     const container = map.getContainer();
     container.ondrop = makeDropHandler(map);
     container.ondragover = handleDragOver;
@@ -8,6 +9,9 @@ const cb = (map) => {
     map.loadLink = makeLinkHandler(map);
 
     console.info("New map created! File drops enabled.", container);
+
+    console.info("opening a test, just for fun...");
+    makeOpenTest(map)("aurora_sausage_link");
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.
@@ -19,7 +23,7 @@ L.Map = function(x, opts = {
 }, ...args) {
     const m = new LM(x, opts, ...args)
     window.maps.push(m);
-    setTimeout(() => cb(m), 0);
+    setTimeout(() => useMap(m), 0);
     return m;
 }
 
