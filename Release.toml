@@ -1,5 +1,5 @@
 [build]
-target = "osm2streets-web/index.html"
+target = "tests-web/index.html"
 public_url = "/osm2streets/"
 release = true
 dist = "dist"

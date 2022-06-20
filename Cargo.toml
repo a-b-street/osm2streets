@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "osm2streets",
-    "osm2streets-web",
     "tests",
+    "tests-web",
 ]

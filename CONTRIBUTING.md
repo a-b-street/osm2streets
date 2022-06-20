@@ -10,4 +10,4 @@ Come hang out at https://github.com/a-b-street/osm2streets to ask questions and 
 
 See the `tests` crate [(docs)](tests/README.md) for a collection of interesting example scenarios.
 
-See `osm2streets-web` crate [(docs)](osm2streets-web/README.md) for a *Street Explorer* test browsing interface.
+See `tests-web` crate [(docs)](tests-web/README.md) for a *Street Explorer* test browsing interface.

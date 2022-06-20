@@ -1164,25 +1164,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "osm2streets-web"
-version = "0.1.0"
-dependencies = [
- "console_log",
- "getrandom",
- "gloo-utils",
- "leaflet",
- "log",
- "piet",
- "piet-web",
- "serde",
- "streets",
- "wasm-bindgen",
- "web-sys",
- "wee_alloc",
- "yew",
-]
-
-[[package]]
 name = "pdqselect"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1750,6 +1731,25 @@ dependencies = [
  "raw_map",
  "serde",
  "streets",
+]
+
+[[package]]
+name = "tests-web"
+version = "0.1.0"
+dependencies = [
+ "console_log",
+ "getrandom",
+ "gloo-utils",
+ "leaflet",
+ "log",
+ "piet",
+ "piet-web",
+ "serde",
+ "streets",
+ "wasm-bindgen",
+ "web-sys",
+ "wee_alloc",
+ "yew",
 ]
 
 [[package]]
