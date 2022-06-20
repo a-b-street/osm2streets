@@ -208,11 +208,11 @@ function makeClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_20(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hefa26fd033935f77(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hadb49964055fc8e1(arg0, arg1, addHeapObject(arg2));
 }
 
 function __wbg_adapter_23(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3aca4863ab895818(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__Fn__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__he8f18355bf9c5588(arg0, arg1, addHeapObject(arg2));
 }
 
 let cachegetUint32Memory0 = null;
@@ -274,7 +274,7 @@ async function load(module, imports) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('streets-web-37be8cdc4f3e646b_bg.wasm', import.meta.url);
+        input = new URL('tests-web-757117ff7bef00c1_bg.wasm', import.meta.url);
     }
     const imports = {};
     imports.wbg = {};
@@ -538,7 +538,7 @@ async function init(input) {
         const ret = makeClosure(arg0, arg1, 96, __wbg_adapter_20);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper411 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper407 = function(arg0, arg1, arg2) {
         const ret = makeClosure(arg0, arg1, 148, __wbg_adapter_23);
         return addHeapObject(ret);
     };
