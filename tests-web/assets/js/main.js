@@ -12,6 +12,24 @@ const useMap = (map) => {
 
     console.info("opening a test, just for fun...");
     makeOpenTest(map)("aurora_sausage_link");
+    // Current tests (for your convenience):
+    // arizona_highways
+    // aurora_sausage_link
+    // borough_sausage_links
+    // bristol_contraflow_cycleway
+    // bristol_sausage_links
+    // i5_exit_ramp
+    // jelly_bean_roundabout
+    // kingsway_junction
+    // lib.rs
+    // montlake_roundabout
+    // perth_stretched_lights
+    // seattle_slip_lane
+    // seattle_triangle
+    // service_road_loop
+    // taipei
+    // tempe_light_rail
+    // tempe_split
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.
