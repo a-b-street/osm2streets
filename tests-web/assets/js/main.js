@@ -33,7 +33,6 @@ L.TileLayer = function(x, opts = {
     maxNativeZoom: 18,
     maxZoom: 21,
 }, ...args) {
-    const l = new LL(x, opts, ...args)
-    return l;
+    return new LL(x, opts, ...args);
 }
 
