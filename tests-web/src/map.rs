@@ -123,7 +123,7 @@ impl Component for MapComponent {
 fn add_tile_layer(map: &Map) {
     TileLayer::new(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        &JsValue::NULL,
+        &JsValue::UNDEFINED,
     )
     .addTo(map);
 }
