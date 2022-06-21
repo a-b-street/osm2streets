@@ -1,30 +1,37 @@
-import { addGeojsonLayer, zoomToLayer } from './layers.js';
+import { layerMakers } from './layers.js';
 
-export const makeLinkHandler = (map) => (link) => {
-    return fetch(link)
-        .then(body => body.json())
-        .then(json => addGeojsonLayer(map, json))
-        .then(layer => zoomToLayer(map, layer));
+export const makeOpenFile = (map) => async (text, name) => {
+    const dotPos = name?.lastIndexOf('.') ?? -1;
+    const layer = await layerMakers[name.substring(dotPos + 1)]?.(text, { bounds: map.getBounds()});
+    if (layer) {
+        map.addLayer(layer);
+        map.flyToBounds(layer.getBounds());
+    }
+}
+
+export const makeLinkHandler = (map) => {
+    const openFile = makeOpenFile(map);
+    return (link) => {
+        return fetch(link).then(body => openFile(body.text(), body.url));
+    }
 };
 
 export const handleDragOver = (dragEvent) => {
-    dragEvent.preventDefault(); // tells the browser that we're handling this drop.
+    dragEvent.preventDefault(); // tells the browser that we're handling this drag/drop.
 };
 
+export const makeDropHandler = (map) => {
+    const openFile = makeOpenFile(map);
+    return (dropEvent) => {
+        // We are handling this event. prevent it from being openend.
+        dropEvent.preventDefault();
 
-export const makeDropHandler = (map) => (dropEvent) => {
-    // We are handling this event. prevent it from being openend.
-    dropEvent.preventDefault();
+        console.debug({ dropped: dropEvent.dataTransfer });
+        forEachFile(dropEvent.dataTransfer, (file, i) => {
+            file.text().then(t => openFile(t, file.name));
+        })
 
-    console.debug({ dropped: dropEvent.dataTransfer });
-    forEachFile(dropEvent.dataTransfer, (f, i) => {
-        // depending on type, add a layer to the map or open a graphvis overlay.
-        console.info('Got file', f);
-        f.text()
-            .then(t => addGeojsonLayer(map, JSON.parse(t)))
-            .then(l => zoomToLayer(map, l));
-    })
-
+    }
 };
 
 const forEachFile = (dt, f) => {
