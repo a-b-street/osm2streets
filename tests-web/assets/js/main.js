@@ -10,10 +10,14 @@ const useMap = (map) => {
     map.openTest = makeOpenTest(map)
     console.info("New map created! File drops enabled.", container);
 
-    console.info("opening a test, just for fun...");
-    map.openTest("aurora_sausage_link");
+    const path = window.location.pathname.split('/');
+    if (path[1] === 't') {
+        const test = path[2];
+        console.info("Loading test " + test + " from URL.");
+        map.openTest(test);
+    }
 
-    loadTests({ open: map.openTest });
+    loadTests();
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.

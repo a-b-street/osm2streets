@@ -23,7 +23,7 @@ export const makeOpenTest = (map) => async (name) => {
 
 const loadFile = name => fetch(name).then(body => body.text()).catch(err => console.warn(err));
 
-export const loadTests = async ({ open }) => {
+export const loadTests = async () => {
     // FIXME: load the list of tests from the server
     const testNames = [
         'arizona_highways',
@@ -49,8 +49,7 @@ export const loadTests = async ({ open }) => {
     for (const t of testNames) {
         const li = listNode.appendChild(window.document.createElement('li'));
         const a = li.appendChild(window.document.createElement('a'));
-        a.href = '/t/' + t // Any old href makes the browser present the link as clickable.
-        a.onclick = () => open(t);
+        a.href = '/t/' + t;
         a.innerHTML = t;
     }
 }
