@@ -1,12 +1,4 @@
 
-body, h1, h2, h3, h4, h5, a, button, input, textarea, .button, label, p, select {
-  font-family: "Source Code Pro", monospace;
-}
-
-body {
-  background: #0e0e16;
-  color: #cccccc;
-}
 
 /* Variables */
 body {
@@ -47,7 +39,10 @@ body {
  }
 
 
-#test-list {}
+#test-list {
+    list-style: none;
+    padding: 0;
+}
 
 #road-network > svg {
     width: 100%;
@@ -61,6 +56,17 @@ body {
 }
 
 /* Theming */
+
+body, h1, h2, h3, h4, h5, a, button, input, textarea, .button, label, p, select {
+  font-family: "Source Code Pro", monospace;
+}
+
+body {
+  background: #0e0e16;
+  color: #cccccc;
+}
+a:link { color: #72e0d1 }
+a:visited { color: #83ba52 }
 
 button, input, textarea, .button {
   background-color: #323253;
