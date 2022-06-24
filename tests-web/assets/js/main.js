@@ -1,5 +1,5 @@
 import { makeDropHandler, makeLinkHandler, handleDragOver } from "./files.js";
-import { makeOpenTest } from "./tests.js";
+import { makeOpenTest, loadTests } from "./tests.js";
 
 const useMap = (map) => {
     const container = map.getContainer();
@@ -7,29 +7,13 @@ const useMap = (map) => {
     container.ondragover = handleDragOver;
 
     map.loadLink = makeLinkHandler(map);
-
+    map.openTest = makeOpenTest(map)
     console.info("New map created! File drops enabled.", container);
 
     console.info("opening a test, just for fun...");
-    makeOpenTest(map)("aurora_sausage_link");
-    // Current tests (for your convenience):
-    // arizona_highways
-    // aurora_sausage_link
-    // borough_sausage_links
-    // bristol_contraflow_cycleway
-    // bristol_sausage_links
-    // i5_exit_ramp
-    // jelly_bean_roundabout
-    // kingsway_junction
-    // lib.rs
-    // montlake_roundabout
-    // perth_stretched_lights
-    // seattle_slip_lane
-    // seattle_triangle
-    // service_road_loop
-    // taipei
-    // tempe_light_rail
-    // tempe_split
+    map.openTest("aurora_sausage_link");
+
+    loadTests({ open: map.openTest });
 }
 
 // Smuggle a reference to the created map, so I can work with it in JS land.

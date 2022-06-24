@@ -118,8 +118,10 @@ impl Component for App {
                             html!{}
                         }
                     }
-                    <section id="road-network" />
+                    <ul id="test-list" />
                 </menu>
+
+                <section id="road-network" />
 
                 <MapComponent callback_msg={callback_msg.clone()}/>
             </>
