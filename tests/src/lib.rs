@@ -7,27 +7,15 @@ mod tests {
     use serde::Deserialize;
     use streets::RoadNetwork;
 
-    #[test]
-    fn test_osm2streets() {
-        abstutil::logger::setup();
+    include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
-        let mut any = false;
+    fn test(path: &str) -> Result<()> {
+        // TODO We need to call abstutil::logger::setup() once globally to get all logs
+
         let mut timer = Timer::new("test osm2streets");
-        for entry in std::fs::read_dir("src").unwrap() {
-            let entry = entry.unwrap();
-            if !entry.file_type().unwrap().is_dir() {
-                continue;
-            }
-            let name = entry.path().display().to_string();
-            any = true;
-            test(name, &mut timer).unwrap();
-        }
-        assert!(any, "Didn't find any tests");
-    }
 
-    fn test(path: String, timer: &mut Timer) -> Result<()> {
         println!("Working on {path}");
-        let cfg: TestCase = abstio::maybe_read_json(format!("{path}/test.json"), timer)?;
+        let cfg: TestCase = abstio::maybe_read_json(format!("{path}/test.json"), &mut timer)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
         let prior_json = std::fs::read_to_string(format!("{path}/raw_map.json"))
@@ -35,12 +23,16 @@ mod tests {
         let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
-        let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, timer);
+        let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, &mut timer);
         let consolidate_all_intersections = false;
         // Our clipped areas are very small; this would remove part of the intended input
         let remove_disconnected = false;
-        raw_map.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
-        raw_map.save_to_geojson(format!("{path}/raw_map.json"), timer)?;
+        raw_map.run_all_simplifications(
+            consolidate_all_intersections,
+            remove_disconnected,
+            &mut timer,
+        );
+        raw_map.save_to_geojson(format!("{path}/raw_map.json"), &mut timer)?;
 
         let road_network: RoadNetwork = raw_map.into();
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
