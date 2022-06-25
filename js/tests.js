@@ -18,7 +18,38 @@ export const makeOpenTest = (map) => async (name) => {
     const networkLayer = await makeDotLayer(await network, { bounds })
     map.addLayer(networkLayer);
 
-    console.debug({ rawMapLayer, bounds, inputLayer, networkLayer, map });
+    // TODO store a reference to the layers so they can be cleaned up when wanted.
 }
 
 const loadFile = name => fetch(name).then(body => body.text()).catch(err => console.warn(err));
+
+export const loadTests = async () => {
+    // FIXME: load the list of tests from the server
+    const testNames = [
+        'arizona_highways',
+        'aurora_sausage_link',
+        'borough_sausage_links',
+        'bristol_contraflow_cycleway',
+        'bristol_sausage_links',
+        'i5_exit_ramp',
+        'jelly_bean_roundabout',
+        'kingsway_junction',
+        'montlake_roundabout',
+        'perth_stretched_lights',
+        'seattle_slip_lane',
+        'seattle_triangle',
+        'service_road_loop',
+        'taipei',
+        'tempe_light_rail',
+        'tempe_split',
+    ];
+
+    // Add all of the test cases to the list.
+    const listNode = window.document.getElementById('test-list');
+    for (const t of testNames) {
+        const li = listNode.appendChild(window.document.createElement('li'));
+        const a = li.appendChild(window.document.createElement('a'));
+        a.href = '/t/' + t;
+        a.innerHTML = t;
+    }
+}
