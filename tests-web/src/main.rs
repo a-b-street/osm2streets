@@ -108,16 +108,6 @@ impl Component for App {
             <>
                 <menu>
                     <h1>{"StreetExplorer"}</h1>
-                    <Control callback_msg={callback_msg.clone()} state={self.state.clone()}/>
-                    {
-                        if let Some(message) = &state.message {
-                            html!{
-                                <aside>{message}</aside>
-                            }
-                        } else {
-                            html!{}
-                        }
-                    }
                     <ul id="test-list" />
                 </menu>
 
