@@ -10,9 +10,11 @@ const useMap = (map) => {
     map.openTest = makeOpenTest(map)
     console.info("New map created! File drops enabled.", container);
 
-    const path = window.location.pathname.split('/');
-    if (path[1] === 't') {
-        const test = path[2];
+
+    // Here we read the test name from the URL.
+    const q = new URLSearchParams(window.location.search);
+    if (q.has('test')) {
+        const test = q.get('test');
         console.info("Loading test " + test + " from URL.");
         map.openTest(test);
     }
