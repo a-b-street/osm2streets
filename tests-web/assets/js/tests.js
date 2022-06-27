@@ -2,7 +2,7 @@ import { makeOsmLayer, makeJsonLayer, makeDotLayer  } from './layers.js';
 
 /** Load and display all the files associated with a test case. */
 export const makeOpenTest = (map) => async (name) => {
-    const prefix = `/src/${name}/`;
+    const prefix = `src/${name}/`;
     const input = loadFile(prefix + 'input.osm');
     const rawMap = loadFile(prefix + 'raw_map.json');
     const network = loadFile(prefix + 'road_network.dot');
@@ -49,7 +49,8 @@ export const loadTests = async () => {
     for (const t of testNames) {
         const li = listNode.appendChild(window.document.createElement('li'));
         const a = li.appendChild(window.document.createElement('a'));
-        a.href = '/t/' + t;
+        // Here we encode the test name in the URL to be read elsewhere.
+        a.href = '?test=' + t;
         a.innerHTML = t;
     }
 }
