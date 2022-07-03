@@ -9,7 +9,7 @@ use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, Ra
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
 use crate::road_functions::{ControlType, Intersection, RoadWay};
-use crate::road_parts::{Carriage, Designation, Lane, RoadEdge};
+use crate::road_parts::{Carriage, Designation, RoadEdge, RoadPart};
 use crate::units::preamble::*;
 use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
@@ -98,7 +98,7 @@ impl RoadWay {
             .map(|l| l.into())
             .collect::<Vec<_>>(); // Any middle buffer would end up at the end here...
         let right_lanes = lanes.map(|l| l.into()).collect::<Vec<_>>();
-        let half_roads: EnumMap<Side, Vec<Lane>> = enum_map! {
+        let half_roads: EnumMap<Side, Vec<RoadPart>> = enum_map! {
             Left => left_lanes.clone(),
             Right => right_lanes.clone(),
         };
@@ -150,29 +150,44 @@ impl From<&RawIntersection> for Intersection {
     }
 }
 
-impl From<&LaneSpec> for Lane {
+impl From<&LaneSpec> for RoadPart {
     fn from(l: &LaneSpec) -> Self {
-        Lane {
-            dir: if let LaneType::SharedLeftTurn = l.lt {
-                // Lane type is used to represent the both-ways aspect of middle turn lanes, I guess.
-                TrafficDirections::BothWays
-            } else {
-                // All our lanes are forward on their RoadWay, unless they are doing something fishy.
-                TrafficDirections::Forward
-            },
-
+        RoadPart {
+            // All our lanes are forward on their RoadWay, unless they are doing something fishy.
+            // Lane type is used to represent the both-ways aspect of middle turn lanes.
             designation: match l.lt {
-                LaneType::Sidewalk => Designation::Travel(Carriage::Foot),
-                LaneType::Biking => Designation::Travel(Carriage::Bike),
-                LaneType::Driving | LaneType::SharedLeftTurn => Designation::Travel(Carriage::Cars),
-                LaneType::Bus => Designation::Travel(Carriage::Bus),
-                LaneType::LightRail => Designation::Travel(Carriage::Train),
+                LaneType::Sidewalk => Designation::Travel {
+                    carriage: Carriage::Foot,
+                    direction: TrafficDirections::Forward,
+                },
+                LaneType::Biking => Designation::Travel {
+                    carriage: Carriage::Bike,
+                    direction: TrafficDirections::Forward,
+                },
+                LaneType::Driving => Designation::Travel {
+                    carriage: Carriage::Cars,
+                    direction: TrafficDirections::Forward,
+                },
+                LaneType::SharedLeftTurn => Designation::Travel {
+                    carriage: Carriage::Cars,
+                    direction: TrafficDirections::BothWays,
+                },
+                LaneType::Bus => Designation::Travel {
+                    carriage: Carriage::Bus,
+                    direction: TrafficDirections::Forward,
+                },
+                LaneType::LightRail => Designation::Travel {
+                    carriage: Carriage::Train,
+                    direction: TrafficDirections::Forward,
+                },
 
                 LaneType::Buffer(_) => Designation::NoTravel,
                 LaneType::Shoulder => Designation::NoTravel, // ?
 
-                LaneType::Parking => Designation::Parking(Carriage::Cars),
-                LaneType::Construction => Designation::Amenity,
+                LaneType::Parking => Designation::Parking {
+                    carriage: Carriage::Cars,
+                },
+                LaneType::Construction => Designation::NoTravel,
             },
             can_enter_from_inside: true,
             can_enter_from_outside: false,

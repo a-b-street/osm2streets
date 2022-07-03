@@ -38,15 +38,16 @@ pub enum RoadRanks {
 /// A usage designation for an area, such as a lane.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Designation {
-    /// Think "carriageway" carriages, anything from trucks to mopeds to drawn carts.
-    Travel(Carriage),
-    /// Areas of the road that are explicitly not for (normal) driving.
-    /// Often painted, sometimes w/barriers.
+    /// A part of the road designated for travel.
+    Travel {
+        carriage: Carriage,
+        direction: TrafficDirections,
+    },
+    /// A part of the road designated for parking / "standing".
+    Parking { carriage: Carriage },
+    /// A part of the road that is explicitly not (normally) for carriages.
+    /// E.g. a painted buffer, median or verge.
     NoTravel,
-    /// Loading zones for trucks too, with short stay?
-    Parking(Carriage),
-    /// Verges without parking, those outdoor eating areas, for example.
-    Amenity,
 }
 
 /// What is the nature of the edge of this area of road?
@@ -66,73 +67,91 @@ pub enum RoadEdge {
 
 /// A single lane on the carriageway, with designation, width, etc.
 #[derive(Clone, Debug, PartialEq)]
-pub struct Lane {
-    pub dir: TrafficDirections,
+pub struct RoadPart {
     pub designation: Designation,
     pub width: Meters,
     pub can_enter_from_inside: bool,
     pub can_enter_from_outside: bool,
 }
 
-impl Lane {
-    pub fn track() -> Self {
+impl RoadPart {
+    pub fn path() -> Self {
         Self {
-            designation: Travel(Cars),
-            width: 4.0,
-            ..Lane::foot()
-        }
-    }
-    pub fn foot() -> Self {
-        Self {
-            dir: TrafficDirections::BothWays,
-            designation: Travel(Foot),
+            designation: Travel {
+                carriage: Foot,
+                direction: TrafficDirections::BothWays,
+            },
             width: 1.5,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
         }
     }
-    pub fn bike() -> Self {
+    pub fn track() -> Self {
         Self {
-            dir: TrafficDirections::Forward,
-            designation: Travel(Bike),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::BothWays,
+            },
+            width: 4.0,
+            can_enter_from_inside: true,
+            can_enter_from_outside: true,
+        }
+    }
+    pub fn bike_lane() -> Self {
+        Self {
+            designation: Travel {
+                carriage: Bike,
+                direction: TrafficDirections::BothWays,
+            },
             width: 1.0,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
         }
     }
-    pub fn service() -> Self {
+    pub fn service_road() -> Self {
         Self {
-            designation: Travel(Cars),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::BothWays, // negotiated lane like foot traffic
+            },
             width: 4.0,
-            ..Lane::foot() // negotiated lane like foot traffic
+            can_enter_from_inside: true,
+            can_enter_from_outside: true,
         }
     }
-    pub fn car() -> Self {
+    pub fn lane() -> Self {
         Self {
-            dir: TrafficDirections::Forward,
-            designation: Travel(Cars),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::Forward,
+            },
             width: 3.5,
             can_enter_from_inside: true, // start by assume overtaking is allowed.
             can_enter_from_outside: true, // Not usually any reason to disallow entry from the outside.
         }
     }
-    pub fn bus() -> Self {
+    pub fn bus_lane() -> Self {
         Self {
-            designation: Travel(Bus),
-            ..Self::car()
+            designation: Travel {
+                carriage: Bus,
+                direction: TrafficDirections::Forward,
+            },
+            ..Self::lane()
         }
     }
-    pub fn truck() -> Self {
+    pub fn truck_lane() -> Self {
         Self {
-            designation: Travel(Truck),
-            ..Self::car()
+            designation: Travel {
+                carriage: Truck,
+                direction: TrafficDirections::Forward,
+            },
+            ..Self::lane()
         }
     }
 
     pub fn median() -> Self {
         Self {
-            dir: TrafficDirections::BothWays,
-            designation: Designation::NoTravel,
+            designation: NoTravel,
             width: 1.0,
             can_enter_from_inside: false,
             can_enter_from_outside: false,
@@ -140,8 +159,7 @@ impl Lane {
     }
     pub fn verge() -> Self {
         Self {
-            dir: TrafficDirections::BothWays,
-            designation: Designation::NoTravel,
+            designation: NoTravel,
             width: 3.0,
             can_enter_from_inside: false,
             can_enter_from_outside: false,

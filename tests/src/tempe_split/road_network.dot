@@ -46,7 +46,7 @@ digraph {
     20 -> 16 [ label = "1 lanes" ]
     20 -> 13 [ label = "1 lanes" ]
     13 -> 20 [ label = "1 lanes" ]
-    10 -> 14 [ label = "1 lanes" ]
+    10 -> 14 [ label = "0 lanes" ]
     15 -> 18 [ label = "1 lanes" ]
     18 -> 15 [ label = "1 lanes" ]
     17 -> 16 [ label = "1 lanes" ]

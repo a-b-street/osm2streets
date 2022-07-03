@@ -2,15 +2,15 @@
 
 use std::fmt::{Display, Formatter};
 
-use crate::road_parts::{Designation, Lane, RoadEdge};
+use crate::road_parts::{Designation, RoadEdge, RoadPart};
 
-struct CrossWay(Lane);
+struct CrossWay(RoadPart);
 
 impl CrossWay {
     pub fn unmarked() -> CrossWay {
-        CrossWay(Lane {
+        CrossWay(RoadPart {
             width: 2.0,
-            ..Lane::foot()
+            ..RoadPart::path()
         })
     }
 }
@@ -19,7 +19,7 @@ impl CrossWay {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RoadWay {
     /// Lanes, inside (fast lane) out (slow lanes, footpaths). Directions is almost always forward.
-    pub elements: Vec<Lane>,
+    pub elements: Vec<RoadPart>,
     // /// The transverse lines
     // seperators: Vec<Separator>,
     /// How this roadway transitions into the adjacent area on the inside.
@@ -29,7 +29,7 @@ pub struct RoadWay {
 }
 
 impl RoadWay {
-    pub fn lanes(&self) -> Vec<&Lane> {
+    pub fn lanes(&self) -> Vec<&RoadPart> {
         self.elements
             .iter()
             .filter_map(|el| {
@@ -58,14 +58,14 @@ impl RoadWay {
     pub fn track() -> Self {
         Self {
             inner: RoadEdge::Sudden,
-            elements: vec![Lane::track()],
+            elements: vec![RoadPart::track()],
             outer: RoadEdge::Sudden,
         }
     }
     pub fn rural() -> Self {
         Self {
             inner: RoadEdge::Join,
-            elements: vec![Lane::car()],
+            elements: vec![RoadPart::lane()],
             outer: RoadEdge::Sudden,
         }
     }
@@ -73,14 +73,14 @@ impl RoadWay {
         Self {
             // edges: enum_map!{ Inner => RoadEdge::Join, Outer => RoadEdge::Barrier}, // enum-map
             inner: RoadEdge::Join,
-            elements: vec![Lane::car(), Lane::verge(), Lane::foot()],
+            elements: vec![RoadPart::lane(), RoadPart::verge(), RoadPart::path()],
             outer: RoadEdge::Barrier,
         }
     }
     pub fn arterial() -> Self {
         Self {
             inner: RoadEdge::Join,
-            elements: vec![Lane::car(), Lane::verge(), Lane::foot()],
+            elements: vec![RoadPart::lane(), RoadPart::verge(), RoadPart::path()],
             outer: RoadEdge::Barrier,
         }
         .set_overtaking(false)
