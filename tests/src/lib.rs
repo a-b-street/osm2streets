@@ -38,7 +38,7 @@ mod tests {
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
 
         let current_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))?;
-        if current_dot != current_dot {
+        if prior_dot != current_dot {
             std::fs::write(format!("{path}/road_network.orig.dot"), prior_dot)?;
             bail!("./{}/road_network.dot is different! If it is OK, commit it.
 ./{0}/road_network.orig.dot is previous result. Compare it on https://doctorbud.com/graphviz-viewer/", path);
