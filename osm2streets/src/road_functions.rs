@@ -2,7 +2,7 @@
 
 use std::fmt::{Display, Formatter};
 
-use crate::road_parts::{Buffer, Lane, RoadEdge, E};
+use crate::road_parts::{Designation, Lane, RoadEdge};
 
 struct CrossWay(Lane);
 
@@ -15,11 +15,11 @@ impl CrossWay {
     }
 }
 
-/// A collection of Lanes (and Buffers), travelling in the same direction. A "half street" if you will.
+/// A collection of Lanes, travelling in the same direction. A "half street" if you will.
 #[derive(Clone, Debug, PartialEq)]
 pub struct RoadWay {
     /// Lanes, inside (fast lane) out (slow lanes, footpaths). Directions is almost always forward.
-    pub elements: Vec<E>,
+    pub elements: Vec<Lane>,
     // /// The transverse lines
     // seperators: Vec<Separator>,
     /// How this roadway transitions into the adjacent area on the inside.
@@ -32,13 +32,19 @@ impl RoadWay {
     pub fn lanes(&self) -> Vec<&Lane> {
         self.elements
             .iter()
-            .filter_map(|el| if let E::Lane(l) = el { Some(l) } else { None })
+            .filter_map(|el| {
+                if let Designation::NoTravel = &el.designation {
+                    None
+                } else {
+                    Some(el)
+                }
+            })
             .collect()
     }
 
     // Fluid style setters for builder-like uses.
     fn set_overtaking(mut self, overtaking: bool) -> Self {
-        if let Some(E::Lane(l)) = self.elements.get_mut(0) {
+        if let Some(l) = self.elements.get_mut(0) {
             l.can_enter_from_inside = false;
         }
         self
@@ -52,14 +58,14 @@ impl RoadWay {
     pub fn track() -> Self {
         Self {
             inner: RoadEdge::Sudden,
-            elements: vec![E::Lane(Lane::track())],
+            elements: vec![Lane::track()],
             outer: RoadEdge::Sudden,
         }
     }
     pub fn rural() -> Self {
         Self {
             inner: RoadEdge::Join,
-            elements: vec![E::Lane(Lane::car())],
+            elements: vec![Lane::car()],
             outer: RoadEdge::Sudden,
         }
     }
@@ -67,22 +73,14 @@ impl RoadWay {
         Self {
             // edges: enum_map!{ Inner => RoadEdge::Join, Outer => RoadEdge::Barrier}, // enum-map
             inner: RoadEdge::Join,
-            elements: vec![
-                E::Lane(Lane::car()),
-                E::Buffer(Buffer::verge()),
-                E::Lane(Lane::foot()),
-            ],
+            elements: vec![Lane::car(), Lane::verge(), Lane::foot()],
             outer: RoadEdge::Barrier,
         }
     }
     pub fn arterial() -> Self {
         Self {
             inner: RoadEdge::Join,
-            elements: vec![
-                E::Lane(Lane::car()),
-                E::Buffer(Buffer::verge()),
-                E::Lane(Lane::foot()),
-            ],
+            elements: vec![Lane::car(), Lane::verge(), Lane::foot()],
             outer: RoadEdge::Barrier,
         }
         .set_overtaking(false)

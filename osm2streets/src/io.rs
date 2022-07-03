@@ -9,7 +9,7 @@ use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, Ra
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
 use crate::road_functions::{ControlType, Intersection, RoadWay};
-use crate::road_parts::{Carriage, Designation, Lane, RoadEdge, E};
+use crate::road_parts::{Carriage, Designation, Lane, RoadEdge};
 use crate::units::preamble::*;
 use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
@@ -95,10 +95,10 @@ impl RoadWay {
                 LaneType::Driving | LaneType::Bus => l.dir != dir_on_right,
                 _ => true,
             })
-            .map(|l| E::Lane(l.into()))
+            .map(|l| l.into())
             .collect::<Vec<_>>(); // Any middle buffer would end up at the end here...
-        let right_lanes = lanes.map(|l| E::Lane(l.into())).collect::<Vec<_>>();
-        let half_roads: EnumMap<Side, Vec<E>> = enum_map! {
+        let right_lanes = lanes.map(|l| l.into()).collect::<Vec<_>>();
+        let half_roads: EnumMap<Side, Vec<Lane>> = enum_map! {
             Left => left_lanes.clone(),
             Right => right_lanes.clone(),
         };

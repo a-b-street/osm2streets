@@ -5,7 +5,6 @@ use crate::units::{Meters, RoadSide, TrafficDirections};
 
 use Carriage::*;
 use Designation::*;
-use RoadEdge::*;
 
 /// Some hunk of something hurtling or dawdling down some lane, or being stored somewhere.
 /// From train carriages, to hand drawn carts, to the sack of bones pulling it.
@@ -61,19 +60,10 @@ pub trait CrossSection {
     fn width(&self) -> Meters;
 }
 
-/// A box for elements that make up the roadway. Should I be using a trait? I don't know.
-//TODO merge Lane and Buffer to remove this indirection.
-#[derive(Clone, Debug, PartialEq)]
-pub enum E {
-    Buffer(Buffer),
-    Lane(Lane),
-}
-
 /// What is the nature of the edge of this area of road?
 #[derive(Clone, Debug, PartialEq)]
 pub enum RoadEdge {
     /// Not actually the edge of the road, but a continuation into more road surface.
-    /// Expect Join to a Buffer for railings/bollards.
     Join,
     /// The road just ends and transitions into another groundcover.
     Sudden,
@@ -95,7 +85,6 @@ pub struct Lane {
     pub can_enter_from_outside: bool,
 }
 
-/// These thingos
 impl Lane {
     pub fn track() -> Self {
         Self {
@@ -150,32 +139,25 @@ impl Lane {
             ..Self::car()
         }
     }
-}
 
-/// All interruptions to the Carriageway, medians, painted buffers, verges, ... with width etc.
-/// From painted areas, to curbs with all sorts of features inside.
-#[derive(Clone, Debug, PartialEq)]
-pub struct Buffer {
-    /// How the road joins the buffer. Expect `RoadEdge::Joined` for painted buffers.
-    edge: RoadEdge,
-    width: Meters,
-    // features: Vec<Feature>,
-    // paint_style: Pattern,
-}
-
-impl Buffer {
-    pub fn verge() -> Self {
+    pub fn median() -> Self {
         Self {
-            edge: Kerb,
-            width: 3.0,
+            dir: TrafficDirections::BothWays,
+            designation: Designation::NoTravel,
+            width: 1.0,
+            can_enter_from_inside: false,
+            can_enter_from_outside: false,
         }
     }
-}
-
-pub struct BorderLine {
-    can_enter_from_inside: bool,
-    can_enter_from_outside: bool,
-    // style: LinePattern,
+    pub fn verge() -> Self {
+        Self {
+            dir: TrafficDirections::BothWays,
+            designation: Designation::NoTravel,
+            width: 3.0,
+            can_enter_from_inside: false,
+            can_enter_from_outside: false,
+        }
+    }
 }
 
 impl CrossSection for Lane {
@@ -188,27 +170,5 @@ impl CrossSection for Lane {
 
     fn width(&self) -> Meters {
         self.width
-    }
-}
-
-impl CrossSection for Buffer {
-    fn can_enter_from(&self, _dir: RoadSide) -> bool {
-        false
-    }
-    fn width(&self) -> Meters {
-        self.width
-    }
-}
-
-impl CrossSection for BorderLine {
-    fn can_enter_from(&self, dir: RoadSide) -> bool {
-        match dir {
-            Inside => self.can_enter_from_inside,
-            Outside => self.can_enter_from_outside,
-        }
-    }
-
-    fn width(&self) -> Meters {
-        0.0
     }
 }
