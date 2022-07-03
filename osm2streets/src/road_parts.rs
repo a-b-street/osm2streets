@@ -49,17 +49,6 @@ pub enum Designation {
     Amenity,
 }
 
-pub trait CrossSection {
-    /// Can this buffer/line be crossed (inward, outward) (for changing lanes, overtaking, etc)
-    fn can_enter_from(&self, dir: RoadSide) -> bool;
-
-    /// How wide the created "buffer" area is.
-    ///
-    /// Lines have width=0, because they lay on the lane surface, instead of creating their own
-    /// "buffer" area that you can occupy.
-    fn width(&self) -> Meters;
-}
-
 /// What is the nature of the edge of this area of road?
 #[derive(Clone, Debug, PartialEq)]
 pub enum RoadEdge {
@@ -157,18 +146,5 @@ impl Lane {
             can_enter_from_inside: false,
             can_enter_from_outside: false,
         }
-    }
-}
-
-impl CrossSection for Lane {
-    fn can_enter_from(&self, dir: RoadSide) -> bool {
-        match dir {
-            Inside => self.can_enter_from_inside,
-            Outside => self.can_enter_from_outside,
-        }
-    }
-
-    fn width(&self) -> Meters {
-        self.width
     }
 }
