@@ -5,7 +5,6 @@ use crate::units::{Meters, RoadSide, TrafficDirections};
 
 use Carriage::*;
 use Designation::*;
-use RoadEdge::*;
 
 /// Some hunk of something hurtling or dawdling down some lane, or being stored somewhere.
 /// From train carriages, to hand drawn carts, to the sack of bones pulling it.
@@ -39,41 +38,22 @@ pub enum RoadRanks {
 /// A usage designation for an area, such as a lane.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Designation {
-    /// Think "carriageway" carriages, anything from trucks to mopeds to drawn carts.
-    Travel(Carriage),
-    /// Areas of the road that are explicitly not for (normal) driving.
-    /// Often painted, sometimes w/barriers.
+    /// A part of the road designated for travel.
+    Travel {
+        carriage: Carriage,
+        direction: TrafficDirections,
+    },
+    /// A part of the road designated for parking / "standing".
+    Parking { carriage: Carriage },
+    /// A part of the road that is explicitly not (normally) for carriages.
+    /// E.g. a painted buffer, median or verge.
     NoTravel,
-    /// Loading zones for trucks too, with short stay?
-    Parking(Carriage),
-    /// Verges without parking, those outdoor eating areas, for example.
-    Amenity,
-}
-
-pub trait CrossSection {
-    /// Can this buffer/line be crossed (inward, outward) (for changing lanes, overtaking, etc)
-    fn can_enter_from(&self, dir: RoadSide) -> bool;
-
-    /// How wide the created "buffer" area is.
-    ///
-    /// Lines have width=0, because they lay on the lane surface, instead of creating their own
-    /// "buffer" area that you can occupy.
-    fn width(&self) -> Meters;
-}
-
-/// A box for elements that make up the roadway. Should I be using a trait? I don't know.
-//TODO merge Lane and Buffer to remove this indirection.
-#[derive(Clone, Debug, PartialEq)]
-pub enum E {
-    Buffer(Buffer),
-    Lane(Lane),
 }
 
 /// What is the nature of the edge of this area of road?
 #[derive(Clone, Debug, PartialEq)]
 pub enum RoadEdge {
     /// Not actually the edge of the road, but a continuation into more road surface.
-    /// Expect Join to a Buffer for railings/bollards.
     Join,
     /// The road just ends and transitions into another groundcover.
     Sudden,
@@ -87,128 +67,102 @@ pub enum RoadEdge {
 
 /// A single lane on the carriageway, with designation, width, etc.
 #[derive(Clone, Debug, PartialEq)]
-pub struct Lane {
-    pub dir: TrafficDirections,
+pub struct RoadPart {
     pub designation: Designation,
     pub width: Meters,
     pub can_enter_from_inside: bool,
     pub can_enter_from_outside: bool,
 }
 
-/// These thingos
-impl Lane {
-    pub fn track() -> Self {
+impl RoadPart {
+    pub fn path() -> Self {
         Self {
-            designation: Travel(Cars),
-            width: 4.0,
-            ..Lane::foot()
-        }
-    }
-    pub fn foot() -> Self {
-        Self {
-            dir: TrafficDirections::BothWays,
-            designation: Travel(Foot),
+            designation: Travel {
+                carriage: Foot,
+                direction: TrafficDirections::BothWays,
+            },
             width: 1.5,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
         }
     }
-    pub fn bike() -> Self {
+    pub fn track() -> Self {
         Self {
-            dir: TrafficDirections::Forward,
-            designation: Travel(Bike),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::BothWays,
+            },
+            width: 4.0,
+            can_enter_from_inside: true,
+            can_enter_from_outside: true,
+        }
+    }
+    pub fn bike_lane() -> Self {
+        Self {
+            designation: Travel {
+                carriage: Bike,
+                direction: TrafficDirections::BothWays,
+            },
             width: 1.0,
             can_enter_from_inside: true,
             can_enter_from_outside: true,
         }
     }
-    pub fn service() -> Self {
+    pub fn service_road() -> Self {
         Self {
-            designation: Travel(Cars),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::BothWays, // negotiated lane like foot traffic
+            },
             width: 4.0,
-            ..Lane::foot() // negotiated lane like foot traffic
+            can_enter_from_inside: true,
+            can_enter_from_outside: true,
         }
     }
-    pub fn car() -> Self {
+    pub fn lane() -> Self {
         Self {
-            dir: TrafficDirections::Forward,
-            designation: Travel(Cars),
+            designation: Travel {
+                carriage: Cars,
+                direction: TrafficDirections::Forward,
+            },
             width: 3.5,
             can_enter_from_inside: true, // start by assume overtaking is allowed.
             can_enter_from_outside: true, // Not usually any reason to disallow entry from the outside.
         }
     }
-    pub fn bus() -> Self {
+    pub fn bus_lane() -> Self {
         Self {
-            designation: Travel(Bus),
-            ..Self::car()
+            designation: Travel {
+                carriage: Bus,
+                direction: TrafficDirections::Forward,
+            },
+            ..Self::lane()
         }
     }
-    pub fn truck() -> Self {
+    pub fn truck_lane() -> Self {
         Self {
-            designation: Travel(Truck),
-            ..Self::car()
+            designation: Travel {
+                carriage: Truck,
+                direction: TrafficDirections::Forward,
+            },
+            ..Self::lane()
         }
     }
-}
 
-/// All interruptions to the Carriageway, medians, painted buffers, verges, ... with width etc.
-/// From painted areas, to curbs with all sorts of features inside.
-#[derive(Clone, Debug, PartialEq)]
-pub struct Buffer {
-    /// How the road joins the buffer. Expect `RoadEdge::Joined` for painted buffers.
-    edge: RoadEdge,
-    width: Meters,
-    // features: Vec<Feature>,
-    // paint_style: Pattern,
-}
-
-impl Buffer {
+    pub fn median() -> Self {
+        Self {
+            designation: NoTravel,
+            width: 1.0,
+            can_enter_from_inside: false,
+            can_enter_from_outside: false,
+        }
+    }
     pub fn verge() -> Self {
         Self {
-            edge: Kerb,
+            designation: NoTravel,
             width: 3.0,
+            can_enter_from_inside: false,
+            can_enter_from_outside: false,
         }
-    }
-}
-
-pub struct BorderLine {
-    can_enter_from_inside: bool,
-    can_enter_from_outside: bool,
-    // style: LinePattern,
-}
-
-impl CrossSection for Lane {
-    fn can_enter_from(&self, dir: RoadSide) -> bool {
-        match dir {
-            Inside => self.can_enter_from_inside,
-            Outside => self.can_enter_from_outside,
-        }
-    }
-
-    fn width(&self) -> Meters {
-        self.width
-    }
-}
-
-impl CrossSection for Buffer {
-    fn can_enter_from(&self, _dir: RoadSide) -> bool {
-        false
-    }
-    fn width(&self) -> Meters {
-        self.width
-    }
-}
-
-impl CrossSection for BorderLine {
-    fn can_enter_from(&self, dir: RoadSide) -> bool {
-        match dir {
-            Inside => self.can_enter_from_inside,
-            Outside => self.can_enter_from_outside,
-        }
-    }
-
-    fn width(&self) -> Meters {
-        0.0
     }
 }
