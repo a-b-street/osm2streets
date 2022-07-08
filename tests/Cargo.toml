@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-abstio = { git = "https://github.com/dabreegster/abstreet" }
-abstutil = { git = "https://github.com/dabreegster/abstreet" }
+abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
-convert_osm = { git = "https://github.com/dabreegster/abstreet" }
-raw_map = { git = "https://github.com/dabreegster/abstreet" }
+import_streets = { path = "../import_streets" }
 serde = "1.0.123"
+serde_json = "1.0.61"
+street_network = { path = "../street_network" }
 streets = { path = "../osm2streets" }

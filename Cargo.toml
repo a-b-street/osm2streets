@@ -1,6 +1,12 @@
 [workspace]
 members = [
+    "import_streets",
     "osm2streets",
+    "street_network",
     "tests",
     "tests-web",
 ]
+
+[patch.crates-io]
+# avoid duplicating geo dependency, until next polylabel release
+polylabel = { git = "https://github.com/urschrei/polylabel-rs", rev = "b919b8587b491b9a952a6d4c0670558bfd38e034" }
