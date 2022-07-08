@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "abstio"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
+source = "git+https://github.com/a-b-street/abstreet#890198d78a4855e5466befaa03f440087a7eff38"
 dependencies = [
  "abstutil",
  "anyhow",
@@ -38,7 +38,7 @@ dependencies = [
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
+source = "git+https://github.com/a-b-street/abstreet#890198d78a4855e5466befaa03f440087a7eff38"
 dependencies = [
  "anyhow",
  "bincode",
@@ -103,18 +103,6 @@ name = "arrayvec"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
-
-[[package]]
-name = "as-slice"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45403b49e3954a4b8428a0ac21a4b7afadccf92bfd96273f1a58cd4812496ae0"
-dependencies = [
- "generic-array 0.12.4",
- "generic-array 0.13.3",
- "generic-array 0.14.5",
- "stable_deref_trait",
-]
 
 [[package]]
 name = "atomic-polyfill"
@@ -263,24 +251,6 @@ dependencies = [
  "log",
  "wasm-bindgen",
  "web-sys",
-]
-
-[[package]]
-name = "convert_osm"
-version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
-dependencies = [
- "abstio",
- "abstutil",
- "anyhow",
- "csv",
- "fs-err",
- "geom",
- "kml",
- "log",
- "raw_map",
- "roxmltree",
- "serde",
 ]
 
 [[package]]
@@ -489,52 +459,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "generic-array"
-version = "0.12.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ffdf9f34f1447443d37393cc6c2b8313aebddcd96906caf34e54c68d8e57d7bd"
-dependencies = [
- "typenum",
-]
-
-[[package]]
-name = "generic-array"
-version = "0.13.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f797e67af32588215eaaab8327027ee8e71b9dd0b2b26996aedf20c030fce309"
-dependencies = [
- "typenum",
-]
-
-[[package]]
-name = "generic-array"
-version = "0.14.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd48d33ec7f05fbfa152300fdad764757cbded343c1aa1cff2fbaf4134851803"
-dependencies = [
- "typenum",
- "version_check",
-]
-
-[[package]]
 name = "geo"
-version = "0.20.1"
+version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7e2e3be15682a45e9dfe9a04f84bff275390047204ab22f3c6b2312fcfb9e24"
-dependencies = [
- "geo-types",
- "geographiclib-rs",
- "log",
- "num-traits",
- "robust",
- "rstar 0.8.4",
-]
-
-[[package]]
-name = "geo"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20f1cd8cc66ae5c52a2b9328e3562adde921b203a10d6ea0ac24c349de4c42c4"
+checksum = "f0943f2fcf1e21429a6d3a9842308ee363a6d9018fda475c47c564156d44eef3"
 dependencies = [
  "float_next_after",
  "geo-types",
@@ -542,19 +470,18 @@ dependencies = [
  "log",
  "num-traits",
  "robust",
- "rstar 0.9.3",
+ "rstar",
 ]
 
 [[package]]
 name = "geo-types"
-version = "0.7.5"
+version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5696e8138fbc44f64edc88b423afbe5a8f635df003376b3a57087e61a8ae7b66"
+checksum = "d9805fbfcea97de816e6408e938603241879cc41eea3fba3f84f122f4f6f9c54"
 dependencies = [
  "approx",
  "num-traits",
- "rstar 0.8.4",
- "rstar 0.9.3",
+ "rstar",
 ]
 
 [[package]]
@@ -582,14 +509,14 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
+source = "git+https://github.com/a-b-street/abstreet#890198d78a4855e5466befaa03f440087a7eff38"
 dependencies = [
  "aabb-quadtree",
  "abstutil",
  "anyhow",
  "earcutr",
  "fs-err",
- "geo 0.21.0",
+ "geo",
  "geojson",
  "histogram",
  "instant",
@@ -744,15 +671,6 @@ dependencies = [
 
 [[package]]
 name = "hash32"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4041af86e63ac4298ce40e5cca669066e75b6f1aa3390fe2561ffa5e1d9f4cc"
-dependencies = [
- "byteorder",
-]
-
-[[package]]
-name = "hash32"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0c35f58762feb77d74ebe43bdbc3210f09be9fe6742234d573bacc26ed92b67"
@@ -768,36 +686,15 @@ checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 
 [[package]]
 name = "heapless"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "634bd4d29cbf24424d0a4bfcbf80c6960129dc24424752a7d1d1390607023422"
-dependencies = [
- "as-slice",
- "generic-array 0.14.5",
- "hash32 0.1.1",
- "stable_deref_trait",
-]
-
-[[package]]
-name = "heapless"
 version = "0.7.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a08e755adbc0ad283725b29f4a4883deee15336f372d5f61fae59efec40f983"
 dependencies = [
  "atomic-polyfill",
- "hash32 0.2.1",
+ "hash32",
  "rustc_version 0.4.0",
  "spin 0.9.3",
  "stable_deref_trait",
-]
-
-[[package]]
-name = "heck"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d621efb26863f0e9924c6ac577e8275e5e6b77455db64ffa6c65c904e9e132c"
-dependencies = [
- "unicode-segmentation",
 ]
 
 [[package]]
@@ -904,6 +801,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "import_streets"
+version = "0.1.0"
+dependencies = [
+ "abstutil",
+ "anyhow",
+ "geom",
+ "log",
+ "roxmltree",
+ "street_network",
+]
+
+[[package]]
 name = "include_dir"
 version = "0.6.1-alpha.0"
 source = "git+https://github.com/dabreegster/include_dir?branch=union#0e40ac82424165dac85496283304d3c64e080bb5"
@@ -983,7 +892,7 @@ dependencies = [
 [[package]]
 name = "kml"
 version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
+source = "git+https://github.com/a-b-street/abstreet#890198d78a4855e5466befaa03f440087a7eff38"
 dependencies = [
  "abstio",
  "abstutil",
@@ -1164,12 +1073,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "pdqselect"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ec91767ecc0a0bbe558ce8c9da33c068066c57ecc8bb8477ef8c1ad3ef77c27"
-
-[[package]]
 name = "percent-encoding"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1244,11 +1147,10 @@ dependencies = [
 
 [[package]]
 name = "polylabel"
-version = "2.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eacb1d18495675b5b9a56b92ea542e9ff6ebc98de4a166329ca9a1fbf408f88"
+version = "2.4.0"
+source = "git+https://github.com/urschrei/polylabel-rs?rev=b919b8587b491b9a952a6d4c0670558bfd38e034#b919b8587b491b9a952a6d4c0670558bfd38e034"
 dependencies = [
- "geo 0.20.1",
+ "geo",
  "libc",
  "num-traits",
  "thiserror",
@@ -1300,26 +1202,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1feb54ed693b93a84e14094943b84b7c4eae204c512b7ccb95ab0c66d278ad1"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "raw_map"
-version = "0.1.0"
-source = "git+https://github.com/dabreegster/abstreet#34487a3322b2b0e961ffb2352622b852b5278f54"
-dependencies = [
- "aabb-quadtree",
- "abstio",
- "abstutil",
- "anyhow",
- "geojson",
- "geom",
- "kml",
- "log",
- "petgraph",
- "serde",
- "serde_json",
- "strum",
- "strum_macros",
 ]
 
 [[package]]
@@ -1454,23 +1336,11 @@ dependencies = [
 
 [[package]]
 name = "rstar"
-version = "0.8.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a45c0e8804d37e4d97e55c6f258bc9ad9c5ee7b07437009dd152d764949a27c"
-dependencies = [
- "heapless 0.6.1",
- "num-traits",
- "pdqselect",
- "smallvec",
-]
-
-[[package]]
-name = "rstar"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b40f1bfe5acdab44bc63e6699c28b74f75ec43afb59f3eda01e145aff86a25fa"
 dependencies = [
- "heapless 0.7.13",
+ "heapless",
  "num-traits",
  "smallvec",
 ]
@@ -1656,36 +1526,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
-name = "streets"
+name = "street_network"
 version = "0.1.0"
 dependencies = [
- "abstio",
+ "aabb-quadtree",
  "abstutil",
  "anyhow",
- "convert_osm",
- "enum-map",
- "itertools",
+ "geojson",
+ "geom",
+ "kml",
+ "log",
  "petgraph",
- "raw_map",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
-name = "strum"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaf86bbcfd1fa9670b7a129f64fc0c9fcbbfe4f1bc4210e9e98fe71ffc12cde2"
-
-[[package]]
-name = "strum_macros"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
+name = "streets"
+version = "0.1.0"
 dependencies = [
- "heck",
- "proc-macro2",
- "quote",
- "syn",
+ "abstutil",
+ "anyhow",
+ "enum-map",
+ "import_streets",
+ "itertools",
+ "petgraph",
+ "serde",
+ "street_network",
 ]
 
 [[package]]
@@ -1724,12 +1591,12 @@ dependencies = [
 name = "tests"
 version = "0.1.0"
 dependencies = [
- "abstio",
  "abstutil",
  "anyhow",
- "convert_osm",
- "raw_map",
+ "import_streets",
  "serde",
+ "serde_json",
+ "street_network",
  "streets",
 ]
 
@@ -1871,12 +1738,6 @@ name = "try-lock"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "59547bce71d9c38b83d9c0e92b6066c4253371f15005def0c30d9657f50c7642"
-
-[[package]]
-name = "typenum"
-version = "1.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 
 [[package]]
 name = "unic-bidi"

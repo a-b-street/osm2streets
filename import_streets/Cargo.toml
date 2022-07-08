@@ -1,0 +1,13 @@
+[package]
+name = "import_streets"
+version = "0.1.0"
+authors = ["Dustin Carlino <dabreegster@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+abstutil = { git = "https://github.com/a-b-street/abstreet" }
+anyhow = "1.0.38"
+geom = { git = "https://github.com/a-b-street/abstreet" }
+log = "0.4.14"
+roxmltree = { version = "0.14.0", features=["std"] }
+street_network = { path = "../street_network" }

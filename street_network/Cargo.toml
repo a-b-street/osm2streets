@@ -1,0 +1,17 @@
+[package]
+name = "street_network"
+version = "0.1.0"
+authors = ["Dustin Carlino <dabreegster@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+aabb-quadtree = "0.1.0"
+abstutil = { git = "https://github.com/a-b-street/abstreet" }
+anyhow = "1.0.38"
+geojson = { version = "0.22.2", features = ["geo-types"] }
+geom = { git = "https://github.com/a-b-street/abstreet" }
+kml = { git = "https://github.com/a-b-street/abstreet" }
+log = "0.4.14"
+petgraph = { version = "0.6.0" }
+serde = "1.0.123"
+serde_json = "1.0.61"

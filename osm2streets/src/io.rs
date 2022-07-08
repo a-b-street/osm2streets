@@ -2,9 +2,8 @@ use enum_map::{enum_map, EnumMap};
 use itertools::Itertools;
 use std::collections::HashMap;
 
-use abstio::MapName;
 use abstutil::Timer;
-use raw_map::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawMap, RawRoad};
+use street_network::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, StreetNetwork, RawRoad};
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
@@ -21,35 +20,35 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 /// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer);
 /// println!("{}", net.to_dot());
 pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
-    let driving_side = raw_map::DrivingSide::Right; // TODO
-    let clip = None;
+    let driving_side = street_network::DrivingSide::Right; // TODO
+    let clip_path = None;
 
-    let mut raw_map = convert_osm::convert(
+    let mut street_network = import_streets::osm_to_street_network(
         osm_path.clone(),
-        MapName::new("zz", "osm2streets_test", &abstutil::basename(&osm_path)),
-        clip,
-        convert_osm::Options::default_for_side(driving_side),
-        timer,
-    );
+        clip_path,
+        import_streets::Options::default_for_side(driving_side),
+        timer);
 
-    raw_map.run_all_simplifications(false, false, timer);
+    let consolidate_all_intersections = false;
+    let remove_disconnected = false;
+    street_network.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
 
-    raw_map.into()
+    street_network.into()
 }
 
-impl From<RawMap> for RoadNetwork {
-    fn from(map: RawMap) -> Self {
+impl From<StreetNetwork> for RoadNetwork {
+    fn from(streets: StreetNetwork) -> Self {
         let mut net = RoadNetwork::new();
-        let intersections: HashMap<&osm::NodeID, _> = map
+        let intersections: HashMap<&osm::NodeID, _> = streets
             .intersections
             .iter()
             .map(|(node_id, raw_int)| (node_id, net.add_intersection(Intersection::from(raw_int))))
             .collect();
-        let _road_ways: HashMap<&OriginalRoad, _> = map
+        let _road_ways: HashMap<&OriginalRoad, _> = streets
             .roads
             .iter()
             .map(|(rid, raw_road)| {
-                let mut ways = RoadWay::pair_from(raw_road, map.config.driving_side);
+                let mut ways = RoadWay::pair_from(raw_road, streets.config.driving_side);
                 (
                     rid,
                     (
@@ -80,15 +79,15 @@ impl From<RawMap> for RoadNetwork {
 impl RoadWay {
     pub fn pair_from(
         r: &RawRoad,
-        driving_side: raw_map::DrivingSide,
+        driving_side: street_network::DrivingSide,
     ) -> EnumMap<Direction, Option<RoadWay>> {
         let ds = DrivingSide::from(driving_side);
         let mut lanes = r.lane_specs_ltr.iter();
         // lanes are ltr, so take the left lanes until we see one in the direction of the traffic
         // on the right. Then the right hand lanes will be remaining.
         let dir_on_right = match ds.get_direction(Right) {
-            Forward => raw_map::Direction::Fwd,
-            Backward => raw_map::Direction::Back,
+            Forward => street_network::Direction::Fwd,
+            Backward => street_network::Direction::Back,
         };
         let left_lanes = lanes
             .take_while_ref(|&l| match l.lt {
@@ -134,14 +133,14 @@ impl From<&RawIntersection> for Intersection {
         Intersection {
             // raw_int.intersection_type has some useful info, bit is often misleading.
             t: match raw_int.intersection_type {
-                raw_map::IntersectionType::Border => IntersectionType::MapEdge,
-                raw_map::IntersectionType::TrafficSignal
-                | raw_map::IntersectionType::Construction => IntersectionType::RoadIntersection,
+                street_network::IntersectionType::Border => IntersectionType::MapEdge,
+                street_network::IntersectionType::TrafficSignal
+                | street_network::IntersectionType::Construction => IntersectionType::RoadIntersection,
                 _ => IntersectionType::Unknown,
             },
             control: match raw_int.intersection_type {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
-                raw_map::IntersectionType::TrafficSignal => ControlType::Lights,
+                street_network::IntersectionType::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
         }
@@ -196,11 +195,11 @@ impl From<&LaneSpec> for RoadPart {
     }
 }
 
-impl From<raw_map::DrivingSide> for DrivingSide {
-    fn from(s: raw_map::DrivingSide) -> Self {
+impl From<street_network::DrivingSide> for DrivingSide {
+    fn from(s: street_network::DrivingSide) -> Self {
         match s {
-            raw_map::DrivingSide::Right => RHT,
-            raw_map::DrivingSide::Left => LHT,
+            street_network::DrivingSide::Right => RHT,
+            street_network::DrivingSide::Left => LHT,
         }
     }
 }

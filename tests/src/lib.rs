@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use abstio::MapName;
     use abstutil::Timer;
     use anyhow::{bail, Result};
-    use raw_map::{DrivingSide, RawMap};
+    use street_network::DrivingSide;
     use serde::Deserialize;
+    use std::fs::File;
     use streets::RoadNetwork;
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
@@ -15,7 +15,7 @@ mod tests {
         let mut timer = Timer::new("test osm2streets");
 
         println!("Working on {path}");
-        let cfg: TestCase = abstio::maybe_read_json(format!("{path}/test.json"), &mut timer)?;
+        let cfg: TestCase = serde_json::from_reader(File::open(format!("{path}/test.json"))?)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
         let prior_json = std::fs::read_to_string(format!("{path}/raw_map.json"))
@@ -23,18 +23,24 @@ mod tests {
         let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
-        let mut raw_map = import_rawmap(format!("{path}/input.osm"), cfg.driving_side, &mut timer);
+        let clip_path = None;
+        let mut street_network = import_streets::osm_to_street_network(
+            format!("{path}/input.osm"),
+            clip_path,
+            import_streets::Options::default_for_side(cfg.driving_side),
+            &mut timer);
         let consolidate_all_intersections = false;
         // Our clipped areas are very small; this would remove part of the intended input
         let remove_disconnected = false;
-        raw_map.run_all_simplifications(
+        street_network.run_all_simplifications(
             consolidate_all_intersections,
             remove_disconnected,
             &mut timer,
         );
-        raw_map.save_to_geojson(format!("{path}/raw_map.json"), &mut timer)?;
+        // TODO Change these path names
+        street_network.save_to_geojson(format!("{path}/raw_map.json"), &mut timer)?;
 
-        let road_network: RoadNetwork = raw_map.into();
+        let road_network: RoadNetwork = street_network.into();
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
 
         let current_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))?;
@@ -60,16 +66,5 @@ mod tests {
     struct TestCase {
         driving_side: DrivingSide,
         // There's also a notes field that's ignored
-    }
-
-    fn import_rawmap(osm_path: String, driving_side: DrivingSide, timer: &mut Timer) -> RawMap {
-        let clip = None;
-        convert_osm::convert(
-            osm_path.clone(),
-            MapName::new("zz", "osm2streets_test", &abstutil::basename(&osm_path)),
-            clip,
-            convert_osm::Options::default_for_side(driving_side),
-            timer,
-        )
     }
 }
