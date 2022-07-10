@@ -8,32 +8,32 @@ use crate::{osm, IntersectionType, OriginalRoad, StreetNetwork};
 /// 1) Anything tagged in OSM
 /// 2) Anything a temporary local merge_osm_ways.json file
 /// 3) If `consolidate_all` is true, an experimental distance-based heuristic
-pub fn find_short_roads(map: &mut StreetNetwork, consolidate_all: bool) -> Vec<OriginalRoad> {
+pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> Vec<OriginalRoad> {
     let mut roads = Vec::new();
-    for (id, road) in &map.roads {
+    for (id, road) in &streets.roads {
         if road.osm_tags.is("junction", "intersection") {
             roads.push(*id);
             continue;
         }
 
-        if consolidate_all && distance_heuristic(*id, map) {
+        if consolidate_all && distance_heuristic(*id, streets) {
             roads.push(*id);
         }
     }
 
     // Gradually rolling out
-    if map.config.find_dog_legs_experiment {
-        roads.extend(map.find_dog_legs());
+    if streets.config.find_dog_legs_experiment {
+        roads.extend(streets.find_dog_legs());
     }
     // Use this to quickly test overrides to some ways before upstreaming in OSM. Since these IDs
     // might be based on already merged roads, do these last.
-    roads.extend(map.config.merge_osm_ways.clone());
+    roads.extend(streets.config.merge_osm_ways.clone());
 
-    map.mark_short_roads(roads)
+    streets.mark_short_roads(roads)
 }
 
-fn distance_heuristic(id: OriginalRoad, map: &StreetNetwork) -> bool {
-    let road_length = if let Ok(pl) = map.trimmed_road_geometry(id) {
+fn distance_heuristic(id: OriginalRoad, streets: &StreetNetwork) -> bool {
+    let road_length = if let Ok(pl) = streets.trimmed_road_geometry(id) {
         pl.length()
     } else {
         // The road or something near it collapsed down into a single point or something. This can
@@ -150,7 +150,7 @@ impl StreetNetwork {
 }
 
 // TODO Dedupe with find_divided_highways logic in parking_mapper
-fn dual_carriageway_split(map: &StreetNetwork, roads: Vec<OriginalRoad>) -> bool {
+fn dual_carriageway_split(streets: &StreetNetwork, roads: Vec<OriginalRoad>) -> bool {
     assert_eq!(roads.len(), 3);
     // Look for one-way roads with the same name
     for (r1, r2) in [
@@ -158,8 +158,8 @@ fn dual_carriageway_split(map: &StreetNetwork, roads: Vec<OriginalRoad>) -> bool
         (roads[0], roads[2]),
         (roads[1], roads[2]),
     ] {
-        let road1 = &map.roads[&r1];
-        let road2 = &map.roads[&r2];
+        let road1 = &streets.roads[&r1];
+        let road2 = &streets.roads[&r2];
         if road1.oneway_for_driving().is_some()
             && road2.oneway_for_driving().is_some()
             && road1.osm_tags.get(osm::NAME) == road2.osm_tags.get(osm::NAME)

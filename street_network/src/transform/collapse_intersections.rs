@@ -10,14 +10,14 @@ use crate::{osm, IntersectionType, OriginalRoad, StreetNetwork};
 /// Collapse degenerate intersections:
 /// - between two cycleways
 /// - when the lane specs match and only "unimportant" OSM tags differ
-pub fn collapse(raw: &mut StreetNetwork) {
+pub fn collapse(streets: &mut StreetNetwork) {
     let mut merge: Vec<NodeID> = Vec::new();
-    for id in raw.intersections.keys() {
-        let roads = raw.roads_per_intersection(*id);
+    for id in streets.intersections.keys() {
+        let roads = streets.roads_per_intersection(*id);
         if roads.len() != 2 {
             continue;
         }
-        match should_collapse(roads[0], roads[1], raw) {
+        match should_collapse(roads[0], roads[1], streets) {
             Ok(()) => {
                 merge.push(*id);
             }
@@ -28,16 +28,16 @@ pub fn collapse(raw: &mut StreetNetwork) {
     }
 
     for i in merge {
-        collapse_intersection(raw, i);
+        collapse_intersection(streets, i);
     }
 
     // It's possible we need to do this in a fixed-point until there are no changes, but meh.
     // Results look good so far.
 }
 
-fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, raw: &StreetNetwork) -> Result<()> {
-    let road1 = &raw.roads[&r1];
-    let road2 = &raw.roads[&r2];
+fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) -> Result<()> {
+    let road1 = &streets.roads[&r1];
+    let road2 = &streets.roads[&r2];
 
     // Don't attempt to merge roads with these.
     if !road1.turn_restrictions.is_empty() || !road1.complicated_turn_restrictions.is_empty() {
@@ -135,15 +135,15 @@ fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, raw: &StreetNetwork) -> R
     Ok(())
 }
 
-pub fn collapse_intersection(raw: &mut StreetNetwork, i: NodeID) {
-    let roads = raw.roads_per_intersection(i);
+pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
+    let roads = streets.roads_per_intersection(i);
     assert_eq!(roads.len(), 2);
     let mut r1 = roads[0];
     let mut r2 = roads[1];
 
     // We'll keep r1's way ID, so it's a little more convenient for debugging to guarantee r1 is
     // the longer piece.
-    if raw.roads[&r1].length() < raw.roads[&r2].length() {
+    if streets.roads[&r1].length() < streets.roads[&r2].length() {
         std::mem::swap(&mut r1, &mut r2);
     }
 
@@ -159,11 +159,11 @@ pub fn collapse_intersection(raw: &mut StreetNetwork, i: NodeID) {
     }
 
     info!("Collapsing degenerate {}", i);
-    raw.intersections.remove(&i).unwrap();
+    streets.intersections.remove(&i).unwrap();
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
-    let mut new_road = raw.roads.remove(&r1).unwrap();
-    let mut road2 = raw.roads.remove(&r2).unwrap();
+    let mut new_road = streets.roads.remove(&r1).unwrap();
+    let mut road2 = streets.roads.remove(&r2).unwrap();
 
     // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
     let (new_i1, new_i2) = if r1.i2 == r2.i1 {
@@ -197,11 +197,11 @@ pub fn collapse_intersection(raw: &mut StreetNetwork, i: NodeID) {
         i1: new_i1,
         i2: new_i2,
     };
-    raw.roads.insert(new_r1, new_road);
+    streets.roads.insert(new_r1, new_road);
 
     // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
     let rewrite = |x: &OriginalRoad| *x == r1 || *x == r2;
-    for road in raw.roads.values_mut() {
+    for road in streets.roads.values_mut() {
         for (_, id) in &mut road.turn_restrictions {
             if rewrite(id) {
                 *id = new_r1;
@@ -226,15 +226,15 @@ const SHORT_THRESHOLD: Distance = Distance::const_meters(30.0);
 /// "stubs." Trim those.
 ///
 /// Also do the same thing for extremely short dead-end service roads.
-pub fn trim_deadends(raw: &mut StreetNetwork) {
+pub fn trim_deadends(streets: &mut StreetNetwork) {
     let mut remove_roads = BTreeSet::new();
     let mut remove_intersections = BTreeSet::new();
-    for (id, i) in &raw.intersections {
-        let roads = raw.roads_per_intersection(*id);
+    for (id, i) in &streets.intersections {
+        let roads = streets.roads_per_intersection(*id);
         if roads.len() != 1 || i.intersection_type == IntersectionType::Border {
             continue;
         }
-        let road = &raw.roads[&roads[0]];
+        let road = &streets.roads[&roads[0]];
         if road.length() < SHORT_THRESHOLD
             && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
         {
@@ -244,10 +244,10 @@ pub fn trim_deadends(raw: &mut StreetNetwork) {
     }
 
     for r in remove_roads {
-        raw.roads.remove(&r).unwrap();
+        streets.roads.remove(&r).unwrap();
     }
     for i in remove_intersections {
-        raw.delete_intersection(i);
+        streets.delete_intersection(i);
     }
 
     // It's possible we need to do this in a fixed-point until there are no changes, but meh.

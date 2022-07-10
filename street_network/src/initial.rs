@@ -28,8 +28,8 @@ pub struct Road {
 }
 
 impl Road {
-    pub fn new(map: &StreetNetwork, id: OriginalRoad) -> Road {
-        let road = &map.roads[&id];
+    pub fn new(streets: &StreetNetwork, id: OriginalRoad) -> Road {
+        let road = &streets.roads[&id];
         let (trimmed_center_pts, total_width) = road.untrimmed_road_geometry();
 
         Road {
@@ -62,14 +62,14 @@ pub struct Intersection {
 }
 
 impl InitialMap {
-    pub fn new(raw: &StreetNetwork, bounds: &Bounds, timer: &mut Timer) -> InitialMap {
+    pub fn new(streets: &StreetNetwork, bounds: &Bounds, timer: &mut Timer) -> InitialMap {
         let mut m = InitialMap {
             roads: BTreeMap::new(),
             intersections: BTreeMap::new(),
             bounds: *bounds,
         };
 
-        for (id, i) in &raw.intersections {
+        for (id, i) in &streets.intersections {
             m.intersections.insert(
                 *id,
                 Intersection {
@@ -83,7 +83,7 @@ impl InitialMap {
             );
         }
 
-        for (id, road) in &raw.roads {
+        for (id, road) in &streets.roads {
             let id = *id;
             // TODO Neither of these should still be happening. If they are, flush out the problem
             if id.i1 == id.i2 {
@@ -96,7 +96,7 @@ impl InitialMap {
             m.intersections.get_mut(&id.i1).unwrap().roads.insert(id);
             m.intersections.get_mut(&id.i2).unwrap().roads.insert(id);
 
-            m.roads.insert(id, Road::new(raw, id));
+            m.roads.insert(id, Road::new(streets, id));
         }
 
         let mut remove_dangling_nodes = Vec::new();
@@ -111,7 +111,7 @@ impl InitialMap {
             match crate::intersection_polygon(
                 i.id,
                 input_roads,
-                &raw.intersections[&i.id].trim_roads_for_merging,
+                &streets.intersections[&i.id].trim_roads_for_merging,
             ) {
                 Ok(results) => {
                     i.polygon = results.intersection_polygon;
@@ -176,7 +176,7 @@ impl InitialMap {
             let results = crate::intersection_polygon(
                 i.id,
                 input_roads,
-                &raw.intersections[&i.id].trim_roads_for_merging,
+                &streets.intersections[&i.id].trim_roads_for_merging,
             )
             .unwrap();
             i.polygon = results.intersection_polygon;

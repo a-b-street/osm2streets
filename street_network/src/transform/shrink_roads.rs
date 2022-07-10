@@ -7,13 +7,13 @@ use crate::{osm, StreetNetwork};
 
 /// Look for roads that physically overlap, but aren't connected by an intersection. Shrink their
 /// width.
-pub fn shrink(raw: &mut StreetNetwork, timer: &mut Timer) {
+pub fn shrink(streets: &mut StreetNetwork, timer: &mut Timer) {
     let mut road_centers = HashMap::new();
     let mut road_polygons = HashMap::new();
     let mut overlapping = Vec::new();
-    let mut quadtree = QuadTree::default(raw.gps_bounds.to_bounds().as_bbox());
-    timer.start_iter("find overlapping roads", raw.roads.len());
-    for (id, road) in &raw.roads {
+    let mut quadtree = QuadTree::default(streets.gps_bounds.to_bounds().as_bbox());
+    timer.start_iter("find overlapping roads", streets.roads.len());
+    for (id, road) in &streets.roads {
         timer.next();
         if road.is_light_rail() {
             continue;
@@ -29,7 +29,7 @@ pub fn shrink(raw: &mut StreetNetwork, timer: &mut Timer) {
         // Any conflicts with existing?
         for (other_id, _, _) in quadtree.query(polygon.get_bounds().as_bbox()) {
             // Only dual carriageways
-            if road.osm_tags.get(osm::NAME) != raw.roads[other_id].osm_tags.get(osm::NAME) {
+            if road.osm_tags.get(osm::NAME) != streets.roads[other_id].osm_tags.get(osm::NAME) {
                 continue;
             }
             if !id.has_common_endpoint(*other_id) && polygon.intersects(&road_polygons[other_id]) {
@@ -61,7 +61,7 @@ pub fn shrink(raw: &mut StreetNetwork, timer: &mut Timer) {
             // Anything derived from lane_specs_ltr will need to be changed. When we store
             // untrimmed and trimmed center points instead of calculating them dynamically, that'll
             // have to happen here.
-            for spec in &mut raw.roads.get_mut(&id).unwrap().lane_specs_ltr {
+            for spec in &mut streets.roads.get_mut(&id).unwrap().lane_specs_ltr {
                 spec.width *= 0.5;
             }
         }

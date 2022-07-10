@@ -17,7 +17,7 @@ pub mod extract;
 pub mod osm_reader;
 pub mod split_ways;
 
-/// Configures the creation of a RawMap from OSM and other input data.
+/// Configures the creation of a `RawMap` from OSM and other input data.
 /// TODO Layering is now strange. Some of these are options are needed just for StreetNetwork, but
 /// many are the next level up and just for A/B Street's convert_osm.
 pub struct Options {

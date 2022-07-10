@@ -9,13 +9,13 @@ use crate::{Direction, OriginalRoad, StreetNetwork};
 const DEBUG_OUTPUT: bool = true;
 
 /// Snap separately mapped cycleways to main roads.
-pub fn snap_cycleways(map: &mut StreetNetwork) {
+pub fn snap_cycleways(streets: &mut StreetNetwork) {
     if true {
         return;
     }
 
     let mut cycleways = Vec::new();
-    for (id, road) in &map.roads {
+    for (id, road) in &streets.roads {
         // Because there are so many false positives with snapping, only start with cycleways
         // explicitly tagged with
         // https://wiki.openstreetmap.org/wiki/Proposed_features/cycleway:separation
@@ -34,7 +34,7 @@ pub fn snap_cycleways(map: &mut StreetNetwork) {
     }
 
     let mut road_edges: HashMap<(OriginalRoad, Direction), PolyLine> = HashMap::new();
-    for (id, r) in &map.roads {
+    for (id, r) in &streets.roads {
         if r.is_light_rail() || r.is_footway() || r.is_service() || r.is_cycleway() {
             continue;
         }
@@ -49,7 +49,7 @@ pub fn snap_cycleways(map: &mut StreetNetwork) {
         );
     }
 
-    let matches = v1(map, &cycleways, &road_edges);
+    let matches = v1(streets, &cycleways, &road_edges);
 
     // Go apply the matches!
     let mut snapped_ids = Vec::new();
@@ -57,7 +57,7 @@ pub fn snap_cycleways(map: &mut StreetNetwork) {
         snapped_ids.push(cycleway_id);
 
         // Remove the separate cycleway
-        let deleted_cycleway = map.roads.remove(&cycleway_id).unwrap();
+        let deleted_cycleway = streets.roads.remove(&cycleway_id).unwrap();
 
         // Add it as an attribute to the roads instead
         for (road_id, dir) in roads {
@@ -66,7 +66,7 @@ pub fn snap_cycleways(map: &mut StreetNetwork) {
             } else {
                 "left"
             };
-            let tags = &mut map.roads.get_mut(&road_id).unwrap().osm_tags;
+            let tags = &mut streets.roads.get_mut(&road_id).unwrap().osm_tags;
             tags.insert(format!("cycleway:{}", dir), "track");
             if !deleted_cycleway.osm_tags.is("oneway", "yes") {
                 tags.insert(format!("cycleway:{}:oneway", dir), "no");
@@ -102,8 +102,8 @@ pub fn snap_cycleways(map: &mut StreetNetwork) {
         // Do all of these in one batch after snapping everything. Otherwise, some cycleway IDs
         // totally disappear.
         for i in [r.i1, r.i2] {
-            if map.roads_per_intersection(i).len() == 2 {
-                crate::transform::collapse_intersections::collapse_intersection(map, i);
+            if streets.roads_per_intersection(i).len() == 2 {
+                crate::transform::collapse_intersections::collapse_intersection(streets, i);
             }
         }
     }
@@ -123,14 +123,14 @@ struct Cycleway {
 // cycleways hit.
 // TODO Or look for cycleway polygons strictly overlapping thick road polygons
 fn v1(
-    map: &StreetNetwork,
+    streets: &StreetNetwork,
     cycleways: &[Cycleway],
     road_edges: &HashMap<(OriginalRoad, Direction), PolyLine>,
 ) -> MultiMap<OriginalRoad, (OriginalRoad, Direction)> {
     let mut matches = MultiMap::new();
 
     let mut closest: FindClosest<(OriginalRoad, Direction)> =
-        FindClosest::new(&map.gps_bounds.to_bounds());
+        FindClosest::new(&streets.gps_bounds.to_bounds());
     for (id, pl) in road_edges {
         closest.add(*id, pl.points());
     }
@@ -160,7 +160,7 @@ fn v1(
             let mut matched = None;
             for (road_pair, _, _) in closest.all_close_pts(pt, cycleway_half_width) {
                 // A cycleway can't snap to a road at a different height
-                if map.roads[&road_pair.0].osm_tags.get("layer") != cycleway.layer.as_ref() {
+                if streets.roads[&road_pair.0].osm_tags.get("layer") != cycleway.layer.as_ref() {
                     continue;
                 }
 
@@ -184,7 +184,7 @@ fn v1(
                 matches_here.push(road_pair);
             }
             debug_shapes.push(ExtraShape {
-                points: map.gps_bounds.convert_back(&perp_line.points()),
+                points: streets.gps_bounds.convert_back(&perp_line.points()),
                 attributes,
             });
 
@@ -214,7 +214,7 @@ fn v1(
                 matches.get(cycleway.id).len().to_string(),
             );
             debug_shapes.push(ExtraShape {
-                points: map.gps_bounds.convert_back(cycleway.center.points()),
+                points: streets.gps_bounds.convert_back(cycleway.center.points()),
                 attributes,
             });
         }

@@ -192,9 +192,9 @@ impl StreetNetwork {
 }
 
 /// Merge all roads marked with `junction=intersection`
-pub fn merge_all_junctions(map: &mut StreetNetwork) {
+pub fn merge_all_junctions(streets: &mut StreetNetwork) {
     let mut queue: VecDeque<OriginalRoad> = VecDeque::new();
-    for (id, road) in &map.roads {
+    for (id, road) in &streets.roads {
         if road.osm_tags.is("junction", "intersection") {
             queue.push_back(*id);
         }
@@ -204,16 +204,16 @@ pub fn merge_all_junctions(map: &mut StreetNetwork) {
         let id = queue.pop_front().unwrap();
 
         // The road might've been deleted by a previous merge_short_road call
-        if !map.roads.contains_key(&id) {
+        if !streets.roads.contains_key(&id) {
             continue;
         }
 
-        match map.merge_short_road(id) {
+        match streets.merge_short_road(id) {
             Ok((_, _, _, new_roads)) => {
                 // Some road IDs still in the queue might have changed, so check the new_roads for
                 // anything we should try to merge
                 for r in new_roads {
-                    if map.roads[&r].osm_tags.is("junction", "intersection") {
+                    if streets.roads[&r].osm_tags.is("junction", "intersection") {
                         queue.push_back(r);
                     }
                 }

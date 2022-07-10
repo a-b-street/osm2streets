@@ -6,8 +6,8 @@ use crate::{osm, OriginalRoad, StreetNetwork};
 /// (https://wiki.openstreetmap.org/wiki/Tag:dual_carriageway%3Dyes), but we can also apply simple
 /// heuristics to guess this.
 #[allow(unused)]
-pub fn connects_dual_carriageway(map: &StreetNetwork, id: &OriginalRoad) -> bool {
-    let connectors_angle = map.roads[id].angle();
+pub fn connects_dual_carriageway(streets: &StreetNetwork, id: &OriginalRoad) -> bool {
+    let connectors_angle = streets.roads[id].angle();
     // There are false positives like https://www.openstreetmap.org/way/4636259 when we're looking
     // at a segment along a marked dual carriageway. Filter out by requiring the intersecting dual
     // carriageways to differ by a minimum angle.
@@ -15,8 +15,8 @@ pub fn connects_dual_carriageway(map: &StreetNetwork, id: &OriginalRoad) -> bool
 
     let mut i1_dual_carriageway = false;
     let mut oneway_names_i1: BTreeSet<String> = BTreeSet::new();
-    for r in map.roads_per_intersection(id.i1) {
-        let road = &map.roads[&r];
+    for r in streets.roads_per_intersection(id.i1) {
+        let road = &streets.roads[&r];
         if r == *id || connectors_angle.approx_eq(road.angle(), within_degrees) {
             continue;
         }
@@ -32,8 +32,8 @@ pub fn connects_dual_carriageway(map: &StreetNetwork, id: &OriginalRoad) -> bool
 
     let mut i2_dual_carriageway = false;
     let mut oneway_names_i2: BTreeSet<String> = BTreeSet::new();
-    for r in map.roads_per_intersection(id.i2) {
-        let road = &map.roads[&r];
+    for r in streets.roads_per_intersection(id.i2) {
+        let road = &streets.roads[&r];
         if r == *id || connectors_angle.approx_eq(road.angle(), within_degrees) {
             continue;
         }

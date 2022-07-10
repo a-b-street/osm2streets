@@ -3,7 +3,9 @@ use itertools::Itertools;
 use std::collections::HashMap;
 
 use abstutil::Timer;
-use street_network::{osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, StreetNetwork, RawRoad};
+use street_network::{
+    osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork,
+};
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
@@ -27,11 +29,16 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
         osm_path.clone(),
         clip_path,
         import_streets::Options::default_for_side(driving_side),
-        timer);
+        timer,
+    );
 
     let consolidate_all_intersections = false;
     let remove_disconnected = false;
-    street_network.run_all_simplifications(consolidate_all_intersections, remove_disconnected, timer);
+    street_network.run_all_simplifications(
+        consolidate_all_intersections,
+        remove_disconnected,
+        timer,
+    );
 
     street_network.into()
 }
@@ -135,7 +142,9 @@ impl From<&RawIntersection> for Intersection {
             t: match raw_int.intersection_type {
                 street_network::IntersectionType::Border => IntersectionType::MapEdge,
                 street_network::IntersectionType::TrafficSignal
-                | street_network::IntersectionType::Construction => IntersectionType::RoadIntersection,
+                | street_network::IntersectionType::Construction => {
+                    IntersectionType::RoadIntersection
+                }
                 _ => IntersectionType::Unknown,
             },
             control: match raw_int.intersection_type {
