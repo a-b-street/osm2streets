@@ -18,6 +18,8 @@ export const makeOpenTest = (map) => async (name) => {
     const networkLayer = await makeDotLayer(await network, { bounds })
     map.addLayer(networkLayer);
 
+    L.control.layers({}, {"Geometry": rawMapLayer, "OSM input": inputLayer, "Graph": networkLayer}).addTo(map);
+
     // TODO store a reference to the layers so they can be cleaned up when wanted.
 }
 
