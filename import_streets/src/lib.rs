@@ -89,9 +89,9 @@ pub enum PrivateOffstreetParking {
     // TODO Based on the number of residents?
 }
 
-/// Create a `StreetNetwork` from an `.osm.xml` file
+/// Create a `StreetNetwork` from the contents of an `.osm.xml` file
 pub fn osm_to_street_network(
-    osm_input_path: String,
+    osm_xml_input: &str,
     clip_path: Option<String>,
     opts: Options,
     timer: &mut Timer,
@@ -107,7 +107,7 @@ pub fn osm_to_street_network(
         streets.gps_bounds = gps_bounds;
     }
 
-    let extract = extract_osm(&mut streets, osm_input_path, clip_path, &opts, timer);
+    let extract = extract_osm(&mut streets, osm_xml_input, clip_path, &opts, timer);
     let split_output = split_ways::split_up_roads(&mut streets, extract, timer);
     clip::clip_map(&mut streets, timer);
 
@@ -135,12 +135,12 @@ pub fn osm_to_street_network(
 
 fn extract_osm(
     streets: &mut StreetNetwork,
-    osm_input_path: String,
+    osm_xml_input: &str,
     clip_path: Option<String>,
     opts: &Options,
     timer: &mut Timer,
 ) -> OsmExtract {
-    let doc = crate::osm_reader::read(&osm_input_path, &streets.gps_bounds, timer).unwrap();
+    let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer).unwrap();
 
     if clip_path.is_none() {
         // Use the boundary from .osm.
