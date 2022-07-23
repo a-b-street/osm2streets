@@ -12,7 +12,7 @@ pub struct Input {
 pub fn import_osm(val: &JsValue) -> String {
     set_panic_hook();
 
-    let input: Input = val.into_serde().unwrap();
+    let _input: Input = val.into_serde().unwrap();
 
     "placeholder".to_string()
 }

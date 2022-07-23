@@ -5,7 +5,6 @@ members = [
     "osm2streets-js",
     "street_network",
     "tests",
-    "tests-web",
 ]
 
 [patch.crates-io]
