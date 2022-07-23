@@ -26,7 +26,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
     let clip_path = None;
 
     let mut street_network = import_streets::osm_to_street_network(
-        osm_path.clone(),
+        &std::fs::read_to_string(osm_path).unwrap(),
         clip_path,
         import_streets::Options::default_for_side(driving_side),
         timer,
