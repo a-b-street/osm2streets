@@ -30,9 +30,8 @@ pub fn import_osm(osm_xml_input: &str, val: &JsValue) -> String {
         &mut timer,
     );
 
-    // TODO Return GeoJSON, dot, etc. Or even better, the object, and expose methods on that
-
-    "placeholder".to_string()
+    // TODO Return the object and call methods on that instead
+    street_network.to_geojson(&mut timer).unwrap()
 }
 
 fn set_panic_hook() {
