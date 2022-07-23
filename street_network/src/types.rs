@@ -125,11 +125,12 @@ pub enum DrivingSide {
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum IntersectionType {
-    StopSign,
-    TrafficSignal,
-    Border,
-    Construction,
+pub enum ControlType {
+    Uncontrolled,  // Pretty sure this is a term that implies right of way rules somewhere.
+    StopSign,      // Signed is a good standard of safety
+    TrafficSignal, // Signalled is better.
+    Border,        //TODO move to InterruptionType
+    Construction,  // Are these treated as "closed"?
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]

@@ -3,7 +3,7 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use street_network::{
-    osm, Direction, IntersectionType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork,
+    osm, Direction, ControlType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -64,9 +64,9 @@ pub fn split_up_roads(
             RawIntersection::new(
                 pt.to_pt2d(),
                 if input.traffic_signals.remove(pt).is_some() {
-                    IntersectionType::TrafficSignal
+                    ControlType::TrafficSignal
                 } else {
-                    IntersectionType::StopSign
+                    ControlType::StopSign
                 },
             ),
         );
@@ -76,7 +76,7 @@ pub fn split_up_roads(
     for (id, point) in roundabout_centers {
         streets
             .intersections
-            .insert(id, RawIntersection::new(point, IntersectionType::StopSign));
+            .insert(id, RawIntersection::new(point, ControlType::StopSign));
     }
 
     let mut pt_to_road: HashMap<HashablePt2D, OriginalRoad> = HashMap::new();
@@ -218,8 +218,8 @@ pub fn split_up_roads(
             // Example: https://www.openstreetmap.org/node/26734224
             if !streets.roads[r].osm_tags.is(osm::HIGHWAY, "construction") {
                 let i = if dir == Direction::Fwd { r.i2 } else { r.i1 };
-                streets.intersections.get_mut(&i).unwrap().intersection_type =
-                    IntersectionType::TrafficSignal;
+                streets.intersections.get_mut(&i).unwrap().control =
+                    ControlType::TrafficSignal;
             }
         }
     }
