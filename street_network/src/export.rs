@@ -11,6 +11,15 @@ use crate::StreetNetwork;
 impl StreetNetwork {
     /// Assumes `run_all_simplifications` has been called if desired
     pub fn save_to_geojson(&self, output_path: String, timer: &mut Timer) -> Result<()> {
+        let json_output = self.to_geojson(timer)?;
+        std::fs::create_dir_all(Path::new(&output_path).parent().unwrap())?;
+        let mut file = File::create(output_path)?;
+        file.write_all(json_output.as_bytes())?;
+        Ok(())
+    }
+
+    /// Assumes `run_all_simplifications` has been called if desired
+    pub fn to_geojson(&self, timer: &mut Timer) -> Result<String> {
         // TODO InitialMap is going away very soon, but we still need it
         let initial_map =
             crate::initial::InitialMap::new(self, &self.gps_bounds.to_bounds(), timer);
@@ -49,9 +58,7 @@ impl StreetNetwork {
         }
 
         let obj = geom::geometries_with_properties_to_geojson(pairs);
-        std::fs::create_dir_all(Path::new(&output_path).parent().unwrap())?;
-        let mut file = File::create(output_path)?;
-        file.write_all(serde_json::to_string_pretty(&obj)?.as_bytes())?;
-        Ok(())
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
     }
 }
