@@ -1,8 +1,7 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 use abstutil::MultiMap;
 use geom::{Distance, FindClosest, Line, PolyLine};
-use kml::{ExtraShape, ExtraShapes};
 
 use crate::{Direction, OriginalRoad, StreetNetwork};
 
@@ -175,18 +174,20 @@ fn v1(
                     }
                 }
             }
-            let mut attributes = BTreeMap::new();
+            let mut attributes = serde_json::Map::new();
             if let Some(road_pair) = matched {
                 attributes.insert(
                     "hit".to_string(),
-                    format!("way {}, {}", road_pair.0.osm_way_id, road_pair.1),
+                    format!("way {}, {}", road_pair.0.osm_way_id, road_pair.1).into(),
                 );
                 matches_here.push(road_pair);
             }
-            debug_shapes.push(ExtraShape {
-                points: streets.gps_bounds.convert_back(&perp_line.points()),
+            debug_shapes.push((
+                perp_line
+                    .to_polyline()
+                    .to_geojson(Some(&streets.gps_bounds)),
                 attributes,
-            });
+            ));
 
             if dist == cycleway.center.length() {
                 break;
@@ -207,23 +208,20 @@ fn v1(
                 matches.insert(cycleway.id, pair);
             }
 
-            let mut attributes = BTreeMap::new();
-            attributes.insert("pct_snapped".to_string(), pct_snapped.to_string());
+            let mut attributes = serde_json::Map::new();
+            attributes.insert("pct_snapped".to_string(), pct_snapped.into());
             attributes.insert(
                 "num_segments_modified".to_string(),
-                matches.get(cycleway.id).len().to_string(),
+                matches.get(cycleway.id).len().into(),
             );
-            debug_shapes.push(ExtraShape {
-                points: streets.gps_bounds.convert_back(cycleway.center.points()),
+            debug_shapes.push((
+                cycleway.center.to_geojson(Some(&streets.gps_bounds)),
                 attributes,
-            });
+            ));
         }
     }
 
-    // TODO Consider writing this output for debugging
-    let _debug_shapes = ExtraShapes {
-        shapes: debug_shapes,
-    };
+    // TODO Consider writing this output for debugging (with geometries_with_properties_to_geojson)
 
     matches
 }

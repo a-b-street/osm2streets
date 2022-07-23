@@ -9,7 +9,6 @@ aabb-quadtree = "0.1.0"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 geom = { git = "https://github.com/a-b-street/abstreet" }
-kml = { git = "https://github.com/a-b-street/abstreet" }
 log = "0.4.14"
 petgraph = { version = "0.6.0" }
 serde = "1.0.123"
