@@ -29,3 +29,11 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap",
 }).addTo(map);
 useMap(map);
+
+// TODO Should this live elsewhere?
+// TODO Is it OK to just assume the button exists when this runs?
+document.getElementById("import-view").onclick = function importCurrentView() {
+	if (map.getZoom() < 15) {
+		window.alert("Zoom in more to import");
+	}
+}
