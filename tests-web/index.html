@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>street explorer</title>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
     <link data-trunk rel="css" href="assets/css/reset.css" />
     <link data-trunk rel="css" href="assets/css/main.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin
+    ></script>
 
-    <script src="https://unpkg.com/d3@7.4.4/dist/d3.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@hpcc-js/wasm@1.12.8/dist/index.min.js" crossorigin></script>
-    <script src="https://unpkg.com/d3-graphviz@4.1.1/build/d3-graphviz.js" crossorigin></script>
+    <script
+      src="https://unpkg.com/d3@7.4.4/dist/d3.min.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/@hpcc-js/wasm@1.12.8/dist/index.min.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/d3-graphviz@4.1.1/build/d3-graphviz.js"
+      crossorigin
+    ></script>
 
     <link data-trunk rel="rust" href="../osm2streets-js/Cargo.toml" />
     <link data-trunk rel="copy-dir" href="./assets/js" />
@@ -24,13 +41,13 @@
     <script type="module" src="js/main.js"></script>
 
     <link data-trunk rel="copy-dir" href="../tests/src" />
-</head>
-<body>
-	<menu>
-		<h1>StreetExplorer</h1>
-		<ul id="test-list" />
-	</menu>
-	<section id="road-network"></section>
-	<div id="map"></div>
-</body>
+  </head>
+  <body>
+    <menu>
+      <h1>StreetExplorer</h1>
+      <ul id="test-list" />
+    </menu>
+    <section id="road-network"></section>
+    <div id="map"></div>
+  </body>
 </html>
