@@ -25,7 +25,7 @@ mod tests {
 
         let clip_path = None;
         let mut street_network = import_streets::osm_to_street_network(
-            format!("{path}/input.osm"),
+            &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_path,
             import_streets::Options::default_for_side(cfg.driving_side),
             &mut timer,

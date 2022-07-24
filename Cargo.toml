@@ -2,9 +2,9 @@
 members = [
     "import_streets",
     "osm2streets",
+    "osm2streets-js",
     "street_network",
     "tests",
-    "tests-web",
 ]
 
 [patch.crates-io]
