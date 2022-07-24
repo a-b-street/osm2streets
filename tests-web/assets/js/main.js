@@ -34,9 +34,11 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 useMap(map);
 
-// TODO Should this live elsewhere?
-// TODO Is it OK to just assume the button exists when this runs?
-document.getElementById("import-view").onclick = async function importCurrentView() {
+// TODO Should we split this into another .js file? How should it get the map if so?
+// TODO Is it OK to just assume the button exists by the time this script runs,
+// or should we create the button here?
+const btn = document.getElementById("import-view");
+btn.onclick = async function importCurrentView() {
 	if (map.getZoom() < 15) {
 		window.alert("Zoom in more to import");
 	}
@@ -49,17 +51,26 @@ document.getElementById("import-view").onclick = async function importCurrentVie
 	const url = `https://overpass-api.de/api/interpreter?data=${query}`;
 	console.log(`Fetching from overpass: ${url}`);
 
+	btn.innerText = "Downloading from Overpass...";
+	// Prevent this function from happening twice in a row. It could also
+	// maybe be nice to allow cancellation.
+	btn.disabled = true;
+
 	const resp = await fetch(url);
 	// TODO Error handling and such
 	const osmXML = await resp.text();
 
-	console.log(`Got XML response, length ${osmXML.length}`);
+	btn.innerText = "Importing OSM data...";
+
 	const output = import_osm(osmXML, {
 		// TODO Ask overpass
 		driving_side: "Right",
 	});
-	console.log(`Got osm2streets output: ${output}`);
 
 	// TODO Definitely time to think about cleaning up old layers
 	L.geoJSON(JSON.parse(output), { style: { color: '#f55' }}).addTo(map);
+
+	// Make the button clickable again
+	btn.innerText = "Import current view";
+	btn.disabled = false;
 }
