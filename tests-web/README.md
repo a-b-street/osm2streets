@@ -2,18 +2,17 @@
 
 ## Running
 
-[Install Rust](https://www.rust-lang.org/tools/install), then:
+[Install wasm-pack](https://rustwasm.github.io/wasm-pack/installer/), then:
 
 ```
-tests-web/> cargo install trunk
-tests-web/> trunk serve
+tests-web/> ./serve_locally.sh
 ```
+
+You can edit HTML, CSS, and JS and just refresh the page immediately. If you
+modify the Rust code, you must re-run `serve_locally.sh`, which will recompile.
 
 ## Architecture
 
-We're not using any JS framework yet; vanilla JS suffices. We are using `trunk`
-for 3 purposes -- triggering the WASM build of the Rust dependencies in
-`osm2streets-js`, bundling JS, CSS, and test file assets, and as a local dev
-server.  There are some issues documented in the code about `trunk`. See
-[#29](https://github.com/a-b-street/osm2streets/issues/29) for more ideas about
-serving tests.
+We're not using any JS or build framework. We use `wasm-pack` to build a WASM +
+JS API to the Rust code. For serving all of the CSS, JS, WASM, and test data
+assets, we just use a plain HTTP file server and make use of symlinks.

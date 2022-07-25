@@ -2,7 +2,7 @@ import { makeOsmLayer, makeJsonLayer, makeDotLayer  } from './layers.js';
 
 /** Load and display all the files associated with a test case. */
 export const makeOpenTest = (map) => async (name) => {
-    const prefix = `src/${name}/`;
+    const prefix = `assets/test_data/${name}/`;
     const input = loadFile(prefix + 'input.osm');
     const rawMap = loadFile(prefix + 'raw_map.json');
     const network = loadFile(prefix + 'road_network.dot');
