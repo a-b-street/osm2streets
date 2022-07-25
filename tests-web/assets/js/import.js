@@ -1,6 +1,6 @@
 // TODO The hash changes every time the Rust code does, this is very brittle.
 // See https://github.com/thedodd/trunk/issues/230 or stop using trunk.
-import { import_osm } from "../osm2streets-js-5b7f56a6bec77166.js";
+import { importOsm } from "../osm2streets-js-fc614c7f26fcd479.js";
 
 export const makeImportCurrentView = (map, btn) => {
   btn.onclick = async () => {
@@ -27,7 +27,7 @@ export const makeImportCurrentView = (map, btn) => {
 
     btn.innerText = "Importing OSM data...";
 
-    const output = import_osm(osmXML, {
+    const output = importOsm(osmXML, {
       // TODO Ask overpass
       driving_side: "Right",
     });

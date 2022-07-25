@@ -6,12 +6,11 @@ pub struct Input {
     driving_side: street_network::DrivingSide,
 }
 
-// TODO Just take a string and bool, maybe remove serde dependency?
-#[wasm_bindgen]
-pub fn import_osm(osm_xml_input: &str, val: &JsValue) -> String {
+#[wasm_bindgen(js_name = importOsm)]
+pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> String {
     set_panic_hook();
 
-    let input: Input = val.into_serde().unwrap();
+    let input: Input = input.into_serde().unwrap();
 
     let clip_path = None;
     let mut timer = abstutil::Timer::throwaway();
