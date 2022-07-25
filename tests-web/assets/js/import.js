@@ -1,6 +1,5 @@
-// TODO The hash changes every time the Rust code does, this is very brittle.
-// See https://github.com/thedodd/trunk/issues/230 or stop using trunk.
-import { importOsm } from "../osm2streets-js-fc614c7f26fcd479.js";
+import init, { importOsm } from "./osm2streets-js/osm2streets_js.js";
+await init();
 
 export const makeImportCurrentView = (map, btn) => {
   btn.onclick = async () => {

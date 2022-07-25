@@ -10,17 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Rust
-        uses: hecrj/setup-rust-action@v1
-
-      - name: Install trunk
-        uses: jetli/trunk-action@v0.1.0
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.3.0
 
       - name: Build web app
-        run: trunk --config Release.toml build
+        run: |
+          cd tests-web
+          wasm-pack build --release --target web ../osm2streets-js
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/
+          # This will also publish serve_locally.sh and README.md, which is
+          # fine. As long as this chases symlinks correctly, it'll be fine.
+          publish_dir: ./tests-web/
