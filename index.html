@@ -12,13 +12,22 @@
     <script src="https://unpkg.com/@hpcc-js/wasm@1.12.8/dist/index.min.js" crossorigin=""></script>
     <script src="https://unpkg.com/d3-graphviz@4.1.1/build/d3-graphviz.js" crossorigin=""></script>
 
+    <script type="module">import init from '/osm2streets/osm2streets-js-a9a41658f567e64e.js';init('/osm2streets/osm2streets-js-a9a41658f567e64e_bg.wasm');</script>
     
     <script type="module" src="js/leaflet-osm.js"></script>
     <script type="module" src="js/main.js"></script>
 
     
+  
+<link rel="preload" href="/osm2streets/osm2streets-js-a9a41658f567e64e_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/osm2streets/osm2streets-js-a9a41658f567e64e.js"></head>
+  <body>
+    <menu>
+      <h1>StreetExplorer</h1>
+      <ul id="test-list">
+    </ul></menu>
+    <section id="road-network"></section>
+    <div id="map"></div>
+  
 
-<link rel="preload" href="/osm2streets/tests-web-8aa7590e363f3cc0_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/osm2streets/tests-web-8aa7590e363f3cc0.js"></head>
-
-<body><script type="module">import init from '/osm2streets/tests-web-8aa7590e363f3cc0.js';init('/osm2streets/tests-web-8aa7590e363f3cc0_bg.wasm');</script></body></html>
+</body></html>
