@@ -22,6 +22,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # This will also publish serve_locally.sh and README.md, which is
-          # fine. As long as this chases symlinks correctly, it'll be fine.
-          publish_dir: ./tests-web/
+          # Hopefully this properly chases symlinks that point out of `www/`.
+          publish_dir: ./tests-web/www/
