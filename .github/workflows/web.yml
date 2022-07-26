@@ -17,10 +17,11 @@ jobs:
         run: |
           cd tests-web
           wasm-pack build --release --target web ../osm2streets-js
+          # Make a full copy of what we'll publish, dereferencing symlinks
+          cp -RLv www/ publish_www
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Hopefully this properly chases symlinks that point out of `www/`.
-          publish_dir: ./tests-web/www/
+          publish_dir: ./tests-web/publish_www/
