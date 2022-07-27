@@ -21,8 +21,7 @@ impl StreetNetwork {
     /// Assumes `run_all_simplifications` has been called if desired
     pub fn to_geojson(&self, timer: &mut Timer) -> Result<String> {
         // TODO InitialMap is going away very soon, but we still need it
-        let initial_map =
-            crate::initial::InitialMap::new(self, &self.gps_bounds.to_bounds(), timer);
+        let initial_map = crate::initial::InitialMap::new(self, timer);
 
         let mut pairs = Vec::new();
 
