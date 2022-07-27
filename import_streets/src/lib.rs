@@ -91,10 +91,12 @@ pub enum PrivateOffstreetParking {
     // TODO Based on the number of residents?
 }
 
-/// Create a `StreetNetwork` from the contents of an `.osm.xml` file
+/// Create a `StreetNetwork` from the contents of an `.osm.xml` file. If `clip_pts` is specified,
+/// use theese as a boundary polygon. (Use `LonLat::read_osmosis_polygon` or similar to produce
+/// these.)
 pub fn osm_to_street_network(
     osm_xml_input: &str,
-    clip_path: Option<String>,
+    clip_pts: Option<Vec<LonLat>>,
     opts: Options,
     timer: &mut Timer,
 ) -> Result<StreetNetwork> {
@@ -102,14 +104,13 @@ pub fn osm_to_street_network(
     // Do this early. Calculating RawRoads uses DrivingSide, for example!
     streets.config = opts.map_config.clone();
 
-    if let Some(ref path) = clip_path {
-        let pts = LonLat::read_osmosis_polygon(path)?;
+    if let Some(ref pts) = clip_pts {
         let gps_bounds = GPSBounds::from(pts.clone());
-        streets.boundary_polygon = Ring::new(gps_bounds.convert(&pts))?.into_polygon();
+        streets.boundary_polygon = Ring::new(gps_bounds.convert(pts))?.into_polygon();
         streets.gps_bounds = gps_bounds;
     }
 
-    let extract = extract_osm(&mut streets, osm_xml_input, clip_path, &opts, timer)?;
+    let extract = extract_osm(&mut streets, osm_xml_input, clip_pts, &opts, timer)?;
     let split_output = split_ways::split_up_roads(&mut streets, extract, timer);
     clip::clip_map(&mut streets, timer)?;
 
@@ -138,13 +139,13 @@ pub fn osm_to_street_network(
 fn extract_osm(
     streets: &mut StreetNetwork,
     osm_xml_input: &str,
-    clip_path: Option<String>,
+    clip_pts: Option<Vec<LonLat>>,
     opts: &Options,
     timer: &mut Timer,
 ) -> Result<OsmExtract> {
     let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer)?;
 
-    if clip_path.is_none() {
+    if clip_pts.is_none() {
         // Use the boundary from .osm.
         streets.gps_bounds = doc.gps_bounds.clone();
         streets.boundary_polygon = streets.gps_bounds.to_bounds().get_rectangle();

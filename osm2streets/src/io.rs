@@ -1,3 +1,4 @@
+use anyhow::Result;
 use enum_map::{enum_map, EnumMap};
 use itertools::Itertools;
 use std::collections::HashMap;
@@ -19,18 +20,18 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 /// use petgraph::dot::{Config, Dot};
 /// use streets::io::load_road_network;
 /// let mut timer = Timer::new("test osm2streets");
-/// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer);
+/// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer).unwrap();
 /// println!("{}", net.to_dot());
-pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
+pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetwork> {
     let driving_side = street_network::DrivingSide::Right; // TODO
-    let clip_path = None;
+    let clip_pts = None;
 
     let mut street_network = import_streets::osm_to_street_network(
         &std::fs::read_to_string(osm_path).unwrap(),
-        clip_path,
+        clip_pts,
         import_streets::Options::default_for_side(driving_side),
         timer,
-    );
+    )?;
 
     let consolidate_all_intersections = false;
     let remove_disconnected = false;
@@ -40,7 +41,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> RoadNetwork {
         timer,
     );
 
-    street_network.into()
+    Ok(street_network.into())
 }
 
 impl From<StreetNetwork> for RoadNetwork {

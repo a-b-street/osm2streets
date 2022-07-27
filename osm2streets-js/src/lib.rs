@@ -17,11 +17,11 @@ pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> Result<String, JsValu
 fn inner_import_osm(osm_xml_input: &str, input: &JsValue) -> anyhow::Result<String> {
     let input: Input = input.into_serde()?;
 
-    let clip_path = None;
+    let clip_pts = None;
     let mut timer = abstutil::Timer::throwaway();
     let mut street_network = import_streets::osm_to_street_network(
         osm_xml_input,
-        clip_path,
+        clip_pts,
         import_streets::Options::default_for_side(input.driving_side),
         &mut timer,
     )?;
