@@ -549,6 +549,7 @@ name = "osm2streets-js"
 version = "0.1.0"
 dependencies = [
  "abstutil",
+ "anyhow",
  "console_error_panic_hook",
  "import_streets",
  "instant",

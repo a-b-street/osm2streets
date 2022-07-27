@@ -9,12 +9,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[features]
-default = ["console_error_panic_hook"]
-
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
-console_error_panic_hook = { version = "0.1.6", optional = true }
+anyhow = "1.0.38"
+console_error_panic_hook = "0.1.6"
 import_streets = { path = "../import_streets" }
 # TODO Upstream this in abstutil crate. WASM is missing some runtime dep otherwise.
 instant = { version = "0.1.12", features = ["wasm-bindgen"] }

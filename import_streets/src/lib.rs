@@ -6,7 +6,9 @@ extern crate log;
 use std::collections::{HashMap, HashSet};
 
 use abstutil::Timer;
+use anyhow::Result;
 use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
+
 use street_network::{MapConfig, OriginalRoad, StreetNetwork};
 
 pub use self::extract::OsmExtract;
@@ -95,21 +97,21 @@ pub fn osm_to_street_network(
     clip_path: Option<String>,
     opts: Options,
     timer: &mut Timer,
-) -> StreetNetwork {
+) -> Result<StreetNetwork> {
     let mut streets = StreetNetwork::blank();
     // Do this early. Calculating RawRoads uses DrivingSide, for example!
     streets.config = opts.map_config.clone();
 
     if let Some(ref path) = clip_path {
-        let pts = LonLat::read_osmosis_polygon(path).unwrap();
+        let pts = LonLat::read_osmosis_polygon(path)?;
         let gps_bounds = GPSBounds::from(pts.clone());
-        streets.boundary_polygon = Ring::must_new(gps_bounds.convert(&pts)).into_polygon();
+        streets.boundary_polygon = Ring::new(gps_bounds.convert(&pts))?.into_polygon();
         streets.gps_bounds = gps_bounds;
     }
 
-    let extract = extract_osm(&mut streets, osm_xml_input, clip_path, &opts, timer);
+    let extract = extract_osm(&mut streets, osm_xml_input, clip_path, &opts, timer)?;
     let split_output = split_ways::split_up_roads(&mut streets, extract, timer);
-    clip::clip_map(&mut streets, timer);
+    clip::clip_map(&mut streets, timer)?;
 
     // Need to do a first pass of removing cul-de-sacs here, or we wind up with loop PolyLines when
     // doing the parking hint matching.
@@ -130,7 +132,7 @@ pub fn osm_to_street_network(
         );
     }
 
-    streets
+    Ok(streets)
 }
 
 fn extract_osm(
@@ -139,8 +141,8 @@ fn extract_osm(
     clip_path: Option<String>,
     opts: &Options,
     timer: &mut Timer,
-) -> OsmExtract {
-    let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer).unwrap();
+) -> Result<OsmExtract> {
+    let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer)?;
 
     if clip_path.is_none() {
         // Use the boundary from .osm.
@@ -169,7 +171,7 @@ fn extract_osm(
         out.handle_relation(id, &rel);
     }
 
-    out
+    Ok(out)
 }
 
 pub fn use_barrier_nodes(

@@ -7,10 +7,15 @@ pub struct Input {
 }
 
 #[wasm_bindgen(js_name = importOsm)]
-pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> String {
-    set_panic_hook();
+pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> Result<String, JsValue> {
+    // Panics shouldn't happen, but if they do, console.log them.
+    console_error_panic_hook::set_once();
 
-    let input: Input = input.into_serde().unwrap();
+    inner_import_osm(osm_xml_input, input).map_err(|err| JsValue::from_str(&err.to_string()))
+}
+
+fn inner_import_osm(osm_xml_input: &str, input: &JsValue) -> anyhow::Result<String> {
+    let input: Input = input.into_serde()?;
 
     let clip_path = None;
     let mut timer = abstutil::Timer::throwaway();
@@ -19,7 +24,7 @@ pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> String {
         clip_path,
         import_streets::Options::default_for_side(input.driving_side),
         &mut timer,
-    );
+    )?;
     // TODO Assuming defaults here; probably do take in Input
     let consolidate_all_intersections = false;
     let remove_disconnected = false;
@@ -30,16 +35,6 @@ pub fn import_osm(osm_xml_input: &str, input: &JsValue) -> String {
     );
 
     // TODO Return the object and call methods on that instead
-    street_network.to_geojson(&mut timer).unwrap()
-}
-
-fn set_panic_hook() {
-    // When the `console_error_panic_hook` feature is enabled, we can call the
-    // `set_panic_hook` function at least once during initialization, and then
-    // we will get better error messages if our code ever panics.
-    //
-    // For more details see
-    // https://github.com/rustwasm/console_error_panic_hook#readme
-    #[cfg(feature = "console_error_panic_hook")]
-    console_error_panic_hook::set_once();
+    let geojson = street_network.to_geojson(&mut timer)?;
+    Ok(geojson)
 }

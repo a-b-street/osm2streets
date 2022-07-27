@@ -5,6 +5,7 @@ export const makeImportCurrentView = (map, btn) => {
   btn.onclick = async () => {
     if (map.getZoom() < 15) {
       window.alert("Zoom in more to import");
+      return;
     }
 
     // Grab OSM XML from Overpass
@@ -20,19 +21,22 @@ export const makeImportCurrentView = (map, btn) => {
     // maybe be nice to allow cancellation.
     btn.disabled = true;
 
-    const resp = await fetch(url);
-    // TODO Error handling and such
-    const osmXML = await resp.text();
+    try {
+      const resp = await fetch(url);
+      const osmXML = await resp.text();
 
-    btn.innerText = "Importing OSM data...";
+      btn.innerText = "Importing OSM data...";
 
-    const output = importOsm(osmXML, {
-      // TODO Ask overpass
-      driving_side: "Right",
-    });
+      const output = importOsm(osmXML, {
+        // TODO Ask overpass
+        driving_side: "Right",
+      });
 
-    // TODO Definitely time to think about cleaning up old layers
-    L.geoJSON(JSON.parse(output), { style: { color: "#f55" } }).addTo(map);
+      // TODO Definitely time to think about cleaning up old layers
+      L.geoJSON(JSON.parse(output), { style: { color: "#f55" } }).addTo(map);
+    } catch (err) {
+      window.alert(`Import failed: ${err}`);
+    }
 
     // Make the button clickable again
     btn.innerText = "Import current view";
