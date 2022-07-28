@@ -120,6 +120,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let i = streets.intersections.get_mut(&move_i).unwrap();
+        i.complexity = IntersectionComplexity::MapEdge;
         i.control = ControlType::Border;
 
         // Now trim it.
