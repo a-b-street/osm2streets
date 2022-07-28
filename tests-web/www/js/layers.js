@@ -13,7 +13,6 @@ const intersectionColours = {
 
 const styleGeoJson = (feature) => {
     if (feature.geometry.type === 'Polygon') {
-        console.log(feature.properties?.complexity);
         return {
             color: intersectionColours[feature.properties?.complexity] || '#666',
             weight: 1,
