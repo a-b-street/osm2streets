@@ -3,7 +3,8 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use street_network::{
-    osm, Direction, ControlType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork,
+    osm, ControlType, Direction, IntersectionComplexity, OriginalRoad, RawIntersection, RawRoad,
+    StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -63,9 +64,12 @@ pub fn split_up_roads(
             *id,
             RawIntersection::new(
                 pt.to_pt2d(),
+                // Guess a safe generic complexity, specialise later.
+                IntersectionComplexity::Crossing,
                 if input.traffic_signals.remove(pt).is_some() {
                     ControlType::TrafficSignal
                 } else {
+                    // TODO default to uncontrolled, guess StopSign as a transform
                     ControlType::StopSign
                 },
             ),
@@ -74,9 +78,14 @@ pub fn split_up_roads(
 
     // Set roundabouts to their center
     for (id, point) in roundabout_centers {
-        streets
-            .intersections
-            .insert(id, RawIntersection::new(point, ControlType::StopSign));
+        streets.intersections.insert(
+            id,
+            RawIntersection::new(
+                point,
+                IntersectionComplexity::Crossing,
+                ControlType::StopSign,
+            ),
+        );
     }
 
     let mut pt_to_road: HashMap<HashablePt2D, OriginalRoad> = HashMap::new();
@@ -218,8 +227,7 @@ pub fn split_up_roads(
             // Example: https://www.openstreetmap.org/node/26734224
             if !streets.roads[r].osm_tags.is(osm::HIGHWAY, "construction") {
                 let i = if dir == Direction::Fwd { r.i2 } else { r.i1 };
-                streets.intersections.get_mut(&i).unwrap().control =
-                    ControlType::TrafficSignal;
+                streets.intersections.get_mut(&i).unwrap().control = ControlType::TrafficSignal;
             }
         }
     }

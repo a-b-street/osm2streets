@@ -16,8 +16,8 @@ use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub use self::lane_specs::get_lane_specs_ltr;
 pub use self::types::{
-    BufferType, Direction, DrivingSide, ControlType, LaneSpec, LaneType, MapConfig,
-    NamePerLanguage, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
+    BufferType, ControlType, Direction, DrivingSide, IntersectionComplexity, LaneSpec, LaneType,
+    MapConfig, NamePerLanguage, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
 };
 
 mod edit;
@@ -450,6 +450,7 @@ pub struct RawIntersection {
     /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
+    pub complexity: IntersectionComplexity,
     pub control: ControlType,
     pub elevation: Distance,
 
@@ -458,10 +459,11 @@ pub struct RawIntersection {
 }
 
 impl RawIntersection {
-    pub fn new(point: Pt2D, intersection_type: ControlType) -> Self {
+    pub fn new(point: Pt2D, complexity: IntersectionComplexity, control: ControlType) -> Self {
         Self {
             point,
-            control: intersection_type,
+            complexity,
+            control,
             // Filled out later
             elevation: Distance::ZERO,
             trim_roads_for_merging: BTreeMap::new(),
