@@ -40,12 +40,10 @@ pub struct Relation {
     pub members: Vec<(String, OsmID)>,
 }
 
-pub fn read(path: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -> Result<Document> {
-    timer.start(format!("read {}", path));
-    let bytes = std::fs::read(path)?;
-    let raw_string = std::str::from_utf8(&bytes)?;
+pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -> Result<Document> {
+    timer.start("parse osm.xml");
     let tree = roxmltree::Document::parse(raw_string)?;
-    timer.stop(format!("read {}", path));
+    timer.stop("parse osm.xml");
 
     let mut doc = Document {
         gps_bounds: input_gps_bounds.clone(),

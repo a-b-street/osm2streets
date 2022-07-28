@@ -23,13 +23,13 @@ mod tests {
         let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
-        let clip_path = None;
+        let clip_pts = None;
         let mut street_network = import_streets::osm_to_street_network(
-            format!("{path}/input.osm"),
-            clip_path,
+            &std::fs::read_to_string(format!("{path}/input.osm"))?,
+            clip_pts,
             import_streets::Options::default_for_side(cfg.driving_side),
             &mut timer,
-        );
+        )?;
         let consolidate_all_intersections = false;
         // Our clipped areas are very small; this would remove part of the intended input
         let remove_disconnected = false;

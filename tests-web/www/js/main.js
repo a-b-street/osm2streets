@@ -1,4 +1,5 @@
 import { makeDropHandler, makeLinkHandler, handleDragOver } from "./files.js";
+import { makeImportCurrentView } from "./import.js";
 import { makeOpenTest, loadTests } from "./tests.js";
 
 const useMap = (map) => {
@@ -19,6 +20,8 @@ const useMap = (map) => {
   }
 
   loadTests();
+
+  makeImportCurrentView(map, document.getElementById("import-view"));
 };
 
 // Initialize the map

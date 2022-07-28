@@ -4,15 +4,13 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use abstutil::{Tags, Timer};
-use geom::{Bounds, Circle, Distance, PolyLine, Polygon, Pt2D};
+use geom::{Circle, Distance, PolyLine, Polygon, Pt2D};
 
 use crate::{osm, ControlType, InputRoad, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 pub struct InitialMap {
     pub roads: BTreeMap<OriginalRoad, Road>,
     pub intersections: BTreeMap<osm::NodeID, Intersection>,
-
-    pub bounds: Bounds,
 }
 
 pub struct Road {
@@ -63,11 +61,10 @@ pub struct Intersection {
 }
 
 impl InitialMap {
-    pub fn new(streets: &StreetNetwork, bounds: &Bounds, timer: &mut Timer) -> InitialMap {
+    pub fn new(streets: &StreetNetwork, timer: &mut Timer) -> InitialMap {
         let mut m = InitialMap {
             roads: BTreeMap::new(),
             intersections: BTreeMap::new(),
-            bounds: *bounds,
         };
 
         for (id, i) in &streets.intersections {

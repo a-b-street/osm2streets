@@ -7,7 +7,6 @@ use std::collections::BTreeMap;
 use std::fmt;
 
 use anyhow::Result;
-use petgraph::graphmap::DiGraphMap;
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
@@ -26,10 +25,11 @@ pub mod geometry;
 pub mod initial;
 mod lane_specs;
 pub mod osm;
+mod pathfinding;
 mod transform;
 mod types;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StreetNetwork {
     #[serde(
         serialize_with = "serialize_btreemap",
@@ -258,22 +258,6 @@ impl StreetNetwork {
             .min_by_key(|(_, i)| i.point.dist_to(pt))
             .map(|(id, _)| *id)
             .unwrap()
-    }
-
-    pub fn path_dist_to(&self, from: osm::NodeID, to: osm::NodeID) -> Option<Distance> {
-        let mut graph = DiGraphMap::new();
-        for (id, r) in &self.roads {
-            graph.add_edge(id.i1, id.i2, id);
-            if r.oneway_for_driving().is_none() {
-                graph.add_edge(id.i2, id.i1, id);
-            }
-        }
-        petgraph::algo::dijkstra(&graph, from, Some(to), |(_, _, r)| {
-            // TODO Expensive!
-            self.roads[r].length()
-        })
-        .get(&to)
-        .cloned()
     }
 }
 

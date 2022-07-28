@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/abstreet#03066bb0bb053419dd8fff0342e1da5073bccd66"
+source = "git+https://github.com/a-b-street/abstreet#fb39e716889b903cf6b57490b2e048bcba3bf262"
 dependencies = [
  "anyhow",
  "bincode",
@@ -326,7 +326,7 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/abstreet#03066bb0bb053419dd8fff0342e1da5073bccd66"
+source = "git+https://github.com/a-b-street/abstreet#fb39e716889b903cf6b57490b2e048bcba3bf262"
 dependencies = [
  "aabb-quadtree",
  "abstutil",
@@ -421,6 +421,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a5bbe824c507c5da5956355e86a746d82e0e1464f65d862cc5e71da70e94b2c"
 dependencies = [
  "cfg-if",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -545,8 +548,13 @@ dependencies = [
 name = "osm2streets-js"
 version = "0.1.0"
 dependencies = [
+ "abstutil",
+ "anyhow",
  "console_error_panic_hook",
+ "import_streets",
+ "instant",
  "serde",
+ "street_network",
  "wasm-bindgen",
 ]
 

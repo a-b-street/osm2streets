@@ -1,11 +1,12 @@
 use std::collections::BTreeMap;
 
 use abstutil::Timer;
+use anyhow::Result;
 use geom::{PolyLine, Ring};
 use street_network::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
-pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
+pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     timer.start("clipping map to boundary");
 
     // So we can use retain without borrowing issues
@@ -73,7 +74,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
         if let Some(pl) = center.reversed().get_slice_ending_at(border_pt) {
             mut_r.osm_center_points = pl.reversed().into_points();
         } else {
-            panic!("{} interacts with border strangely", id);
+            bail!("{} interacts with border strangely", id);
         }
         i.point = mut_r.osm_center_points[0];
         streets.roads.insert(
@@ -128,7 +129,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
         if let Some(pl) = center.get_slice_ending_at(border_pt) {
             mut_r.osm_center_points = pl.into_points();
         } else {
-            panic!("{} interacts with border strangely", id);
+            bail!("{} interacts with border strangely", id);
         }
         i.point = *mut_r.osm_center_points.last().unwrap();
         streets.roads.insert(
@@ -142,8 +143,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
     }
 
     if streets.roads.is_empty() {
-        panic!("There are no roads inside the clipping polygon");
+        bail!("There are no roads inside the clipping polygon");
     }
 
     timer.stop("clipping map to boundary");
+    Ok(())
 }

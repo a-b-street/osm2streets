@@ -8,8 +8,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
-    <link data-trunk rel="css" href="assets/css/reset.css" />
-    <link data-trunk rel="css" href="assets/css/main.css" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/main.css" />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -35,16 +35,13 @@
       crossorigin
     ></script>
 
-    <link data-trunk rel="rust" href="../osm2streets-js/Cargo.toml" />
-    <link data-trunk rel="copy-dir" href="./assets/js" />
     <script type="module" src="js/leaflet-osm.js"></script>
     <script type="module" src="js/main.js"></script>
-
-    <link data-trunk rel="copy-dir" href="../tests/src" />
   </head>
   <body>
     <menu>
       <h1>StreetExplorer</h1>
+      <button type="button" id="import-view">Import current view</button>
       <ul id="test-list" />
     </menu>
     <section id="road-network"></section>
