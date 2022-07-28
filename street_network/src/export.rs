@@ -40,6 +40,10 @@ impl StreetNetwork {
         for (id, intersection) in &initial_map.intersections {
             let mut properties = serde_json::Map::new();
             properties.insert("intersection_id".to_string(), id.0.into());
+            properties.insert(
+                "complexity".to_string(),
+                format!("{:?}", intersection.complexity).into(),
+            );
             // Just some styling for geojson.io to distinguish roads/intersections better
             properties.insert("fill".to_string(), "#729fcf".into());
             pairs.push((

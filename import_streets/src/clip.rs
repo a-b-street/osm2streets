@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use abstutil::Timer;
 use geom::{PolyLine, Ring};
-use street_network::{osm, ControlType, OriginalRoad, StreetNetwork};
+use street_network::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
@@ -63,6 +63,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) {
         }
 
         let i = streets.intersections.get_mut(&move_i).unwrap();
+        i.complexity = IntersectionComplexity::MapEdge;
         i.control = ControlType::Border;
 
         // Now trim it.

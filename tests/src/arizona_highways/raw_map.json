@@ -5917,6 +5917,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": -2
       },
@@ -5951,6 +5952,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": -1
       },
@@ -6009,6 +6011,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 41643290
       },
@@ -6043,6 +6046,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 41833648
       },
@@ -6077,6 +6081,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 42522813
       },
@@ -6111,6 +6116,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 256978902
       },
@@ -6153,6 +6159,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 256990200
       },
@@ -6187,6 +6194,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 257961882
       },
@@ -6221,6 +6229,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 257963392
       },
@@ -6259,6 +6268,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 257964183
       },
@@ -6297,6 +6307,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 257964186
       },
@@ -6339,6 +6350,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 257970996
       },
@@ -6373,6 +6385,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 257970997
       },
@@ -6411,6 +6424,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 257973235
       },
@@ -6449,6 +6463,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 257973558
       },
@@ -6491,6 +6506,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 257973659
       },
@@ -6533,6 +6549,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 608494024
       },
@@ -6579,6 +6596,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 608494028
       },
@@ -6617,6 +6635,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1131443242
       },
@@ -6651,6 +6670,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 1131443248
       },
@@ -6685,6 +6705,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 1131443311
       },
@@ -6719,6 +6740,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1131443329
       },
@@ -6753,6 +6775,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 1224380064
       },
@@ -6787,6 +6810,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1224380077
       },
@@ -6821,6 +6845,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 1224380087
       },
@@ -6863,6 +6888,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1224380089
       },
@@ -6905,6 +6931,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975867
       },
@@ -6943,6 +6970,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975883
       },
@@ -6981,6 +7009,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1950975900
       },
@@ -7015,6 +7044,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975923
       },
@@ -7053,6 +7083,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975926
       },
@@ -7107,6 +7138,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975946
       },
@@ -7157,6 +7189,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 1950975953
       },
@@ -7195,6 +7228,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 1950975971
       },
@@ -7229,6 +7263,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 1950976016
       },
@@ -7263,6 +7298,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 2390893346
       },
@@ -7301,6 +7337,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2391008592
       },
@@ -7335,6 +7372,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 2391008616
       },
@@ -7377,6 +7415,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2391008617
       },
@@ -7419,6 +7458,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2454435293
       },
@@ -7461,6 +7501,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2454435296
       },
@@ -7503,6 +7544,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2454435301
       },
@@ -7545,6 +7587,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2454728514
       },
@@ -7579,6 +7622,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 2454767128
       },
@@ -7617,6 +7661,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540680
       },
@@ -7655,6 +7700,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540684
       },
@@ -7693,6 +7739,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540685
       },
@@ -7743,6 +7790,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540689
       },
@@ -7789,6 +7837,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540690
       },
@@ -7835,6 +7884,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540691
       },
@@ -7889,6 +7939,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540692
       },
@@ -7931,6 +7982,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540697
       },
@@ -7969,6 +8021,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540699
       },
@@ -8007,6 +8060,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2457540707
       },
@@ -8041,6 +8095,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 2459207580
       },
@@ -8083,6 +8138,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 2459207619
       },
@@ -8117,6 +8173,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 3715211173
       },
@@ -8155,6 +8212,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4341085381
       },
@@ -8189,6 +8247,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4341085382
       },
@@ -8227,6 +8286,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4341085384
       },
@@ -8265,6 +8325,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 4341085386
       },
@@ -8303,6 +8364,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4341085388
       },
@@ -8337,6 +8399,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4351379653
       },
@@ -8371,6 +8434,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4351379654
       },
@@ -8405,6 +8469,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4351379655
       },
@@ -8439,6 +8504,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 4353125861
       },
@@ -8473,6 +8539,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 4353125862
       },
@@ -8507,6 +8574,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 4982224171
       },
@@ -8541,6 +8609,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 4982224184
       },
@@ -8575,6 +8644,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 4982224185
       },
@@ -8613,6 +8683,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 5134463770
       },
@@ -8647,6 +8718,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5134463771
       },
@@ -8681,6 +8753,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "MapEdge",
         "fill": "#729fcf",
         "intersection_id": 5134463772
       },
@@ -8715,6 +8788,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Terminus",
         "fill": "#729fcf",
         "intersection_id": 5572469737
       },
@@ -8749,6 +8823,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5572469741
       },
@@ -8787,6 +8862,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5748112414
       },
@@ -8825,6 +8901,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5748112415
       },
@@ -8859,6 +8936,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5748112416
       },
@@ -8893,6 +8971,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Connection",
         "fill": "#729fcf",
         "intersection_id": 5766999736
       },
@@ -8935,6 +9014,7 @@
         "type": "Polygon"
       },
       "properties": {
+        "complexity": "Crossing",
         "fill": "#729fcf",
         "intersection_id": 6228919924
       },

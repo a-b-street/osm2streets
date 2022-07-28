@@ -2,6 +2,7 @@ use abstutil::Timer;
 
 use crate::StreetNetwork;
 
+pub mod classify_intersections;
 mod collapse_intersections;
 mod dual_carriageways;
 mod find_short_roads;
@@ -24,6 +25,10 @@ impl StreetNetwork {
         timer: &mut Timer,
     ) {
         timer.start("simplify StreetNetwork");
+
+        timer.start("classifying intersection complexity");
+        classify_intersections::classify_intersections(self);
+        timer.stop("classifying intersection complexity");
 
         timer.start("trimming dead-end cycleways (round 1)");
         collapse_intersections::trim_deadends(self);
