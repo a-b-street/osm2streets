@@ -3,18 +3,19 @@ export const makeJsonLayer = (text) => {
 };
 
 const intersectionColours = {
-    MapEdge: '#696',
+    undefined: '#666', // for default tarmac
     Connection: '#666',
     MultiConnection: '#669',
     Merge: '#969',
-    Crossing: '#999',
-    Terminus: '#966',
+    Crossing: '#966',
+    Terminus: '#999',
+    MapEdge: '#696',
 }
 
 const styleGeoJson = (feature) => {
     if (feature.geometry.type === 'Polygon') {
         return {
-            color: intersectionColours[feature.properties?.complexity] || '#666',
+            color: intersectionColours[feature.properties?.complexity],
             weight: 1,
             fillOpacity: 0.7,
         };
