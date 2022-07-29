@@ -6,7 +6,7 @@ use crate::{IntersectionComplexity, OriginalRoad, RawIntersection, StreetNetwork
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
 pub fn classify_intersections(streets: &mut StreetNetwork) {
     let mut changes: Vec<(NodeID, IntersectionComplexity)> = Vec::new();
-    for (id, inter) in streets.intersections.iter() {
+    for (id, inter) in &streets.intersections {
         if let Crossing = inter.complexity {
             changes.push((
                 *id,
@@ -16,9 +16,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
     }
 
     for (id, complexity) in changes.into_iter() {
-        if let Some(inter) = streets.intersections.get_mut(&id) {
-            inter.complexity = complexity;
-        }
+        streets.intersections.get_mut(&id).unwrap().complexity = complexity;
     }
 }
 

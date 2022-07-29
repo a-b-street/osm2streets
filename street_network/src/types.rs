@@ -137,6 +137,8 @@ pub enum InterruptionType {
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum IntersectionComplexity {
     /// The edge of the data that we have.
+    ///
+    /// The road may continue past here in reality and do anything, but the current dataset is clipped here.
     MapEdge,
 
     /// Two roads connect, one ending where the other begins, without conflict
