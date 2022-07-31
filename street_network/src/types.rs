@@ -366,6 +366,11 @@ impl LaneSpec {
         }
     }
 
+    /// Pick a reasonable default for a lane width, without any context on locale or tags.
+    pub fn typical_lane_width(lt: LaneType) -> Distance {
+        Self::typical_lane_widths(lt, &Tags::empty())[0].0
+    }
+
     /// Put a list of forward and backward lanes into left-to-right order, depending on the driving
     /// side. Both input lists should be ordered from the center of the road going outwards.
     pub(crate) fn assemble_ltr(
