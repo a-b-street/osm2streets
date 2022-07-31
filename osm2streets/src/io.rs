@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use abstutil::Timer;
 use street_network::{
-    osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork,
+    osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork, Transformation,
 };
 
 use crate::network::RoadNetwork;
@@ -33,13 +33,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetw
         timer,
     )?;
 
-    let consolidate_all_intersections = false;
-    let remove_disconnected = false;
-    street_network.run_all_simplifications(
-        consolidate_all_intersections,
-        remove_disconnected,
-        timer,
-    );
+    street_network.apply_transformations(Transformation::standard_for_clipped_areas(), timer);
 
     Ok(street_network.into())
 }

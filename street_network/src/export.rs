@@ -9,7 +9,6 @@ use abstutil::Timer;
 use crate::StreetNetwork;
 
 impl StreetNetwork {
-    /// Assumes `run_all_simplifications` has been called if desired
     pub fn save_to_geojson(&self, output_path: String, timer: &mut Timer) -> Result<()> {
         let json_output = self.to_geojson(timer)?;
         std::fs::create_dir_all(Path::new(&output_path).parent().unwrap())?;
@@ -18,7 +17,6 @@ impl StreetNetwork {
         Ok(())
     }
 
-    /// Assumes `run_all_simplifications` has been called if desired
     pub fn to_geojson(&self, timer: &mut Timer) -> Result<String> {
         // TODO InitialMap is going away very soon, but we still need it
         let initial_map = crate::initial::InitialMap::new(self, timer);
