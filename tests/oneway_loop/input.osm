@@ -1,0 +1,1479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API 0.7.58.5 b0c4acbb">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2022-07-31T14:32:59Z"/>
+
+  <node id="20828632" lat="51.5032325" lon="-0.1019859" version="11" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="20828633" lat="51.5023621" lon="-0.1015743" version="9" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="20828634" lat="51.5010778" lon="-0.1008381" version="9" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="20828635" lat="51.4999026" lon="-0.1005083" version="9" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="20828636" lat="51.4985825" lon="-0.0996299" version="9" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls"/>
+  <node id="24923168" lat="51.5021912" lon="-0.1017695" version="5" timestamp="2018-04-25T06:36:29Z" changeset="58397845" uid="8166475" user="widugesay"/>
+  <node id="25496662" lat="51.5036395" lon="-0.1025071" version="5" timestamp="2016-01-18T18:19:12Z" changeset="36663710" uid="322039" user="MacLondon"/>
+  <node id="25496663" lat="51.5033108" lon="-0.1025352" version="2" timestamp="2011-01-03T11:59:42Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="25496664" lat="51.5031852" lon="-0.1028234" version="3" timestamp="2011-01-03T11:59:38Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="25496665" lat="51.5026492" lon="-0.1029089" version="3" timestamp="2011-01-03T11:59:42Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="25496666" lat="51.5026628" lon="-0.1039649" version="3" timestamp="2011-01-03T11:59:40Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="25496667" lat="51.5031961" lon="-0.1039473" version="2" timestamp="2009-04-08T23:18:44Z" changeset="338974" uid="364" user="Edward"/>
+  <node id="27553712" lat="51.5029222" lon="-0.1034580" version="10" timestamp="2017-04-17T12:23:20Z" changeset="47869023" uid="84681" user="SK53">
+    <tag k="is_in" v="Southwark, London"/>
+    <tag k="name" v="Southwark"/>
+    <tag k="name:hi" v="सदक"/>
+    <tag k="phonetic:en" v="/ˈsʌðərk/"/>
+    <tag k="place" v="suburb"/>
+    <tag k="wikidata" v="Q5273898"/>
+    <tag k="wikipedia" v="en:Southwark"/>
+  </node>
+  <node id="370948223" lat="51.5032542" lon="-0.1042975" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948224" lat="51.5032528" lon="-0.1041656" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948225" lat="51.5031740" lon="-0.1041678" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948226" lat="51.5031733" lon="-0.1041038" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948227" lat="51.5027392" lon="-0.1041157" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948228" lat="51.5027397" lon="-0.1041656" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948229" lat="51.5026521" lon="-0.1041680" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948230" lat="51.5026539" lon="-0.1043328" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948231" lat="51.5028102" lon="-0.1043285" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948232" lat="51.5028095" lon="-0.1042568" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948233" lat="51.5031357" lon="-0.1042478" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="370948234" lat="51.5031363" lon="-0.1043008" version="3" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="914501322" lat="51.5035656" lon="-0.1024558" version="3" timestamp="2015-12-11T16:59:56Z" changeset="35888701" uid="22643" user="James Derrick"/>
+  <node id="914501360" lat="51.5035563" lon="-0.1021490" version="3" timestamp="2015-12-11T16:59:56Z" changeset="35888701" uid="22643" user="James Derrick"/>
+  <node id="1070802104" lat="51.5035895" lon="-0.1027885" version="1" timestamp="2010-12-29T14:11:30Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802132" lat="51.5028805" lon="-0.1018693" version="1" timestamp="2010-12-29T14:11:31Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802154" lat="51.5020687" lon="-0.1028794" version="1" timestamp="2010-12-29T14:11:31Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802193" lat="51.5035770" lon="-0.1021757" version="1" timestamp="2010-12-29T14:11:32Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802280" lat="51.5024272" lon="-0.1040041" version="2" timestamp="2021-09-13T02:45:31Z" changeset="111117292" uid="322039" user="MacLondon"/>
+  <node id="1070802317" lat="51.5022198" lon="-0.1015100" version="1" timestamp="2010-12-29T14:11:35Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802343" lat="51.5024148" lon="-0.1043951" version="5" timestamp="2021-09-13T02:45:31Z" changeset="111117292" uid="322039" user="MacLondon"/>
+  <node id="1070802385" lat="51.5035827" lon="-0.1021266" version="1" timestamp="2010-12-29T14:11:36Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802435" lat="51.5035970" lon="-0.1043567" version="3" timestamp="2019-02-17T01:46:33Z" changeset="67267488" uid="322039" user="MacLondon"/>
+  <node id="1070802448" lat="51.5019475" lon="-0.1040777" version="1" timestamp="2010-12-29T14:11:37Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1070802479" lat="51.5032609" lon="-0.1020075" version="1" timestamp="2010-12-29T14:11:37Z" changeset="6799036" uid="346" user="Tom Chance"/>
+  <node id="1080429633" lat="51.5025904" lon="-0.1041666" version="1" timestamp="2011-01-03T11:59:03Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429639" lat="51.5028337" lon="-0.1019496" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080429640" lat="51.5026145" lon="-0.1026495" version="1" timestamp="2011-01-03T11:59:03Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429641" lat="51.5031683" lon="-0.1029048" version="1" timestamp="2011-01-03T11:59:03Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429648" lat="51.5027029" lon="-0.1028798" version="1" timestamp="2011-01-03T11:59:03Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429649" lat="51.5027523" lon="-0.1029667" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429655" lat="51.5029577" lon="-0.1022424" version="1" timestamp="2011-01-03T11:59:04Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429663" lat="51.5030194" lon="-0.1023146" version="1" timestamp="2011-01-03T11:59:04Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429666" lat="51.5030763" lon="-0.1025356" version="1" timestamp="2011-01-03T11:59:04Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429671" lat="51.5030743" lon="-0.1022366" version="1" timestamp="2011-01-03T11:59:04Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429682" lat="51.5023855" lon="-0.1035902" version="1" timestamp="2011-01-03T11:59:04Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429689" lat="51.5024232" lon="-0.1025978" version="2" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="1080429695" lat="51.5030000" lon="-0.1022403" version="1" timestamp="2011-01-03T11:59:05Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429698" lat="51.5029592" lon="-0.1023180" version="1" timestamp="2011-01-03T11:59:05Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429702" lat="51.5027087" lon="-0.1027027" version="1" timestamp="2011-01-03T11:59:05Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429709" lat="51.5027899" lon="-0.1030266" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429710" lat="51.5031181" lon="-0.1022344" version="1" timestamp="2011-01-03T11:59:05Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429714" lat="51.5025596" lon="-0.1022992" version="1" timestamp="2011-01-03T11:59:05Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429724" lat="51.5023853" lon="-0.1036488" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429725" lat="51.5026752" lon="-0.1029288" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429735" lat="51.5031591" lon="-0.1028609" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429736" lat="51.5032353" lon="-0.1039675" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429741" lat="51.5025143" lon="-0.1035911" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429752" lat="51.5027120" lon="-0.1025141" version="1" timestamp="2011-01-03T11:59:06Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429759" lat="51.5024628" lon="-0.1038820" version="1" timestamp="2011-01-03T11:59:07Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429761" lat="51.5026495" lon="-0.1035964" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429765" lat="51.5031350" lon="-0.1023092" version="1" timestamp="2011-01-03T11:59:07Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429766" lat="51.5026248" lon="-0.1040394" version="1" timestamp="2011-01-03T11:59:07Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429776" lat="51.5025371" lon="-0.1019031" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080429779" lat="51.5027076" lon="-0.1026452" version="1" timestamp="2011-01-03T11:59:07Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429782" lat="51.5032119" lon="-0.1038752" version="1" timestamp="2011-01-03T11:59:07Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429785" lat="51.5030036" lon="-0.1036214" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429787" lat="51.5024644" lon="-0.1022939" version="1" timestamp="2011-01-03T11:59:08Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429790" lat="51.5025156" lon="-0.1031133" version="1" timestamp="2011-01-03T11:59:08Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429791" lat="51.5033110" lon="-0.1022087" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429793" lat="51.5031195" lon="-0.1023094" version="1" timestamp="2011-01-03T11:59:08Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429799" lat="51.5026799" lon="-0.1038991" version="1" timestamp="2011-01-03T11:59:08Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429800" lat="51.5026970" lon="-0.1039932" version="1" timestamp="2011-01-03T11:59:08Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429801" lat="51.5029087" lon="-0.1023174" version="1" timestamp="2011-01-03T11:59:09Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429802" lat="51.5031336" lon="-0.1022337" version="1" timestamp="2011-01-03T11:59:09Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429809" lat="51.5024471" lon="-0.1040128" version="1" timestamp="2011-01-03T11:59:09Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429818" lat="51.5027496" lon="-0.1024926" version="1" timestamp="2011-01-03T11:59:09Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429820" lat="51.5028279" lon="-0.1030556" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429824" lat="51.5029168" lon="-0.1019466" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080429826" lat="51.5030179" lon="-0.1022394" version="1" timestamp="2011-01-03T11:59:10Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429830" lat="51.5029456" lon="-0.1023155" version="1" timestamp="2011-01-03T11:59:10Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429833" lat="51.5023646" lon="-0.1040122" version="1" timestamp="2011-01-03T11:59:10Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429836" lat="51.5030040" lon="-0.1035910" version="3" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429838" lat="51.5030758" lon="-0.1023115" version="1" timestamp="2011-01-03T11:59:10Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429844" lat="51.5026122" lon="-0.1025187" version="1" timestamp="2011-01-03T11:59:11Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429846" lat="51.5026934" lon="-0.1039417" version="1" timestamp="2011-01-03T11:59:11Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429849" lat="51.5023655" lon="-0.1036486" version="1" timestamp="2011-01-03T11:59:11Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429853" lat="51.5030583" lon="-0.1022374" version="1" timestamp="2011-01-03T11:59:11Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429857" lat="51.5030598" lon="-0.1023126" version="1" timestamp="2011-01-03T11:59:11Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429862" lat="51.5025811" lon="-0.1036834" version="1" timestamp="2011-01-03T11:59:12Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429864" lat="51.5031048" lon="-0.1039746" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429873" lat="51.5031180" lon="-0.1026262" version="1" timestamp="2011-01-03T11:59:12Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429875" lat="51.5028896" lon="-0.1031153" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429879" lat="51.5026023" lon="-0.1036574" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429880" lat="51.5026294" lon="-0.1024528" version="2" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="1080429884" lat="51.5030015" lon="-0.1023159" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429889" lat="51.5031191" lon="-0.1026836" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429891" lat="51.5027152" lon="-0.1039605" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429893" lat="51.5031615" lon="-0.1039720" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429894" lat="51.5032883" lon="-0.1020675" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429895" lat="51.5032961" lon="-0.1041537" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429897" lat="51.5023284" lon="-0.1037004" version="1" timestamp="2011-01-03T11:59:13Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429901" lat="51.5025889" lon="-0.1035916" version="1" timestamp="2011-01-03T11:59:14Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429902" lat="51.5032262" lon="-0.1020399" version="1" timestamp="2011-01-03T11:59:14Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429905" lat="51.5031749" lon="-0.1039218" version="1" timestamp="2011-01-03T11:59:14Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429906" lat="51.5031740" lon="-0.1022317" version="1" timestamp="2011-01-03T11:59:14Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429911" lat="51.5033122" lon="-0.1024583" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429915" lat="51.5027507" lon="-0.1025507" version="1" timestamp="2011-01-03T11:59:14Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429919" lat="51.5023654" lon="-0.1037007" version="1" timestamp="2011-01-03T11:59:15Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429924" lat="51.5025181" lon="-0.1021218" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080429925" lat="51.5029036" lon="-0.1020559" version="1" timestamp="2011-01-03T11:59:15Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429937" lat="51.5027328" lon="-0.1028207" version="1" timestamp="2011-01-03T11:59:15Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429940" lat="51.5029476" lon="-0.1035358" version="5" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080429942" lat="51.5024631" lon="-0.1037810" version="1" timestamp="2011-01-03T11:59:15Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429945" lat="51.5031754" lon="-0.1023072" version="1" timestamp="2011-01-03T11:59:15Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429959" lat="51.5032112" lon="-0.1026218" version="1" timestamp="2011-01-03T11:59:16Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429962" lat="51.5023647" lon="-0.1039602" version="1" timestamp="2011-01-03T11:59:16Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429980" lat="51.5024480" lon="-0.1036825" version="1" timestamp="2011-01-03T11:59:17Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080429989" lat="51.5025908" lon="-0.1045523" version="9" timestamp="2020-12-28T13:34:24Z" changeset="96539314" uid="322039" user="MacLondon"/>
+  <node id="1080429993" lat="51.5028330" lon="-0.1018978" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080430001" lat="51.5031359" lon="-0.1028516" version="1" timestamp="2011-01-03T11:59:17Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430003" lat="51.5026025" lon="-0.1035917" version="1" timestamp="2011-01-03T11:59:17Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430007" lat="51.5025811" lon="-0.1036572" version="1" timestamp="2011-01-03T11:59:17Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430013" lat="51.5031573" lon="-0.1035778" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080430039" lat="51.5032875" lon="-0.1022110" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080430042" lat="51.5033152" lon="-0.1045431" version="6" timestamp="2020-03-14T16:13:12Z" changeset="82196942" uid="322039" user="MacLondon"/>
+  <node id="1080430045" lat="51.5024477" lon="-0.1037809" version="1" timestamp="2011-01-03T11:59:19Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430048" lat="51.5032549" lon="-0.1022177" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080430063" lat="51.5031068" lon="-0.1024753" version="1" timestamp="2011-01-03T11:59:19Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430072" lat="51.5029563" lon="-0.1032695" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080430096" lat="51.5032089" lon="-0.1024926" version="1" timestamp="2011-01-03T11:59:20Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430105" lat="51.5027469" lon="-0.1030053" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080430108" lat="51.5031594" lon="-0.1039479" version="1" timestamp="2011-01-03T11:59:20Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430109" lat="51.5031882" lon="-0.1022310" version="1" timestamp="2011-01-03T11:59:20Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430140" lat="51.5026796" lon="-0.1028576" version="1" timestamp="2011-01-03T11:59:21Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430142" lat="51.5031896" lon="-0.1038803" version="1" timestamp="2011-01-03T11:59:21Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430170" lat="51.5026337" lon="-0.1022415" version="2" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="1080430177" lat="51.5029442" lon="-0.1022431" version="1" timestamp="2011-01-03T11:59:22Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430191" lat="51.5027117" lon="-0.1024944" version="1" timestamp="2011-01-03T11:59:22Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430210" lat="51.5023277" lon="-0.1039600" version="1" timestamp="2011-01-03T11:59:23Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430213" lat="51.5025605" lon="-0.1022471" version="2" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="1080430232" lat="51.5030753" lon="-0.1024768" version="1" timestamp="2011-01-03T11:59:23Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430236" lat="51.5027236" lon="-0.1028606" version="2" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="1080430272" lat="51.5026520" lon="-0.1039017" version="1" timestamp="2011-01-03T11:59:24Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430275" lat="51.5024474" lon="-0.1038819" version="1" timestamp="2011-01-03T11:59:24Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430281" lat="51.5029190" lon="-0.1021075" version="2" timestamp="2022-05-22T21:59:53Z" changeset="121337492" uid="3432400" user="GinaroZ"/>
+  <node id="1080430294" lat="51.5025902" lon="-0.1031139" version="1" timestamp="2011-01-03T11:59:25Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430303" lat="51.5031072" lon="-0.1024973" version="1" timestamp="2011-01-03T11:59:25Z" changeset="6848720" uid="346" user="Tom Chance"/>
+  <node id="1080430316" lat="51.5026784" lon="-0.1035798" version="4" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="1080481784" lat="51.5029539" lon="-0.1018747" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1249482198" lat="51.5037615" lon="-0.1021804" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612029799" lat="51.5002461" lon="-0.1006219" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612029844" lat="51.5028299" lon="-0.1018234" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612029876" lat="51.5000443" lon="-0.1005577" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612029959" lat="51.5012194" lon="-0.1008962" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030009" lat="51.5005770" lon="-0.1006967" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030020" lat="51.5020114" lon="-0.1013334" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030058" lat="51.5026557" lon="-0.1017363" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030134" lat="51.5009273" lon="-0.1007780" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030151" lat="51.4997450" lon="-0.1004401" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030153" lat="51.5018021" lon="-0.1011970" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1612030160" lat="51.4995631" lon="-0.1003493" version="3" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102577" lat="51.5018016" lon="-0.1011445" version="5" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102580" lat="51.5021978" lon="-0.1014207" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102583" lat="51.5026765" lon="-0.1017061" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102585" lat="51.5029571" lon="-0.1018272" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102589" lat="51.5033776" lon="-0.1019884" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102592" lat="51.5038404" lon="-0.1021568" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1668102671" lat="51.5043529" lon="-0.1023388" version="3" timestamp="2022-02-07T13:15:20Z" changeset="117119231" uid="24119" user="Mauls"/>
+  <node id="1701264964" lat="51.5023922" lon="-0.1026185" version="2" timestamp="2018-04-25T06:36:29Z" changeset="58397845" uid="8166475" user="widugesay"/>
+  <node id="1701264968" lat="51.5027117" lon="-0.1024534" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701264973" lat="51.5026316" lon="-0.1027485" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701264979" lat="51.5025731" lon="-0.1025151" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701264982" lat="51.5026366" lon="-0.1024668" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701264985" lat="51.5030373" lon="-0.1024481" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701264987" lat="51.5024563" lon="-0.1026170" version="1" timestamp="2012-04-04T16:45:39Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701265000" lat="51.5032785" lon="-0.1024669" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1701265003" lat="51.5027160" lon="-0.1028324" version="1" timestamp="2012-04-04T16:45:40Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701265007" lat="51.5024997" lon="-0.1026278" version="1" timestamp="2012-04-04T16:45:40Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701265010" lat="51.5025531" lon="-0.1025956" version="1" timestamp="2012-04-04T16:45:40Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701265016" lat="51.5025798" lon="-0.1026868" version="1" timestamp="2012-04-04T16:45:40Z" changeset="11178524" uid="644926" user="USKiwiBarlow"/>
+  <node id="1701265019" lat="51.5031904" lon="-0.1024218" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="1735764406" lat="51.5026467" lon="-0.1028156" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735764407" lat="51.5026480" lon="-0.1024202" version="3" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Acer platanoides"/>
+  </node>
+  <node id="1735764466" lat="51.5026631" lon="-0.1022969" version="3" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Acer platanoides"/>
+  </node>
+  <node id="1735764615" lat="51.5027069" lon="-0.1024251" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735764622" lat="51.5027094" lon="-0.1022949" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus unidentified species"/>
+  </node>
+  <node id="1735764632" lat="51.5027115" lon="-0.1038185" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus X purpurea"/>
+  </node>
+  <node id="1735764642" lat="51.5030285" lon="-0.1031162" version="5" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735764644" lat="51.5027118" lon="-0.1030891" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735764645" lat="51.5027119" lon="-0.1031913" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735764655" lat="51.5027122" lon="-0.1030222" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735764658" lat="51.5028008" lon="-0.1033898" version="5" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735764660" lat="51.5027126" lon="-0.1036891" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735764674" lat="51.5027048" lon="-0.1037529" version="3" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Acer negundo"/>
+  </node>
+  <node id="1735764691" lat="51.5027143" lon="-0.1029599" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735764694" lat="51.5027144" lon="-0.1039006" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735764697" lat="51.5027157" lon="-0.1031389" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735764714" lat="51.5027201" lon="-0.1029346" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735764725" lat="51.5027263" lon="-0.1029320" version="4" timestamp="2021-08-13T06:32:19Z" changeset="109607608" uid="10588374" user="joyclem">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735764738" lat="51.5027283" lon="-0.1023610" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735764813" lat="51.5027509" lon="-0.1024171" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus unidentified species"/>
+  </node>
+  <node id="1735764818" lat="51.5026527" lon="-0.1024984" version="4" timestamp="2020-08-26T03:54:05Z" changeset="89943036" uid="10455631" user="skanduk">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Acer platanoides"/>
+  </node>
+  <node id="1735764918" lat="51.5027937" lon="-0.1022902" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus unidentified species"/>
+  </node>
+  <node id="1735764922" lat="51.5027943" lon="-0.1024215" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus unidentified species"/>
+  </node>
+  <node id="1735765006" lat="51.5028416" lon="-0.1031436" version="6" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765008" lat="51.5028424" lon="-0.1029047" version="6" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765009" lat="51.5028439" lon="-0.1022893" version="3" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Acer platanoides"/>
+  </node>
+  <node id="1735765013" lat="51.5028523" lon="-0.1034269" version="6" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765037" lat="51.5028580" lon="-0.1039468" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735765071" lat="51.5028895" lon="-0.1022825" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735765089" lat="51.5028997" lon="-0.1028998" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765118" lat="51.5029279" lon="-0.1039463" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735765148" lat="51.5029400" lon="-0.1028955" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765236" lat="51.5029789" lon="-0.1028965" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765347" lat="51.5030021" lon="-0.1024118" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735765381" lat="51.5030148" lon="-0.1039402" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735765440" lat="51.5031226" lon="-0.1036036" version="7" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765443" lat="51.5030296" lon="-0.1041093" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735765467" lat="51.5030318" lon="-0.1028993" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765706" lat="51.5030783" lon="-0.1028949" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765713" lat="51.5030784" lon="-0.1039376" version="4" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735765761" lat="51.5030857" lon="-0.1029170" version="6" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765813" lat="51.5030780" lon="-0.1031128" version="7" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Platanus X hispanica"/>
+    <tag k="species:en" v="London plane"/>
+  </node>
+  <node id="1735765872" lat="51.5031046" lon="-0.1028887" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735765939" lat="51.5031157" lon="-0.1024045" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735765963" lat="51.5031296" lon="-0.1029002" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735766093" lat="51.5031651" lon="-0.1030804" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735766104" lat="51.5031672" lon="-0.1031151" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ilex aquifolium 'unidentified"/>
+  </node>
+  <node id="1735766115" lat="51.5031693" lon="-0.1030454" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735766132" lat="51.5031726" lon="-0.1034461" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735766149" lat="51.5031749" lon="-0.1033016" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735766153" lat="51.5031756" lon="-0.1033388" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735766182" lat="51.5031759" lon="-0.1032691" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Cordyline Australis"/>
+  </node>
+  <node id="1735766183" lat="51.5031786" lon="-0.1032417" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Ficus carica"/>
+  </node>
+  <node id="1735766233" lat="51.5031889" lon="-0.1036568" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus kanzan"/>
+  </node>
+  <node id="1735766260" lat="51.5031907" lon="-0.1038633" version="4" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Malus Sylvestris"/>
+  </node>
+  <node id="1735766396" lat="51.5032340" lon="-0.1040915" version="3" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="leaf_cycle" v="deciduous"/>
+    <tag k="leaf_type" v="broadleaved"/>
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="Prunus avium"/>
+  </node>
+  <node id="1735766547" lat="51.5032814" lon="-0.1028437" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="New Tree Pit"/>
+  </node>
+  <node id="1735766610" lat="51.5032923" lon="-0.1029494" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="New Tree Pit"/>
+  </node>
+  <node id="1735766691" lat="51.5033076" lon="-0.1030476" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="New Tree Pit"/>
+  </node>
+  <node id="1735766698" lat="51.5033087" lon="-0.1037418" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="New Tree Pit"/>
+  </node>
+  <node id="1735766734" lat="51.5033191" lon="-0.1031970" version="2" timestamp="2020-01-22T14:53:56Z" changeset="79924207" uid="232386" user="_yog">
+    <tag k="natural" v="tree"/>
+    <tag k="note" v="Accurate as of 2010"/>
+    <tag k="source" v="London Borough of Southwark"/>
+    <tag k="species" v="New Tree Pit"/>
+  </node>
+  <node id="1737173631" lat="51.4978681" lon="-0.0990676" version="4" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls">
+    <tag k="railway" v="switch"/>
+  </node>
+  <node id="1737173637" lat="51.4982429" lon="-0.0993727" version="3" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls"/>
+  <node id="1737173649" lat="51.4983389" lon="-0.0993835" version="3" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls">
+    <tag k="railway" v="switch"/>
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173665" lat="51.4987457" lon="-0.0997070" version="5" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls"/>
+  <node id="1737173670" lat="51.4988619" lon="-0.0998568" version="2" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173673" lat="51.4989781" lon="-0.0999045" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173678" lat="51.4992376" lon="-0.1000988" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173686" lat="51.4993457" lon="-0.1002182" version="2" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173688" lat="51.4994173" lon="-0.1002182" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173690" lat="51.4996146" lon="-0.1003333" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173696" lat="51.4998532" lon="-0.1004386" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173702" lat="51.5001201" lon="-0.1005319" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173708" lat="51.5004032" lon="-0.1006079" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173722" lat="51.5006498" lon="-0.1006622" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173724" lat="51.5008647" lon="-0.1007208" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173725" lat="51.5010944" lon="-0.1007935" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1737173727" lat="51.5014201" lon="-0.1009400" version="4" timestamp="2021-08-30T21:19:31Z" changeset="110480606" uid="3302161" user="liam-2001">
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:tpws" v="yes"/>
+  </node>
+  <node id="1933344140" lat="51.4980146" lon="-0.0992150" version="3" timestamp="2022-02-07T14:33:00Z" changeset="117122438" uid="24119" user="Mauls">
+    <tag k="railway" v="switch"/>
+  </node>
+  <node id="3080103386" lat="51.5022705" lon="-0.1040145" version="2" timestamp="2018-04-25T06:36:29Z" changeset="58397845" uid="8166475" user="widugesay"/>
+  <node id="3080103388" lat="51.5024473" lon="-0.1040197" version="1" timestamp="2014-09-16T13:02:45Z" changeset="25478755" uid="346039" user="fitzsimons"/>
+  <node id="3097649119" lat="51.5034513" lon="-0.1025237" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="3097649120" lat="51.5031629" lon="-0.1024449" version="1" timestamp="2014-09-26T19:21:36Z" changeset="25693451" uid="2362367" user="T_T_T_T"/>
+  <node id="3097649123" lat="51.5025912" lon="-0.1044349" version="1" timestamp="2014-09-26T19:21:36Z" changeset="25693451" uid="2362367" user="T_T_T_T"/>
+  <node id="7699658637" lat="51.5029385" lon="-0.1031355" version="2" timestamp="2022-03-09T09:20:26Z" changeset="118269767" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="bicycle_parking"/>
+    <tag k="bicycle_parking" v="stands"/>
+    <tag k="capacity" v="6"/>
+    <tag k="covered" v="no"/>
+  </node>
+  <node id="7699658638" lat="51.5029952" lon="-0.1034078" version="2" timestamp="2022-03-09T09:20:33Z" changeset="118269767" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="bicycle_parking"/>
+    <tag k="bicycle_parking" v="stands"/>
+    <tag k="capacity" v="6"/>
+    <tag k="covered" v="no"/>
+  </node>
+  <node id="7699658639" lat="51.5030129" lon="-0.1035154" version="3" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="bicycle_parking"/>
+    <tag k="bicycle_parking" v="stands"/>
+    <tag k="capacity" v="4"/>
+    <tag k="covered" v="no"/>
+  </node>
+  <node id="7699658640" lat="51.5029119" lon="-0.1028999" version="2" timestamp="2022-03-09T09:20:39Z" changeset="118269767" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="bicycle_parking"/>
+    <tag k="bicycle_parking" v="stands"/>
+    <tag k="capacity" v="4"/>
+    <tag k="covered" v="no"/>
+  </node>
+  <node id="7845046175" lat="51.5024311" lon="-0.1022469" version="1" timestamp="2020-08-26T03:54:05Z" changeset="89943036" uid="10455631" user="skanduk"/>
+  <node id="7845046176" lat="51.5025180" lon="-0.1022318" version="1" timestamp="2020-08-26T03:54:05Z" changeset="89943036" uid="10455631" user="skanduk">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="7845046177" lat="51.5028390" lon="-0.1021935" version="1" timestamp="2020-08-26T03:54:05Z" changeset="89943036" uid="10455631" user="skanduk"/>
+  <node id="8865982297" lat="51.5032546" lon="-0.1023596" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="8865982298" lat="51.5032033" lon="-0.1023550" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="8865982299" lat="51.5032046" lon="-0.1022277" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="8865982300" lat="51.5032799" lon="-0.1022826" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="8865982301" lat="51.5035619" lon="-0.1023353" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="8865982302" lat="51.5034902" lon="-0.1024565" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter"/>
+  <node id="9085246832" lat="51.5022421" lon="-0.1041133" version="1" timestamp="2021-09-13T02:45:31Z" changeset="111117292" uid="322039" user="MacLondon"/>
+  <node id="9085246833" lat="51.5022564" lon="-0.1039776" version="1" timestamp="2021-09-13T02:45:31Z" changeset="111117292" uid="322039" user="MacLondon"/>
+  <node id="9116866997" lat="51.5024972" lon="-0.1026053" version="1" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="9116866998" lat="51.5025458" lon="-0.1025619" version="1" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="9116866999" lat="51.5025619" lon="-0.1025099" version="1" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo"/>
+  <node id="9401046264" lat="51.5026003" lon="-0.1040878" version="1" timestamp="2022-01-07T23:37:02Z" changeset="115895661" uid="132695" user="Milhouse">
+    <tag k="access" v="private"/>
+    <tag k="amenity" v="bicycle_parking"/>
+    <tag k="bicycle_parking" v="shed"/>
+    <tag k="capacity" v="6"/>
+    <tag k="operator" v="cyclehoop"/>
+    <tag k="ref" v="Bikehangar 1596"/>
+  </node>
+  <node id="9568915237" lat="51.5032057" lon="-0.1036315" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915238" lat="51.5026495" lon="-0.1035667" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="traffic_calming" v="hump"/>
+  </node>
+  <node id="9568915239" lat="51.5028092" lon="-0.1029741" version="2" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915240" lat="51.5031466" lon="-0.1029853" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915241" lat="51.5029749" lon="-0.1032202" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915242" lat="51.5031047" lon="-0.1039495" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="9568915243" lat="51.5026785" lon="-0.1036155" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="9568915246" lat="51.5031602" lon="-0.1037533" version="2" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915247" lat="51.5031052" lon="-0.1036465" version="2" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915248" lat="51.5031370" lon="-0.1035647" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915249" lat="51.5030340" lon="-0.1032844" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915250" lat="51.5030332" lon="-0.1035640" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915251" lat="51.5031371" lon="-0.1032842" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915252" lat="51.5031368" lon="-0.1031917" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915253" lat="51.5030764" lon="-0.1031922" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915254" lat="51.5030766" lon="-0.1032847" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915255" lat="51.5031701" lon="-0.1029873" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="9568915256" lat="51.5031894" lon="-0.1029907" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915257" lat="51.5027669" lon="-0.1036578" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915258" lat="51.5030066" lon="-0.1033733" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915259" lat="51.5029420" lon="-0.1033689" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915260" lat="51.5029602" lon="-0.1033682" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="gate"/>
+  </node>
+  <node id="9568915261" lat="51.5028699" lon="-0.1036207" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915262" lat="51.5029665" lon="-0.1030565" version="2" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <tag k="leisure" v="fitness_station"/>
+    <tag k="sport" v="fitness"/>
+  </node>
+  <node id="9568915263" lat="51.5033035" lon="-0.1043044" version="2" timestamp="2022-03-17T09:17:22Z" changeset="118582736" uid="11471297" user="Palgrave Peter">
+    <tag k="barrier" v="bollard"/>
+    <tag k="bollard" v="fixed"/>
+  </node>
+  <node id="9568915264" lat="51.5029168" lon="-0.1036795" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="bench"/>
+  </node>
+  <node id="9568915265" lat="51.5027076" lon="-0.1036666" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="amenity" v="waste_basket"/>
+  </node>
+  <node id="9568915266" lat="51.5028897" lon="-0.1036489" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915267" lat="51.5027687" lon="-0.1036303" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter"/>
+  <node id="9568915268" lat="51.5027786" lon="-0.1038007" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <tag k="leisure" v="picnic_table"/>
+  </node>
+  <node id="9586144486" lat="51.5031042" lon="-0.1038790" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144487" lat="51.5031038" lon="-0.1038308" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144488" lat="51.5030284" lon="-0.1036733" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144489" lat="51.5031470" lon="-0.1038346" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144490" lat="51.5031393" lon="-0.1036845" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144491" lat="51.5030626" lon="-0.1036484" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <node id="9586144492" lat="51.5030940" lon="-0.1029731" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter"/>
+  <way id="3987296" version="26" timestamp="2022-04-09T18:47:27Z" changeset="119514606" uid="8221018" user="RX14">
+    <nd ref="1933344140"/>
+    <nd ref="1737173637"/>
+    <nd ref="20828636"/>
+    <nd ref="1737173670"/>
+    <nd ref="1737173686"/>
+    <nd ref="1612030160"/>
+    <nd ref="1612030151"/>
+    <nd ref="20828635"/>
+    <nd ref="1612029876"/>
+    <nd ref="1612029799"/>
+    <nd ref="1612030009"/>
+    <nd ref="1612030134"/>
+    <nd ref="20828634"/>
+    <nd ref="1612029959"/>
+    <nd ref="1612030153"/>
+    <nd ref="1612030020"/>
+    <nd ref="20828633"/>
+    <nd ref="1612030058"/>
+    <nd ref="1612029844"/>
+    <nd ref="1080481784"/>
+    <nd ref="20828632"/>
+    <nd ref="1249482198"/>
+    <tag k="alt_name" v="Holborn Viaduct and Herne Hill Line"/>
+    <tag k="bridge" v="viaduct"/>
+    <tag k="electrified" v="rail"/>
+    <tag k="frequency" v="0"/>
+    <tag k="gauge" v="1435"/>
+    <tag k="layer" v="2"/>
+    <tag k="name" v="Thameslink"/>
+    <tag k="operator" v="Network Rail"/>
+    <tag k="passenger_lines" v="4"/>
+    <tag k="railway" v="rail"/>
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:etcs" v="2"/>
+    <tag k="railway:tpws" v="yes"/>
+    <tag k="ref" v="HHH"/>
+    <tag k="tracks" v="4"/>
+    <tag k="usage" v="main"/>
+    <tag k="voltage" v="750"/>
+  </way>
+  <way id="4255128" version="12" timestamp="2022-03-17T09:20:55Z" changeset="118582890" uid="11471297" user="Palgrave Peter">
+    <nd ref="25496662"/>
+    <nd ref="3097649119"/>
+    <nd ref="25496663"/>
+    <nd ref="25496664"/>
+    <tag k="highway" v="residential"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="20 mph"/>
+    <tag k="name" v="Nelson Square"/>
+    <tag k="sidewalk" v="both"/>
+    <tag k="source:width" v="ARCore"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="width" v="5.3"/>
+  </way>
+  <way id="32942277" version="3" timestamp="2014-02-21T15:40:51Z" changeset="20695997" uid="24119" user="Mauls">
+    <nd ref="370948223"/>
+    <nd ref="370948224"/>
+    <nd ref="370948225"/>
+    <nd ref="370948226"/>
+    <nd ref="370948227"/>
+    <nd ref="370948228"/>
+    <nd ref="370948229"/>
+    <nd ref="370948230"/>
+    <nd ref="370948231"/>
+    <nd ref="370948232"/>
+    <nd ref="370948233"/>
+    <nd ref="370948234"/>
+    <nd ref="370948223"/>
+    <tag k="addr:housename" v="Vaughan House"/>
+    <tag k="building" v="flats"/>
+    <tag k="source" v="Yahoo!"/>
+  </way>
+  <way id="58780084" version="10" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="25496664"/>
+    <nd ref="1080429937"/>
+    <nd ref="1701265003"/>
+    <nd ref="1080430140"/>
+    <nd ref="25496665"/>
+    <nd ref="9568915238"/>
+    <nd ref="1080429761"/>
+    <nd ref="1080430272"/>
+    <nd ref="25496666"/>
+    <nd ref="1080429800"/>
+    <nd ref="1080429864"/>
+    <nd ref="1080429893"/>
+    <nd ref="25496667"/>
+    <tag k="highway" v="residential"/>
+    <tag k="lit" v="yes"/>
+    <tag k="name" v="Nelson Square"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="58780085" version="3" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429648"/>
+    <nd ref="1080429725"/>
+    <nd ref="1080430316"/>
+    <nd ref="9568915243"/>
+    <nd ref="1080429799"/>
+    <nd ref="1080429846"/>
+    <nd ref="1080429891"/>
+    <nd ref="9568915242"/>
+    <nd ref="1080430108"/>
+    <nd ref="1080429905"/>
+    <nd ref="1080430142"/>
+    <nd ref="9568915255"/>
+    <nd ref="1080429641"/>
+    <nd ref="1080429735"/>
+    <nd ref="1080430001"/>
+    <nd ref="1080430236"/>
+    <nd ref="1080429648"/>
+    <tag k="barrier" v="fence"/>
+    <tag k="leisure" v="park"/>
+    <tag k="name" v="Nelson Square"/>
+  </way>
+  <way id="77765225" version="9" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter">
+    <nd ref="914501322"/>
+    <nd ref="8865982301"/>
+    <nd ref="914501360"/>
+    <nd ref="1080429894"/>
+    <nd ref="1080430039"/>
+    <nd ref="1080429791"/>
+    <nd ref="1080429911"/>
+    <nd ref="8865982302"/>
+    <nd ref="914501322"/>
+    <tag k="addr:housenumber" v="235-241"/>
+    <tag k="building" v="residential"/>
+    <tag k="building:levels" v="14"/>
+    <tag k="contact:phone" v="+44 20 3772 7722"/>
+    <tag k="name" v="The Music Box"/>
+    <tag k="operator" v="Taylor Wimpey"/>
+    <tag k="website" v="https://www.themusicboxse1.com/"/>
+  </way>
+  <way id="92240482" version="3" timestamp="2021-09-13T02:45:31Z" changeset="111117292" uid="322039" user="MacLondon">
+    <nd ref="1070802317"/>
+    <nd ref="1070802132"/>
+    <nd ref="1070802479"/>
+    <nd ref="1070802385"/>
+    <nd ref="1070802193"/>
+    <nd ref="1070802104"/>
+    <nd ref="1070802435"/>
+    <nd ref="1070802343"/>
+    <nd ref="1070802280"/>
+    <nd ref="9085246833"/>
+    <nd ref="9085246832"/>
+    <nd ref="1070802448"/>
+    <nd ref="1070802154"/>
+    <nd ref="24923168"/>
+    <nd ref="1070802317"/>
+    <tag k="landuse" v="residential"/>
+  </way>
+  <way id="93197219" version="2" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo">
+    <nd ref="1080429689"/>
+    <nd ref="9116866997"/>
+    <nd ref="9116866998"/>
+    <nd ref="9116866999"/>
+    <nd ref="1080429880"/>
+    <nd ref="1080430170"/>
+    <nd ref="1080430213"/>
+    <nd ref="1080429714"/>
+    <nd ref="1080429787"/>
+    <nd ref="1080429689"/>
+    <tag k="landuse" v="construction"/>
+  </way>
+  <way id="93197239" version="5" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429940"/>
+    <nd ref="9568915260"/>
+    <nd ref="1080430072"/>
+    <nd ref="1080429875"/>
+    <nd ref="1080429820"/>
+    <nd ref="1080429709"/>
+    <nd ref="1080430105"/>
+    <nd ref="1080429725"/>
+    <nd ref="1080430316"/>
+    <nd ref="9568915267"/>
+    <nd ref="9568915261"/>
+    <nd ref="1080429940"/>
+    <tag k="access" v="yes"/>
+    <tag k="barrier" v="fence"/>
+    <tag k="leisure" v="playground"/>
+  </way>
+  <way id="93197247" version="4" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429649"/>
+    <nd ref="9568915239"/>
+    <nd ref="9586144492"/>
+    <nd ref="9568915240"/>
+    <nd ref="1080430013"/>
+    <nd ref="1080429836"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="93197251" version="3" timestamp="2022-03-09T09:23:09Z" changeset="118269785" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429924"/>
+    <nd ref="1080430281"/>
+    <nd ref="1080429824"/>
+    <nd ref="1080429639"/>
+    <nd ref="1080429993"/>
+    <nd ref="1080429776"/>
+    <nd ref="1080429924"/>
+    <tag k="building" v="office"/>
+    <tag k="building:levels" v="4"/>
+  </way>
+  <way id="93197252" version="5" timestamp="2021-09-23T12:12:12Z" changeset="111589260" uid="8275988" user="Shhoo">
+    <nd ref="25496666"/>
+    <nd ref="1080429766"/>
+    <nd ref="1080429633"/>
+    <nd ref="3097649123"/>
+    <nd ref="1080429989"/>
+    <tag k="highway" v="footway"/>
+  </way>
+  <way id="93197259" version="2" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080430048"/>
+    <nd ref="1080430039"/>
+    <nd ref="1080429894"/>
+    <nd ref="1080429902"/>
+    <nd ref="1080429925"/>
+    <nd ref="1080429801"/>
+    <nd ref="1080429830"/>
+    <nd ref="1080430177"/>
+    <nd ref="1080429655"/>
+    <nd ref="1080429698"/>
+    <nd ref="1080429884"/>
+    <nd ref="1080429695"/>
+    <nd ref="1080429826"/>
+    <nd ref="1080429663"/>
+    <nd ref="1080429857"/>
+    <nd ref="1080429853"/>
+    <nd ref="1080429671"/>
+    <nd ref="1080429838"/>
+    <nd ref="1080429793"/>
+    <nd ref="1080429710"/>
+    <nd ref="1080429802"/>
+    <nd ref="1080429765"/>
+    <nd ref="1080429945"/>
+    <nd ref="1080429906"/>
+    <nd ref="1080430109"/>
+    <nd ref="8865982299"/>
+    <nd ref="1080430048"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="93197266" version="4" timestamp="2022-03-09T09:21:00Z" changeset="118269785" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429959"/>
+    <nd ref="1080430096"/>
+    <nd ref="1080430303"/>
+    <nd ref="1080430063"/>
+    <nd ref="1080430232"/>
+    <nd ref="1080429666"/>
+    <nd ref="1080429915"/>
+    <nd ref="1080429818"/>
+    <nd ref="1080430191"/>
+    <nd ref="1080429752"/>
+    <nd ref="1080429844"/>
+    <nd ref="1080429640"/>
+    <nd ref="1080429779"/>
+    <nd ref="1080429702"/>
+    <nd ref="1080429889"/>
+    <nd ref="1080429873"/>
+    <nd ref="1080429959"/>
+    <tag k="addr:city" v="London"/>
+    <tag k="addr:street" v="Nelson Square"/>
+    <tag k="building" v="apartments"/>
+    <tag k="building:levels" v="8"/>
+    <tag k="name" v="Applegarth House"/>
+  </way>
+  <way id="93197277" version="4" timestamp="2022-03-09T09:21:33Z" changeset="118269785" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429809"/>
+    <nd ref="1080430275"/>
+    <nd ref="1080429759"/>
+    <nd ref="1080429942"/>
+    <nd ref="1080430045"/>
+    <nd ref="1080429980"/>
+    <nd ref="1080429862"/>
+    <nd ref="1080430007"/>
+    <nd ref="1080429879"/>
+    <nd ref="1080430003"/>
+    <nd ref="1080429901"/>
+    <nd ref="1080430294"/>
+    <nd ref="1080429790"/>
+    <nd ref="1080429741"/>
+    <nd ref="1080429682"/>
+    <nd ref="1080429724"/>
+    <nd ref="1080429849"/>
+    <nd ref="1080429919"/>
+    <nd ref="1080429897"/>
+    <nd ref="1080430210"/>
+    <nd ref="1080429962"/>
+    <nd ref="1080429833"/>
+    <nd ref="1080429809"/>
+    <tag k="addr:city" v="London"/>
+    <tag k="addr:housename" v="Helen Gladstone House"/>
+    <tag k="addr:postcode" v="SE1 0QB"/>
+    <tag k="addr:street" v="Nelson Square"/>
+    <tag k="building" v="apartments"/>
+    <tag k="building:levels" v="4"/>
+    <tag k="name" v="Helen Gladstone House"/>
+  </way>
+  <way id="93197279" version="4" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429785"/>
+    <nd ref="1080429836"/>
+    <nd ref="9568915258"/>
+    <nd ref="9568915241"/>
+    <nd ref="9568915239"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="93197290" version="4" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429864"/>
+    <nd ref="9568915242"/>
+    <nd ref="9586144486"/>
+    <nd ref="9586144487"/>
+    <nd ref="9586144488"/>
+    <nd ref="1080429785"/>
+    <nd ref="9568915266"/>
+    <nd ref="9568915257"/>
+    <nd ref="9568915243"/>
+    <nd ref="1080429761"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="concrete"/>
+  </way>
+  <way id="157890035" version="3" timestamp="2022-03-09T09:21:51Z" changeset="118269603" uid="11471297" user="Palgrave Peter">
+    <nd ref="1701265007"/>
+    <nd ref="1701265016"/>
+    <nd ref="1701264973"/>
+    <nd ref="1701265003"/>
+    <tag k="highway" v="footway"/>
+    <tag k="lit" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="157890038" version="5" timestamp="2022-03-09T09:22:00Z" changeset="118269603" uid="11471297" user="Palgrave Peter">
+    <nd ref="1701265019"/>
+    <nd ref="3097649120"/>
+    <nd ref="1701264985"/>
+    <nd ref="1701264968"/>
+    <nd ref="1701264982"/>
+    <nd ref="1701264979"/>
+    <nd ref="1701265010"/>
+    <nd ref="1701265007"/>
+    <nd ref="1701264987"/>
+    <nd ref="1701264964"/>
+    <tag k="highway" v="footway"/>
+    <tag k="lit" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="164435841" version="15" timestamp="2022-04-09T18:47:27Z" changeset="119514606" uid="8221018" user="RX14">
+    <nd ref="1668102671"/>
+    <nd ref="1668102592"/>
+    <nd ref="1668102589"/>
+    <nd ref="1668102585"/>
+    <nd ref="1668102583"/>
+    <nd ref="1668102580"/>
+    <nd ref="1668102577"/>
+    <nd ref="1737173727"/>
+    <nd ref="1737173725"/>
+    <nd ref="1737173724"/>
+    <nd ref="1737173722"/>
+    <nd ref="1737173708"/>
+    <nd ref="1737173702"/>
+    <nd ref="1737173696"/>
+    <nd ref="1737173690"/>
+    <nd ref="1737173688"/>
+    <nd ref="1737173678"/>
+    <nd ref="1737173673"/>
+    <nd ref="1737173665"/>
+    <nd ref="1737173649"/>
+    <nd ref="1737173631"/>
+    <tag k="alt_name" v="Holborn Viaduct and Herne Hill Line"/>
+    <tag k="bridge" v="viaduct"/>
+    <tag k="electrified" v="rail"/>
+    <tag k="frequency" v="0"/>
+    <tag k="gauge" v="1435"/>
+    <tag k="layer" v="3"/>
+    <tag k="name" v="Thameslink"/>
+    <tag k="operator" v="Network Rail"/>
+    <tag k="passenger_lines" v="4"/>
+    <tag k="railway" v="rail"/>
+    <tag k="railway:aws" v="yes"/>
+    <tag k="railway:etcs" v="2"/>
+    <tag k="railway:tpws" v="yes"/>
+    <tag k="ref" v="HHH"/>
+    <tag k="usage" v="main"/>
+    <tag k="voltage" v="750"/>
+  </way>
+  <way id="303611910" version="1" timestamp="2014-09-16T13:02:45Z" changeset="25478755" uid="346039" user="fitzsimons">
+    <nd ref="25496666"/>
+    <nd ref="3080103388"/>
+    <nd ref="3080103386"/>
+    <tag k="foot" v="yes"/>
+    <tag k="highway" v="footway"/>
+    <tag k="source" v="GPS survey"/>
+  </way>
+  <way id="392134505" version="4" timestamp="2022-03-17T09:17:41Z" changeset="118582724" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080430042"/>
+    <nd ref="9568915263"/>
+    <nd ref="1080429895"/>
+    <nd ref="1080429736"/>
+    <nd ref="25496667"/>
+    <tag k="highway" v="footway"/>
+    <tag k="lit" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="678658474" version="5" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="25496667"/>
+    <nd ref="1080429782"/>
+    <nd ref="9568915237"/>
+    <nd ref="9568915256"/>
+    <nd ref="25496664"/>
+    <tag k="highway" v="residential"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="20 mph"/>
+    <tag k="name" v="Nelson Square"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="sidewalk" v="left"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="width" v="4"/>
+  </way>
+  <way id="840754192" version="1" timestamp="2020-08-26T03:54:05Z" changeset="89943036" uid="10455631" user="skanduk">
+    <nd ref="7845046175"/>
+    <nd ref="7845046176"/>
+    <nd ref="7845046177"/>
+    <tag k="access" v="private"/>
+    <tag k="highway" v="service"/>
+  </way>
+  <way id="958202227" version="1" timestamp="2021-06-25T13:51:13Z" changeset="106966065" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080430048"/>
+    <nd ref="8865982297"/>
+    <nd ref="8865982298"/>
+    <nd ref="8865982299"/>
+    <nd ref="1080430048"/>
+    <tag k="building" v="garages"/>
+  </way>
+  <way id="958202228" version="2" timestamp="2022-03-17T09:19:21Z" changeset="118582810" uid="11471297" user="Palgrave Peter">
+    <nd ref="25496663"/>
+    <nd ref="1701265000"/>
+    <nd ref="8865982300"/>
+    <tag k="highway" v="service"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="958202229" version="2" timestamp="2022-03-17T09:19:45Z" changeset="118582810" uid="11471297" user="Palgrave Peter">
+    <nd ref="1701265000"/>
+    <nd ref="1701265019"/>
+    <tag k="highway" v="service"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1039090211" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="1080429649"/>
+    <nd ref="1080430236"/>
+    <nd ref="1701265003"/>
+    <tag k="highway" v="footway"/>
+  </way>
+  <way id="1039090212" version="3" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <nd ref="9586144486"/>
+    <nd ref="9586144489"/>
+    <nd ref="9568915246"/>
+    <nd ref="9586144490"/>
+    <nd ref="9568915247"/>
+    <nd ref="9586144491"/>
+    <nd ref="9586144488"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1039090213" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="9568915248"/>
+    <nd ref="9568915251"/>
+    <nd ref="9568915254"/>
+    <nd ref="9568915249"/>
+    <nd ref="9568915250"/>
+    <nd ref="9568915248"/>
+    <tag k="leisure" v="pitch"/>
+    <tag k="sport" v="soccer"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1039090214" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="9568915251"/>
+    <nd ref="9568915252"/>
+    <nd ref="9568915253"/>
+    <nd ref="9568915254"/>
+    <nd ref="9568915251"/>
+    <tag k="leisure" v="pitch"/>
+    <tag k="sport" v="basketball"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1039090215" version="2" timestamp="2022-03-17T09:19:10Z" changeset="118582722" uid="11471297" user="Palgrave Peter">
+    <nd ref="9568915240"/>
+    <nd ref="9568915255"/>
+    <nd ref="9568915256"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1039090216" version="1" timestamp="2022-03-10T14:44:13Z" changeset="118326901" uid="11471297" user="Palgrave Peter">
+    <nd ref="9568915258"/>
+    <nd ref="9568915260"/>
+    <nd ref="9568915259"/>
+    <tag k="highway" v="footway"/>
+  </way>
+  <way id="1041221413" version="1" timestamp="2022-03-17T18:33:49Z" changeset="118606543" uid="11471297" user="Palgrave Peter">
+    <nd ref="9568915241"/>
+    <nd ref="9586144492"/>
+    <tag k="highway" v="footway"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <relation id="1179706" version="21" timestamp="2022-07-21T01:14:42Z" changeset="123870696" uid="322039" user="MacLondon">
+    <member type="node" ref="775090651" role="house"/>
+    <member type="way" ref="1080156034" role="street"/>
+    <member type="way" ref="392134508" role="street"/>
+    <member type="way" ref="1080155807" role="street"/>
+    <member type="way" ref="1080155808" role="street"/>
+    <member type="way" ref="934890228" role="street"/>
+    <member type="way" ref="384764141" role="street"/>
+    <member type="way" ref="77874195" role="street"/>
+    <member type="way" ref="492884215" role="street"/>
+    <member type="way" ref="537863426" role="street"/>
+    <member type="way" ref="147680889" role="street"/>
+    <member type="way" ref="492884216" role="street"/>
+    <member type="way" ref="32942299" role="house"/>
+    <member type="way" ref="77765241" role="house"/>
+    <member type="way" ref="77765222" role="house"/>
+    <member type="way" ref="77765233" role="house"/>
+    <member type="way" ref="77765219" role="house"/>
+    <member type="way" ref="77765236" role="house"/>
+    <member type="way" ref="77765242" role="house"/>
+    <member type="way" ref="77765225" role="house"/>
+    <member type="way" ref="77765228" role="house"/>
+    <member type="way" ref="77765229" role="house"/>
+    <member type="way" ref="77765224" role="house"/>
+    <member type="way" ref="77765221" role="house"/>
+    <member type="way" ref="77765232" role="house"/>
+    <member type="way" ref="77765231" role="house"/>
+    <member type="way" ref="449296736" role="street"/>
+    <member type="way" ref="93204862" role="house"/>
+    <member type="way" ref="93204887" role="house"/>
+    <tag k="name" v="Union Street"/>
+    <tag k="type" v="associatedStreet"/>
+  </relation>
+  <relation id="4859764" version="18" timestamp="2022-02-07T14:49:49Z" changeset="117123082" uid="24119" user="Mauls">
+    <member type="node" ref="6465173955" role=""/>
+    <member type="node" ref="6465173956" role=""/>
+    <member type="node" ref="6695079961" role=""/>
+    <member type="node" ref="3660623412" role=""/>
+    <member type="node" ref="3831844357" role=""/>
+    <member type="way" ref="712023221" role=""/>
+    <member type="way" ref="164434958" role=""/>
+    <member type="way" ref="712023222" role=""/>
+    <member type="way" ref="342619562" role=""/>
+    <member type="way" ref="441102544" role=""/>
+    <member type="way" ref="491380787" role=""/>
+    <member type="way" ref="161754967" role=""/>
+    <member type="way" ref="164435841" role=""/>
+    <member type="way" ref="27959887" role=""/>
+    <member type="way" ref="27959909" role=""/>
+    <member type="way" ref="31233709" role=""/>
+    <member type="way" ref="31233690" role=""/>
+    <member type="way" ref="27959911" role=""/>
+    <member type="way" ref="31233713" role=""/>
+    <member type="way" ref="27959914" role=""/>
+    <member type="way" ref="31233718" role=""/>
+    <member type="way" ref="27960008" role=""/>
+    <member type="way" ref="342540147" role=""/>
+    <member type="way" ref="380510012" role=""/>
+    <member type="way" ref="11826295" role=""/>
+    <member type="way" ref="27959731" role=""/>
+    <member type="way" ref="27959731" role=""/>
+    <member type="way" ref="3987294" role=""/>
+    <member type="way" ref="3987294" role=""/>
+    <member type="way" ref="11826295" role=""/>
+    <member type="way" ref="380510012" role=""/>
+    <member type="way" ref="342540147" role=""/>
+    <member type="way" ref="3987295" role=""/>
+    <member type="way" ref="380510014" role=""/>
+    <member type="way" ref="3987295" role=""/>
+    <member type="way" ref="380510014" role=""/>
+    <member type="way" ref="53104699" role=""/>
+    <member type="way" ref="27960007" role=""/>
+    <member type="way" ref="712023221" role=""/>
+    <member type="way" ref="164434958" role=""/>
+    <member type="way" ref="441102544" role=""/>
+    <member type="way" ref="342619562" role=""/>
+    <member type="way" ref="712023222" role=""/>
+    <member type="way" ref="11826244" role=""/>
+    <member type="way" ref="1023349681" role=""/>
+    <member type="way" ref="380510013" role=""/>
+    <member type="way" ref="380510013" role=""/>
+    <member type="way" ref="1023349681" role=""/>
+    <member type="way" ref="11826244" role=""/>
+    <member type="way" ref="379865393" role=""/>
+    <member type="way" ref="379865393" role=""/>
+    <member type="way" ref="164435842" role=""/>
+    <member type="way" ref="164435842" role=""/>
+    <member type="way" ref="1029001719" role=""/>
+    <member type="way" ref="380510015" role=""/>
+    <member type="way" ref="380510015" role=""/>
+    <member type="way" ref="1029001719" role=""/>
+    <member type="way" ref="111725563" role=""/>
+    <member type="way" ref="111725563" role=""/>
+    <member type="way" ref="441102543" role=""/>
+    <member type="way" ref="441102543" role=""/>
+    <member type="way" ref="164434934" role=""/>
+    <member type="way" ref="164434934" role=""/>
+    <member type="way" ref="164434960" role=""/>
+    <member type="way" ref="164434960" role=""/>
+    <member type="way" ref="491380787" role=""/>
+    <member type="way" ref="161754967" role=""/>
+    <member type="way" ref="164435841" role=""/>
+    <member type="way" ref="27959887" role=""/>
+    <member type="way" ref="27959909" role=""/>
+    <member type="way" ref="31233709" role=""/>
+    <member type="way" ref="31233690" role=""/>
+    <member type="way" ref="27959911" role=""/>
+    <member type="way" ref="31233713" role=""/>
+    <member type="way" ref="27959914" role=""/>
+    <member type="way" ref="31233718" role=""/>
+    <member type="way" ref="27960008" role=""/>
+    <member type="way" ref="53104699" role=""/>
+    <member type="way" ref="27960007" role=""/>
+    <member type="way" ref="109034269" role=""/>
+    <member type="way" ref="3987296" role=""/>
+    <member type="way" ref="154246746" role=""/>
+    <member type="way" ref="161754970" role=""/>
+    <member type="way" ref="3700638" role=""/>
+    <member type="way" ref="365171833" role=""/>
+    <member type="way" ref="161754966" role=""/>
+    <member type="way" ref="154246733" role=""/>
+    <member type="way" ref="365171835" role=""/>
+    <member type="way" ref="154246750" role=""/>
+    <member type="way" ref="621486322" role=""/>
+    <member type="way" ref="161754968" role=""/>
+    <member type="way" ref="24936317" role=""/>
+    <member type="way" ref="365171830" role=""/>
+    <member type="way" ref="621486323" role=""/>
+    <member type="way" ref="154246738" role=""/>
+    <member type="way" ref="164434955" role=""/>
+    <member type="way" ref="431661782" role=""/>
+    <member type="way" ref="431661784" role=""/>
+    <tag k="name" v="Blackfriars to Herne Hill Line"/>
+    <tag k="operator" v="Network Rail"/>
+    <tag k="route" v="railway"/>
+    <tag k="type" v="route"/>
+  </relation>
+
+</osm>
