@@ -44,6 +44,7 @@ export const loadTests = async () => {
     "i5_exit_ramp",
     "kingsway_junction",
     "montlake_roundabout",
+    "oneway_loop",
     "perth_peanut_roundabout",
     "perth_stretched_lights",
     "seattle_slip_lane",
