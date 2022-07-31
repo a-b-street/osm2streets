@@ -34,7 +34,7 @@ impl Transformation {
             //Transformation::SnapCycleways,
             // More dead-ends can be created after snapping cycleways. But also, snapping can be
             // easier to do after trimming some dead-ends. So... just run it twice.
-            Transformation::TrimDeadendCycleways,
+            //Transformation::TrimDeadendCycleways,
             Transformation::RemoveDisconnectedRoads,
             Transformation::FindShortRoads {
                 consolidate_all_intersections: false,
@@ -49,7 +49,6 @@ impl Transformation {
     /// clipped areas.
     pub fn standard_for_clipped_areas() -> Vec<Self> {
         vec![
-            Transformation::TrimDeadendCycleways,
             Transformation::TrimDeadendCycleways,
             Transformation::FindShortRoads {
                 consolidate_all_intersections: false,
