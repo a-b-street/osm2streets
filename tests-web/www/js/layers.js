@@ -23,6 +23,31 @@ const styleGeoJson = (feature) => {
   return { color: '#f55' };
 }
 
+export const makeDetailedGeoJsonLayer = (text) => {
+  return new L.geoJSON(JSON.parse(text), {
+    style: function (feature) {
+      switch (feature.properties.type) {
+        case "road polygon":
+          return {
+            fill: true,
+            fillColor: "black",
+            fillOpacity: 0.9,
+            stroke: false,
+          };
+        case "intersection polygon":
+          return {
+            fill: true,
+            fillColor: "grey",
+            fillOpacity: 0.9,
+            stroke: false,
+          };
+        case "lane separator":
+          return { color: "white", dashArray: "4" };
+      }
+    },
+  });
+};
+
 export const makeOsmLayer = (text) => {
   return new L.OSM.DataLayer(
     new DOMParser().parseFromString(text, "application/xml"),
@@ -53,7 +78,7 @@ export const makeDotLayer = async (text, { bounds }) => {
 };
 
 export const layerMakers = {
-  json: makeJsonLayer,
+  json: makePlainGeoJsonLayer,
   osm: makeOsmLayer,
   dot: makeDotLayer,
 };

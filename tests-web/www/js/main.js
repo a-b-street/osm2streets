@@ -19,7 +19,7 @@ const useMap = (map) => {
     map.openTest(test);
   }
 
-  loadTests();
+  loadTests(map);
 
   makeImportCurrentView(map, document.getElementById("import-view"));
 };
