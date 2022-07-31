@@ -41,7 +41,6 @@ export const loadTests = async () => {
     "borough_sausage_links",
     "bristol_contraflow_cycleway",
     "bristol_sausage_links",
-    "bristol_service_road",
     "i5_exit_ramp",
     "kingsway_junction",
     "montlake_roundabout",
