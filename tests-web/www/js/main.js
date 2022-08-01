@@ -3,6 +3,7 @@ import {
   makeDropHandler,
   makeLinkHandler,
   handleDragOver,
+  downloadGeneratedFile,
 } from "./files.js";
 import { makeImportCurrentView } from "./import.js";
 import { loadTests } from "./tests.js";
@@ -12,6 +13,7 @@ import {
   makeDetailedGeoJsonLayer,
   makeDotLayer,
 } from "./layers.js";
+import { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
 export class StreetExplorer {
   constructor(mapContainer) {
@@ -52,6 +54,7 @@ export class StreetExplorer {
     this.currentTest?.cleanup();
     this.currentTest = await testMaker(this);
     this.map.fitBounds(this.currentTest.bounds, { animate: false });
+    this.currentTest.renderControls(document.getElementById("view-controls"));
   }
 }
 
@@ -62,6 +65,7 @@ class TestCase {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
+    this.drivingSide = drivingSide;
     // TODO this is probably more organized at some point, not just a list
     this.layers = layers;
     this.bounds = bounds;
@@ -99,13 +103,49 @@ class TestCase {
   static async importCurrentView(bounds) {}
 
   renderControls(container) {
+    container.innerHTML = "";
     if (this.name) {
-      container.innerHTML = `<b>Currently showing ${this.name}</b>`;
+      const title = container.appendChild(document.createElement("b"));
+      title.innerText = `Currently showing ${this.name}`;
+
+      const button1 = container.appendChild(document.createElement("button"));
+      button1.type = "button";
+      button1.innerHTML = "Download osm.xml";
+      button1.onclick = () =>
+        downloadGeneratedFile(`${this.name}.osm.xml`, this.osmXML);
+
+      const button2 = container.appendChild(document.createElement("button"));
+      button2.type = "button";
+      button2.innerHTML = "Reimport";
+      button2.onclick = () => {
+        button2.disabled = true;
+        this.reimport();
+      };
     } else {
       container.innerHTML = `<b>Custom imported view</b>`;
     }
-    // Reimport
-    // Download OSM XML
+  }
+
+  reimport() {
+    try {
+      const network = new JsStreetNetwork(this.osmXML, {
+        driving_side: this.drivingSide,
+      });
+      this.layers.push(
+        this.app.addLayer(
+          "Geometry (reimport)",
+          makePlainGeoJsonLayer(network.toGeojsonPlain())
+        )
+      );
+      this.layers.push(
+        this.app.addLayer(
+          "Detailed geometry (reimport)",
+          makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
+        )
+      );
+    } catch (err) {
+      window.alert(`Reimport failed: ${err}`);
+    }
   }
 }
 

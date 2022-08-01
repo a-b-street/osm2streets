@@ -1,11 +1,3 @@
-/*import {
-  makeOsmLayer,
-  makePlainGeoJsonLayer,
-  makeDetailedGeoJsonLayer,
-  makeDotLayer,
-} from "./layers.js";
-import { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";*/
-
 export function loadTests() {
   // FIXME: load the list of tests from the server
   const testNames = [
@@ -36,30 +28,5 @@ export function loadTests() {
     // Here we encode the test name in the URL to be read elsewhere.
     a.href = "?test=" + t;
     a.innerHTML = t;
-
-    /*const reimport = li.appendChild(window.document.createElement("button"));
-    reimport.type = "button";
-    reimport.innerHTML = "Reimport";
-    reimport.onclick = async function () {
-      for (const x of currentLayers) {
-        map.removeLayer(x);
-      }
-      currentLayers = [];
-
-      try {
-        const osmXML = await loadFile(`tests/${t}/input.osm`);
-        const driving_side = JSON.parse(await loadFile(`tests/${t}/test.json`))[
-          "driving_side"
-        ];
-
-        const network = new JsStreetNetwork(osmXML, {
-          driving_side: driving_side,
-        });
-        makePlainGeoJsonLayer(network.toGeojsonPlain()).addTo(map);
-        makeDetailedGeoJsonLayer(network.toGeojsonDetailed()).addTo(map);
-      } catch (err) {
-        window.alert(`Reimport failed: ${err}`);
-      }
-    };*/
   }
 }
