@@ -36,7 +36,10 @@
     ></script>
 
     <script type="module" src="js/leaflet-osm.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module">
+      import { StreetExplorer } from "./js/main.js";
+      window.app = await StreetExplorer.create(document.getElementById("map"));
+    </script>
   </head>
   <body>
     <menu>
