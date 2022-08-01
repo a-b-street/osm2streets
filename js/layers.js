@@ -1,6 +1,27 @@
 export const makeJsonLayer = (text) => {
-  return new L.geoJSON(JSON.parse(text), { style: { color: "#f55" } });
+  return new L.geoJSON(JSON.parse(text), { style: styleGeoJson });
 };
+
+const intersectionColours = {
+  undefined: '#666', // for default tarmac
+  Connection: '#666',
+  MultiConnection: '#669',
+  Merge: '#969',
+  Crossing: '#966',
+  Terminus: '#999',
+  MapEdge: '#696',
+}
+
+const styleGeoJson = (feature) => {
+  if (feature.geometry.type === 'Polygon') {
+    return {
+      color: intersectionColours[feature.properties?.complexity],
+        weight: 1,
+        fillOpacity: 0.7,
+      };
+  }
+  return { color: '#f55' };
+}
 
 export const makeOsmLayer = (text) => {
   return new L.OSM.DataLayer(
