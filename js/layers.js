@@ -1,27 +1,52 @@
-export const makeJsonLayer = (text) => {
+export const makePlainGeoJsonLayer = (text) => {
   return new L.geoJSON(JSON.parse(text), { style: styleGeoJson });
 };
 
 const intersectionColours = {
-  undefined: '#666', // for default tarmac
-  Connection: '#666',
-  MultiConnection: '#669',
-  Merge: '#969',
-  Crossing: '#966',
-  Terminus: '#999',
-  MapEdge: '#696',
-}
+  undefined: "#666", // for default tarmac
+  Connection: "#666",
+  MultiConnection: "#669",
+  Merge: "#969",
+  Crossing: "#966",
+  Terminus: "#999",
+  MapEdge: "#696",
+};
 
 const styleGeoJson = (feature) => {
-  if (feature.geometry.type === 'Polygon') {
+  if (feature.geometry.type === "Polygon") {
     return {
       color: intersectionColours[feature.properties?.complexity],
-        weight: 1,
-        fillOpacity: 0.7,
-      };
+      weight: 1,
+      fillOpacity: 0.7,
+    };
   }
-  return { color: '#f55' };
-}
+  return { color: "#f55" };
+};
+
+export const makeDetailedGeoJsonLayer = (text) => {
+  return new L.geoJSON(JSON.parse(text), {
+    style: function (feature) {
+      switch (feature.properties.type) {
+        case "road polygon":
+          return {
+            fill: true,
+            fillColor: "black",
+            fillOpacity: 0.9,
+            stroke: false,
+          };
+        case "intersection polygon":
+          return {
+            fill: true,
+            fillColor: "grey",
+            fillOpacity: 0.9,
+            stroke: false,
+          };
+        case "lane separator":
+          return { color: "white", dashArray: "4" };
+      }
+    },
+  });
+};
 
 export const makeOsmLayer = (text) => {
   return new L.OSM.DataLayer(
@@ -53,7 +78,7 @@ export const makeDotLayer = async (text, { bounds }) => {
 };
 
 export const layerMakers = {
-  json: makeJsonLayer,
+  json: makePlainGeoJsonLayer,
   osm: makeOsmLayer,
   dot: makeDotLayer,
 };

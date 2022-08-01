@@ -1,4 +1,5 @@
-import init, { importOsm } from "./osm2streets-js/osm2streets_js.js";
+import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
+import { makePlainGeoJsonLayer, makeDetailedGeoJsonLayer } from "./layers.js";
 await init();
 
 export const makeImportCurrentView = (map, btn) => {
@@ -27,13 +28,14 @@ export const makeImportCurrentView = (map, btn) => {
 
       btn.innerText = "Importing OSM data...";
 
-      const output = importOsm(osmXML, {
+      const network = new JsStreetNetwork(osmXML, {
         // TODO Ask overpass
         driving_side: "Right",
       });
 
       // TODO Definitely time to think about cleaning up old layers
-      L.geoJSON(JSON.parse(output), { style: { color: "#f55" } }).addTo(map);
+      makePlainGeoJsonLayer(network.toGeojsonPlain()).addTo(map);
+      makeDetailedGeoJsonLayer(network.toGeojsonDetailed()).addTo(map);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
     }

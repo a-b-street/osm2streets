@@ -1,17 +1,32 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+*/
+export class JsStreetNetwork {
+  free(): void;
+/**
 * @param {string} osm_xml_input
 * @param {any} input
+*/
+  constructor(osm_xml_input: string, input: any);
+/**
 * @returns {string}
 */
-export function importOsm(osm_xml_input: string, input: any): string;
+  toGeojsonPlain(): string;
+/**
+* @returns {string}
+*/
+  toGeojsonDetailed(): string;
+}
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly importOsm: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbg_jsstreetnetwork_free: (a: number) => void;
+  readonly jsstreetnetwork_new: (a: number, b: number, c: number, d: number) => void;
+  readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
+  readonly jsstreetnetwork_toGeojsonDetailed: (a: number, b: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
