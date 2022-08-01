@@ -37,11 +37,6 @@ export const makeOpenTest = (map) => async (name) => {
   // TODO store a reference to the layers so they can be cleaned up when wanted.
 };
 
-const loadFile = (name) =>
-  fetch(name)
-    .then((body) => body.text())
-    .catch((err) => console.warn(err));
-
 export const loadTests = async (map) => {
   // FIXME: load the list of tests from the server
   const testNames = [

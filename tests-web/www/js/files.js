@@ -52,3 +52,8 @@ const forEachFile = (dt, f) => {
     }
   }
 };
+
+const loadFile = (name) =>
+  fetch(name)
+    .then((body) => body.text())
+    .catch((err) => console.warn(err));
