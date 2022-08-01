@@ -137,9 +137,7 @@ impl From<&RawIntersection> for Intersection {
             t: match raw_int.control {
                 street_network::ControlType::Border => IntersectionType::MapEdge,
                 street_network::ControlType::TrafficSignal
-                | street_network::ControlType::Construction => {
-                    IntersectionType::RoadIntersection
-                }
+                | street_network::ControlType::Construction => IntersectionType::RoadIntersection,
                 _ => IntersectionType::Unknown,
             },
             control: match raw_int.control {

@@ -78,8 +78,7 @@ impl StreetNetwork {
             if i1.is_border() || i2.is_border() {
                 continue;
             }
-            if i1.control != ControlType::TrafficSignal
-                && i2.control != ControlType::TrafficSignal
+            if i1.control != ControlType::TrafficSignal && i2.control != ControlType::TrafficSignal
             {
                 continue;
             }
