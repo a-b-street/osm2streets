@@ -6,7 +6,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use abstutil::{Tags, Timer};
 use geom::{Circle, Distance, PolyLine, Polygon, Pt2D};
 
-use crate::{osm, InputRoad, IntersectionType, OriginalRoad, StreetNetwork};
+use crate::{osm, ControlType, InputRoad, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 pub struct InitialMap {
     pub roads: BTreeMap<OriginalRoad, Road>,
@@ -55,7 +55,8 @@ pub struct Intersection {
     pub id: osm::NodeID,
     pub polygon: Polygon,
     pub roads: BTreeSet<OriginalRoad>,
-    pub intersection_type: IntersectionType,
+    pub complexity: IntersectionComplexity,
+    pub control: ControlType,
     pub elevation: Distance,
 }
 
@@ -74,7 +75,8 @@ impl InitialMap {
                     // Dummy thing to start with
                     polygon: Circle::new(Pt2D::new(0.0, 0.0), Distance::meters(1.0)).to_polygon(),
                     roads: BTreeSet::new(),
-                    intersection_type: i.intersection_type,
+                    complexity: i.complexity,
+                    control: i.control,
                     elevation: i.elevation,
                 },
             );
@@ -131,7 +133,7 @@ impl InitialMap {
                         i.polygon = Circle::new(pt, Distance::meters(3.0)).to_polygon();
 
                         // Also don't attempt to make Movements later!
-                        i.intersection_type = IntersectionType::StopSign;
+                        i.control = ControlType::StopSign;
                     } else {
                         remove_dangling_nodes.push(i.id);
                     }
@@ -147,7 +149,7 @@ impl InitialMap {
         // trimmed is impossible.
         let min_len = Distance::meters(5.0);
         for i in m.intersections.values_mut() {
-            if i.intersection_type != IntersectionType::Border {
+            if i.control != ControlType::Border {
                 continue;
             }
             let r = m.roads.get_mut(i.roads.iter().next().unwrap()).unwrap();

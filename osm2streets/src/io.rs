@@ -134,17 +134,17 @@ impl From<&RawIntersection> for Intersection {
     fn from(raw_int: &RawIntersection) -> Self {
         Intersection {
             // raw_int.intersection_type has some useful info, bit is often misleading.
-            t: match raw_int.intersection_type {
-                street_network::IntersectionType::Border => IntersectionType::MapEdge,
-                street_network::IntersectionType::TrafficSignal
-                | street_network::IntersectionType::Construction => {
+            t: match raw_int.control {
+                street_network::ControlType::Border => IntersectionType::MapEdge,
+                street_network::ControlType::TrafficSignal
+                | street_network::ControlType::Construction => {
                     IntersectionType::RoadIntersection
                 }
                 _ => IntersectionType::Unknown,
             },
-            control: match raw_int.intersection_type {
+            control: match raw_int.control {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
-                street_network::IntersectionType::TrafficSignal => ControlType::Lights,
+                street_network::ControlType::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
         }

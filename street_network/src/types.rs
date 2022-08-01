@@ -124,12 +124,66 @@ pub enum DrivingSide {
     Left,
 }
 
+/// How a lane of travel is interrupted.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum IntersectionType {
-    StopSign,
-    TrafficSignal,
-    Border,
-    Construction,
+pub enum InterruptionType {
+    Uninterrupted,
+    Yield,
+    Stop,
+    Signal,
+    DeadEnd,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum IntersectionComplexity {
+    /// The edge of the data that we have.
+    ///
+    /// The road may continue past here in reality and do anything, but the current dataset is clipped here.
+    MapEdge,
+
+    /// Two roads connect, one ending where the other begins, without conflict
+    ///
+    /// Like a road way has been sliced in two, because a lane was added.
+    Connection,
+
+    /// Multiple road ways connect, where the carriageway splits, where a road way joins with or
+    /// diverges from another without conflict.
+    ///
+    /// For example, when a single carriageway splits into a dual carriageway,
+    /// or when highway entrances and exits join and leave a highway.
+    ///
+    /// You would expect no lane marking to be interupted, and maybe even a buffer area painted
+    /// where the lanes meet each other.
+    MultiConnection,
+
+    /// One or more "minor" roads merge into (yielding) or out of a "major" road,
+    /// which retains its right of way.
+    ///
+    /// You would expect lane markings for the major road to continue (largely)
+    /// uninterrupted through the intersection, with a yield line ending the minor road.
+    Merge,
+
+    /// An area of the road where traffic crosses and priority is shared over time,
+    /// by lights, negotiation and priority, etc.
+    ///
+    /// You would expect normal lane markings to be missing, sometimes with some helpful
+    /// markings added (lane dividers for multi-lane turns, etc.).
+    Crossing,
+
+    /// The end of the line.
+    ///
+    /// Turning circles, road end signs, train terminus thingos, ...
+    Terminus,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum ControlType {
+    Uncontrolled, // Pretty sure this is a term that implies right of way rules somewhere.
+    //TODO YieldSign,
+    StopSign,      // Signed is a good standard of safety
+    TrafficSignal, // Signalled is better.
+    Border,        //TODO move to using IntersectionComplexity::MapEdge
+    Construction,  // Are these treated as "closed"?
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]

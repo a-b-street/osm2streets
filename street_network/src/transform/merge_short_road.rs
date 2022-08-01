@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, VecDeque};
 
 use anyhow::Result;
 
-use crate::{osm, IntersectionType, OriginalRoad, RestrictionType, StreetNetwork};
+use crate::{osm, ControlType, OriginalRoad, RestrictionType, StreetNetwork};
 
 // TODO After merging a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
@@ -36,8 +36,8 @@ impl StreetNetwork {
         {
             let i1 = &self.intersections[&short.i1];
             let i2 = &self.intersections[&short.i2];
-            if i1.intersection_type == IntersectionType::Border
-                || i2.intersection_type == IntersectionType::Border
+            if i1.control == ControlType::Border
+                || i2.control == ControlType::Border
             {
                 bail!("{} touches a border", short);
             }
@@ -104,9 +104,9 @@ impl StreetNetwork {
         {
             // Don't use delete_intersection; we're manually fixing up connected roads
             let i = self.intersections.remove(&i2).unwrap();
-            if i.intersection_type == IntersectionType::TrafficSignal {
-                self.intersections.get_mut(&i1).unwrap().intersection_type =
-                    IntersectionType::TrafficSignal;
+            if i.control == ControlType::TrafficSignal {
+                self.intersections.get_mut(&i1).unwrap().control =
+                    ControlType::TrafficSignal;
             }
         }
 
