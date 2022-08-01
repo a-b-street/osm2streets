@@ -94,6 +94,9 @@ pub enum PrivateOffstreetParking {
 /// Create a `StreetNetwork` from the contents of an `.osm.xml` file. If `clip_pts` is specified,
 /// use theese as a boundary polygon. (Use `LonLat::read_osmosis_polygon` or similar to produce
 /// these.)
+///
+/// You probably want to do `StreetNetwork::apply_transformations` on the result to get a useful
+/// result.
 pub fn osm_to_street_network(
     osm_xml_input: &str,
     clip_pts: Option<Vec<LonLat>>,

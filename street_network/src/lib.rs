@@ -14,6 +14,7 @@ use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub use self::lane_specs::get_lane_specs_ltr;
+pub use self::transform::Transformation;
 pub use self::types::{
     BufferType, ControlType, Direction, DrivingSide, IntersectionComplexity, LaneSpec, LaneType,
     MapConfig, NamePerLanguage, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
@@ -21,7 +22,7 @@ pub use self::types::{
 
 mod edit;
 mod export;
-pub mod geometry;
+mod geometry;
 pub mod initial;
 mod lane_specs;
 pub mod osm;

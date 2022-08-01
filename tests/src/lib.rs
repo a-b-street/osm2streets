@@ -4,7 +4,7 @@ mod tests {
     use anyhow::{bail, Result};
     use serde::Deserialize;
     use std::fs::File;
-    use street_network::DrivingSide;
+    use street_network::{DrivingSide, Transformation};
     use streets::RoadNetwork;
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
@@ -30,14 +30,8 @@ mod tests {
             import_streets::Options::default_for_side(cfg.driving_side),
             &mut timer,
         )?;
-        let consolidate_all_intersections = false;
-        // Our clipped areas are very small; this would remove part of the intended input
-        let remove_disconnected = false;
-        street_network.run_all_simplifications(
-            consolidate_all_intersections,
-            remove_disconnected,
-            &mut timer,
-        );
+        street_network
+            .apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
         // TODO Change these path names
         street_network.save_to_geojson(format!("{path}/raw_map.json"), &mut timer)?;
 

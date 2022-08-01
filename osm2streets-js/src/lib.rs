@@ -25,12 +25,9 @@ fn inner_import_osm(osm_xml_input: &str, input: &JsValue) -> anyhow::Result<Stri
         import_streets::Options::default_for_side(input.driving_side),
         &mut timer,
     )?;
-    // TODO Assuming defaults here; probably do take in Input
-    let consolidate_all_intersections = false;
-    let remove_disconnected = false;
-    street_network.run_all_simplifications(
-        consolidate_all_intersections,
-        remove_disconnected,
+    street_network.apply_transformations(
+        // TODO Assuming defaults here; probably do take in Input
+        street_network::Transformation::standard_for_clipped_areas(),
         &mut timer,
     );
 

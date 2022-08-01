@@ -1,5 +1,3 @@
-use abstutil::Tags;
-
 use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType};
 
 impl LaneSpec {
@@ -8,8 +6,6 @@ impl LaneSpec {
         buffer_type: Option<BufferType>,
         driving_side: DrivingSide,
     ) {
-        let dummy_tags = Tags::empty();
-
         // First decompose the existing lanes back into a fwd_side and back_side. This is not quite the
         // inverse of assemble_ltr -- lanes on the OUTERMOST side of the road are first.
         let mut fwd_side = Vec::new();
@@ -84,7 +80,7 @@ impl LaneSpec {
                 side[idx] = LaneSpec {
                     lt: LaneType::Biking,
                     dir,
-                    width: LaneSpec::typical_lane_widths(LaneType::Biking, &dummy_tags)[0].0,
+                    width: LaneSpec::typical_lane_width(LaneType::Biking),
                 };
                 if let Some(buffer) = buffer_type {
                     side.insert(
@@ -92,11 +88,7 @@ impl LaneSpec {
                         LaneSpec {
                             lt: LaneType::Buffer(buffer),
                             dir,
-                            width: LaneSpec::typical_lane_widths(
-                                LaneType::Buffer(buffer),
-                                &dummy_tags,
-                            )[0]
-                            .0,
+                            width: LaneSpec::typical_lane_width(LaneType::Buffer(buffer)),
                         },
                     );
                 }

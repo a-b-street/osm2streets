@@ -9,10 +9,6 @@ const DEBUG_OUTPUT: bool = true;
 
 /// Snap separately mapped cycleways to main roads.
 pub fn snap_cycleways(streets: &mut StreetNetwork) {
-    if true {
-        return;
-    }
-
     let mut cycleways = Vec::new();
     for (id, road) in &streets.roads {
         // Because there are so many false positives with snapping, only start with cycleways
