@@ -5,7 +5,6 @@ import {
   handleDragOver,
   downloadGeneratedFile,
 } from "./files.js";
-import { makeImportCurrentView } from "./import.js";
 import { loadTests } from "./tests.js";
 import {
   makeOsmLayer,
@@ -13,7 +12,9 @@ import {
   makeDetailedGeoJsonLayer,
   makeDotLayer,
 } from "./layers.js";
-import { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
+import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
+
+await init();
 
 export class StreetExplorer {
   constructor(mapContainer) {
@@ -35,6 +36,19 @@ export class StreetExplorer {
       console.info(`Loading test ${test} from URL.`);
       await app.setCurrentTest((app) => TestCase.loadFromServer(app, test));
     }
+
+    // Wire up the import button
+    const importButton = document.getElementById("import-view");
+    importButton.onclick = async () => {
+      if (app.map.getZoom() < 15) {
+        window.alert("Zoom in more to import");
+        return;
+      }
+
+      await app.setCurrentTest((app) =>
+        TestCase.importCurrentView(app, importButton)
+      );
+    };
 
     return app;
   }
@@ -100,7 +114,56 @@ class TestCase {
     return new TestCase(app, name, osmInput, drivingSide, layers, bounds);
   }
 
-  static async importCurrentView(bounds) {}
+  static async importCurrentView(app, importButton) {
+    // Grab OSM XML from Overpass
+    // (Sadly toBBoxString doesn't seem to match the order for Overpass)
+    const b = app.map.getBounds();
+    const bbox = `${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
+    const query = `(nwr(${bbox}); node(w)->.x; <;); out meta;`;
+    const url = `https://overpass-api.de/api/interpreter?data=${query}`;
+    console.log(`Fetching from overpass: ${url}`);
+
+    importButton.innerText = "Downloading from Overpass...";
+    // Prevent this function from happening twice in a row. It could also maybe
+    // be nice to allow cancellation.
+    importButton.disabled = true;
+
+    // TODO If this fails, I guess app.currentTest winds up null?
+    try {
+      const resp = await fetch(url);
+      const osmInput = await resp.text();
+
+      importButton.innerText = "Importing OSM data...";
+
+      // TODO Ask overpass
+      const drivingSide = "Right";
+
+      const network = new JsStreetNetwork(osmInput, {
+        driving_side: drivingSide,
+      });
+      const rawMapLayer = makePlainGeoJsonLayer(network.toGeojsonPlain());
+      const bounds = rawMapLayer.getBounds();
+
+      var layers = [];
+      layers.push(app.addLayer("Geometry", rawMapLayer));
+      layers.push(
+        app.addLayer(
+          "Detailed geometry",
+          makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
+        )
+      );
+      layers.push(app.addLayer("OSM", makeOsmLayer(osmInput)));
+      // TODO The dot layer
+
+      return new TestCase(app, null, osmInput, drivingSide, layers, bounds);
+    } catch (err) {
+      window.alert(`Import failed: ${err}`);
+    } finally {
+      // Make the button clickable again
+      importButton.innerText = "Import current view";
+      importButton.disabled = false;
+    }
+  }
 
   renderControls(container) {
     container.innerHTML = "";
@@ -108,22 +171,22 @@ class TestCase {
       const title = container.appendChild(document.createElement("b"));
       title.innerText = `Currently showing ${this.name}`;
 
-      const button1 = container.appendChild(document.createElement("button"));
-      button1.type = "button";
-      button1.innerHTML = "Download osm.xml";
-      button1.onclick = () =>
-        downloadGeneratedFile(`${this.name}.osm.xml`, this.osmXML);
-
-      const button2 = container.appendChild(document.createElement("button"));
-      button2.type = "button";
-      button2.innerHTML = "Reimport";
-      button2.onclick = () => {
-        button2.disabled = true;
+      const button = container.appendChild(document.createElement("button"));
+      button.type = "button";
+      button.innerHTML = "Reimport";
+      button.onclick = () => {
+        button.disabled = true;
         this.reimport();
       };
     } else {
       container.innerHTML = `<b>Custom imported view</b>`;
     }
+
+    const button = container.appendChild(document.createElement("button"));
+    button.type = "button";
+    button.innerHTML = "Download osm.xml";
+    button.onclick = () =>
+      downloadGeneratedFile(`${this.name || "new"}.osm.xml`, this.osmXML);
   }
 
   reimport() {
@@ -143,6 +206,7 @@ class TestCase {
           makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
         )
       );
+      // TODO The dot layer
     } catch (err) {
       window.alert(`Reimport failed: ${err}`);
     }
@@ -169,6 +233,4 @@ const useMap = (map) => {
   map.loadLink = makeLinkHandler(map);
   map.openTest = makeOpenTest(map);
   console.info("New map created! File drops enabled.", container);
-
-  makeImportCurrentView(map, document.getElementById("import-view"));
 };
