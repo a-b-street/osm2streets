@@ -47,11 +47,16 @@ impl StreetNetwork {
 
         // Polygon per intersection
         for (id, intersection) in &initial_map.intersections {
-            let mut properties = serde_json::Map::new();
-            properties.insert("intersection_id".to_string(), id.0.into());
             pairs.push((
                 intersection.polygon.to_geojson(Some(&self.gps_bounds)),
-                make_props(&[("intersection_id", id.0.into()), ("fill", "#729fcf".into())]),
+                make_props(&[
+                    ("intersection_id", id.0.into()),
+                    ("fill", "#729fcf".into()),
+                    (
+                        "complexity",
+                        format!("{:?}", intersection.complexity).into(),
+                    ),
+                ]),
             ));
         }
 
