@@ -8,14 +8,19 @@
       name="viewport"
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
+
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/deps/leaflet.css" />
+    <link rel="stylesheet" href="css/deps/geosearch.css" />
+
     <script src="js/deps/leaflet.js"></script>
     <script src="js/deps/d3.min.js"></script>
     <script src="js/deps/graphviz.min.js"></script>
     <script src="js/deps/d3-graphviz.js"></script>
+    <script src="js/deps/geosearch.umd.js"></script>
     <script type="module" src="js/deps/leaflet-osm.js"></script>
+
     <script type="module">
       import { StreetExplorer } from "./js/main.js";
       window.app = await StreetExplorer.create(document.getElementById("map"));
