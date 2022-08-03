@@ -220,7 +220,12 @@ function setupLeafletMap(mapContainer) {
     maxZoom: 21,
     attribution: "© OpenStreetMap",
   }).addTo(map);
-  // Geocoder, satellite layers, etc
+  new GeoSearch.GeoSearchControl({
+    provider: new GeoSearch.OpenStreetMapProvider(),
+    showMarker: false,
+    autoClose: true,
+  }).addTo(map);
+  // Satellite layers
   return map;
 }
 
