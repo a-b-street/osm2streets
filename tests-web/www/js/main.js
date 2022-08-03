@@ -67,20 +67,19 @@ export class StreetExplorer {
   async setCurrentTest(testMaker) {
     this.currentTest?.cleanup();
     this.currentTest = await testMaker(this);
-    this.map.fitBounds(this.currentTest.bounds, { animate: false });
-    this.currentTest.renderControls(document.getElementById("view-controls"));
+    if (this.currentTest) {
+      this.map.fitBounds(this.currentTest.bounds, { animate: false });
+      this.currentTest.renderControls(document.getElementById("view-controls"));
+    }
   }
 }
 
-// design litmus test: can multiple of these exist at the app at the same time?
 class TestCase {
-  // null for freshly imported places
   constructor(app, name, osmXML, drivingSide, layers, bounds) {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
     this.drivingSide = drivingSide;
-    // TODO this is probably more organized at some point, not just a list
     this.layers = layers;
     this.bounds = bounds;
   }
@@ -128,7 +127,6 @@ class TestCase {
     // be nice to allow cancellation.
     importButton.disabled = true;
 
-    // TODO If this fails, I guess app.currentTest winds up null?
     try {
       const resp = await fetch(url);
       const osmInput = await resp.text();
@@ -153,11 +151,19 @@ class TestCase {
         )
       );
       layers.push(app.addLayer("OSM", makeOsmLayer(osmInput)));
-      // TODO The dot layer
+      // TODO ReferenceError: can't access lexical declaration 'graph' before initialization
+      /*layers.push(
+        app.addLayer(
+          "Network",
+          await makeDotLayer(network.toGraphviz(), { bounds })
+        )
+      );*/
 
       return new TestCase(app, null, osmInput, drivingSide, layers, bounds);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
+      // There won't be a currentTest
+      return null;
     } finally {
       // Make the button clickable again
       importButton.innerText = "Import current view";
@@ -174,9 +180,10 @@ class TestCase {
       const button = container.appendChild(document.createElement("button"));
       button.type = "button";
       button.innerHTML = "Reimport";
-      button.onclick = () => {
+      button.onclick = async () => {
+        // It doesn't make sense to ever reimport twice; that would only add redundant layers
         button.disabled = true;
-        this.reimport();
+        await this.reimport();
       };
     } else {
       container.innerHTML = `<b>Custom imported view</b>`;
@@ -189,7 +196,7 @@ class TestCase {
       downloadGeneratedFile(`${this.name || "new"}.osm.xml`, this.osmXML);
   }
 
-  reimport() {
+  async reimport() {
     try {
       const network = new JsStreetNetwork(this.osmXML, {
         driving_side: this.drivingSide,
@@ -206,7 +213,12 @@ class TestCase {
           makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
         )
       );
-      // TODO The dot layer
+      /*this.layers.push(
+        this.app.addLayer(
+          "Network (reimport)",
+          await makeDotLayer(network.toGraphviz(), { bounds: this.bounds })
+        )
+      );*/
     } catch (err) {
       window.alert(`Reimport failed: ${err}`);
     }
@@ -225,11 +237,11 @@ function setupLeafletMap(mapContainer) {
     showMarker: false,
     autoClose: true,
   }).addTo(map);
-  // Satellite layers
+  // TODO Add satellite layer
   return map;
 }
 
-// TODO Port stuff
+// TODO Unused. Preserve logic for dragging individual files as layers.
 const useMap = (map) => {
   const container = map.getContainer();
   container.ondrop = makeDropHandler(map);

@@ -53,4 +53,11 @@ impl JsStreetNetwork {
             .to_detailed_geojson(&mut Timer::throwaway())
             .unwrap()
     }
+
+    #[wasm_bindgen(js_name = toGraphviz)]
+    pub fn to_graphviz(&self) -> String {
+        // TODO Should we make the caller do the clone? Is that weird from JS?
+        let road_network: streets::RoadNetwork = self.inner.clone().into();
+        road_network.to_dot()
+    }
 }
