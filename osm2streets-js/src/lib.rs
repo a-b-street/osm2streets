@@ -2,15 +2,18 @@ use abstutil::Timer;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
+use street_network::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
+
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
-    driving_side: street_network::DrivingSide,
+    driving_side: DrivingSide,
     debug_each_step: bool,
+    dual_carriageway_experiment: bool,
 }
 
 #[wasm_bindgen]
 pub struct JsStreetNetwork {
-    inner: street_network::StreetNetwork,
+    inner: StreetNetwork,
 }
 
 #[wasm_bindgen]
@@ -33,8 +36,12 @@ impl JsStreetNetwork {
             &mut timer,
         )
         .map_err(|err| JsValue::from_str(&err.to_string()))?;
-        // TODO Assuming defaults here; probably do take in Input
-        let transformations = street_network::Transformation::standard_for_clipped_areas();
+        let mut transformations = Transformation::standard_for_clipped_areas();
+        if input.dual_carriageway_experiment {
+            // Merging short roads tries to touch "bridges," making debugging harder
+            transformations.retain(|t| !matches!(t, Transformation::MergeShortRoads));
+            transformations.push(Transformation::MergeDualCarriageways);
+        }
         if input.debug_each_step {
             street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
         } else {
@@ -78,7 +85,7 @@ impl JsStreetNetwork {
 
 #[wasm_bindgen]
 pub struct JsDebugStreets {
-    inner: street_network::DebugStreets,
+    inner: DebugStreets,
 }
 
 #[wasm_bindgen]

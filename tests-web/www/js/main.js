@@ -24,6 +24,7 @@ export class StreetExplorer {
     this.currentTest = null;
     this.importSettings = {
       debugEachStep: false,
+      dualCarriagewayExperiment: false,
     };
 
     // Add all tests to the sidebar
@@ -143,6 +144,8 @@ class TestCase {
       const network = new JsStreetNetwork(osmInput, {
         driving_side: drivingSide,
         debug_each_step: app.importSettings.debugEachStep,
+        dual_carriageway_experiment:
+          app.importSettings.dualCarriagewayExperiment,
       });
       const rawMapLayer = makePlainGeoJsonLayer(network.toGeojsonPlain());
       const bounds = rawMapLayer.getBounds();
@@ -235,6 +238,8 @@ class TestCase {
       const network = new JsStreetNetwork(this.osmXML, {
         driving_side: this.drivingSide,
         debug_each_step: this.app.importSettings.debugEachStep,
+        dual_carriageway_experiment:
+          app.importSettings.dualCarriagewayExperiment,
       });
       this.layers.push(
         this.app.addLayer(
@@ -319,19 +324,34 @@ const SettingsControl = L.Control.extend({
     position: "topleft",
   },
   onAdd: function (map) {
-    var checkbox = L.DomUtil.create("input");
-    checkbox.id = "debugEachStep";
-    checkbox.type = "checkbox";
+    var checkbox1 = L.DomUtil.create("input");
+    checkbox1.id = "debugEachStep";
+    checkbox1.type = "checkbox";
     if (this.options.app.importSettings.debugEachStep) {
-      checkbox.checked = true;
+      checkbox1.checked = true;
     }
-    checkbox.onclick = () => {
-      this.options.app.importSettings.debugEachStep = checkbox.checked;
+    checkbox1.onclick = () => {
+      this.options.app.importSettings.debugEachStep = checkbox1.checked;
     };
 
-    var label = L.DomUtil.create("label");
-    label.for = "debugEachStep";
-    label.innerText = "Debug each transformation step";
+    var label1 = L.DomUtil.create("label");
+    label1.for = "debugEachStep";
+    label1.innerText = "Debug each transformation step\n";
+
+    var checkbox2 = L.DomUtil.create("input");
+    checkbox2.id = "dualCarriagewayExperiment";
+    checkbox2.type = "checkbox";
+    if (this.options.app.importSettings.dualCarriagewayExperiment) {
+      checkbox2.checked = true;
+    }
+    checkbox2.onclick = () => {
+      this.options.app.importSettings.dualCarriagewayExperiment =
+        checkbox2.checked;
+    };
+
+    var label2 = L.DomUtil.create("label");
+    label2.for = "dualCarriagewayExperiment";
+    label2.innerText = "Enable dual carriageway experiment\n";
 
     const button = L.DomUtil.create("button");
     button.type = "button";
@@ -343,9 +363,9 @@ const SettingsControl = L.Control.extend({
 
     var group = L.DomUtil.create("div");
     group.style = "background: black; padding: 10px;";
-    group.appendChild(checkbox);
-    group.appendChild(label);
-    group.appendChild(button);
+    for (const x of [checkbox1, label1, checkbox2, label2, button]) {
+      group.appendChild(x);
+    }
 
     return group;
   },

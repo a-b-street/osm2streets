@@ -24,6 +24,7 @@ pub enum Transformation {
     CollapseDegenerateIntersections,
     CollapseSausageLinks,
     ShrinkOverlappingRoads,
+    MergeDualCarriageways,
 }
 
 impl Transformation {
@@ -82,6 +83,7 @@ impl Transformation {
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
             Transformation::CollapseSausageLinks => "collapse sausage links",
             Transformation::ShrinkOverlappingRoads => "shrink overlapping roads",
+            Transformation::MergeDualCarriageways => "merge dual carriageways",
         }
     }
 
@@ -116,6 +118,9 @@ impl Transformation {
             }
             Transformation::ShrinkOverlappingRoads => {
                 shrink_roads::shrink(streets, timer);
+            }
+            Transformation::MergeDualCarriageways => {
+                dual_carriageways::merge(streets);
             }
         }
         timer.stop(self.name());

@@ -136,6 +136,16 @@ impl OriginalRoad {
         }
         panic!("{:?} and {:?} have no common_endpt", self, other);
     }
+
+    pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
+        if self.i1 == i {
+            self.i2
+        } else if self.i2 == i {
+            self.i1
+        } else {
+            panic!("{} doesn't have {} on either side", self, i);
+        }
+    }
 }
 
 impl StreetNetwork {
