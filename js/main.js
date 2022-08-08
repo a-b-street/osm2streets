@@ -11,6 +11,7 @@ import {
   makePlainGeoJsonLayer,
   makeDetailedGeoJsonLayer,
   makeDotLayer,
+  makeDebugLayer,
 } from "./layers.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
@@ -21,6 +22,9 @@ export class StreetExplorer {
     this.map = setupLeafletMap(mapContainer);
     this.layerControl = L.control.layers({}, {}).addTo(this.map);
     this.currentTest = null;
+    this.importSettings = {
+      debugEachStep: false,
+    };
 
     // Add all tests to the sidebar
     loadTests();
@@ -138,6 +142,7 @@ class TestCase {
 
       const network = new JsStreetNetwork(osmInput, {
         driving_side: drivingSide,
+        debug_each_step: app.importSettings.debugEachStep,
       });
       const rawMapLayer = makePlainGeoJsonLayer(network.toGeojsonPlain());
       const bounds = rawMapLayer.getBounds();
@@ -158,6 +163,23 @@ class TestCase {
           await makeDotLayer(network.toGraphviz(), { bounds })
         )
       );*/
+      for (const step of network.getDebugSteps()) {
+        layers.push(
+          app.addLayer(
+            `${step.getLabel()}: geometry`,
+            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+          )
+        );
+        const debugGeojson = step.toDebugGeojson();
+        if (debugGeojson) {
+          layers.push(
+            app.addLayer(
+              `${step.getLabel()}: debug`,
+              makeDebugLayer(debugGeojson)
+            )
+          );
+        }
+      }
 
       return new TestCase(app, null, osmInput, drivingSide, layers, bounds);
     } catch (err) {
@@ -181,9 +203,21 @@ class TestCase {
       button.type = "button";
       button.innerHTML = "Reimport";
       button.onclick = async () => {
-        // It doesn't make sense to ever reimport twice; that would only add redundant layers
-        button.disabled = true;
+        // TODO Allow reimporting to happen multiple times, since
+        // transformation settings could change. This will add redundant
+        // layers right now. Once we have better layer management, we
+        // should be able to erase all of the layers from the previous
+        // reimport.
         await this.reimport();
+      };
+
+      const settings = container.appendChild(document.createElement("button"));
+      settings.id = "settingsButton";
+      settings.type = "button";
+      settings.innerHTML = "(Settings)";
+      settings.onclick = () => {
+        settings.disabled = true;
+        makeSettingsControl(app).addTo(app.map);
       };
     } else {
       container.innerHTML = `<b>Custom imported view</b>`;
@@ -200,6 +234,7 @@ class TestCase {
     try {
       const network = new JsStreetNetwork(this.osmXML, {
         driving_side: this.drivingSide,
+        debug_each_step: this.app.importSettings.debugEachStep,
       });
       this.layers.push(
         this.app.addLayer(
@@ -219,6 +254,23 @@ class TestCase {
           await makeDotLayer(network.toGraphviz(), { bounds: this.bounds })
         )
       );*/
+      for (const step of network.getDebugSteps()) {
+        this.layers.push(
+          this.app.addLayer(
+            `${step.getLabel()}: geometry`,
+            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+          )
+        );
+        const debugGeojson = step.toDebugGeojson();
+        if (debugGeojson) {
+          this.layers.push(
+            this.app.addLayer(
+              `${step.getLabel()}: debug`,
+              makeDebugLayer(debugGeojson)
+            )
+          );
+        }
+      }
     } catch (err) {
       window.alert(`Reimport failed: ${err}`);
     }
@@ -226,7 +278,13 @@ class TestCase {
 }
 
 function setupLeafletMap(mapContainer) {
-  const map = L.map(mapContainer, { maxZoom: 21 }).setView([40.0, 10.0], 4);
+  // Make it smoother to zoom farther into the map
+  const map = L.map(mapContainer, {
+    maxZoom: 21,
+    zoomSnap: 0.5,
+    zoomDelta: 0.5,
+    wheelPxPerZoomLevel: 120,
+  }).setView([40.0, 10.0], 4);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxNativeZoom: 18,
     maxZoom: 21,
@@ -250,4 +308,49 @@ const useMap = (map) => {
   map.loadLink = makeLinkHandler(map);
   map.openTest = makeOpenTest(map);
   console.info("New map created! File drops enabled.", container);
+};
+
+// TODO A Leaflet control isn't the right abstraction. We want a popup modal
+// that totally blocks the map and other things. Things like disabling
+// settingsButton to stop multiple of these controls is a total hack.
+const SettingsControl = L.Control.extend({
+  // TODO Centered would be great. https://github.com/Leaflet/Leaflet/issues/8358
+  options: {
+    position: "topleft",
+  },
+  onAdd: function (map) {
+    var checkbox = L.DomUtil.create("input");
+    checkbox.id = "debugEachStep";
+    checkbox.type = "checkbox";
+    if (this.options.app.importSettings.debugEachStep) {
+      checkbox.checked = true;
+    }
+    checkbox.onclick = () => {
+      this.options.app.importSettings.debugEachStep = checkbox.checked;
+    };
+
+    var label = L.DomUtil.create("label");
+    label.for = "debugEachStep";
+    label.innerText = "Debug each transformation step";
+
+    const button = L.DomUtil.create("button");
+    button.type = "button";
+    button.innerHTML = "Confirm";
+    button.onclick = () => {
+      this.remove();
+      document.getElementById("settingsButton").disabled = false;
+    };
+
+    var group = L.DomUtil.create("div");
+    group.style = "background: black; padding: 10px;";
+    group.appendChild(checkbox);
+    group.appendChild(label);
+    group.appendChild(button);
+
+    return group;
+  },
+});
+
+const makeSettingsControl = function (app) {
+  return new SettingsControl({ app: app });
 };

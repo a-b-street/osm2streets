@@ -2,6 +2,23 @@
 /* eslint-disable */
 /**
 */
+export class JsDebugStreets {
+  free(): void;
+/**
+* @returns {string}
+*/
+  getLabel(): string;
+/**
+* @returns {any}
+*/
+  getNetwork(): any;
+/**
+* @returns {string | undefined}
+*/
+  toDebugGeojson(): string | undefined;
+}
+/**
+*/
 export class JsStreetNetwork {
   free(): void;
 /**
@@ -21,6 +38,10 @@ export class JsStreetNetwork {
 * @returns {string}
 */
   toGraphviz(): string;
+/**
+* @returns {any[]}
+*/
+  getDebugSteps(): any[];
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -32,6 +53,11 @@ export interface InitOutput {
   readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGeojsonDetailed: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
+  readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
+  readonly __wbg_jsdebugstreets_free: (a: number) => void;
+  readonly jsdebugstreets_getLabel: (a: number, b: number) => void;
+  readonly jsdebugstreets_getNetwork: (a: number) => number;
+  readonly jsdebugstreets_toDebugGeojson: (a: number, b: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
