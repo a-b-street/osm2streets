@@ -6,7 +6,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::Distance;
 
-use crate::StreetNetwork;
+use crate::{DebugStreets, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -118,6 +118,30 @@ impl StreetNetwork {
         let obj = geom::geometries_with_properties_to_geojson(pairs);
         let output = serde_json::to_string_pretty(&obj)?;
         Ok(output)
+    }
+}
+
+impl DebugStreets {
+    /// None if there's nothing labelled
+    pub fn to_debug_geojson(&self) -> Option<String> {
+        let mut pairs = Vec::new();
+        for (pt, label) in &self.points {
+            pairs.push((
+                pt.to_geojson(Some(&self.streets.gps_bounds)),
+                make_props(&[("label", label.to_string().into())]),
+            ));
+        }
+        for (pl, label) in &self.polylines {
+            pairs.push((
+                pl.to_geojson(Some(&self.streets.gps_bounds)),
+                make_props(&[("label", label.to_string().into())]),
+            ));
+        }
+        if pairs.is_empty() {
+            return None;
+        }
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        Some(serde_json::to_string_pretty(&obj).unwrap())
     }
 }
 

@@ -3,6 +3,7 @@ extern crate anyhow;
 #[macro_use]
 extern crate log;
 
+use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt;
 
@@ -46,6 +47,26 @@ pub struct StreetNetwork {
     pub boundary_polygon: Polygon,
     pub gps_bounds: GPSBounds,
     pub config: MapConfig,
+
+    #[serde(skip_serializing, skip_deserializing)]
+    pub debug_steps: RefCell<Vec<DebugStreets>>,
+    // Transformations build these up
+    #[serde(skip_serializing, skip_deserializing)]
+    debug_points: RefCell<Vec<(Pt2D, String)>>,
+    #[serde(skip_serializing, skip_deserializing)]
+    debug_polylines: RefCell<Vec<(PolyLine, String)>>,
+}
+
+#[derive(Clone, Debug)]
+pub struct DebugStreets {
+    pub label: String,
+    /// A full copy of an intermediate `StreetNetwork` that can be rendered. It doesn't recursively
+    /// contain any `debug_steps`.
+    pub streets: StreetNetwork,
+    /// Extra labelled points to debug
+    pub points: Vec<(Pt2D, String)>,
+    /// Extra labelled polylines to debug
+    pub polylines: Vec<(PolyLine, String)>,
 }
 
 /// A way to refer to roads across many maps and over time. Also trivial to relate with OSM to find
@@ -126,6 +147,10 @@ impl StreetNetwork {
             boundary_polygon: Polygon::rectangle(1.0, 1.0),
             gps_bounds: GPSBounds::new(),
             config: MapConfig::default_for_side(DrivingSide::Right),
+
+            debug_steps: RefCell::new(Vec::new()),
+            debug_points: RefCell::new(Vec::new()),
+            debug_polylines: RefCell::new(Vec::new()),
         }
     }
 
@@ -215,6 +240,44 @@ impl StreetNetwork {
             )?;
             Ok(results.trimmed_center_pts.remove(&road_id).unwrap().0)
         }
+    }
+
+    pub(crate) fn copy_for_debugging<I: Into<String>>(&self, label: I) -> DebugStreets {
+        DebugStreets {
+            label: label.into(),
+            streets: StreetNetwork {
+                roads: self.roads.clone(),
+                intersections: self.intersections.clone(),
+                boundary_polygon: self.boundary_polygon.clone(),
+                gps_bounds: self.gps_bounds.clone(),
+                config: self.config.clone(),
+                debug_steps: RefCell::new(Vec::new()),
+                debug_points: RefCell::new(Vec::new()),
+                debug_polylines: RefCell::new(Vec::new()),
+            },
+            points: self.debug_points.borrow_mut().drain(..).collect(),
+            polylines: self.debug_polylines.borrow_mut().drain(..).collect(),
+        }
+    }
+
+    pub(crate) fn debug_intersection<I: Into<String>>(&self, i: osm::NodeID, label: I) {
+        if self.debug_steps.borrow().is_empty() {
+            return;
+        }
+
+        self.debug_points
+            .borrow_mut()
+            .push((self.intersections[&i].point, label.into()));
+    }
+
+    pub(crate) fn debug_road<I: Into<String>>(&self, r: OriginalRoad, label: I) {
+        if self.debug_steps.borrow().is_empty() {
+            return;
+        }
+
+        self.debug_polylines
+            .borrow_mut()
+            .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
     }
 }
 

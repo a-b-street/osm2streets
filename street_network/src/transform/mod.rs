@@ -135,22 +135,24 @@ impl StreetNetwork {
         timer.stop("simplify StreetNetwork");
     }
 
-    /// Apply a sequence of transformations, but also return a copy of the `StreetNetwork` before
-    /// each step.
+    /// Apply a sequence of transformations, but also save a copy of the `StreetNetwork` before
+    /// each step. Some steps may also internally add debugging info.
     pub fn apply_transformations_stepwise_debugging(
         &mut self,
         transformations: Vec<Transformation>,
         timer: &mut Timer,
-    ) -> Vec<(String, Self)> {
-        let mut debug = vec![("original".to_string(), self.clone())];
+    ) {
+        self.debug_steps
+            .borrow_mut()
+            .push(self.copy_for_debugging("original"));
 
         timer.start("simplify StreetNetwork");
         for transformation in transformations {
             transformation.apply(self, timer);
-            debug.push((transformation.name().to_string(), self.clone()));
+            self.debug_steps
+                .borrow_mut()
+                .push(self.copy_for_debugging(transformation.name()));
         }
         timer.stop("simplify StreetNetwork");
-
-        debug
     }
 }
