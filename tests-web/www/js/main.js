@@ -11,6 +11,7 @@ import {
   makePlainGeoJsonLayer,
   makeDetailedGeoJsonLayer,
   makeDotLayer,
+  makeDebugLayer,
 } from "./layers.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
@@ -162,6 +163,23 @@ class TestCase {
           await makeDotLayer(network.toGraphviz(), { bounds })
         )
       );*/
+      for (const step of network.getDebugSteps()) {
+        layers.push(
+          app.addLayer(
+            `${step.getLabel()}: geometry`,
+            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+          )
+        );
+        const debugGeojson = step.toDebugGeojson();
+        if (debugGeojson) {
+          layers.push(
+            app.addLayer(
+              `${step.getLabel()}: debug`,
+              makeDebugLayer(debugGeojson)
+            )
+          );
+        }
+      }
 
       return new TestCase(app, null, osmInput, drivingSide, layers, bounds);
     } catch (err) {
@@ -185,8 +203,11 @@ class TestCase {
       button.type = "button";
       button.innerHTML = "Reimport";
       button.onclick = async () => {
-        // It doesn't make sense to ever reimport twice; that would only add redundant layers
-        button.disabled = true;
+        // TODO Allow reimporting to happen multiple times, since
+        // transformation settings could change. This will add redundant
+        // layers right now. Once we have better layer management, we
+        // should be able to erase all of the layers from the previous
+        // reimport.
         await this.reimport();
       };
 
@@ -233,6 +254,23 @@ class TestCase {
           await makeDotLayer(network.toGraphviz(), { bounds: this.bounds })
         )
       );*/
+      for (const step of network.getDebugSteps()) {
+        this.layers.push(
+          this.app.addLayer(
+            `${step.getLabel()}: geometry`,
+            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+          )
+        );
+        const debugGeojson = step.toDebugGeojson();
+        if (debugGeojson) {
+          this.layers.push(
+            this.app.addLayer(
+              `${step.getLabel()}: debug`,
+              makeDebugLayer(debugGeojson)
+            )
+          );
+        }
+      }
     } catch (err) {
       window.alert(`Reimport failed: ${err}`);
     }

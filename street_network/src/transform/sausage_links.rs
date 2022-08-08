@@ -8,6 +8,11 @@ use crate::{
 /// Collapse them into one road with a barrier in the middle.
 pub fn collapse_sausage_links(streets: &mut StreetNetwork) {
     for (id1, id2) in find_sausage_links(streets) {
+        // TODO Temporarily demonstrate debugging by labelling some things. Remove after checking
+        // in a transformation that actually needs this.
+        streets.debug_road(id1.clone(), "one side of sausage link");
+        streets.debug_intersection(id1.i2, "one endpoint of sausage link");
+
         fix(streets, id1, id2);
     }
 }

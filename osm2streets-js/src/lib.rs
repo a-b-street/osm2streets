@@ -33,11 +33,13 @@ impl JsStreetNetwork {
             &mut timer,
         )
         .map_err(|err| JsValue::from_str(&err.to_string()))?;
-        street_network.apply_transformations(
-            // TODO Assuming defaults here; probably do take in Input
-            street_network::Transformation::standard_for_clipped_areas(),
-            &mut timer,
-        );
+        // TODO Assuming defaults here; probably do take in Input
+        let transformations = street_network::Transformation::standard_for_clipped_areas();
+        if input.debug_each_step {
+            street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
+        } else {
+            street_network.apply_transformations(transformations, &mut timer);
+        }
 
         Ok(Self {
             inner: street_network,
@@ -60,5 +62,42 @@ impl JsStreetNetwork {
         // TODO Should we make the caller do the clone? Is that weird from JS?
         let road_network: streets::RoadNetwork = self.inner.clone().into();
         road_network.to_dot()
+    }
+
+    #[wasm_bindgen(js_name = getDebugSteps)]
+    pub fn get_debug_steps(&self) -> Vec<JsValue> {
+        // TODO Figure out how to borrow from the RefCell instead of cloning
+        self.inner
+            .debug_steps
+            .borrow()
+            .iter()
+            .map(|x| JsValue::from(JsDebugStreets { inner: x.clone() }))
+            .collect()
+    }
+}
+
+#[wasm_bindgen]
+pub struct JsDebugStreets {
+    inner: street_network::DebugStreets,
+}
+
+#[wasm_bindgen]
+impl JsDebugStreets {
+    // TODO Can we borrow?
+    #[wasm_bindgen(js_name = getLabel)]
+    pub fn get_label(&self) -> String {
+        self.inner.label.clone()
+    }
+
+    #[wasm_bindgen(js_name = getNetwork)]
+    pub fn get_network(&self) -> JsValue {
+        JsValue::from(JsStreetNetwork {
+            inner: self.inner.streets.clone(),
+        })
+    }
+
+    #[wasm_bindgen(js_name = toDebugGeojson)]
+    pub fn to_debug_geojson(&self) -> Option<String> {
+        self.inner.to_debug_geojson()
     }
 }
