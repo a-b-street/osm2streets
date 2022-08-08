@@ -9,6 +9,7 @@ export function loadTests() {
     "i5_exit_ramp",
     "kingsway_junction",
     "montlake_roundabout",
+    "northgate_dual_carriageway",
     "oneway_loop",
     "perth_peanut_roundabout",
     "perth_stretched_lights",
