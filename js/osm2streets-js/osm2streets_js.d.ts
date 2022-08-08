@@ -17,6 +17,10 @@ export class JsStreetNetwork {
 * @returns {string}
 */
   toGeojsonDetailed(): string;
+/**
+* @returns {string}
+*/
+  toGraphviz(): string;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -27,6 +31,7 @@ export interface InitOutput {
   readonly jsstreetnetwork_new: (a: number, b: number, c: number, d: number) => void;
   readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGeojsonDetailed: (a: number, b: number) => void;
+  readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;

@@ -8,41 +8,30 @@
       name="viewport"
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
+
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/main.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin
-    />
-    <script
-      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin
-    ></script>
+    <link rel="stylesheet" href="css/deps/leaflet.css" />
+    <link rel="stylesheet" href="css/deps/geosearch.css" />
 
-    <script
-      src="https://unpkg.com/d3@7.4.4/dist/d3.min.js"
-      crossorigin
-    ></script>
-    <script
-      src="https://unpkg.com/@hpcc-js/wasm@1.12.8/dist/index.min.js"
-      crossorigin
-    ></script>
-    <script
-      src="https://unpkg.com/d3-graphviz@4.1.1/build/d3-graphviz.js"
-      crossorigin
-    ></script>
+    <script src="js/deps/leaflet.js"></script>
+    <script src="js/deps/d3.min.js"></script>
+    <script src="js/deps/graphviz.min.js"></script>
+    <script src="js/deps/d3-graphviz.js"></script>
+    <script src="js/deps/geosearch.umd.js"></script>
+    <script type="module" src="js/deps/leaflet-osm.js"></script>
 
-    <script type="module" src="js/leaflet-osm.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module">
+      import { StreetExplorer } from "./js/main.js";
+      window.app = await StreetExplorer.create(document.getElementById("map"));
+    </script>
   </head>
   <body>
     <menu>
       <h1>StreetExplorer</h1>
       <button type="button" id="import-view">Import current view</button>
       <ul id="test-list" />
+      <ul id="view-controls" />
     </menu>
     <section id="road-network"></section>
     <div id="map"></div>
