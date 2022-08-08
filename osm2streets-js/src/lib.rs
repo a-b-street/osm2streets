@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
     driving_side: street_network::DrivingSide,
+    debug_each_step: bool,
 }
 
 #[wasm_bindgen]
