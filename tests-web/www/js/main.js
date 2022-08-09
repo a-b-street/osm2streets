@@ -14,20 +14,24 @@ import {
   makeDotLayer,
   makeDebugLayer,
 } from "./layers.js";
+import {
+  makeSettingsControl,
+  makeLayerControl,
+  LayerGroup,
+} from "./controls.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
 await init();
 
 export class StreetExplorer {
   constructor(mapContainer) {
-    const [map, layerControl] = setupLeafletMap(mapContainer);
-    this.map = map;
-    this.layerControl = layerControl;
+    this.map = setupLeafletMap(mapContainer);
     this.currentTest = null;
     this.importSettings = {
       debugEachStep: false,
       dualCarriagewayExperiment: false,
     };
+    this.layers = makeLayerControl(this).addTo(this.map);
 
     // Add all tests to the sidebar
     loadTests();
@@ -60,19 +64,10 @@ export class StreetExplorer {
     return app;
   }
 
-  addLayer(name, layer) {
-    layer.addTo(this.map);
-    this.layerControl.addOverlay(layer, name);
-    return layer;
-  }
-
-  removeLayer(layer) {
-    this.map.removeLayer(layer);
-    this.layerControl.removeLayer(layer);
-  }
-
   async setCurrentTest(testMaker) {
-    this.currentTest?.cleanup();
+    // Clear all layers
+    this.layers.removeGroups((name) => true);
+
     this.currentTest = await testMaker(this);
     if (this.currentTest) {
       this.map.fitBounds(this.currentTest.bounds, { animate: false });
@@ -82,42 +77,34 @@ export class StreetExplorer {
 }
 
 class TestCase {
-  constructor(app, name, osmXML, drivingSide, layers, bounds) {
+  constructor(app, name, osmXML, drivingSide, bounds) {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
     this.drivingSide = drivingSide;
-    this.layers = layers;
     this.bounds = bounds;
-  }
-
-  cleanup() {
-    for (const layer of this.layers) {
-      this.app.removeLayer(layer);
-    }
   }
 
   static async loadFromServer(app, name) {
     const prefix = `tests/${name}/`;
     const osmInput = await loadFile(prefix + "input.osm");
-    const rawMap = loadFile(prefix + "raw_map.json");
-    const network = loadFile(prefix + "road_network.dot");
+    const rawMap = await loadFile(prefix + "raw_map.json");
+    const network = await loadFile(prefix + "road_network.dot");
 
-    const rawMapLayer = makePlainGeoJsonLayer(await rawMap);
+    const rawMapLayer = makePlainGeoJsonLayer(rawMap);
     const bounds = rawMapLayer.getBounds();
 
-    var layers = [];
-    layers.push(app.addLayer("Geometry", rawMapLayer));
-    layers.push(app.addLayer("OSM", makeOsmLayer(osmInput)));
-    layers.push(
-      app.addLayer("Network", await makeDotLayer(await network, { bounds }))
-    );
+    var group = new LayerGroup("built-in test case", app.map);
+    group.addLayer("Geometry", rawMapLayer);
+    group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
+    group.addLayer("Network", await makeDotLayer(network, { bounds }));
+    app.layers.addGroup(group);
 
     const drivingSide = JSON.parse(await loadFile(prefix + "test.json"))[
       "driving_side"
     ];
 
-    return new TestCase(app, name, osmInput, drivingSide, layers, bounds);
+    return new TestCase(app, name, osmInput, drivingSide, bounds);
   }
 
   static async importCurrentView(app, importButton) {
@@ -143,56 +130,12 @@ class TestCase {
       // TODO Ask overpass
       const drivingSide = "Right";
 
-      const network = new JsStreetNetwork(osmInput, {
-        driving_side: drivingSide,
-        debug_each_step: app.importSettings.debugEachStep,
-        dual_carriageway_experiment:
-          app.importSettings.dualCarriagewayExperiment,
-      });
-      const rawMapLayer = makePlainGeoJsonLayer(network.toGeojsonPlain());
-      const bounds = rawMapLayer.getBounds();
+      importOSM("Imported area", app, osmInput, drivingSide, true);
+      const bounds = app.layers
+        .getLayer("Imported area", "Geometry")
+        .getBounds();
 
-      var layers = [];
-      layers.push(app.addLayer("Geometry", rawMapLayer));
-      layers.push(
-        app.addLayer(
-          "Lane polygons",
-          makeLanePolygonLayer(network.toLanePolygonsGeojson())
-        )
-      );
-      layers.push(
-        app.addLayer(
-          "Lane markings",
-          makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
-        )
-      );
-      layers.push(app.addLayer("OSM", makeOsmLayer(osmInput)));
-      // TODO ReferenceError: can't access lexical declaration 'graph' before initialization
-      /*layers.push(
-        app.addLayer(
-          "Network",
-          await makeDotLayer(network.toGraphviz(), { bounds })
-        )
-      );*/
-      for (const step of network.getDebugSteps()) {
-        layers.push(
-          app.addLayer(
-            `${step.getLabel()}: geometry`,
-            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
-          )
-        );
-        const debugGeojson = step.toDebugGeojson();
-        if (debugGeojson) {
-          layers.push(
-            app.addLayer(
-              `${step.getLabel()}: debug`,
-              makeDebugLayer(debugGeojson)
-            )
-          );
-        }
-      }
-
-      return new TestCase(app, null, osmInput, drivingSide, layers, bounds);
+      return new TestCase(app, null, osmInput, drivingSide, bounds);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
       // There won't be a currentTest
@@ -213,13 +156,11 @@ class TestCase {
       const button = container.appendChild(document.createElement("button"));
       button.type = "button";
       button.innerHTML = "Reimport";
-      button.onclick = async () => {
-        // TODO Allow reimporting to happen multiple times, since
-        // transformation settings could change. This will add redundant
-        // layers right now. Once we have better layer management, we
-        // should be able to erase all of the layers from the previous
-        // reimport.
-        await this.reimport();
+      button.onclick = () => {
+        // First remove all existing groups except for the original one
+        this.app.layers.removeGroups((name) => name != "built-in test case");
+
+        importOSM("Reimport", this.app, this.osmXML, this.drivingSide, false);
       };
 
       const settings = container.appendChild(document.createElement("button"));
@@ -240,59 +181,60 @@ class TestCase {
     button.onclick = () =>
       downloadGeneratedFile(`${this.name || "new"}.osm.xml`, this.osmXML);
   }
+}
 
-  async reimport() {
-    try {
-      const network = new JsStreetNetwork(this.osmXML, {
-        driving_side: this.drivingSide,
-        debug_each_step: this.app.importSettings.debugEachStep,
-        dual_carriageway_experiment:
-          app.importSettings.dualCarriagewayExperiment,
-      });
-      this.layers.push(
-        this.app.addLayer(
-          "Geometry (reimport)",
-          makePlainGeoJsonLayer(network.toGeojsonPlain())
-        )
-      );
-      this.layers.push(
-        this.app.addLayer(
-          "Lane polygons (reimport)",
-          makeLanePolygonLayer(network.toLanePolygonsGeojson())
-        )
-      );
-      this.layers.push(
-        this.app.addLayer(
-          "Lane markings (reimport)",
-          makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
-        )
-      );
-      /*this.layers.push(
-        this.app.addLayer(
-          "Network (reimport)",
-          await makeDotLayer(network.toGraphviz(), { bounds: this.bounds })
-        )
-      );*/
-      for (const step of network.getDebugSteps()) {
-        this.layers.push(
-          this.app.addLayer(
-            `${step.getLabel()}: geometry`,
-            makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
-          )
-        );
-        const debugGeojson = step.toDebugGeojson();
-        if (debugGeojson) {
-          this.layers.push(
-            this.app.addLayer(
-              `${step.getLabel()}: debug`,
-              makeDebugLayer(debugGeojson)
-            )
-          );
-        }
-      }
-    } catch (err) {
-      window.alert(`Reimport failed: ${err}`);
+function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
+  try {
+    const network = new JsStreetNetwork(osmXML, {
+      driving_side: drivingSide,
+      debug_each_step: app.importSettings.debugEachStep,
+      dual_carriageway_experiment: app.importSettings.dualCarriagewayExperiment,
+    });
+    var group = new LayerGroup(groupName, app.map);
+    if (addOSMLayer) {
+      group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
     }
+    group.addLayer("Geometry", makePlainGeoJsonLayer(network.toGeojsonPlain()));
+    group.addLayer(
+      "Lane polygons",
+      makeLanePolygonLayer(network.toLanePolygonsGeojson())
+    );
+    group.addLayer(
+      "Lane markings",
+      makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
+    );
+    // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
+
+    const numDebugSteps = network.getDebugSteps().length;
+    group.setEnabled(numDebugSteps == 0);
+    app.layers.addGroup(group);
+
+    var i = 0;
+    for (const step of network.getDebugSteps()) {
+      i++;
+      var group = new LayerGroup(`Step ${i}: ${step.getLabel()}`, app.map);
+      group.addLayer(
+        "Geometry",
+        makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+      );
+      group.addLayer(
+        "Lane polygons",
+        makeLanePolygonLayer(step.getNetwork().toLanePolygonsGeojson())
+      );
+      group.addLayer(
+        "Lane markings",
+        makeLaneMarkingsLayer(step.getNetwork().toLaneMarkingsGeojson())
+      );
+
+      const debugGeojson = step.toDebugGeojson();
+      if (debugGeojson) {
+        group.addLayer("Debug", makeDebugLayer(debugGeojson));
+      }
+      group.setEnabled(i == numDebugSteps);
+      app.layers.addGroup(group);
+    }
+  } catch (err) {
+    window.alert(`Import failed: ${err}`);
   }
 }
 
@@ -328,11 +270,11 @@ function setupLeafletMap(mapContainer) {
     autoClose: true,
   }).addTo(map);
 
-  const layerControl = L.control
-    .layers({ OpenStreetMap: osm, ArcGIS: arcgis }, {})
+  L.control
+    .layers({ OpenStreetMap: osm, ArcGIS: arcgis }, {}, { collapsed: false })
     .addTo(map);
 
-  return [map, layerControl];
+  return map;
 }
 
 // TODO Unused. Preserve logic for dragging individual files as layers.
@@ -344,64 +286,4 @@ const useMap = (map) => {
   map.loadLink = makeLinkHandler(map);
   map.openTest = makeOpenTest(map);
   console.info("New map created! File drops enabled.", container);
-};
-
-// TODO A Leaflet control isn't the right abstraction. We want a popup modal
-// that totally blocks the map and other things. Things like disabling
-// settingsButton to stop multiple of these controls is a total hack.
-const SettingsControl = L.Control.extend({
-  // TODO Centered would be great. https://github.com/Leaflet/Leaflet/issues/8358
-  options: {
-    position: "topleft",
-  },
-  onAdd: function (map) {
-    var checkbox1 = L.DomUtil.create("input");
-    checkbox1.id = "debugEachStep";
-    checkbox1.type = "checkbox";
-    if (this.options.app.importSettings.debugEachStep) {
-      checkbox1.checked = true;
-    }
-    checkbox1.onclick = () => {
-      this.options.app.importSettings.debugEachStep = checkbox1.checked;
-    };
-
-    var label1 = L.DomUtil.create("label");
-    label1.for = "debugEachStep";
-    label1.innerText = "Debug each transformation step\n";
-
-    var checkbox2 = L.DomUtil.create("input");
-    checkbox2.id = "dualCarriagewayExperiment";
-    checkbox2.type = "checkbox";
-    if (this.options.app.importSettings.dualCarriagewayExperiment) {
-      checkbox2.checked = true;
-    }
-    checkbox2.onclick = () => {
-      this.options.app.importSettings.dualCarriagewayExperiment =
-        checkbox2.checked;
-    };
-
-    var label2 = L.DomUtil.create("label");
-    label2.for = "dualCarriagewayExperiment";
-    label2.innerText = "Enable dual carriageway experiment\n";
-
-    const button = L.DomUtil.create("button");
-    button.type = "button";
-    button.innerHTML = "Confirm";
-    button.onclick = () => {
-      this.remove();
-      document.getElementById("settingsButton").disabled = false;
-    };
-
-    var group = L.DomUtil.create("div");
-    group.style = "background: black; padding: 10px;";
-    for (const x of [checkbox1, label1, checkbox2, label2, button]) {
-      group.appendChild(x);
-    }
-
-    return group;
-  },
-});
-
-const makeSettingsControl = function (app) {
-  return new SettingsControl({ app: app });
 };
