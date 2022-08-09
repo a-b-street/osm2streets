@@ -1,3 +1,5 @@
+import { downloadGeneratedFile } from "./files.js";
+
 // TODO A Leaflet control isn't the right abstraction. We want a popup modal
 // that totally blocks the map and other things. Things like disabling
 // settingsButton to stop multiple of these controls is a total hack.
@@ -78,21 +80,31 @@ export class LayerGroup {
       ),
     ];
     for (const layer of this.layers) {
-      members.push(
-        makeCheckbox(
-          this.name + "_" + layer.name,
-          layer.name,
-          layer.enabled,
-          (checked) => {
-            layer.enabled = checked;
-            if (checked) {
-              this.map.addLayer(layer.layer);
-            } else {
-              this.map.removeLayer(layer.layer);
-            }
+      const entry = makeCheckbox(
+        this.name + "_" + layer.name,
+        layer.name,
+        layer.enabled,
+        (checked) => {
+          layer.enabled = checked;
+          if (checked) {
+            this.map.addLayer(layer.layer);
+          } else {
+            this.map.removeLayer(layer.layer);
           }
-        )
+        }
       );
+
+      const download = L.DomUtil.create("button");
+      download.type = "button";
+      download.innerHTML = "Download";
+      download.onclick = () => {
+        downloadGeneratedFile(
+          `${layer.name}.geojson`,
+          JSON.stringify(layer.layer.toGeoJSON())
+        );
+      };
+      entry.appendChild(download);
+      members.push(entry);
 
       // This is maybe an odd time to sync this state
       if (layer.enabled) {
