@@ -9,7 +9,8 @@ import { loadTests } from "./tests.js";
 import {
   makeOsmLayer,
   makePlainGeoJsonLayer,
-  makeDetailedGeoJsonLayer,
+  makeLanePolygonLayer,
+  makeLaneMarkingsLayer,
   makeDotLayer,
   makeDebugLayer,
 } from "./layers.js";
@@ -154,8 +155,14 @@ class TestCase {
       layers.push(app.addLayer("Geometry", rawMapLayer));
       layers.push(
         app.addLayer(
-          "Detailed geometry",
-          makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
+          "Lane polygons",
+          makeLanePolygonLayer(network.toLanePolygonsGeojson())
+        )
+      );
+      layers.push(
+        app.addLayer(
+          "Lane markings",
+          makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
         )
       );
       layers.push(app.addLayer("OSM", makeOsmLayer(osmInput)));
@@ -249,8 +256,14 @@ class TestCase {
       );
       this.layers.push(
         this.app.addLayer(
-          "Detailed geometry (reimport)",
-          makeDetailedGeoJsonLayer(network.toGeojsonDetailed())
+          "Lane polygons (reimport)",
+          makeLanePolygonLayer(network.toLanePolygonsGeojson())
+        )
+      );
+      this.layers.push(
+        this.app.addLayer(
+          "Lane markings (reimport)",
+          makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
         )
       );
       /*this.layers.push(

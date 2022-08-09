@@ -501,6 +501,30 @@ impl RawRoad {
             self.osm_tags.get(osm::OSM_WAY_ID).unwrap()
         )
     }
+
+    pub fn total_width(&self) -> Distance {
+        self.lane_specs_ltr.iter().map(|l| l.width).sum()
+    }
+
+    /// Returns one PolyLine representing the center of each lane in this road. Pass in
+    /// `road_center` generated from `InitialMap` (trimmed from the intersection) or from
+    /// `osm_center_points`. The result also faces the same direction as the road.
+    pub fn get_lane_center_lines(&self, road_center: &PolyLine) -> Vec<PolyLine> {
+        let total_width = self.total_width();
+
+        let mut width_so_far = Distance::ZERO;
+        let mut output = Vec::new();
+        for lane in &self.lane_specs_ltr {
+            width_so_far += lane.width / 2.0;
+            output.push(
+                road_center
+                    .shift_from_center(total_width, width_so_far)
+                    .unwrap_or_else(|_| road_center.clone()),
+            );
+            width_so_far += lane.width / 2.0;
+        }
+        output
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
