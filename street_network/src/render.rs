@@ -6,7 +6,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::Distance;
 
-use crate::{DebugStreets, StreetNetwork};
+use crate::{DebugStreets, LaneType, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -18,7 +18,7 @@ impl StreetNetwork {
         Ok(())
     }
 
-    /// Generates a plain GeoJSON rendering of roads and intersections.
+    /// Generates a plain GeoJSON rendering with one polygon per road and intersection.
     pub fn to_geojson(&self, timer: &mut Timer) -> Result<String> {
         // TODO InitialMap is going away very soon, but we still need it
         let initial_map = crate::initial::InitialMap::new(self, timer);
@@ -65,54 +65,77 @@ impl StreetNetwork {
         Ok(output)
     }
 
-    /// Generates a more detailed GeoJSON rendering of roads and intersections.
-    pub fn to_detailed_geojson(&self, timer: &mut Timer) -> Result<String> {
+    /// Generates a polygon per lane, with a property indicating type.
+    pub fn to_lane_polygons_geojson(&self, timer: &mut Timer) -> Result<String> {
         // TODO InitialMap is going away very soon, but we still need it
         let initial_map = crate::initial::InitialMap::new(self, timer);
 
         let mut pairs = Vec::new();
 
-        for (id, road) in &initial_map.roads {
-            // Paved road area
-            pairs.push((
-                road.trimmed_center_pts
-                    .make_polygons(2.0 * road.half_width)
-                    .to_geojson(Some(&self.gps_bounds)),
-                make_props(&[("type", "road polygon".into())]),
-            ));
-
-            // Lane separators
-            let mut width_so_far = Distance::ZERO;
-            for lane in &self.roads[id].lane_specs_ltr {
-                // Draw the left
-                if let Ok(pl) = road
-                    .trimmed_center_pts
-                    .shift_from_center(2.0 * road.half_width, width_so_far)
-                {
-                    pairs.push((
-                        pl.to_geojson(Some(&self.gps_bounds)),
-                        make_props(&[("type", "lane separator".into())]),
-                    ));
-                }
-                width_so_far += lane.width;
-            }
-            // The rightmost
-            if let Ok(pl) = road
-                .trimmed_center_pts
-                .shift_from_center(2.0 * road.half_width, width_so_far)
-            {
+        for (id, road) in &self.roads {
+            for (lane, pl) in road.lane_specs_ltr.iter().zip(
+                road.get_lane_center_lines(&initial_map.roads[id].trimmed_center_pts)
+                    .into_iter(),
+            ) {
                 pairs.push((
-                    pl.to_geojson(Some(&self.gps_bounds)),
-                    make_props(&[("type", "lane separator".into())]),
+                    pl.make_polygons(lane.width)
+                        .to_geojson(Some(&self.gps_bounds)),
+                    make_props(&[("type", format!("{:?}", lane.lt).into())]),
                 ));
             }
         }
 
-        for (_id, intersection) in &initial_map.intersections {
-            pairs.push((
-                intersection.polygon.to_geojson(Some(&self.gps_bounds)),
-                make_props(&[("type", "intersection polygon".into())]),
-            ));
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
+
+    /// Generate polygons representing lane markings, with a property indicating type.
+    pub fn to_lane_markings_geojson(&self, timer: &mut Timer) -> Result<String> {
+        // TODO InitialMap is going away very soon, but we still need it
+        let initial_map = crate::initial::InitialMap::new(self, timer);
+
+        let mut pairs = Vec::new();
+
+        for (id, road) in &self.roads {
+            let lane_centers =
+                road.get_lane_center_lines(&initial_map.roads[id].trimmed_center_pts);
+
+            for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
+                // Generate a "center line" between lanes of different directions
+                if pair[0].dir != pair[1].dir {
+                    let between = lane_centers[idx].shift_right(pair[0].width / 2.0)?;
+                    // TODO Ideally we would return a full LineString, and the caller would choose
+                    // how to style these as thickened dashed lines.
+                    // TODO We could also at least return a MultiPolygon here
+                    for poly in between.dashed_lines(
+                        Distance::meters(0.25),
+                        Distance::meters(2.0),
+                        Distance::meters(1.0),
+                    ) {
+                        pairs.push((
+                            poly.to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[("type", "center line".into())]),
+                        ));
+                    }
+                    continue;
+                }
+
+                // Generate a "lane separator" between driving lanes only
+                if pair[0].lt == LaneType::Driving && pair[1].lt == LaneType::Driving {
+                    let between = lane_centers[idx].shift_right(pair[0].width / 2.0)?;
+                    for poly in between.dashed_lines(
+                        Distance::meters(0.25),
+                        Distance::meters(1.0),
+                        Distance::meters(1.5),
+                    ) {
+                        pairs.push((
+                            poly.to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[("type", "lane separator".into())]),
+                        ));
+                    }
+                }
+            }
         }
 
         let obj = geom::geometries_with_properties_to_geojson(pairs);
