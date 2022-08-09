@@ -33,7 +33,11 @@ export class JsStreetNetwork {
 /**
 * @returns {string}
 */
-  toGeojsonDetailed(): string;
+  toLanePolygonsGeojson(): string;
+/**
+* @returns {string}
+*/
+  toLaneMarkingsGeojson(): string;
 /**
 * @returns {string}
 */
@@ -51,7 +55,8 @@ export interface InitOutput {
   readonly __wbg_jsstreetnetwork_free: (a: number) => void;
   readonly jsstreetnetwork_new: (a: number, b: number, c: number, d: number) => void;
   readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
-  readonly jsstreetnetwork_toGeojsonDetailed: (a: number, b: number) => void;
+  readonly jsstreetnetwork_toLanePolygonsGeojson: (a: number, b: number) => void;
+  readonly jsstreetnetwork_toLaneMarkingsGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
   readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
   readonly __wbg_jsdebugstreets_free: (a: number) => void;
