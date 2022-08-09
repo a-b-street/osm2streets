@@ -20,8 +20,9 @@ await init();
 
 export class StreetExplorer {
   constructor(mapContainer) {
-    this.map = setupLeafletMap(mapContainer);
-    this.layerControl = L.control.layers({}, {}).addTo(this.map);
+    const [map, layerControl] = setupLeafletMap(mapContainer);
+    this.map = map;
+    this.layerControl = layerControl;
     this.currentTest = null;
     this.importSettings = {
       debugEachStep: false,
@@ -296,25 +297,42 @@ class TestCase {
 }
 
 function setupLeafletMap(mapContainer) {
-  // Make it smoother to zoom farther into the map
+  const osm = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      maxNativeZoom: 18,
+      maxZoom: 21,
+      attribution: "© OpenStreetMap",
+    }
+  );
+  const arcgis = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution: "© ArcGIS",
+      maxNativeZoom: 18,
+      maxZoom: 21,
+    }
+  );
+
   const map = L.map(mapContainer, {
+    layers: [osm],
     maxZoom: 21,
+    // Make it smoother to zoom farther into the map
     zoomSnap: 0.5,
     zoomDelta: 0.5,
     wheelPxPerZoomLevel: 120,
   }).setView([40.0, 10.0], 4);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxNativeZoom: 18,
-    maxZoom: 21,
-    attribution: "© OpenStreetMap",
-  }).addTo(map);
   new GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
     showMarker: false,
     autoClose: true,
   }).addTo(map);
-  // TODO Add satellite layer
-  return map;
+
+  const layerControl = L.control
+    .layers({ OpenStreetMap: osm, ArcGIS: arcgis }, {})
+    .addTo(map);
+
+  return [map, layerControl];
 }
 
 // TODO Unused. Preserve logic for dragging individual files as layers.
