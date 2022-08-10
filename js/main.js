@@ -18,6 +18,7 @@ import {
   makeSettingsControl,
   makeLayerControl,
   LayerGroup,
+  SequentialLayerGroup,
 } from "./controls.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
@@ -133,7 +134,7 @@ class TestCase {
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
-        .getBounds();
+        .layer.getBounds();
 
       return new TestCase(app, null, osmInput, drivingSide, bounds);
     } catch (err) {
@@ -209,6 +210,7 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
     group.setEnabled(numDebugSteps == 0);
     app.layers.addGroup(group);
 
+    var debugGroups = [];
     var i = 0;
     for (const step of network.getDebugSteps()) {
       i++;
@@ -230,8 +232,12 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       if (debugGeojson) {
         group.addLayer("Debug", makeDebugLayer(debugGeojson));
       }
-      group.setEnabled(i == numDebugSteps);
-      app.layers.addGroup(group);
+      debugGroups.push(group);
+    }
+    if (debugGroups.length != 0) {
+      app.layers.addGroup(
+        new SequentialLayerGroup("transformation steps", debugGroups)
+      );
     }
   } catch (err) {
     window.alert(`Import failed: ${err}`);
