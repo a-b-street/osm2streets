@@ -26,9 +26,7 @@ const SettingsControl = L.Control.extend({
       }
     );
 
-    const button = L.DomUtil.create("button");
-    button.type = "button";
-    button.innerHTML = "Confirm";
+    const button = makeButton("Confirm");
     button.onclick = () => {
       this.remove();
       document.getElementById("settingsButton").disabled = false;
@@ -45,6 +43,8 @@ export const makeSettingsControl = function (app) {
   return new SettingsControl({ app: app });
 };
 
+// Manages a bunch of layers that can be independently toggled. The entire
+// group has a toggle to enable or disable everything.
 export class LayerGroup {
   constructor(name, map) {
     this.name = name;
@@ -55,13 +55,25 @@ export class LayerGroup {
 
   addLayer(name, layer, { enabled = true } = {}) {
     this.layers.push({ name, enabled, layer });
+
+    if (enabled) {
+      this.map.addLayer(layer);
+    } else {
+      this.map.removeLayer(layer);
+    }
   }
 
-  // Doesn't re-render
+  // Updates the map, but doesn't re-render any controls
   setEnabled(enabled) {
     this.enabled = enabled;
     for (const layer of this.layers) {
       layer.enabled = enabled;
+
+      if (enabled) {
+        this.map.addLayer(layer.layer);
+      } else {
+        this.map.removeLayer(layer.layer);
+      }
     }
   }
 
@@ -94,9 +106,7 @@ export class LayerGroup {
         }
       );
 
-      const download = L.DomUtil.create("button");
-      download.type = "button";
-      download.innerHTML = "Download";
+      const download = makeButton("Download");
       download.onclick = () => {
         downloadGeneratedFile(
           `${layer.name}.geojson`,
@@ -105,21 +115,80 @@ export class LayerGroup {
       };
       entry.appendChild(download);
       members.push(entry);
-
-      // This is maybe an odd time to sync this state
-      if (layer.enabled) {
-        this.map.addLayer(layer.layer);
-      } else {
-        this.map.removeLayer(layer.layer);
-      }
     }
     var div = makeDiv(members);
     div.id = this.name;
     return div;
   }
+
+  remove() {
+    for (const layer of this.layers) {
+      this.map.removeLayer(layer.layer);
+    }
+  }
 }
 
-// Manages a list of groups
+// Contains a bunch of LayerGroups, displays exactly one at a time, and can
+// scroll through the sequence.
+export class SequentialLayerGroup {
+  constructor(name, groups) {
+    this.name = name;
+    this.groups = groups;
+    this.current = 0;
+
+    // Start with only the first enabled
+    for (var i = 0; i < this.groups.length; i++) {
+      this.groups[i].setEnabled(i == this.current);
+    }
+  }
+
+  renderControls() {
+    const prev = makeButton("Previous");
+    prev.disabled = this.current == 0;
+    prev.onclick = () => {
+      this.groups[this.current].setEnabled(false);
+      this.current -= 1;
+      this.groups[this.current].setEnabled(true);
+
+      // Rerender
+      document.getElementById(this.name).replaceWith(this.renderControls());
+    };
+
+    const label = document.createTextNode(
+      `${this.current + 1} / ${this.groups.length}`
+    );
+
+    const next = makeButton("Next");
+    next.disabled = this.current == this.groups.length - 1;
+    next.onclick = () => {
+      this.groups[this.current].setEnabled(false);
+      this.current += 1;
+      this.groups[this.current].setEnabled(true);
+
+      // Rerender
+      document.getElementById(this.name).replaceWith(this.renderControls());
+    };
+
+    var row1 = L.DomUtil.create("u");
+    row1.innerText = this.name;
+    const row2 = makeDiv([prev, label, next]);
+    const column = makeDiv([
+      row1,
+      row2,
+      this.groups[this.current].renderControls(),
+    ]);
+    column.id = this.name;
+    return column;
+  }
+
+  remove() {
+    this.groups[this.current].setEnabled(false);
+  }
+}
+
+// Manages a list of LayerGroups or SequentialLayerGroups.
+//
+// The interface required of each member: renderControls(), remove(), name
 const LayerControl = L.Control.extend({
   options: {
     position: "bottomleft",
@@ -132,19 +201,22 @@ const LayerControl = L.Control.extend({
     var members = [];
     for (const group of this.options.groups) {
       members.push(group.renderControls());
+      members.push(L.DomUtil.create("br"));
     }
+    members.pop();
     var group = makeDiv(members);
     group.style = "background: black; padding: 10px;";
     L.DomEvent.disableClickPropagation(group);
     return group;
   },
 
+  // May return an underlying layer ({name, layer, enabled}) or a SequentialLayerGroup
   getLayer: function (groupName, layerName) {
     for (const group of this.options.groups) {
       if (group.name == groupName) {
         for (const layer of group.layers) {
           if (layer.name == layerName) {
-            return layer.layer;
+            return layer;
           }
         }
       }
@@ -157,9 +229,7 @@ const LayerControl = L.Control.extend({
     var keep = [];
     for (const group of this.options.groups) {
       if (predicate(group.name)) {
-        for (const layer of group.layers) {
-          group.map.removeLayer(layer.layer);
-        }
+        group.remove();
       } else {
         keep.push(group);
       }
@@ -206,4 +276,11 @@ function makeDiv(members) {
     div.appendChild(child);
   }
   return div;
+}
+
+function makeButton(label) {
+  const button = L.DomUtil.create("button");
+  button.type = "button";
+  button.innerHTML = label;
+  return button;
 }
