@@ -25,6 +25,14 @@ const SettingsControl = L.Control.extend({
         this.options.app.importSettings.dualCarriagewayExperiment = checked;
       }
     );
+    const checkbox3 = makeCheckbox(
+      "cycletrackSnappingExperiment",
+      "Enable cycletrack snapping experiment\n",
+      this.options.app.importSettings.cycletrackSnappingExperiment,
+      (checked) => {
+        this.options.app.importSettings.cycletrackSnappingExperiment = checked;
+      }
+    );
 
     const button = makeButton("Confirm");
     button.onclick = () => {
@@ -32,7 +40,7 @@ const SettingsControl = L.Control.extend({
       document.getElementById("settingsButton").disabled = false;
     };
 
-    var group = makeDiv([checkbox1, checkbox2, button]);
+    var group = makeDiv([checkbox1, checkbox2, checkbox3, button]);
     group.style = "background: black; padding: 10px;";
     L.DomEvent.disableClickPropagation(group);
     return group;
@@ -134,7 +142,7 @@ export class SequentialLayerGroup {
   constructor(name, groups) {
     this.name = name;
     this.groups = groups;
-    this.current = 0;
+    this.current = this.groups.length - 1;
 
     // Start with only the first enabled
     for (var i = 0; i < this.groups.length; i++) {

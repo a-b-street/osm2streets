@@ -29,8 +29,10 @@ export class StreetExplorer {
     this.map = setupLeafletMap(mapContainer);
     this.currentTest = null;
     this.importSettings = {
-      debugEachStep: false,
+	    // TODO For quicker dev
+      debugEachStep: true,
       dualCarriagewayExperiment: false,
+      cycletrackSnappingExperiment: true,
     };
     this.layers = makeLayerControl(this).addTo(this.map);
 
@@ -190,6 +192,8 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       driving_side: drivingSide,
       debug_each_step: app.importSettings.debugEachStep,
       dual_carriageway_experiment: app.importSettings.dualCarriagewayExperiment,
+      cycletrack_snapping_experiment:
+        app.importSettings.cycletrackSnappingExperiment,
     });
     var group = new LayerGroup(groupName, app.map);
     if (addOSMLayer) {
@@ -219,14 +223,14 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
         "Geometry",
         makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
       );
-      group.addLayer(
+      /*group.addLayer(
         "Lane polygons",
         makeLanePolygonLayer(step.getNetwork().toLanePolygonsGeojson())
       );
       group.addLayer(
         "Lane markings",
         makeLaneMarkingsLayer(step.getNetwork().toLaneMarkingsGeojson())
-      );
+      );*/
 
       const debugGeojson = step.toDebugGeojson();
       if (debugGeojson) {
