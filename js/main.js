@@ -31,6 +31,7 @@ export class StreetExplorer {
     this.importSettings = {
       debugEachStep: false,
       dualCarriagewayExperiment: false,
+      cycletrackSnappingExperiment: false,
     };
     this.layers = makeLayerControl(this).addTo(this.map);
 
@@ -190,6 +191,8 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       driving_side: drivingSide,
       debug_each_step: app.importSettings.debugEachStep,
       dual_carriageway_experiment: app.importSettings.dualCarriagewayExperiment,
+      cycletrack_snapping_experiment:
+        app.importSettings.cycletrackSnappingExperiment,
     });
     var group = new LayerGroup(groupName, app.map);
     if (addOSMLayer) {
