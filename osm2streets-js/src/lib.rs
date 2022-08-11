@@ -9,6 +9,7 @@ pub struct ImportOptions {
     driving_side: DrivingSide,
     debug_each_step: bool,
     dual_carriageway_experiment: bool,
+    cycletrack_snapping_experiment: bool,
 }
 
 #[wasm_bindgen]
@@ -41,6 +42,11 @@ impl JsStreetNetwork {
             // Merging short roads tries to touch "bridges," making debugging harder
             transformations.retain(|t| !matches!(t, Transformation::MergeShortRoads));
             transformations.push(Transformation::MergeDualCarriageways);
+        }
+        if input.cycletrack_snapping_experiment {
+            transformations.push(Transformation::SnapCycleways);
+            transformations.push(Transformation::TrimDeadendCycleways);
+            transformations.push(Transformation::CollapseDegenerateIntersections);
         }
         if input.debug_each_step {
             street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);

@@ -9,7 +9,9 @@ mod find_short_roads;
 mod merge_short_road;
 mod remove_disconnected;
 mod sausage_links;
+mod separate_cycletracks;
 mod shrink_roads;
+#[allow(unused)]
 mod snappy;
 
 /// An in-place transformation of a `StreetNetwork`.
@@ -97,7 +99,7 @@ impl Transformation {
                 collapse_intersections::trim_deadends(streets);
             }
             Transformation::SnapCycleways => {
-                snappy::snap_cycleways(streets);
+                separate_cycletracks::snap_cycleways(streets);
             }
             Transformation::RemoveDisconnectedRoads => {
                 remove_disconnected::remove_disconnected_roads(streets);

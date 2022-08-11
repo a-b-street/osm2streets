@@ -525,6 +525,15 @@ impl RawRoad {
         }
         output
     }
+
+    /// Returns the untrimmed left and right side of the road, oriented in the same direction of
+    /// the road
+    pub fn get_untrimmed_sides(&self) -> Result<(PolyLine, PolyLine)> {
+        let (center, total_width) = self.untrimmed_road_geometry();
+        let left = center.shift_from_center(total_width, -total_width / 2.0)?;
+        let right = center.shift_from_center(total_width, total_width / 2.0)?;
+        Ok((left, right))
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
