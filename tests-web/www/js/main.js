@@ -161,6 +161,8 @@ class TestCase {
       button.onclick = () => {
         // First remove all existing groups except for the original one
         this.app.layers.removeGroups((name) => name != "built-in test case");
+        // Then disable the original group. Seeing dueling geometry isn't a good default.
+        this.app.layers.getGroup("built-in test case").setEnabled(false);
 
         importOSM("Reimport", this.app, this.osmXML, this.drivingSide, false);
       };
