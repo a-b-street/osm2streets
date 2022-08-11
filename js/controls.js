@@ -218,6 +218,15 @@ const LayerControl = L.Control.extend({
     return group;
   },
 
+  getGroup: function (groupName) {
+    for (const group of this.options.groups) {
+      if (group.name == groupName) {
+        return group;
+      }
+    }
+    throw `Can't find group ${groupName}`;
+  },
+
   // May return an underlying layer ({name, layer, enabled}) or a SequentialLayerGroup
   getLayer: function (groupName, layerName) {
     for (const group of this.options.groups) {
