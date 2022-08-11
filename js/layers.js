@@ -55,6 +55,7 @@ export const makeLaneMarkingsLayer = (text) => {
   const colors = {
     "center line": "yellow",
     "lane separator": "white",
+    "lane arrow": "white",
   };
 
   return new L.geoJSON(JSON.parse(text), {
