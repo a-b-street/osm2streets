@@ -4,9 +4,9 @@ use std::path::Path;
 
 use abstutil::Timer;
 use anyhow::Result;
-use geom::Distance;
+use geom::{ArrowCap, Distance, PolyLine};
 
-use crate::{DebugStreets, LaneType, StreetNetwork};
+use crate::{DebugStreets, Direction, LaneType, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -132,6 +132,35 @@ impl StreetNetwork {
                         pairs.push((
                             poly.to_geojson(Some(&self.gps_bounds)),
                             make_props(&[("type", "lane separator".into())]),
+                        ));
+                    }
+                }
+            }
+
+            // Draw arrows along any travel lane
+            for (lane, mut center) in road.lane_specs_ltr.iter().zip(lane_centers.into_iter()) {
+                if !lane.lt.is_for_moving_vehicles() {
+                    continue;
+                }
+                if lane.dir == Direction::Back {
+                    center = center.reversed();
+                }
+
+                let step_size = Distance::meters(20.0);
+                let buffer_ends = Distance::meters(5.0);
+                let arrow_len = Distance::meters(1.75);
+                let thickness = Distance::meters(0.25);
+                for (pt, angle) in center.step_along(step_size, buffer_ends) {
+                    if let Ok(arrow) = PolyLine::must_new(vec![
+                        pt.project_away(arrow_len / 2.0, angle.opposite()),
+                        pt.project_away(arrow_len / 2.0, angle),
+                    ])
+                    .make_arrow(thickness * 2.0, ArrowCap::Triangle)
+                    .to_outline(thickness / 2.0)
+                    {
+                        pairs.push((
+                            arrow.to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[("type", "lane arrow".into())]),
                         ));
                     }
                 }
