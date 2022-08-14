@@ -51,6 +51,24 @@ export const makeSettingsControl = function (app) {
   return new SettingsControl({ app: app });
 };
 
+export class Layer {
+  // Should only be created by LayerGroup.addLayer. That'll set an appropriate extra field with the actual data.
+  constructor(name, enabled) {
+    this.name = name;
+    this.enabled = enabled;
+    this.data = null;
+  }
+
+  getData() {
+    if (this.data == null) {
+      console.log(`Lazily evaluating layer ${this.name}`);
+      this.data = this.lazilyMakeData();
+      this.lazilyMakeData = null;
+    }
+    return this.data;
+  }
+}
+
 // Manages a bunch of layers that can be independently toggled. The entire
 // group has a toggle to enable or disable everything.
 export class LayerGroup {
@@ -61,14 +79,21 @@ export class LayerGroup {
     this.map = map;
   }
 
-  addLayer(name, layer, { enabled = true } = {}) {
-    this.layers.push({ name, enabled, layer });
+  addLayer(name, layerData, { enabled = true } = {}) {
+    var layer = new Layer(name, enabled);
+    layer.data = layerData;
+    this.layers.push(layer);
 
     if (enabled) {
-      this.map.addLayer(layer);
-    } else {
-      this.map.removeLayer(layer);
+      this.map.addLayer(layer.getData());
     }
+  }
+
+  addLazyLayer(name, lazilyMakeData) {
+    const enabled = false;
+    var layer = new Layer(name, enabled);
+    layer.lazilyMakeData = lazilyMakeData;
+    this.layers.push(layer);
   }
 
   // Updates the map, but doesn't re-render any controls
@@ -78,9 +103,9 @@ export class LayerGroup {
       layer.enabled = enabled;
 
       if (enabled) {
-        this.map.addLayer(layer.layer);
-      } else {
-        this.map.removeLayer(layer.layer);
+        this.map.addLayer(layer.getData());
+      } else if (layer.data != null) {
+        this.map.removeLayer(layer.data);
       }
     }
   }
@@ -107,9 +132,9 @@ export class LayerGroup {
         (checked) => {
           layer.enabled = checked;
           if (checked) {
-            this.map.addLayer(layer.layer);
+            this.map.addLayer(layer.getData());
           } else {
-            this.map.removeLayer(layer.layer);
+            this.map.removeLayer(layer.getData());
           }
         }
       );
@@ -118,7 +143,7 @@ export class LayerGroup {
       download.onclick = () => {
         downloadGeneratedFile(
           `${layer.name}.geojson`,
-          JSON.stringify(layer.layer.toGeoJSON())
+          JSON.stringify(layer.getData().toGeoJSON())
         );
       };
       entry.appendChild(download);
@@ -131,7 +156,10 @@ export class LayerGroup {
 
   remove() {
     for (const layer of this.layers) {
-      this.map.removeLayer(layer.layer);
+      // If a lazy layer wasn't evaluated, there's nothing to remove from the map
+      if (layer.data != null) {
+        this.map.removeLayer(layer.data);
+      }
     }
   }
 }
