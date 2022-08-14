@@ -6,6 +6,7 @@ use crate::{osm, BufferType, Direction, LaneSpec, LaneType, OriginalRoad, Street
 /// "snap") them into the main road, inserting a buffer lane to represent the physical division.
 pub fn snap_cycleways(streets: &mut StreetNetwork) {
     for cycleway in find_cycleways(streets) {
+        streets.maybe_start_debug_step(format!("snap cycleway {}", cycleway.debug_idx));
         cycleway.debug(streets);
         snap(streets, cycleway);
     }

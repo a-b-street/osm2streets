@@ -50,11 +50,6 @@ pub struct StreetNetwork {
 
     #[serde(skip_serializing, skip_deserializing)]
     pub debug_steps: RefCell<Vec<DebugStreets>>,
-    // Transformations build these up
-    #[serde(skip_serializing, skip_deserializing)]
-    debug_points: RefCell<Vec<(Pt2D, String)>>,
-    #[serde(skip_serializing, skip_deserializing)]
-    debug_polylines: RefCell<Vec<(PolyLine, String)>>,
 }
 
 #[derive(Clone, Debug)]
@@ -159,8 +154,6 @@ impl StreetNetwork {
             config: MapConfig::default_for_side(DrivingSide::Right),
 
             debug_steps: RefCell::new(Vec::new()),
-            debug_points: RefCell::new(Vec::new()),
-            debug_polylines: RefCell::new(Vec::new()),
         }
     }
 
@@ -252,8 +245,8 @@ impl StreetNetwork {
         }
     }
 
-    pub(crate) fn copy_for_debugging<I: Into<String>>(&self, label: I) -> DebugStreets {
-        DebugStreets {
+    pub(crate) fn start_debug_step<I: Into<String>>(&self, label: I) {
+        let copy = DebugStreets {
             label: label.into(),
             streets: StreetNetwork {
                 roads: self.roads.clone(),
@@ -262,32 +255,34 @@ impl StreetNetwork {
                 gps_bounds: self.gps_bounds.clone(),
                 config: self.config.clone(),
                 debug_steps: RefCell::new(Vec::new()),
-                debug_points: RefCell::new(Vec::new()),
-                debug_polylines: RefCell::new(Vec::new()),
             },
-            points: self.debug_points.borrow_mut().drain(..).collect(),
-            polylines: self.debug_polylines.borrow_mut().drain(..).collect(),
+            points: Vec::new(),
+            polylines: Vec::new(),
+        };
+        self.debug_steps.borrow_mut().push(copy);
+    }
+
+    /// Only start a new debug step if there's at least one already (indicating that debugging is
+    /// enabled).
+    pub(crate) fn maybe_start_debug_step<I: Into<String>>(&self, label: I) {
+        if self.debug_steps.borrow().is_empty() {
+            return;
         }
+        self.start_debug_step(label);
     }
 
     pub(crate) fn debug_intersection<I: Into<String>>(&self, i: osm::NodeID, label: I) {
-        if self.debug_steps.borrow().is_empty() {
-            return;
+        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
+            step.points
+                .push((self.intersections[&i].point, label.into()));
         }
-
-        self.debug_points
-            .borrow_mut()
-            .push((self.intersections[&i].point, label.into()));
     }
 
     pub(crate) fn debug_road<I: Into<String>>(&self, r: OriginalRoad, label: I) {
-        if self.debug_steps.borrow().is_empty() {
-            return;
+        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
+            step.polylines
+                .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
         }
-
-        self.debug_polylines
-            .borrow_mut()
-            .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
     }
 }
 
