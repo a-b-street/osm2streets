@@ -220,22 +220,19 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
     for (const step of network.getDebugSteps()) {
       i++;
       var group = new LayerGroup(`Step ${i}: ${step.getLabel()}`, app.map);
-      group.addLayer(
-        "Geometry",
+      group.addLazyLayer("Geometry", () =>
         makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
       );
-      group.addLayer(
-        "Lane polygons",
+      group.addLazyLayer("Lane polygons", () =>
         makeLanePolygonLayer(step.getNetwork().toLanePolygonsGeojson())
       );
-      group.addLayer(
-        "Lane markings",
+      group.addLazyLayer("Lane markings", () =>
         makeLaneMarkingsLayer(step.getNetwork().toLaneMarkingsGeojson())
       );
 
       const debugGeojson = step.toDebugGeojson();
       if (debugGeojson) {
-        group.addLayer("Debug", makeDebugLayer(debugGeojson));
+        group.addLazyLayer("Debug", () => makeDebugLayer(debugGeojson));
       }
       debugGroups.push(group);
     }
