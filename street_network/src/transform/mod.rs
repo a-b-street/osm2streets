@@ -149,16 +149,14 @@ impl StreetNetwork {
         transformations: Vec<Transformation>,
         timer: &mut Timer,
     ) {
-        self.debug_steps
-            .borrow_mut()
-            .push(self.copy_for_debugging("original"));
+        self.start_debug_step("original");
 
         timer.start("simplify StreetNetwork");
         for transformation in transformations {
             transformation.apply(self, timer);
-            self.debug_steps
-                .borrow_mut()
-                .push(self.copy_for_debugging(transformation.name()));
+            // Do this after, so any internal debug steps done by the transformation itself show up
+            // first
+            self.start_debug_step(transformation.name());
         }
         timer.stop("simplify StreetNetwork");
     }
