@@ -197,6 +197,7 @@ pub fn merge_all_junctions(streets: &mut StreetNetwork) {
         }
     }
 
+    let mut i = 0;
     while !queue.is_empty() {
         let id = queue.pop_front().unwrap();
 
@@ -205,6 +206,9 @@ pub fn merge_all_junctions(streets: &mut StreetNetwork) {
             continue;
         }
 
+        i += 1;
+        streets.maybe_start_debug_step(format!("merge road {i}"));
+        streets.debug_road(id, "merge");
         match streets.merge_short_road(id) {
             Ok((_, _, _, new_roads)) => {
                 // Some road IDs still in the queue might have changed, so check the new_roads for
