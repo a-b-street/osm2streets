@@ -4,7 +4,7 @@ use std::path::Path;
 
 use abstutil::Timer;
 use anyhow::Result;
-use geom::{ArrowCap, Distance, PolyLine};
+use geom::{ArrowCap, Distance, Line, PolyLine};
 
 use crate::{DebugStreets, Direction, LaneType, StreetNetwork};
 
@@ -95,10 +95,13 @@ impl StreetNetwork {
         // TODO InitialMap is going away very soon, but we still need it
         let initial_map = crate::initial::InitialMap::new(self, timer);
 
+        let gps_bounds = Some(&self.gps_bounds);
+
         let mut pairs = Vec::new();
 
         for (id, road) in &self.roads {
-            let lane_centers =
+            // Always oriented in the direction of the road
+            let mut lane_centers =
                 road.get_lane_center_lines(&initial_map.roads[id].trimmed_center_pts);
 
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
@@ -114,7 +117,7 @@ impl StreetNetwork {
                         Distance::meters(1.0),
                     ) {
                         pairs.push((
-                            poly.to_geojson(Some(&self.gps_bounds)),
+                            poly.to_geojson(gps_bounds),
                             make_props(&[("type", "center line".into())]),
                         ));
                     }
@@ -130,20 +133,24 @@ impl StreetNetwork {
                         Distance::meters(1.5),
                     ) {
                         pairs.push((
-                            poly.to_geojson(Some(&self.gps_bounds)),
+                            poly.to_geojson(gps_bounds),
                             make_props(&[("type", "lane separator".into())]),
                         ));
                     }
                 }
             }
 
+            // Below renderings need lane centers to point in the direction of the lane
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter_mut()) {
+                if lane.dir == Direction::Back {
+                    *center = center.reversed();
+                }
+            }
+
             // Draw arrows along any travel lane
-            for (lane, mut center) in road.lane_specs_ltr.iter().zip(lane_centers.into_iter()) {
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
                 if !lane.lt.is_for_moving_vehicles() {
                     continue;
-                }
-                if lane.dir == Direction::Back {
-                    center = center.reversed();
                 }
 
                 let step_size = Distance::meters(20.0);
@@ -159,10 +166,54 @@ impl StreetNetwork {
                     .to_outline(thickness / 2.0)
                     {
                         pairs.push((
-                            arrow.to_geojson(Some(&self.gps_bounds)),
+                            arrow.to_geojson(gps_bounds),
                             make_props(&[("type", "lane arrow".into())]),
                         ));
                     }
+                }
+            }
+
+            // Add stripes to show buffers. Ignore the type of the buffer for now -- we need to
+            // decide all the types and how to render them.
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if !matches!(lane.lt, LaneType::Buffer(_)) {
+                    continue;
+                }
+
+                // Mark the sides of the lane clearly
+                let thickness = Distance::meters(0.25);
+                pairs.push((
+                    center
+                        .must_shift_right((lane.width - thickness) / 2.0)
+                        .make_polygons(thickness)
+                        .to_geojson(gps_bounds),
+                    make_props(&[("type", "buffer edge".into())]),
+                ));
+                pairs.push((
+                    center
+                        .must_shift_left((lane.width - thickness) / 2.0)
+                        .make_polygons(thickness)
+                        .to_geojson(gps_bounds),
+                    make_props(&[("type", "buffer edge".into())]),
+                ));
+
+                // Diagonal stripes along the lane
+                let step_size = Distance::meters(3.0);
+                let buffer_ends = Distance::meters(5.0);
+                for (center, angle) in center.step_along(step_size, buffer_ends) {
+                    // Extend the stripes into the side lines
+                    let left =
+                        center.project_away(lane.width / 2.0 + thickness, angle.rotate_degs(45.0));
+                    let right = center.project_away(
+                        lane.width / 2.0 + thickness,
+                        angle.rotate_degs(45.0).opposite(),
+                    );
+                    pairs.push((
+                        Line::must_new(left, right)
+                            .make_polygons(thickness)
+                            .to_geojson(gps_bounds),
+                        make_props(&[("type", "buffer stripe".into())]),
+                    ));
                 }
             }
         }
