@@ -1,82 +1,114 @@
 # osm2streets
 
-OpenStreetMap has many details about streets, but applications rendering or
-simulating lane-level detail face many challenges: determining lane properties
-along one street, calculating geometry of streets and junctions, handling
-motorway entrances, dual carriageways, dog-leg intersections, placement tags,
-and parallel sidewalks and cycleways. The goal of osm2streets is to transform
-OSM into a cleaned-up street network graph with geometry.
+OpenStreetMap (OSM) has many details about streets, but the schema presents
+many challenges for rendering, routing, and analyzing done at the detail of
+lanes, especially in the presence of dual carriageways, separated cycletracks
+and footways, and complex intersections. `osm2streets` is a simplified street
+network schema, a library transforming OSM data into this representation, and
+tools to render and work with the results.
 
-## Project status
+## Getting started
 
-This repository is conspicuously missing functionality. The osm2streets effort is
-underway, but splitting the code from the A/B Street codebase will take some time.
-We will iteratively import and move in different logical parts of the osm2streets scope
-from around the place:
+1.  Open [StreetExplorer](https://a-b-street.github.io/osm2streets/)
+2.  Select a test area from the left, then click **Reimport**
+3.  Or navigate to anywhere in the world and press **Import current view** (bug
+    warning: right-handed driving is assumed currently)
 
-- [osm2lanes](https://github.com/a-b-street/osm2lanes) determines the lanes
-  along one OSM way
-- [convert_osm](https://github.com/a-b-street/abstreet/tree/master/convert_osm)
-  reads OSM XML files and produces a `RawMap`
-- [raw_map](https://github.com/a-b-street/abstreet/tree/master/raw_map) is the
-  current graph + geometry representation, containing all of the transformations
-- [map_editor](https://github.com/a-b-street/abstreet/tree/master/apps/map_editor)
-  is a UI that can display and interactively transform `RawMaps`
-- [map_gui](https://github.com/a-b-street/abstreet/tree/master/map_gui/src/render)
-  contains code to draw lane markings
+## Features
 
-Also deliberately absent is any definitive spec describing the output of
-osm2streets, or how things should be layered. The piece that draws detailed
-lane markings, for instance, maybe belongs as an optional piece on top.
-Looking towards [this proposal](https://github.com/a-b-street/osm2streets/issues/5#issuecomment-1114305718),
-we will iterate on types, APIs and documentation, to circle in on a sensible starting place for osm2streets.
+- A schema able to represent:
+  - **Roads** leading between two intersections
+    - Thickened line-strings
+    - A list of lanes from left-to-right, with: type, direction, width
+  - **Intersections** linking roads
+    - Polygon areas, with each road polygon intersecting at a perpendicular
+      angle
+    - *Planned: turning movements and crosswalks*
+  - *Planned: bike boxes / advanced stop lines, pedestrian crossing islands, modal filters*
 
-## Next steps
+- Rendering to GeoJSON
+  - Individual lane and intersection polygons
+  - Lane markings: lines between lanes, schematic display of turn arrows and access restrictions
+- Transformations to simplify complex OSM situations
+  - Collapsing "unnecessary" intersections between 2 roads
+  - Merging "sausage links" and dual carriageways into a single road
+  - Merging "dog-leg" intersections and other short roads into one logical intersection
+  - "Snapping" parallel cycletracks and footways to the main road
 
-Issues are likely to be more up-to-date. The short-term steps to make
-osm2streets a proper project:
+There are other planned features:
 
-- Iterate on the api/docs, working towards [abstreet/RawMap](ttps://github.com/a-b-street/abstreet/blob/master/raw_map/src/lib.rs)
-- Iterate on `RawMap` working towards modularity and the ideas in the emerging api/docs
-  - If `RawMap` get good enough, we we can drop the experimentation on the api,
-  - otherwise, one by one, all the pieces eventully get integrated into the api
-- [#8](https://github.com/a-b-street/osm2streets/issues/8) set up unit tests for quickly verifying transformations
-- [#13](https://github.com/a-b-street/osm2streets/issues/13) create a slippy map to visualise and understand the resulting networks
-- (in [abstreet](https://github.com/a-b-street/abstreet)) finish making the `RawMap` abstraction "own" the geometry calculation
-- move all the relevant code into this repo piece by piece
+- routing (score functions can take advantage of knowing how a cycle lane is
+  segregated from the road)
+- isochrone / walkshed calculations
+- map-matching GPS trajectories to routes
+- tracing the area in between roads ("walking around the block")
+- robustly representing user-created edits to the street network model, even
+  when underlying OSM data is updated
 
-Then some new "features" beyond what A/B Street handles today:
+Some of these extra features may sound redundant with libraries like
+[osmnx](https://osmnx.readthedocs.io/en/stable/) and existing OSM routers.
+osm2streets will support these features in a way that uses the lane-level
+detail and consolidated road representation, is compatible with user-made edits
+to the network, and can be deployed in a variety of environments (native, web,
+offline without running an external server).
 
-- placement tags
-- motorway entrance/exit geometry, based on [Ben's JOSM work](https://github.com/BjornRasmussen/Lanes/pull/8)
-- merging some cases of dual carriageways and "sausage link" intersections
+## Users
 
-Longer-term ambitions:
+- [StreetExplorer](https://a-b-street.github.io/osm2streets/): a web app to
+  interactively import OSM and explore the osm2streets output
+- [A/B Street](https://abstreet.org): a collection of projects to design cities
+  friendlier to walking, cycling, and public transit. `osm2streets` began life
+  here.
+- [Bus Spotting](https://github.com/dabreegster/bus_spotting): a bus network
+  GTFS viewer, using `osm2streets` to snap routes to roads
+- *Planned: plugins for [iD](https://github.com/openstreetmap/iD) and
+  [JOSM](https://josm.openstreetmap.de/) to display streets in detail and
+  visually edit lane tagging*
 
-- include vehicle and pedestrian movements in the output
-- handle pedestrian areas and highway areas, when they're mapped
+### Using osm2streets in your projects
 
-## Applications
+You can use osm2streets today with Leaflet, Mapbox, OpenLayers, or any other
+web map frameworks. The [osm2streets Javascript
+API](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-js) can
+render to GeoJSON. 
 
-- A/B Street is already "using" osm2streets (aka, the current implementation is embedded there)
-- [#8](https://github.com/a-b-street/osm2streets/issues/8) A slippy map web viewer with detailed geometry.
-  - [#12](https://github.com/a-b-street/osm2streets/issues/12) Render data as raster for a tileserver for layers.
-  - This doesn't necessarily need to pre-generate any tiles at all. Stream in
-    OSM data from Overpass, pipe through osm2streets (via WASM) and generate
-    geometry, draw polygons!
-- Plugins for iD and JOSM to display streets in detail, and more importantly,
-  preview what edits would look like.
+Since the API isn't stable yet, please [get in
+touch](https://github.com/a-b-street/osm2streets/issues/new) first.
 
-Everything is (and will be) written in Rust, which can run natively, in the
-browser with WASM, on the JVM, etc.
+## Architecture
+
+![osm2streets architecture](docs/architecture.svg)
+
+The osm2streets library itself (Rust):
+
+- [street_network](https://github.com/a-b-street/osm2streets/tree/main/street_network) with the schema, transformations, rendering, etc
+- [import_streets](https://github.com/a-b-street/osm2streets/tree/main/import_streets) to read `osm.xml` input
+- [osm2streets](https://github.com/a-b-street/osm2streets/tree/main/osm2streets): currently an experimental layer on top of `street_network`
+- The logic for calculating lanes for a single road will eventually be owned by [osm2lanes](https://github.com/a-b-street/osm2lanes)
+
+Bindings for other languages:
+
+- [osm2streets-js](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-js): Javascript via WebAssembly
+- *Planned: Java, Python, R*
+
+The [StreetExplorer web app](https://a-b-street.github.io/osm2streets/) (Javascript, CSS using Leaflet):
+
+- [tests-web](https://github.com/a-b-street/osm2streets/tree/main/tests-web): the web app
+- [tests](https://github.com/a-b-street/osm2streets/tree/main/tests): regression tests covering complex OSM input
 
 ## Contributing
 
-This is an early stage project, so there's lots of flexibility! Ideally once we
-get the test scaffolding set up, there's lots of room to parallelize and make
-quick progress in many directions. File an issue and let's start discussion!
+There's many opportunities to help out:
+
+- writing and improving transformations of street networks
+- adjusting the schema to represent bike boxes, modal filters, lanes that change width, etc
+- designing how to render lane detail
+- integrating the library into your own OSM tool
+
+Check out the [issues](https://github.com/a-b-street/osm2streets/issues).
 
 ## Further reading
 
 - An early article just about [intersection geometry](https://a-b-street.github.io/docs/tech/map/geometry/index.html)
-- The [followup talk at FOSSGIS](https://dabreegster.github.io/talks/map_model_v2/slides.html)
+- The [followup talk at FOSSGIS](https://dabreegster.github.io/talks/map_model_v2/slides.html) (March 2022)
+- The [State of the Map talk](https://dabreegster.github.io/talks/sotm_2022/slides.html) (August 2022)
