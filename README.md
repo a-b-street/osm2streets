@@ -104,6 +104,7 @@ There's many opportunities to help out:
 - adjusting the schema to represent bike boxes, modal filters, lanes that change width, etc
 - designing how to render lane detail
 - integrating the library into your own OSM tool
+- adding test cases for representative situations requiring simplification
 
 Check out the [issues](https://github.com/a-b-street/osm2streets/issues).
 
