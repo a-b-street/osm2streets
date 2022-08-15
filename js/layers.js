@@ -35,7 +35,8 @@ export const makeLanePolygonLayer = (text) => {
     SharedLeftTurn: "black",
     Construction: "#FF6D00",
     LightRail: "#844204",
-    // Skip Buffer -- those need different icons depending on the type
+    // This is the only type used currently
+    "Buffer(Planters)": "#555555",
   };
 
   return new L.geoJSON(JSON.parse(text), {
@@ -56,6 +57,8 @@ export const makeLaneMarkingsLayer = (text) => {
     "center line": "yellow",
     "lane separator": "white",
     "lane arrow": "white",
+    "buffer edge": "white",
+    "buffer stripe": "white",
   };
 
   return new L.geoJSON(JSON.parse(text), {
