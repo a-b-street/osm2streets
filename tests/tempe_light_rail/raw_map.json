@@ -4,31 +4,6 @@
       "geometry": {
         "coordinates": [
           [
-            -111.90898294327337,
-            33.41461124867169
-          ],
-          [
-            -111.90892935342735,
-            33.41460965237607
-          ],
-          [
-            -111.90801756540102,
-            33.414624229477894
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 2819230448,
-        "osm_way_id": 422264711,
-        "src_i": 3756578325
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
             [
               -111.90898455290807,
               33.41457360577261
@@ -64,28 +39,8 @@
       "properties": {
         "dst_i": 2819230448,
         "osm_way_id": 422264711,
-        "src_i": 3756578325
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90801782828648,
-            33.414848905163964
-          ],
-          [
-            -111.90868556272393,
-            33.414842310439575
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 7509154723,
-        "osm_way_id": 422264712,
-        "src_i": 4347879968
+        "src_i": 3756578325,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -120,28 +75,8 @@
       "properties": {
         "dst_i": 7509154723,
         "osm_way_id": 422264712,
-        "src_i": 4347879968
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90873933465045,
-            33.414842045139736
-          ],
-          [
-            -111.9090050752118,
-            33.414842045139736
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 3756578325,
-        "osm_way_id": 422264712,
-        "src_i": 7509154723
+        "src_i": 4347879968,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -176,28 +111,8 @@
       "properties": {
         "dst_i": 3756578325,
         "osm_way_id": 422264712,
-        "src_i": 7509154723
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90922255582193,
-            33.4148446522727
-          ],
-          [
-            -111.91023207367019,
-            33.414868649767
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 1501648856,
-        "osm_way_id": 436789564,
-        "src_i": 3756578325
+        "src_i": 7509154723,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -232,36 +147,8 @@
       "properties": {
         "dst_i": 1501648856,
         "osm_way_id": 436789564,
-        "src_i": 3756578325
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.91023255526771,
-            33.414684385091526
-          ],
-          [
-            -111.91015276199094,
-            33.414682363416844
-          ],
-          [
-            -111.90932399405258,
-            33.414621665512364
-          ],
-          [
-            -111.90924172491201,
-            33.41461911323801
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 3756578325,
-        "osm_way_id": 436789580,
-        "src_i": 4346571426
+        "src_i": 3756578325,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -312,28 +199,8 @@
       "properties": {
         "dst_i": 3756578325,
         "osm_way_id": 436789580,
-        "src_i": 4346571426
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90911422869952,
-            33.41457011460663
-          ],
-          [
-            -111.90911610121968,
-            33.41414528323458
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 4347879967,
-        "osm_way_id": 436942356,
-        "src_i": 3756578325
+        "src_i": 4346571426,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -368,28 +235,8 @@
       "properties": {
         "dst_i": 4347879967,
         "osm_way_id": 436942356,
-        "src_i": 3756578325
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90911482342399,
-            33.41546006785226
-          ],
-          [
-            -111.90911465858188,
-            33.41539648312584
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 4347879970,
-        "osm_way_id": 436942361,
-        "src_i": 4347879973
+        "src_i": 3756578325,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -424,28 +271,8 @@
       "properties": {
         "dst_i": 4347879970,
         "osm_way_id": 436942361,
-        "src_i": 4347879973
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90911454653235,
-            33.41535151705197
-          ],
-          [
-            -111.90911415328156,
-            33.41518588272021
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 7509154720,
-        "osm_way_id": 436942362,
-        "src_i": 4347879970
+        "src_i": 4347879973,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -480,28 +307,8 @@
       "properties": {
         "dst_i": 7509154720,
         "osm_way_id": 436942362,
-        "src_i": 4347879970
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90911402399364,
-            33.415140671131574
-          ],
-          [
-            -111.9091131846995,
-            33.41489042413862
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 3756578325,
-        "osm_way_id": 436942362,
-        "src_i": 7509154720
+        "src_i": 4347879970,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -536,36 +343,8 @@
       "properties": {
         "dst_i": 3756578325,
         "osm_way_id": 436942362,
-        "src_i": 7509154720
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90900484895792,
-            33.41515888868675
-          ],
-          [
-            -111.90892520005268,
-            33.4151555998681
-          ],
-          [
-            -111.90871349969031,
-            33.414973900057475
-          ],
-          [
-            -111.90871284032187,
-            33.414890795558385
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 7509154723,
-        "osm_way_id": 802759574,
-        "src_i": 7509154720
+        "src_i": 7509154720,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -616,28 +395,8 @@
       "properties": {
         "dst_i": 7509154723,
         "osm_way_id": 802759574,
-        "src_i": 7509154720
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.9091157133559,
-            33.414100320757996
-          ],
-          [
-            -111.90911137251372,
-            33.4138999177586
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 7890703228,
-        "osm_way_id": 845775034,
-        "src_i": 4347879967
+        "src_i": 7509154720,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -672,36 +431,8 @@
       "properties": {
         "dst_i": 7890703228,
         "osm_way_id": 845775034,
-        "src_i": 4347879967
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90801773563012,
-            33.414773771351136
-          ],
-          [
-            -111.9082037001531,
-            33.41477239988588
-          ],
-          [
-            -111.90878529974094,
-            33.41475670043085
-          ],
-          [
-            -111.90902980260536,
-            33.414762730381355
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 3756578325,
-        "osm_way_id": 966022991,
-        "src_i": 1501648738
+        "src_i": 4347879967,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -752,28 +483,8 @@
       "properties": {
         "dst_i": 3756578325,
         "osm_way_id": 966022991,
-        "src_i": 1501648738
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90919836389587,
-            33.414767968029636
-          ],
-          [
-            -111.91023235918102,
-            33.414806664933494
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 1501648702,
-        "osm_way_id": 966022991,
-        "src_i": 3756578325
+        "src_i": 1501648738,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -808,36 +519,8 @@
       "properties": {
         "dst_i": 1501648702,
         "osm_way_id": 966022991,
-        "src_i": 3756578325
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.91023238503861,
-            33.41476469989539
-          ],
-          [
-            -111.9098923998074,
-            33.41475029995989
-          ],
-          [
-            -111.90932029965005,
-            33.41470600028323
-          ],
-          [
-            -111.90914081568445,
-            33.41470026081357
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 3756578325,
-        "osm_way_id": 966022995,
-        "src_i": 330686495
+        "src_i": 3756578325,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -888,28 +571,8 @@
       "properties": {
         "dst_i": 3756578325,
         "osm_way_id": 966022995,
-        "src_i": 330686495
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            -111.90908696510778,
-            33.41469941814934
-          ],
-          [
-            -111.90801773993972,
-            33.41470013760652
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "dst_i": 41624283,
-        "osm_way_id": 966022995,
-        "src_i": 3756578325
+        "src_i": 330686495,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -944,7 +607,8 @@
       "properties": {
         "dst_i": 41624283,
         "osm_way_id": 966022995,
-        "src_i": 3756578325
+        "src_i": 3756578325,
+        "type": "road"
       },
       "type": "Feature"
     },
@@ -978,8 +642,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 41624283
+        "control": "Border",
+        "osm_node_id": 41624283,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1013,8 +678,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 330686495
+        "control": "Border",
+        "osm_node_id": 330686495,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1048,8 +714,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 1501648702
+        "control": "Border",
+        "osm_node_id": 1501648702,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1083,8 +750,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 1501648738
+        "control": "Border",
+        "osm_node_id": 1501648738,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1118,8 +786,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 1501648856
+        "control": "Border",
+        "osm_node_id": 1501648856,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1153,8 +822,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 2819230448
+        "control": "Border",
+        "osm_node_id": 2819230448,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1244,8 +914,9 @@
       },
       "properties": {
         "complexity": "Crossing",
-        "fill": "#729fcf",
-        "intersection_id": 3756578325
+        "control": "TrafficSignal",
+        "osm_node_id": 3756578325,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1279,8 +950,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 4346571426
+        "control": "Border",
+        "osm_node_id": 4346571426,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1314,8 +986,9 @@
       },
       "properties": {
         "complexity": "Connection",
-        "fill": "#729fcf",
-        "intersection_id": 4347879967
+        "control": "StopSign",
+        "osm_node_id": 4347879967,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1349,8 +1022,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 4347879968
+        "control": "Border",
+        "osm_node_id": 4347879968,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1384,8 +1058,9 @@
       },
       "properties": {
         "complexity": "Connection",
-        "fill": "#729fcf",
-        "intersection_id": 4347879970
+        "control": "StopSign",
+        "osm_node_id": 4347879970,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1419,8 +1094,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 4347879973
+        "control": "Border",
+        "osm_node_id": 4347879973,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1466,8 +1142,9 @@
       },
       "properties": {
         "complexity": "Crossing",
-        "fill": "#729fcf",
-        "intersection_id": 7509154720
+        "control": "StopSign",
+        "osm_node_id": 7509154720,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1509,8 +1186,9 @@
       },
       "properties": {
         "complexity": "Crossing",
-        "fill": "#729fcf",
-        "intersection_id": 7509154723
+        "control": "StopSign",
+        "osm_node_id": 7509154723,
+        "type": "intersection"
       },
       "type": "Feature"
     },
@@ -1544,8 +1222,9 @@
       },
       "properties": {
         "complexity": "MapEdge",
-        "fill": "#729fcf",
-        "intersection_id": 7890703228
+        "control": "Border",
+        "osm_node_id": 7890703228,
+        "type": "intersection"
       },
       "type": "Feature"
     }
