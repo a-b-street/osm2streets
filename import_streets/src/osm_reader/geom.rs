@@ -127,7 +127,13 @@ fn glue_to_boundary(result_pl: PolyLine, boundary: &Ring) -> Option<Polygon> {
     Some(Ring::must_new(trimmed_pts).into_polygon())
 }
 
-pub fn multipoly_geometry(rel_id: RelationID, rel: &Relation, doc: &Document) -> Result<Polygon> {
+/// May return multiple polygons, when there are multiple `outer` members. Silently filters out
+/// invalid polygons.
+pub fn multipoly_geometry(
+    rel_id: RelationID,
+    rel: &Relation,
+    doc: &Document,
+) -> Result<Vec<Polygon>> {
     let mut outer: Vec<Vec<Pt2D>> = Vec::new();
     let mut inner: Vec<Vec<Pt2D>> = Vec::new();
     for (role, member) in &rel.members {
@@ -157,21 +163,19 @@ pub fn multipoly_geometry(rel_id: RelationID, rel: &Relation, doc: &Document) ->
         );
     }
     if inner.is_empty() {
-        if outer.len() > 1 {
-            Ok(Polygon::union_all(
-                outer.into_iter().map(Polygon::buggy_new).collect(),
-            ))
-        } else {
-            Ok(Polygon::buggy_new(outer.remove(0)))
-        }
+        Ok(outer
+            .into_iter()
+            .filter_map(|pts| Ring::new(pts).ok())
+            .map(|r| r.into_polygon())
+            .collect())
     } else {
         let mut inner_rings = Vec::new();
         for pts in inner {
             inner_rings.push(Ring::new(pts)?);
         }
-        Ok(Polygon::with_holes(
+        Ok(vec![Polygon::with_holes(
             Ring::new(outer.pop().unwrap())?,
             inner_rings,
-        ))
+        )])
     }
 }
