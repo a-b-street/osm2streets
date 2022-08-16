@@ -32,8 +32,10 @@ export class StreetExplorer {
       debugEachStep: false,
       dualCarriagewayExperiment: false,
       cycletrackSnappingExperiment: false,
+      drivingSideForNewImports: "Right",
     };
     this.layers = makeLayerControl(this).addTo(this.map);
+    this.settingsControl = null;
 
     // Add all tests to the sidebar
     loadTests();
@@ -61,6 +63,17 @@ export class StreetExplorer {
       await app.setCurrentTest((app) =>
         TestCase.importCurrentView(app, importButton)
       );
+    };
+
+    // Wire up the settings button
+    const settingsButton = document.getElementById("settings");
+    settingsButton.onclick = () => {
+      if (app.settingsControl == null) {
+        app.settingsControl = makeSettingsControl(app).addTo(app.map);
+      } else {
+        app.map.removeControl(app.settingsControl);
+        app.settingsControl = null;
+      }
     };
 
     return app;
@@ -129,13 +142,13 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      // TODO Ask overpass
-      const drivingSide = "Right";
+      const drivingSide = app.importSettings.drivingSideForNewImports;
 
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
-        .layer.getBounds();
+        .getData()
+        .getBounds();
 
       return new TestCase(app, null, osmInput, drivingSide, bounds);
     } catch (err) {
@@ -165,15 +178,6 @@ class TestCase {
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
         importOSM("Reimport", this.app, this.osmXML, this.drivingSide, false);
-      };
-
-      const settings = container.appendChild(document.createElement("button"));
-      settings.id = "settingsButton";
-      settings.type = "button";
-      settings.innerHTML = "(Settings)";
-      settings.onclick = () => {
-        settings.disabled = true;
-        makeSettingsControl(app).addTo(app.map);
       };
     } else {
       container.innerHTML = `<b>Custom imported view</b>`;
