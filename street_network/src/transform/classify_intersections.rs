@@ -1,6 +1,6 @@
 use crate::osm::NodeID;
 use crate::IntersectionComplexity::*;
-use crate::{IntersectionComplexity, OriginalRoad, RawIntersection, StreetNetwork};
+use crate::{Intersection, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 /// Determines the initial complexity of all intersections. Intersections marked "Crossing" are
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
@@ -23,7 +23,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 /// Guesses the complexity of the intersection based on the connecting roads and their lanes.
 ///
 /// The existing complexity field is ignored, so be careful how you use the guessed value.
-fn guess_complexity(_inter: &RawIntersection, roads: Vec<OriginalRoad>) -> IntersectionComplexity {
+fn guess_complexity(_inter: &Intersection, roads: Vec<OriginalRoad>) -> IntersectionComplexity {
     // A terminus is characterised by a single connected road.
     if roads.len() == 1 {
         return Terminus;

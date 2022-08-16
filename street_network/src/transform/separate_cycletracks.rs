@@ -13,7 +13,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
 }
 
 // We're only pattern matching on one type of separate cycleway right now. This represents a single
-// RawRoad that's parallel to one or more main_roads.
+// Road that's parallel to one or more main_roads.
 //
 // X--X
 // C  M

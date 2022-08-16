@@ -37,12 +37,12 @@ pub struct StreetNetwork {
         serialize_with = "serialize_btreemap",
         deserialize_with = "deserialize_btreemap"
     )]
-    pub roads: BTreeMap<OriginalRoad, RawRoad>,
+    pub roads: BTreeMap<OriginalRoad, Road>,
     #[serde(
         serialize_with = "serialize_btreemap",
         deserialize_with = "deserialize_btreemap"
     )]
-    pub intersections: BTreeMap<osm::NodeID, RawIntersection>,
+    pub intersections: BTreeMap<osm::NodeID, Intersection>,
 
     pub boundary_polygon: Polygon,
     pub gps_bounds: GPSBounds,
@@ -208,7 +208,7 @@ impl StreetNetwork {
         ))
     }
 
-    /// Generate the trimmed `PolyLine` for a single RawRoad by calculating both intersections
+    /// Generate the trimmed `PolyLine` for a single Road by calculating both intersections
     pub fn trimmed_road_geometry(&self, road_id: OriginalRoad) -> Result<PolyLine> {
         // First trim at one of the endpoints
         let trimmed_center_pts = {
@@ -331,7 +331,7 @@ impl StreetNetwork {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct RawRoad {
+pub struct Road {
     /// This is effectively a PolyLine, except there's a case where we need to plumb forward
     /// cul-de-sac roads for roundabout handling. No transformation of these points whatsoever has
     /// happened.
@@ -354,7 +354,7 @@ pub struct RawRoad {
     pub lane_specs_ltr: Vec<LaneSpec>,
 }
 
-impl RawRoad {
+impl Road {
     pub fn new(osm_center_points: Vec<Pt2D>, osm_tags: Tags, config: &MapConfig) -> Result<Self> {
         // Just flush out errors immediately.
         // TODO Store the PolyLine, not a Vec<Pt2D>
@@ -532,7 +532,7 @@ impl RawRoad {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct RawIntersection {
+pub struct Intersection {
     /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
@@ -544,7 +544,7 @@ pub struct RawIntersection {
     pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
 }
 
-impl RawIntersection {
+impl Intersection {
     pub fn new(point: Pt2D, complexity: IntersectionComplexity, control: ControlType) -> Self {
         Self {
             point,

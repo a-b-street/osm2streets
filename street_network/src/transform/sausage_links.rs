@@ -154,7 +154,7 @@ fn fix(streets: &mut StreetNetwork, id1: OriginalRoad, id2: OriginalRoad) {
     // IDs
     // TODO The IDs in StreetNetwork are based on original OSM IDs, but they diverge as we make
     // transformations like this. We could consider some combination of assigning new IDs all the
-    // time and associating one RawRoad with multiple OSM IDs.
+    // time and associating one Road with multiple OSM IDs.
 }
 
 fn into_set<T: Ord>(list: Vec<T>) -> BTreeSet<T> {

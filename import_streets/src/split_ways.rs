@@ -3,7 +3,7 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use street_network::{
-    osm, ControlType, Direction, IntersectionComplexity, OriginalRoad, RawIntersection, RawRoad,
+    osm, ControlType, Direction, Intersection, IntersectionComplexity, OriginalRoad, Road,
     StreetNetwork,
 };
 
@@ -62,7 +62,7 @@ pub fn split_up_roads(
     for (pt, id) in &pt_to_intersection {
         streets.intersections.insert(
             *id,
-            RawIntersection::new(
+            Intersection::new(
                 pt.to_pt2d(),
                 // Guess a safe generic complexity, specialise later.
                 IntersectionComplexity::Crossing,
@@ -80,7 +80,7 @@ pub fn split_up_roads(
     for (id, point) in roundabout_centers {
         streets.intersections.insert(
             id,
-            RawIntersection::new(
+            Intersection::new(
                 point,
                 IntersectionComplexity::Crossing,
                 ControlType::StopSign,
@@ -126,7 +126,7 @@ pub fn split_up_roads(
                 }
 
                 let osm_center_pts = simplify_linestring(std::mem::take(&mut pts));
-                match RawRoad::new(osm_center_pts, tags, &streets.config) {
+                match Road::new(osm_center_pts, tags, &streets.config) {
                     Ok(road) => {
                         streets.roads.insert(id, road);
                     }

@@ -104,7 +104,7 @@ pub fn osm_to_street_network(
     timer: &mut Timer,
 ) -> Result<StreetNetwork> {
     let mut streets = StreetNetwork::blank();
-    // Do this early. Calculating RawRoads uses DrivingSide, for example!
+    // Do this early. Calculating Roads uses DrivingSide, for example!
     streets.config = opts.map_config.clone();
 
     if let Some(ref pts) = clip_pts {

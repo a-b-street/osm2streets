@@ -103,14 +103,14 @@ class TestCase {
   static async loadFromServer(app, name) {
     const prefix = `tests/${name}/`;
     const osmInput = await loadFile(prefix + "input.osm");
-    const rawMap = await loadFile(prefix + "raw_map.json");
+    const geometry = await loadFile(prefix + "geometry.json");
     const network = await loadFile(prefix + "road_network.dot");
 
-    const rawMapLayer = makePlainGeoJsonLayer(rawMap);
-    const bounds = rawMapLayer.getBounds();
+    const geometryLayer = makePlainGeoJsonLayer(geometry);
+    const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
-    group.addLayer("Geometry", rawMapLayer);
+    group.addLayer("Geometry", geometryLayer);
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
     group.addLayer("Network", await makeDotLayer(network, { bounds }));
     app.layers.addGroup(group);

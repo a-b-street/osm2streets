@@ -4,9 +4,7 @@ use itertools::Itertools;
 use std::collections::HashMap;
 
 use abstutil::Timer;
-use street_network::{
-    osm, LaneSpec, LaneType, OriginalRoad, RawIntersection, RawRoad, StreetNetwork, Transformation,
-};
+use street_network::{osm, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation};
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
@@ -44,13 +42,13 @@ impl From<StreetNetwork> for RoadNetwork {
         let intersections: HashMap<&osm::NodeID, _> = streets
             .intersections
             .iter()
-            .map(|(node_id, raw_int)| (node_id, net.add_intersection(Intersection::from(raw_int))))
+            .map(|(node_id, int)| (node_id, net.add_intersection(Intersection::from(int))))
             .collect();
         let _road_ways: HashMap<&OriginalRoad, _> = streets
             .roads
             .iter()
-            .map(|(rid, raw_road)| {
-                let mut ways = RoadWay::pair_from(raw_road, streets.config.driving_side);
+            .map(|(rid, road)| {
+                let mut ways = RoadWay::pair_from(road, streets.config.driving_side);
                 (
                     rid,
                     (
@@ -80,7 +78,7 @@ impl From<StreetNetwork> for RoadNetwork {
 
 impl RoadWay {
     pub fn pair_from(
-        r: &RawRoad,
+        r: &Road,
         driving_side: street_network::DrivingSide,
     ) -> EnumMap<Direction, Option<RoadWay>> {
         let ds = DrivingSide::from(driving_side);
@@ -130,17 +128,17 @@ impl RoadWay {
     }
 }
 
-impl From<&RawIntersection> for Intersection {
-    fn from(raw_int: &RawIntersection) -> Self {
-        Intersection {
-            // raw_int.intersection_type has some useful info, bit is often misleading.
-            t: match raw_int.control {
+impl From<&street_network::Intersection> for Intersection {
+    fn from(int: &street_network::Intersection) -> Self {
+        Self {
+            // int.intersection_type has some useful info, bit is often misleading.
+            t: match int.control {
                 street_network::ControlType::Border => IntersectionType::MapEdge,
                 street_network::ControlType::TrafficSignal
                 | street_network::ControlType::Construction => IntersectionType::RoadIntersection,
                 _ => IntersectionType::Unknown,
             },
-            control: match raw_int.control {
+            control: match int.control {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
                 street_network::ControlType::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,

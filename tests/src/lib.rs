@@ -18,7 +18,7 @@ mod tests {
         let cfg: TestCase = serde_json::from_reader(File::open(format!("{path}/test.json"))?)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
-        let prior_json = std::fs::read_to_string(format!("{path}/raw_map.json"))
+        let prior_json = std::fs::read_to_string(format!("{path}/geometry.json"))
             .unwrap_or_else(|_| String::new());
         let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
@@ -32,8 +32,7 @@ mod tests {
         )?;
         street_network
             .apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
-        // TODO Change these path names
-        street_network.save_to_geojson(format!("{path}/raw_map.json"), &mut timer)?;
+        street_network.save_to_geojson(format!("{path}/geometry.json"), &mut timer)?;
 
         let road_network: RoadNetwork = street_network.into();
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
@@ -45,12 +44,12 @@ mod tests {
 ./{0}/road_network.orig.dot is previous result. Compare it on https://doctorbud.com/graphviz-viewer/", path);
         }
 
-        let current_json = std::fs::read_to_string(format!("{path}/raw_map.json"))?;
+        let current_json = std::fs::read_to_string(format!("{path}/geometry.json"))?;
         if prior_json != current_json {
-            std::fs::write(format!("{path}/raw_map.orig.json"), prior_json)?;
+            std::fs::write(format!("{path}/geometry.orig.json"), prior_json)?;
             bail!(
-                "./{}/raw_map.json is different! If it is OK, commit it.
-./{0}/raw_map.orig.json is previous result. Compare it on https://geojson.io",
+                "./{}/geometry.json is different! If it is OK, commit it.
+./{0}/geometry.orig.json is previous result. Compare it on https://geojson.io",
                 path
             );
         }

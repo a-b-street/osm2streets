@@ -10,7 +10,7 @@ use crate::osm_reader::{Node, Relation, Way};
 use crate::Options;
 
 pub struct OsmExtract {
-    /// Unsplit roads. These aren't RawRoads yet, because they may not obey those invariants.
+    /// Unsplit roads. These aren't Roads yet, because they may not obey those invariants.
     pub roads: Vec<(WayID, Vec<Pt2D>, Tags)>,
     /// Traffic signals to the direction they apply
     pub traffic_signals: HashMap<HashablePt2D, Direction>,
@@ -19,9 +19,9 @@ pub struct OsmExtract {
     pub simple_turn_restrictions: Vec<(RestrictionType, WayID, NodeID, WayID)>,
     /// (relation ID, from way ID, via way ID, to way ID)
     pub complicated_turn_restrictions: Vec<(RelationID, WayID, WayID, WayID)>,
-    /// Crosswalks located at these points, which should be on a RawRoad's center line
+    /// Crosswalks located at these points, which should be on a Road's center line
     pub crosswalks: HashSet<HashablePt2D>,
-    /// Some kind of barrier nodes at these points. Only the ones on a RawRoad center line are
+    /// Some kind of barrier nodes at these points. Only the ones on a Road center line are
     /// relevant.
     pub barrier_nodes: HashSet<HashablePt2D>,
 }
