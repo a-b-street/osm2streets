@@ -34,13 +34,7 @@ const SettingsControl = L.Control.extend({
       }
     );
 
-    const button = makeButton("Confirm");
-    button.onclick = () => {
-      this.remove();
-      document.getElementById("settingsButton").disabled = false;
-    };
-
-    var group = makeDiv([checkbox1, checkbox2, checkbox3, button]);
+    var group = makeDiv([checkbox1, checkbox2, checkbox3]);
     group.style = "background: black; padding: 10px;";
     L.DomEvent.disableClickPropagation(group);
     return group;
