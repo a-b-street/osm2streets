@@ -32,6 +32,7 @@ export class StreetExplorer {
       debugEachStep: false,
       dualCarriagewayExperiment: false,
       cycletrackSnappingExperiment: false,
+      drivingSideForNewImports: "Right",
     };
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
@@ -141,13 +142,13 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      // TODO Ask overpass
-      const drivingSide = "Right";
+      const drivingSide = app.importSettings.drivingSideForNewImports;
 
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
-        .getData().getBounds();
+        .getData()
+        .getBounds();
 
       return new TestCase(app, null, osmInput, drivingSide, bounds);
     } catch (err) {
