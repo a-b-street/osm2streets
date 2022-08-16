@@ -11,8 +11,8 @@ tools to render and work with the results.
 
 1.  Open [StreetExplorer](https://a-b-street.github.io/osm2streets/)
 2.  Select a test area from the left, then click **Reimport**
-3.  Or navigate to anywhere in the world and press **Import current view** (bug
-    warning: right-handed driving is assumed currently)
+3.  Or navigate to anywhere in the world and press **Import current view**
+    (change the driving side in **Settings** first)
 
 ## Features
 
