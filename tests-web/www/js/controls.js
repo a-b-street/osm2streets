@@ -34,49 +34,7 @@ const SettingsControl = L.Control.extend({
       }
     );
 
-    // TODO Ask Overpass instead of making the user choose this
-    const drivingSideLabel = document.createTextNode(
-      "Driving side (only for importing new areas):"
-    );
-
-    var drivingSide1 = L.DomUtil.create("input");
-    drivingSide1.type = "radio";
-    drivingSide1.name = "driving_side";
-    drivingSide1.id = "right driving_side";
-    drivingSide1.value = "Right";
-    drivingSide1.checked =
-      this.options.app.importSettings.drivingSideForNewImports == "Right";
-    drivingSide1.onclick = () => {
-      this.options.app.importSettings.drivingSideForNewImports = "Right";
-    };
-    var drivingSide1Label = L.DomUtil.create("label");
-    drivingSide1Label.for = drivingSide1.id;
-    drivingSide1Label.innerText = "Right";
-
-    var drivingSide2 = L.DomUtil.create("input");
-    drivingSide2.type = "radio";
-    drivingSide2.name = "driving_side";
-    drivingSide2.id = "left driving_side";
-    drivingSide2.value = "Left";
-    drivingSide2.checked =
-      this.options.app.importSettings.drivingSideForNewImports == "Left";
-    drivingSide2.onclick = () => {
-      this.options.app.importSettings.drivingSideForNewImports = "Left";
-    };
-    var drivingSide2Label = L.DomUtil.create("label");
-    drivingSide2Label.for = drivingSide2.id;
-    drivingSide2Label.innerText = "Left";
-
-    var group = makeDiv([
-      checkbox1,
-      checkbox2,
-      checkbox3,
-      drivingSideLabel,
-      drivingSide1,
-      drivingSide1Label,
-      drivingSide2,
-      drivingSide2Label,
-    ]);
+    var group = makeDiv([checkbox1, checkbox2, checkbox3]);
     group.style = "background: black; padding: 10px;";
     L.DomEvent.disableClickPropagation(group);
     return group;

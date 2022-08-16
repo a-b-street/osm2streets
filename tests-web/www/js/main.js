@@ -32,7 +32,6 @@ export class StreetExplorer {
       debugEachStep: false,
       dualCarriagewayExperiment: false,
       cycletrackSnappingExperiment: false,
-      drivingSideForNewImports: "Right",
     };
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
@@ -139,10 +138,9 @@ class TestCase {
     try {
       const resp = await fetch(url);
       const osmInput = await resp.text();
+      const drivingSide = await getDrivingSide(b.getWest(), b.getNorth());
 
       importButton.innerText = "Importing OSM data...";
-
-      const drivingSide = app.importSettings.drivingSideForNewImports;
 
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
@@ -299,3 +297,19 @@ const useMap = (map) => {
   map.openTest = makeOpenTest(map);
   console.info("New map created! File drops enabled.", container);
 };
+
+async function getDrivingSide(lat, lng) {
+  const url = `https://overpass-api.de/api/interpreter?data=[out:csv(driving_side)];is_in(${lat}, ${lng})->.enclosing; area.enclosing["driving_side"]; out tags;`;
+  console.log(`Fetching from overpass: ${url}`);
+  const resp = await fetch(url);
+  const lines = await resp.text();
+  const side = lines.split("\n")[1];
+  switch (side) {
+    case "left":
+      return "Left";
+    case "right":
+      return "Right";
+    default:
+      throw `Unknown driving_side ${side}`;
+  }
+}
