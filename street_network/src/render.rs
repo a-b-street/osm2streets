@@ -25,23 +25,18 @@ impl StreetNetwork {
 
         let mut pairs = Vec::new();
 
-        // Add a line-string and polygon per road
+        // Add a polygon per road
         for (id, road) in &initial_map.roads {
-            let properties = make_props(&[
-                ("osm_way_id", id.osm_way_id.0.into()),
-                ("src_i", id.i1.0.into()),
-                ("dst_i", id.i2.0.into()),
-            ]);
-            pairs.push((
-                road.trimmed_center_pts.to_geojson(Some(&self.gps_bounds)),
-                properties.clone(),
-            ));
-
             pairs.push((
                 road.trimmed_center_pts
                     .make_polygons(2.0 * road.half_width)
                     .to_geojson(Some(&self.gps_bounds)),
-                properties,
+                make_props(&[
+                    ("type", "road".into()),
+                    ("osm_way_id", id.osm_way_id.0.into()),
+                    ("src_i", id.i1.0.into()),
+                    ("dst_i", id.i2.0.into()),
+                ]),
             ));
         }
 
@@ -50,12 +45,13 @@ impl StreetNetwork {
             pairs.push((
                 intersection.polygon.to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
-                    ("intersection_id", id.0.into()),
-                    ("fill", "#729fcf".into()),
+                    ("type", "intersection".into()),
+                    ("osm_node_id", id.0.into()),
                     (
                         "complexity",
                         format!("{:?}", intersection.complexity).into(),
                     ),
+                    ("control", format!("{:?}", intersection.control).into()),
                 ]),
             ));
         }
@@ -80,7 +76,11 @@ impl StreetNetwork {
                 pairs.push((
                     pl.make_polygons(lane.width)
                         .to_geojson(Some(&self.gps_bounds)),
-                    make_props(&[("type", format!("{:?}", lane.lt).into())]),
+                    make_props(&[
+                        ("type", format!("{:?}", lane.lt).into()),
+                        ("width", lane.width.inner_meters().into()),
+                        ("direction", format!("{:?}", lane.dir).into()),
+                    ]),
                 ));
             }
         }

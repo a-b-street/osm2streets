@@ -11,14 +11,33 @@ export const makePlainGeoJsonLayer = (text) => {
 
   return new L.geoJSON(JSON.parse(text), {
     style: function (feature) {
-      if (feature.geometry.type === "Polygon") {
+      if (feature.properties.type == "intersection") {
         return {
-          color: intersectionColours[feature.properties?.complexity],
+          color: intersectionColours[feature.properties.complexity],
           weight: 1,
           fillOpacity: 0.7,
         };
       }
       return { color: "#f55" };
+    },
+    onEachFeature: function (feature, layer) {
+      if (feature.properties.type != "intersection") {
+        return;
+      }
+      layer.on({
+        mouseover: function (ev) {
+          const layer = ev.target;
+          layer.setStyle({
+            fillOpacity: 0.5,
+          });
+        },
+        mouseout: function (ev) {
+          layer.setStyle({
+            fillOpacity: 0.7,
+          });
+        },
+      });
+      layer.bindPopup(JSON.stringify(feature.properties, null, "<br/>"));
     },
   });
 };
@@ -47,6 +66,22 @@ export const makeLanePolygonLayer = (text) => {
         fillOpacity: 0.9,
         stroke: false,
       };
+    },
+    onEachFeature: function (feature, layer) {
+      layer.on({
+        mouseover: function (ev) {
+          const layer = ev.target;
+          layer.setStyle({
+            fillOpacity: 0.5,
+          });
+        },
+        mouseout: function (ev) {
+          layer.setStyle({
+            fillOpacity: 0.9,
+          });
+        },
+      });
+      layer.bindPopup(JSON.stringify(feature.properties, null, "<br/>"));
     },
   });
 };
