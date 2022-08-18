@@ -110,9 +110,9 @@ class TestCase {
     const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
-    group.addLayer("Geometry", geometryLayer);
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
     group.addLayer("Network", await makeDotLayer(network, { bounds }));
+    group.addLayer("Geometry", geometryLayer);
     app.layers.addGroup(group);
 
     const drivingSide = JSON.parse(await loadFile(prefix + "test.json"))[
@@ -216,7 +216,10 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
 
     const numDebugSteps = network.getDebugSteps().length;
-    group.setEnabled(numDebugSteps == 0);
+    // This enables all layers within the group. We don't want to do that for the OSM layer. So only disable if we're debugging.
+    if (numDebugSteps > 0) {
+      group.setEnabled(false);
+    }
     app.layers.addGroup(group);
 
     var debugGroups = [];
