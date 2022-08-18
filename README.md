@@ -3,9 +3,9 @@
 OpenStreetMap (OSM) has many details about streets, but the schema presents
 many challenges for rendering, routing, and analyzing done at the detail of
 lanes, especially in the presence of dual carriageways, separated cycletracks
-and footways, and complex intersections. `osm2streets` is a simplified street
-network schema, a library transforming OSM data into this representation, and
-tools to render and work with the results.
+and footways, and complex intersections. `osm2streets` provides a simplified
+street network schema, a library transforming OSM data into this representation,
+and tools to render and work with the results.
 
 ## Getting started
 
