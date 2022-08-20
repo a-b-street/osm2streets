@@ -150,6 +150,11 @@ class TestCase {
         .getData()
         .getBounds();
 
+      // Remove the test case from the URL, if needed
+      const fixURL = new URL(window.location);
+      fixURL.searchParams.delete("test");
+      window.history.pushState({}, "", fixURL);
+
       return new TestCase(app, null, osmInput, drivingSide, bounds);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
@@ -279,11 +284,14 @@ function setupLeafletMap(mapContainer) {
     zoomDelta: 0.5,
     wheelPxPerZoomLevel: 120,
   }).setView([40.0, 10.0], 4);
+
   new GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
     showMarker: false,
     autoClose: true,
   }).addTo(map);
+
+  new L.hash(map);
 
   L.control
     .layers({ OpenStreetMap: osm, ArcGIS: arcgis }, {}, { collapsed: false })
