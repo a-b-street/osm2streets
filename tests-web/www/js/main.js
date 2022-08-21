@@ -33,6 +33,7 @@ export class StreetExplorer {
       dualCarriagewayExperiment: false,
       cycletrackSnappingExperiment: false,
       drivingSideForNewImports: "Right",
+      inferredSidewalks: true,
     };
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
@@ -204,6 +205,7 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       dual_carriageway_experiment: app.importSettings.dualCarriagewayExperiment,
       cycletrack_snapping_experiment:
         app.importSettings.cycletrackSnappingExperiment,
+      inferred_sidewalks: app.importSettings.inferredSidewalks,
     });
     var group = new LayerGroup(groupName, app.map);
     if (addOSMLayer) {

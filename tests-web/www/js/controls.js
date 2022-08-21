@@ -33,6 +33,14 @@ const SettingsControl = L.Control.extend({
         this.options.app.importSettings.cycletrackSnappingExperiment = checked;
       }
     );
+    const checkbox4 = makeCheckbox(
+      "inferredSidewalks",
+      "Infer sidewalks on roads. If false, import separate footways\n",
+      this.options.app.importSettings.inferredSidewalks,
+      (checked) => {
+        this.options.app.importSettings.inferredSidewalks = checked;
+      }
+    );
 
     // TODO Ask Overpass instead of making the user choose this
     const drivingSideLabel = document.createTextNode(
@@ -71,6 +79,7 @@ const SettingsControl = L.Control.extend({
       checkbox1,
       checkbox2,
       checkbox3,
+      checkbox4,
       drivingSideLabel,
       drivingSide1,
       drivingSide1Label,

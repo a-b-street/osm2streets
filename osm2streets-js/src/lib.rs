@@ -10,6 +10,7 @@ pub struct ImportOptions {
     debug_each_step: bool,
     dual_carriageway_experiment: bool,
     cycletrack_snapping_experiment: bool,
+    inferred_sidewalks: bool,
 }
 
 #[wasm_bindgen]
@@ -28,15 +29,14 @@ impl JsStreetNetwork {
             .into_serde()
             .map_err(|err| JsValue::from_str(&err.to_string()))?;
 
+        let mut options = import_streets::Options::default_for_side(input.driving_side);
+        options.map_config.inferred_sidewalks = input.inferred_sidewalks;
+
         let clip_pts = None;
         let mut timer = Timer::throwaway();
-        let mut street_network = import_streets::osm_to_street_network(
-            osm_xml_input,
-            clip_pts,
-            import_streets::Options::default_for_side(input.driving_side),
-            &mut timer,
-        )
-        .map_err(|err| JsValue::from_str(&err.to_string()))?;
+        let mut street_network =
+            import_streets::osm_to_street_network(osm_xml_input, clip_pts, options, &mut timer)
+                .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
             // Merging short roads tries to touch "bridges," making debugging harder
