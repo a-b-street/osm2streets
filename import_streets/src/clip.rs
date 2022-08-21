@@ -60,7 +60,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             move_i = streets.new_osm_node_id(-1);
             extra_borders.insert(orig_id, move_i);
             streets.intersections.insert(move_i, copy);
-            println!("Disconnecting {} from some other stuff (starting OOB)", id);
+            info!("Disconnecting {} from some other stuff (starting OOB)", id);
         }
 
         let i = streets.intersections.get_mut(&move_i).unwrap();
@@ -74,7 +74,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         if let Some(pl) = center.reversed().get_slice_ending_at(border_pt) {
             mut_r.osm_center_points = pl.reversed().into_points();
         } else {
-            bail!("{} interacts with border strangely", id);
+            warn!("{} interacts with border strangely", id);
+            continue;
         }
         i.point = mut_r.osm_center_points[0];
         streets.roads.insert(
@@ -116,7 +117,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             move_i = streets.new_osm_node_id(-1);
             extra_borders.insert(orig_id, move_i);
             streets.intersections.insert(move_i, copy);
-            println!("Disconnecting {} from some other stuff (ending OOB)", id);
+            info!("Disconnecting {} from some other stuff (ending OOB)", id);
         }
 
         let i = streets.intersections.get_mut(&move_i).unwrap();
@@ -130,7 +131,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         if let Some(pl) = center.get_slice_ending_at(border_pt) {
             mut_r.osm_center_points = pl.into_points();
         } else {
-            bail!("{} interacts with border strangely", id);
+            warn!("{} interacts with border strangely", id);
+            continue;
         }
         i.point = *mut_r.osm_center_points.last().unwrap();
         streets.roads.insert(
