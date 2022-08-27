@@ -224,10 +224,13 @@ pub fn split_up_roads(
     // (https://wiki.openstreetmap.org/wiki/Tag:highway=traffic%20signals?uselang=en#Tag_all_incoming_ways).
     for (pt, dir) in input.traffic_signals {
         if let Some(r) = pt_to_road.get(&pt) {
-            // Example: https://www.openstreetmap.org/node/26734224
-            if !streets.roads[r].osm_tags.is(osm::HIGHWAY, "construction") {
-                let i = if dir == Direction::Fwd { r.i2 } else { r.i1 };
-                streets.intersections.get_mut(&i).unwrap().control = ControlType::TrafficSignal;
+            // The road might've crossed the boundary and been clipped
+            if let Some(road) = streets.roads.get(r) {
+                // Example: https://www.openstreetmap.org/node/26734224
+                if !road.osm_tags.is(osm::HIGHWAY, "construction") {
+                    let i = if dir == Direction::Fwd { r.i2 } else { r.i1 };
+                    streets.intersections.get_mut(&i).unwrap().control = ControlType::TrafficSignal;
+                }
             }
         }
     }
