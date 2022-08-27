@@ -223,7 +223,7 @@ fn generalized_trim_back(
                 (ii1 == ii3 && ii2 == ii4) || (ii1 == ii4 && ii2 == ii3)
             };
             let (use_pl1, use_pl2): (PolyLine, PolyLine) = if same_endpoints {
-                (pl1.second_half(), pl2.second_half())
+                (pl1.second_half()?, pl2.second_half()?)
             } else {
                 (pl1.clone(), pl2.clone())
             };
@@ -303,7 +303,10 @@ fn generalized_trim_back(
         // TODO Should maybe do reversed() to fwd_pl here too. And why not make all the lines
         // passed in point AWAY from the intersection instead?
         if fwd_pl.length() >= EPSILON_DIST * 3.0 && adj_fwd_pl.length() >= EPSILON_DIST * 3.0 {
-            if let Some((hit, _)) = fwd_pl.second_half().intersection(&adj_fwd_pl.second_half()) {
+            if let Some((hit, _)) = fwd_pl
+                .second_half()?
+                .intersection(&adj_fwd_pl.second_half()?)
+            {
                 endpoints.push(hit);
             }
         } else {
@@ -325,8 +328,8 @@ fn generalized_trim_back(
 
         if back_pl.length() >= EPSILON_DIST * 3.0 && adj_back_pl.length() >= EPSILON_DIST * 3.0 {
             if let Some((hit, _)) = back_pl
-                .second_half()
-                .intersection(&adj_back_pl.second_half())
+                .second_half()?
+                .intersection(&adj_back_pl.second_half()?)
             {
                 endpoints.push(hit);
             }
