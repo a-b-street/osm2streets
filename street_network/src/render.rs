@@ -158,18 +158,17 @@ impl StreetNetwork {
                 let arrow_len = Distance::meters(1.75);
                 let thickness = Distance::meters(0.25);
                 for (pt, angle) in center.step_along(step_size, buffer_ends) {
-                    if let Ok(arrow) = PolyLine::must_new(vec![
+                    let arrow = PolyLine::must_new(vec![
                         pt.project_away(arrow_len / 2.0, angle.opposite()),
                         pt.project_away(arrow_len / 2.0, angle),
                     ])
                     .make_arrow(thickness * 2.0, ArrowCap::Triangle)
-                    .to_outline(thickness / 2.0)
-                    {
-                        pairs.push((
-                            arrow.to_geojson(gps_bounds),
-                            make_props(&[("type", "lane arrow".into())]),
-                        ));
-                    }
+                    .into_ring()
+                    .to_outline(thickness / 2.0);
+                    pairs.push((
+                        arrow.to_geojson(gps_bounds),
+                        make_props(&[("type", "lane arrow".into())]),
+                    ));
                 }
             }
 
