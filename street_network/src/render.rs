@@ -52,6 +52,7 @@ impl StreetNetwork {
                         format!("{:?}", intersection.complexity).into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
+                    ("osm_link", id.to_string().into()),
                 ]),
             ));
         }
@@ -80,6 +81,7 @@ impl StreetNetwork {
                         ("type", format!("{:?}", lane.lt).into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
+                        ("osm_link", id.osm_way_id.to_string().into()),
                     ]),
                 ));
             }

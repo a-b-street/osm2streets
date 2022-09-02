@@ -37,7 +37,13 @@ export const makePlainGeoJsonLayer = (text) => {
           });
         },
       });
-      layer.bindPopup(JSON.stringify(feature.properties, null, "<br/>"));
+
+      const osmUrl = feature.properties.osm_link;
+      delete feature.properties.osm_link;
+      const jsonDump = JSON.stringify(feature.properties, null, "<br/>");
+      const popup =
+        jsonDump + `<br/><a href="${osmUrl}" target="_blank">Open in OSM</a>`;
+      layer.bindPopup(popup);
     },
   });
 };
@@ -81,7 +87,13 @@ export const makeLanePolygonLayer = (text) => {
           });
         },
       });
-      layer.bindPopup(JSON.stringify(feature.properties, null, "<br/>"));
+
+      const osmUrl = feature.properties.osm_link;
+      delete feature.properties.osm_link;
+      const jsonDump = JSON.stringify(feature.properties, null, "<br/>");
+      const popup =
+        jsonDump + `<br/><a href="${osmUrl}" target="_blank">Open in OSM</a>`;
+      layer.bindPopup(popup);
     },
   });
 };
