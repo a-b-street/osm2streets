@@ -165,7 +165,7 @@ impl StreetNetwork {
                         pt.project_away(arrow_len / 2.0, angle),
                     ])
                     .make_arrow(thickness * 2.0, ArrowCap::Triangle)
-                    .into_ring()
+                    .get_outer_ring()
                     .to_outline(thickness / 2.0);
                     pairs.push((
                         arrow.to_geojson(gps_bounds),
