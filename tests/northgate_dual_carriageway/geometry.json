@@ -4159,6 +4159,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/-1",
         "osm_node_id": -1,
         "type": "intersection"
       },
@@ -4215,6 +4216,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/53029362",
         "osm_node_id": 53029362,
         "type": "intersection"
       },
@@ -4259,6 +4261,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/53092589",
         "osm_node_id": 53092589,
         "type": "intersection"
       },
@@ -4295,6 +4298,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/53092591",
         "osm_node_id": 53092591,
         "type": "intersection"
       },
@@ -4331,6 +4335,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/53100765",
         "osm_node_id": 53100765,
         "type": "intersection"
       },
@@ -4371,6 +4376,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/53100766",
         "osm_node_id": 53100766,
         "type": "intersection"
       },
@@ -4431,6 +4437,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/53211559",
         "osm_node_id": 53211559,
         "type": "intersection"
       },
@@ -4475,6 +4482,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/53234912",
         "osm_node_id": 53234912,
         "type": "intersection"
       },
@@ -4511,6 +4519,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/90251447",
         "osm_node_id": 90251447,
         "type": "intersection"
       },
@@ -4547,6 +4556,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/95600097",
         "osm_node_id": 95600097,
         "type": "intersection"
       },
@@ -4587,6 +4597,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/95600603",
         "osm_node_id": 95600603,
         "type": "intersection"
       },
@@ -4631,6 +4642,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/95601224",
         "osm_node_id": 95601224,
         "type": "intersection"
       },
@@ -4691,6 +4703,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/411602465",
         "osm_node_id": 411602465,
         "type": "intersection"
       },
@@ -4743,6 +4756,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/411602471",
         "osm_node_id": 411602471,
         "type": "intersection"
       },
@@ -4791,6 +4805,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/411602472",
         "osm_node_id": 411602472,
         "type": "intersection"
       },
@@ -4827,6 +4842,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/471309345",
         "osm_node_id": 471309345,
         "type": "intersection"
       },
@@ -4863,6 +4879,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/476254637",
         "osm_node_id": 476254637,
         "type": "intersection"
       },
@@ -4919,6 +4936,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476254734",
         "osm_node_id": 476254734,
         "type": "intersection"
       },
@@ -4959,6 +4977,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476254735",
         "osm_node_id": 476254735,
         "type": "intersection"
       },
@@ -5015,6 +5034,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476254742",
         "osm_node_id": 476254742,
         "type": "intersection"
       },
@@ -5063,6 +5083,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476661975",
         "osm_node_id": 476661975,
         "type": "intersection"
       },
@@ -5119,6 +5140,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476661976",
         "osm_node_id": 476661976,
         "type": "intersection"
       },
@@ -5155,6 +5177,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/476714811",
         "osm_node_id": 476714811,
         "type": "intersection"
       },
@@ -5195,6 +5218,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476715048",
         "osm_node_id": 476715048,
         "type": "intersection"
       },
@@ -5235,6 +5259,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476715211",
         "osm_node_id": 476715211,
         "type": "intersection"
       },
@@ -5283,6 +5308,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476715215",
         "osm_node_id": 476715215,
         "type": "intersection"
       },
@@ -5339,6 +5365,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/476715244",
         "osm_node_id": 476715244,
         "type": "intersection"
       },
@@ -5383,6 +5410,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/479716851",
         "osm_node_id": 479716851,
         "type": "intersection"
       },
@@ -5427,6 +5455,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/479716854",
         "osm_node_id": 479716854,
         "type": "intersection"
       },
@@ -5475,6 +5504,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/479716858",
         "osm_node_id": 479716858,
         "type": "intersection"
       },
@@ -5511,6 +5541,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/666566888",
         "osm_node_id": 666566888,
         "type": "intersection"
       },
@@ -5547,6 +5578,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/910032566",
         "osm_node_id": 910032566,
         "type": "intersection"
       },
@@ -5583,6 +5615,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/944726788",
         "osm_node_id": 944726788,
         "type": "intersection"
       },
@@ -5619,6 +5652,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1111800655",
         "osm_node_id": 1111800655,
         "type": "intersection"
       },
@@ -5675,6 +5709,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1395426463",
         "osm_node_id": 1395426463,
         "type": "intersection"
       },
@@ -5711,6 +5746,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/1778657883",
         "osm_node_id": 1778657883,
         "type": "intersection"
       },
@@ -5751,6 +5787,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1905102152",
         "osm_node_id": 1905102152,
         "type": "intersection"
       },
@@ -5791,6 +5828,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1905102153",
         "osm_node_id": 1905102153,
         "type": "intersection"
       },
@@ -5831,6 +5869,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1968559734",
         "osm_node_id": 1968559734,
         "type": "intersection"
       },
@@ -5875,6 +5914,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1968559768",
         "osm_node_id": 1968559768,
         "type": "intersection"
       },
@@ -5915,6 +5955,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/1968559770",
         "osm_node_id": 1968559770,
         "type": "intersection"
       },
@@ -5967,6 +6008,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/1968559794",
         "osm_node_id": 1968559794,
         "type": "intersection"
       },
@@ -6003,6 +6045,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/2542516444",
         "osm_node_id": 2542516444,
         "type": "intersection"
       },
@@ -6039,6 +6082,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/3409784125",
         "osm_node_id": 3409784125,
         "type": "intersection"
       },
@@ -6087,6 +6131,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/3711400490",
         "osm_node_id": 3711400490,
         "type": "intersection"
       },
@@ -6135,6 +6180,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/3711400491",
         "osm_node_id": 3711400491,
         "type": "intersection"
       },
@@ -6171,6 +6217,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/3835317537",
         "osm_node_id": 3835317537,
         "type": "intersection"
       },
@@ -6207,6 +6254,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/3835317544",
         "osm_node_id": 3835317544,
         "type": "intersection"
       },
@@ -6259,6 +6307,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4022851873",
         "osm_node_id": 4022851873,
         "type": "intersection"
       },
@@ -6299,6 +6348,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4022851877",
         "osm_node_id": 4022851877,
         "type": "intersection"
       },
@@ -6335,6 +6385,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/4272355594",
         "osm_node_id": 4272355594,
         "type": "intersection"
       },
@@ -6371,6 +6422,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4272355596",
         "osm_node_id": 4272355596,
         "type": "intersection"
       },
@@ -6427,6 +6479,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554773505",
         "osm_node_id": 4554773505,
         "type": "intersection"
       },
@@ -6483,6 +6536,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554773508",
         "osm_node_id": 4554773508,
         "type": "intersection"
       },
@@ -6539,6 +6593,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554837508",
         "osm_node_id": 4554837508,
         "type": "intersection"
       },
@@ -6595,6 +6650,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554843678",
         "osm_node_id": 4554843678,
         "type": "intersection"
       },
@@ -6651,6 +6707,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554843686",
         "osm_node_id": 4554843686,
         "type": "intersection"
       },
@@ -6707,6 +6764,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4554843688",
         "osm_node_id": 4554843688,
         "type": "intersection"
       },
@@ -6763,6 +6821,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4632418342",
         "osm_node_id": 4632418342,
         "type": "intersection"
       },
@@ -6799,6 +6858,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787708489",
         "osm_node_id": 4787708489,
         "type": "intersection"
       },
@@ -6835,6 +6895,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774424",
         "osm_node_id": 4787774424,
         "type": "intersection"
       },
@@ -6871,6 +6932,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774425",
         "osm_node_id": 4787774425,
         "type": "intersection"
       },
@@ -6907,6 +6969,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774426",
         "osm_node_id": 4787774426,
         "type": "intersection"
       },
@@ -6943,6 +7006,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774427",
         "osm_node_id": 4787774427,
         "type": "intersection"
       },
@@ -6979,6 +7043,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774428",
         "osm_node_id": 4787774428,
         "type": "intersection"
       },
@@ -7023,6 +7088,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774433",
         "osm_node_id": 4787774433,
         "type": "intersection"
       },
@@ -7059,6 +7125,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/4787774435",
         "osm_node_id": 4787774435,
         "type": "intersection"
       },
@@ -7103,6 +7170,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/4787774436",
         "osm_node_id": 4787774436,
         "type": "intersection"
       },
@@ -7139,6 +7207,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/5420650298",
         "osm_node_id": 5420650298,
         "type": "intersection"
       },
@@ -7175,6 +7244,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/5420650496",
         "osm_node_id": 5420650496,
         "type": "intersection"
       },
@@ -7211,6 +7281,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/5420650779",
         "osm_node_id": 5420650779,
         "type": "intersection"
       },
@@ -7247,6 +7318,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/6224066906",
         "osm_node_id": 6224066906,
         "type": "intersection"
       },
@@ -7283,6 +7355,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/6503414647",
         "osm_node_id": 6503414647,
         "type": "intersection"
       },
@@ -7327,6 +7400,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/7625387501",
         "osm_node_id": 7625387501,
         "type": "intersection"
       },
@@ -7379,6 +7453,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/7625387502",
         "osm_node_id": 7625387502,
         "type": "intersection"
       },
@@ -7455,6 +7530,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/7625387504",
         "osm_node_id": 7625387504,
         "type": "intersection"
       },
@@ -7491,6 +7567,7 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/8145533038",
         "osm_node_id": 8145533038,
         "type": "intersection"
       },
@@ -7547,6 +7624,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9123420400",
         "osm_node_id": 9123420400,
         "type": "intersection"
       },
@@ -7603,6 +7681,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9127145511",
         "osm_node_id": 9127145511,
         "type": "intersection"
       },
@@ -7643,6 +7722,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/9198107248",
         "osm_node_id": 9198107248,
         "type": "intersection"
       },
@@ -7691,6 +7771,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/9198107249",
         "osm_node_id": 9198107249,
         "type": "intersection"
       },
@@ -7731,6 +7812,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9322923125",
         "osm_node_id": 9322923125,
         "type": "intersection"
       },
@@ -7799,6 +7881,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9322923130",
         "osm_node_id": 9322923130,
         "type": "intersection"
       },
@@ -7835,6 +7918,7 @@
       "properties": {
         "complexity": "Connection",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9754620676",
         "osm_node_id": 9754620676,
         "type": "intersection"
       },
@@ -7879,6 +7963,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "TrafficSignal",
+        "osm_link": "https://www.openstreetmap.org/node/9772983384",
         "osm_node_id": 9772983384,
         "type": "intersection"
       },
@@ -7935,6 +8020,7 @@
       "properties": {
         "complexity": "Crossing",
         "control": "StopSign",
+        "osm_link": "https://www.openstreetmap.org/node/9812120018",
         "osm_node_id": 9812120018,
         "type": "intersection"
       },
