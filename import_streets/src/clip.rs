@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use abstutil::Timer;
 use anyhow::Result;
-use geom::{PolyLine, Ring};
+use geom::PolyLine;
 use street_network::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
@@ -11,7 +11,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
     // So we can use retain without borrowing issues
     let boundary_polygon = streets.boundary_polygon.clone();
-    let boundary_ring = Ring::must_new(boundary_polygon.points().clone());
+    let boundary_ring = boundary_polygon.get_outer_ring();
 
     // This is kind of indirect and slow, but first pass -- just remove roads that start or end
     // outside the boundary polygon.
