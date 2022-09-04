@@ -1,4 +1,5 @@
 mod classic;
+mod osm2lanes;
 #[cfg(test)]
 mod tests;
 

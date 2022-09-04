@@ -8,6 +8,10 @@ use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConf
 /// Purely from OSM tags, determine the lanes that a road segment has. This is the "classic"
 /// implementation -- the default, but on its way out.
 pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
+    if cfg.osm2lanes {
+        return super::osm2lanes::get_lane_specs_ltr_experimental(tags, cfg);
+    }
+
     let fwd = |lt: LaneType| LaneSpec {
         lt,
         dir: Direction::Fwd,

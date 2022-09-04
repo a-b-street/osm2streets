@@ -67,6 +67,9 @@ pub struct MapConfig {
     pub street_parking_spot_length: Distance,
     /// If true, turns on red which do not conflict crossing traffic ('right on red') are allowed
     pub turn_on_red: bool,
+    /// If true, use experimental osm2lanes for figuring out lanes per road. If false, use the
+    /// classic algorithm.
+    pub osm2lanes: bool,
 
     /// Enable experimental dog-leg intersection merging
     pub find_dog_legs_experiment: bool,
@@ -82,6 +85,7 @@ impl MapConfig {
             inferred_sidewalks: true,
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
+            osm2lanes: false,
             find_dog_legs_experiment: false,
             merge_osm_ways: Vec::new(),
         }
