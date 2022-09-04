@@ -14,17 +14,19 @@ use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
-pub use self::lane_specs::get_lane_specs_ltr;
+pub use self::lanes::{
+    get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
+    SIDEWALK_THICKNESS,
+};
 pub use self::transform::Transformation;
 pub use self::types::{
-    BufferType, ControlType, Direction, DrivingSide, IntersectionComplexity, LaneSpec, LaneType,
-    MapConfig, NamePerLanguage, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
+    ControlType, DrivingSide, IntersectionComplexity, MapConfig, NamePerLanguage,
 };
 
 mod edit;
 mod geometry;
 pub mod initial;
-mod lane_specs;
+mod lanes;
 pub mod osm;
 mod pathfinding;
 mod render;
