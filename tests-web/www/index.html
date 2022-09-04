@@ -28,16 +28,27 @@
     </script>
   </head>
   <body>
-    <menu>
-      <h1>StreetExplorer</h1>
-      <a href="https://github.com/a-b-street/osm2streets" target="_blank"
-        >About</a
-      >
-      <button type="button" id="import-view">Import current view</button>
-      <button type="button" id="settings">Settings</button>
-      <ul id="test-list" />
-      <ul id="view-controls" />
-    </menu>
+    <aside>
+      <header>
+        <h1>StreetExplorer</h1>
+        <p>
+          Understanding OSM streets and intersections with
+          <a href="https://github.com/a-b-street/osm2streets" target="_blank">osm2streets</a>.
+        </p>
+      </header>
+      <button type="button" id="settings">Processing Options</button>
+      <fieldset>
+        <legend>
+          <select id="test-list">
+            <option value="">No test case</option>
+            <option value="dynamic" hidden>Custom imported area</option>
+          </select>
+        </legend>
+        <div id="view-controls">
+          <button type="button" id="import-view">import current view</button>
+        </div>
+      </fieldset>
+    </aside>
     <section id="road-network"></section>
     <div id="map"></div>
   </body>

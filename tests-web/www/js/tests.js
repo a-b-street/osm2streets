@@ -23,13 +23,20 @@ export function loadTests() {
     "tempe_split",
   ];
 
-  // Add all of the test cases to the list.
+  // Add all the test cases to the list.
   const listNode = window.document.getElementById("test-list");
   for (const t of testNames) {
-    const li = listNode.appendChild(window.document.createElement("li"));
-    const a = li.appendChild(window.document.createElement("a"));
+    const a = listNode.appendChild(window.document.createElement("option"));
     // Here we encode the test name in the URL to be read elsewhere.
-    a.href = "?test=" + t;
+    a.value = t;
     a.innerHTML = t;
+  }
+
+  listNode.onchange = (ev) => {
+    const val = ev.currentTarget.value;
+    const q = new URLSearchParams(location.search);
+    if (val) q.set("test", val);
+    else q.delete("test")
+    location.search = q.toString();
   }
 }
