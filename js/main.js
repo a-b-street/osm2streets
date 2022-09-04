@@ -55,16 +55,18 @@ export class StreetExplorer {
 
     // Wire up the import button
     const importButton = document.getElementById("import-view");
-    importButton.onclick = async () => {
-      if (app.map.getZoom() < 15) {
-        window.alert("Zoom in more to import");
-        return;
-      }
+    if (importButton) {
+      importButton.onclick = async () => {
+        if (app.map.getZoom() < 15) {
+          window.alert("Zoom in more to import");
+          return;
+        }
 
-      await app.setCurrentTest((app) =>
-        TestCase.importCurrentView(app, importButton)
-      );
-    };
+        await app.setCurrentTest((app) =>
+          TestCase.importCurrentView(app, importButton)
+        );
+      };
+    }
 
     // Wire up the settings button
     const settingsButton = document.getElementById("settings");
@@ -87,6 +89,7 @@ export class StreetExplorer {
     this.currentTest = await testMaker(this);
     if (this.currentTest) {
       this.map.fitBounds(this.currentTest.bounds, { animate: false });
+      document.getElementById("test-list").value = this.currentTest.name || "dynamic";
       this.currentTest.renderControls(document.getElementById("view-controls"));
     }
   }
@@ -171,22 +174,17 @@ class TestCase {
   renderControls(container) {
     container.innerHTML = "";
     if (this.name) {
-      const title = container.appendChild(document.createElement("b"));
-      title.innerText = `Currently showing ${this.name}`;
-
       const button = container.appendChild(document.createElement("button"));
       button.type = "button";
-      button.innerHTML = "Reimport";
+      button.innerHTML = "Generate Details";
       button.onclick = () => {
         // First remove all existing groups except for the original one
         this.app.layers.removeGroups((name) => name != "built-in test case");
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
-        importOSM("Reimport", this.app, this.osmXML, this.drivingSide, false);
+        importOSM("Details", this.app, this.osmXML, this.drivingSide, false);
       };
-    } else {
-      container.innerHTML = `<b>Custom imported view</b>`;
     }
 
     const button = container.appendChild(document.createElement("button"));
