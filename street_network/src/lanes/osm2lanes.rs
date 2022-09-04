@@ -23,11 +23,17 @@ pub fn get_lane_specs_ltr_experimental(orig_tags: &Tags, cfg: &MapConfig) -> Vec
     match inner_get_lane_specs_ltr(orig_tags, cfg) {
         Ok(lanes) => lanes,
         Err(err) => {
-            let way_id = orig_tags.get(osm::OSM_WAY_ID).unwrap();
-            error!(
-                "osm2lanes broke on https://www.openstreetmap.org/way/{} with tags {:?}: {}",
-                way_id, orig_tags, err
-            );
+            if let Some(way_id) = orig_tags.get(osm::OSM_WAY_ID) {
+                error!(
+                    "osm2lanes broke on https://www.openstreetmap.org/way/{} with tags {:?}: {}",
+                    way_id, orig_tags, err
+                );
+            } else {
+                error!(
+                    "osm2lanes broke on something with tags {:?}: {}",
+                    orig_tags, err
+                );
+            }
             // Stick something obviously wrong in the output
             vec![LaneSpec {
                 lt: LaneType::Driving,
