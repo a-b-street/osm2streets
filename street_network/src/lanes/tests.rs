@@ -8,8 +8,10 @@ use crate::{get_lane_specs_ltr, Direction, DrivingSide, MapConfig};
 // to osm2lanes (https://github.com/a-b-street/osm2lanes/issues/248).
 #[test]
 fn test_osm_to_specs() {
+    abstutil::logger::setup();
+
     let mut ok = true;
-    for (url, input, driving_side, expected_lt, expected_dir) in vec![
+    for (url, mut input, driving_side, expected_lt, expected_dir) in vec![
         (
             "https://www.openstreetmap.org/way/428294122",
             vec![
@@ -174,6 +176,7 @@ fn test_osm_to_specs() {
             find_dog_legs_experiment: false,
             merge_osm_ways: Vec::new(),
         };
+        input.push("highway=residential");
         let actual = get_lane_specs_ltr(&tags(input.clone()), &cfg);
         let actual_lt: String = actual.iter().map(|s| s.lt.to_char()).collect();
         let actual_dir: String = actual
