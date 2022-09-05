@@ -197,6 +197,7 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       cycletrack_snapping_experiment:
         !!importSettings.cycletrackSnappingExperiment,
       inferred_sidewalks: importSettings.sidewalks === 'infer',
+      osm2lanes: !!importSettings.osm2lanes,
     });
     var group = new LayerGroup(groupName, app.map);
     if (addOSMLayer) {
