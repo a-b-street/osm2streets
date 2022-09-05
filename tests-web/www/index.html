@@ -32,11 +32,60 @@
       <header>
         <h1>StreetExplorer</h1>
         <p>
-          Understanding OSM streets and intersections with
-          <a href="https://github.com/a-b-street/osm2streets" target="_blank">osm2streets</a>.
+          Understanding OSM streets &amp; intersections with
+          <a href="https://github.com/a-b-street/osm2streets" target="_blank"
+            >osm2streets</a
+          >
+          &amp;
+          <a href="https://github.com/a-b-street/osm2lanes" target="_blank"
+            >osm2lanes</a
+          >.
         </p>
       </header>
-      <button type="button" id="settings">Processing Options</button>
+
+      <form id="import-settings">
+        <details class="fieldset">
+          <summary>Processing Options</summary>
+          <label>
+            <input name="debugEachStep" type="checkbox" />Debug each
+            transformation step
+          </label>
+          <label>
+            <input name="dualCarriagewayExperiment" type="checkbox" />Enable
+            dual carriageway experiment
+          </label>
+          <label>
+            <input name="cycletrackSnappingExperiment" type="checkbox" />Enable
+            cycletrack snapping experiment
+          </label>
+          <div>
+            Sidewalks:
+            <label>
+              <input name="sidewalks" type="radio" value="mapped" />use mapped
+              footways
+            </label>
+            <label>
+              <input name="sidewalks" type="radio" value="infer" checked />infer
+              on roads
+            </label>
+          </div>
+          <div>
+            Driving side (only for importing new areas):
+            <label>
+              <input type="radio" name="drivingSide" value="Left" />Left
+            </label>
+            <label>
+              <input
+                  type="radio"
+                  name="drivingSide"
+                  value="Right"
+                  checked
+              />Right
+            </label>
+          </div>
+        </details>
+      </form>
+
       <fieldset>
         <legend>
           <select id="test-list">
