@@ -1,23 +1,22 @@
 import {
+  downloadGeneratedFile,
+  handleDragOver,
   loadFile,
   makeDropHandler,
   makeLinkHandler,
-  handleDragOver,
-  downloadGeneratedFile,
 } from "./files.js";
 import { loadTests } from "./tests.js";
 import {
+  makeDebugLayer,
+  makeDotLayer,
+  makeLaneMarkingsLayer,
+  makeLanePolygonLayer,
   makeOsmLayer,
   makePlainGeoJsonLayer,
-  makeLanePolygonLayer,
-  makeLaneMarkingsLayer,
-  makeDotLayer,
-  makeDebugLayer,
 } from "./layers.js";
 import {
-  makeSettingsControl,
-  makeLayerControl,
   LayerGroup,
+  makeLayerControl,
   SequentialLayerGroup,
 } from "./controls.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
@@ -28,13 +27,6 @@ export class StreetExplorer {
   constructor(mapContainer) {
     this.map = setupLeafletMap(mapContainer);
     this.currentTest = null;
-    this.importSettings = {
-      debugEachStep: false,
-      dualCarriagewayExperiment: false,
-      cycletrackSnappingExperiment: false,
-      drivingSideForNewImports: "Right",
-      inferredSidewalks: true,
-    };
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
 
@@ -68,18 +60,17 @@ export class StreetExplorer {
       };
     }
 
-    // Wire up the settings button
-    const settingsButton = document.getElementById("settings");
-    settingsButton.onclick = () => {
-      if (app.settingsControl == null) {
-        app.settingsControl = makeSettingsControl(app).addTo(app.map);
-      } else {
-        app.map.removeControl(app.settingsControl);
-        app.settingsControl = null;
-      }
-    };
-
     return app;
+  }
+
+  getImportSettings() {
+    try {
+      const data = new FormData(document.getElementById("import-settings"));
+      return Object.fromEntries(data);
+    } catch (e) {
+      console.warn("failed to get import settings from the DOM:", e);
+      return {};
+    }
   }
 
   async setCurrentTest(testMaker) {
@@ -89,7 +80,8 @@ export class StreetExplorer {
     this.currentTest = await testMaker(this);
     if (this.currentTest) {
       this.map.fitBounds(this.currentTest.bounds, { animate: false });
-      document.getElementById("test-list").value = this.currentTest.name || "dynamic";
+      document.getElementById("test-list").value =
+        this.currentTest.name || "dynamic";
       this.currentTest.renderControls(document.getElementById("view-controls"));
     }
   }
@@ -146,7 +138,7 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      const drivingSide = app.importSettings.drivingSideForNewImports;
+      const drivingSide = app.getImportSettings().drivingSideForNewImports || "Right";
 
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
@@ -197,13 +189,14 @@ class TestCase {
 
 function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
   try {
+    const importSettings = app.getImportSettings();
     const network = new JsStreetNetwork(osmXML, {
       driving_side: drivingSide,
-      debug_each_step: app.importSettings.debugEachStep,
-      dual_carriageway_experiment: app.importSettings.dualCarriagewayExperiment,
+      debug_each_step: !!importSettings.debugEachStep,
+      dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
       cycletrack_snapping_experiment:
-        app.importSettings.cycletrackSnappingExperiment,
-      inferred_sidewalks: app.importSettings.inferredSidewalks,
+        !!importSettings.cycletrackSnappingExperiment,
+      inferred_sidewalks: importSettings.sidewalks === 'infer',
     });
     var group = new LayerGroup(groupName, app.map);
     if (addOSMLayer) {
