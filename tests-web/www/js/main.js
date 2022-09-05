@@ -1,22 +1,22 @@
 import {
+  downloadGeneratedFile,
+  handleDragOver,
   loadFile,
   makeDropHandler,
   makeLinkHandler,
-  handleDragOver,
-  downloadGeneratedFile,
 } from "./files.js";
 import { loadTests } from "./tests.js";
 import {
+  makeDebugLayer,
+  makeDotLayer,
+  makeLaneMarkingsLayer,
+  makeLanePolygonLayer,
   makeOsmLayer,
   makePlainGeoJsonLayer,
-  makeLanePolygonLayer,
-  makeLaneMarkingsLayer,
-  makeDotLayer,
-  makeDebugLayer,
 } from "./layers.js";
 import {
-  makeLayerControl,
   LayerGroup,
+  makeLayerControl,
   SequentialLayerGroup,
 } from "./controls.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
