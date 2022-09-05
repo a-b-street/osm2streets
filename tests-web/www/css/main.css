@@ -71,16 +71,16 @@ a:visited { color: #83ba52 }
 
 button, input, textarea, .button {
   background-color: #323253;
+  color: #cccccc;
 }
 button:hover, input:hover, .button:hover {
-  background-color: #333;
+  background-color: #444480;
 }
 button:active, input:active, .button:active {
-  background-color: rgb(78, 18, 18);
+  background-color: #38482a;
 }
-.button:disabled, .button.disabled {
-  background-color: #3c3c53;
-  cursor: default;
+button:disabled, .button.disabled {
+  background-color: #333333;
 }
 
 
