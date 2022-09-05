@@ -3,6 +3,7 @@
 /* Variables */
 body {
   --pad: 1rem;
+  --bg-color: #0e0e16;
 }
 
 /* Full screen app layout */
@@ -26,7 +27,7 @@ body > aside {
   body { flex-direction: row }
   body > aside { flex-direction: column }
   body > aside {
-    max-width: 23rem;
+    max-width: 27rem;
   }
 }
 
@@ -39,6 +40,31 @@ body > aside {
   }
 }
 
+details.fieldset {
+  border: 2px groove silver;
+  padding: 0.75em;
+  margin-top: 0.5em;
+}
+details.fieldset > summary:first-of-type {
+  position: relative;
+  width: fit-content;
+  top: -1.6em;
+  margin-bottom: -1.6em;
+  padding: 0 2px;
+  background: var(--bg-color);
+
+  font-weight: bold;
+}
+
+form#import-settings > details > div,
+form#import-settings > details > label {
+  display: block;
+  margin-inline-start: 1em;
+  text-indent: -1em;
+}
+form#import-settings > details > div > label {
+  white-space: nowrap;
+}
 
 #test-list {
   list-style: none;
@@ -63,7 +89,7 @@ body, h1, h2, h3, h4, h5, a, button, input, textarea, .button, label, p, select 
 }
 
 body {
-  background: #0e0e16;
+  background: var(--bg-color);
   color: #cccccc;
 }
 a:link { color: #72e0d1 }
