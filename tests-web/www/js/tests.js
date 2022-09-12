@@ -6,8 +6,10 @@ export function loadTests() {
     "borough_sausage_links",
     "bristol_contraflow_cycleway",
     "bristol_sausage_links",
+    "cycleway_rejoin_road",
     "i5_exit_ramp",
     "kingsway_junction",
+    "leeds_cycleway",
     "montlake_roundabout",
     "northgate_dual_carriageway",
     "oneway_loop",
@@ -35,8 +37,11 @@ export function loadTests() {
   listNode.onchange = (ev) => {
     const val = ev.currentTarget.value;
     const q = new URLSearchParams(location.search);
-    if (val) q.set("test", val);
-    else q.delete("test")
+    if (val) {
+      q.set("test", val);
+    } else {
+      q.delete("test");
+    }
     location.search = q.toString();
-  }
+  };
 }
