@@ -75,7 +75,6 @@ fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) 
     // merging.
     for (k, v1, v2) in road1.osm_tags.diff(&road2.osm_tags) {
         if [
-            osm::INFERRED_PARKING,
             osm::OSM_WAY_ID,
             osm::PARKING_BOTH,
             osm::PARKING_LEFT,

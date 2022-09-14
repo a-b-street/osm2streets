@@ -61,7 +61,7 @@ impl OsmExtract {
 
     // Returns true if the way was added as a road
     pub fn handle_way(&mut self, id: WayID, way: &Way, opts: &Options) -> bool {
-        let mut tags = way.tags.clone();
+        let tags = &way.tags;
 
         if tags.is("area", "yes") {
             return false;
@@ -69,11 +69,11 @@ impl OsmExtract {
 
         // First deal with railways.
         if tags.is("railway", "light_rail") {
-            self.roads.push((id, way.pts.clone(), tags));
+            self.roads.push((id, way.pts.clone(), tags.clone()));
             return true;
         }
         if tags.is("railway", "rail") && opts.include_railroads {
-            self.roads.push((id, way.pts.clone(), tags));
+            self.roads.push((id, way.pts.clone(), tags.clone()));
             return true;
         }
 
@@ -150,22 +150,7 @@ impl OsmExtract {
             return false;
         }
 
-        // It's a road! Now fill in some possibly missing data.
-        // TODO Stop doing this here; don't actually store faked tags anywhere
-
-        // If there's no parking data in OSM already, then assume no parking and mark that it's
-        // inferred.
-        if !tags.contains_key(osm::PARKING_LEFT)
-            && !tags.contains_key(osm::PARKING_RIGHT)
-            && !tags.contains_key(osm::PARKING_BOTH)
-            && !tags.is_any(osm::HIGHWAY, vec!["motorway", "motorway_link", "service"])
-            && !tags.is("junction", "roundabout")
-        {
-            tags.insert(osm::PARKING_BOTH, "no_parking");
-            tags.insert(osm::INFERRED_PARKING, "true");
-        }
-
-        self.roads.push((id, way.pts.clone(), tags));
+        self.roads.push((id, way.pts.clone(), tags.clone()));
         true
     }
 
