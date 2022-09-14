@@ -12,15 +12,19 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         return super::osm2lanes::get_lane_specs_ltr_experimental(tags, cfg);
     }
 
+    // TODO This hides a potentially expensive (on a hot-path) clone
+    let mut tags = tags.clone();
+    infer_sidewalk_tags(&mut tags, cfg);
+
     let fwd = |lt: LaneType| LaneSpec {
         lt,
         dir: Direction::Fwd,
-        width: LaneSpec::typical_lane_widths(lt, tags)[0].0,
+        width: LaneSpec::typical_lane_widths(lt, &tags)[0].0,
     };
     let back = |lt: LaneType| LaneSpec {
         lt,
         dir: Direction::Back,
-        width: LaneSpec::typical_lane_widths(lt, tags)[0].0,
+        width: LaneSpec::typical_lane_widths(lt, &tags)[0].0,
     };
 
     // Easy special cases first.
@@ -382,5 +386,48 @@ fn osm_separation_type(x: &String) -> Option<BufferType> {
         "parking_lane" => None,
         "barred_area" | "dashed_line" | "solid_line" => Some(BufferType::Stripes),
         _ => None,
+    }
+}
+
+// If sidewalks aren't explicitly tagged on a road, fill them in. This only happens when the map is
+// configured to have this inference.
+pub(crate) fn infer_sidewalk_tags(tags: &mut Tags, cfg: &MapConfig) {
+    if tags.contains_key(osm::SIDEWALK) || !cfg.inferred_sidewalks {
+        return;
+    }
+
+    if tags.contains_key("sidewalk:left") || tags.contains_key("sidewalk:right") {
+        // Attempt to mangle
+        // https://wiki.openstreetmap.org/wiki/Key:sidewalk#Separately_mapped_sidewalks_on_only_one_side
+        // into left/right/both. We have to make assumptions for missing values.
+        let right = !tags.is("sidewalk:right", "no");
+        let left = !tags.is("sidewalk:left", "no");
+        let value = match (right, left) {
+            (true, true) => "both",
+            (true, false) => "right",
+            (false, true) => "left",
+            (false, false) => "none",
+        };
+        tags.insert(osm::SIDEWALK, value);
+    } else if tags.is_any(osm::HIGHWAY, vec!["motorway", "motorway_link"])
+        || tags.is_any("junction", vec!["intersection", "roundabout"])
+        || tags.is("foot", "no")
+        || tags.is(osm::HIGHWAY, "service")
+        || tags.is_any(osm::HIGHWAY, vec!["cycleway", "pedestrian", "track"])
+    {
+        tags.insert(osm::SIDEWALK, "none");
+    } else if tags.is("oneway", "yes") {
+        if cfg.driving_side == DrivingSide::Right {
+            tags.insert(osm::SIDEWALK, "right");
+        } else {
+            tags.insert(osm::SIDEWALK, "left");
+        }
+        if tags.is_any(osm::HIGHWAY, vec!["residential", "living_street"])
+            && !tags.is("dual_carriageway", "yes")
+        {
+            tags.insert(osm::SIDEWALK, "both");
+        }
+    } else {
+        tags.insert(osm::SIDEWALK, "both");
     }
 }

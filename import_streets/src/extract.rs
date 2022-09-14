@@ -4,7 +4,7 @@ use osm::{NodeID, OsmID, RelationID, WayID};
 
 use abstutil::Tags;
 use geom::{HashablePt2D, Pt2D};
-use street_network::{osm, Direction, DrivingSide, RestrictionType};
+use street_network::{osm, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};
 use crate::Options;
@@ -60,13 +60,7 @@ impl OsmExtract {
     }
 
     // Returns true if the way was added as a road
-    pub fn handle_way(
-        &mut self,
-        id: WayID,
-        way: &Way,
-        opts: &Options,
-        infer_both_sidewalks_for_oneways: bool,
-    ) -> bool {
+    pub fn handle_way(&mut self, id: WayID, way: &Way, opts: &Options) -> bool {
         let mut tags = way.tags.clone();
 
         if tags.is("area", "yes") {
@@ -125,23 +119,16 @@ impl OsmExtract {
             return false;
         }
 
-        if highway == "track" && tags.is("bicycle", "no") {
-            return false;
-        }
-
-        #[allow(clippy::collapsible_if)] // better readability
-        if (highway == "footway" || highway == "path" || highway == "steps")
-            && opts.map_config.inferred_sidewalks
-        {
-            if !tags.is_any("bicycle", vec!["designated", "yes", "dismount"]) {
-                return false;
+        // If we're only handling sidewalks tagged on roads, skip a bunch of ways
+        if opts.map_config.inferred_sidewalks {
+            if tags.is_any(
+                osm::HIGHWAY,
+                vec!["footway", "path", "pedestrian", "steps", "track"],
+            ) {
+                if !tags.is_any("bicycle", vec!["designated", "yes"]) {
+                    return false;
+                }
             }
-        }
-        if highway == "pedestrian"
-            && tags.is("bicycle", "dismount")
-            && opts.map_config.inferred_sidewalks
-        {
-            return false;
         }
 
         // Import most service roads. Always ignore driveways, golf cart paths, and always reserve
@@ -159,18 +146,12 @@ impl OsmExtract {
             return false;
         }
 
-        // Not sure what this means, found in Seoul.
-        if tags.is("lanes", "0") {
-            return false;
-        }
-
         if opts.skip_local_roads && osm::RoadRank::from_highway(highway) == osm::RoadRank::Local {
             return false;
         }
 
         // It's a road! Now fill in some possibly missing data.
-        // TODO Consider Not always doing this. Or after cutting over to osm2lanes, maybe do it
-        // there (and not actually store the faked tags).
+        // TODO Stop doing this here; don't actually store faked tags anywhere
 
         // If there's no parking data in OSM already, then assume no parking and mark that it's
         // inferred.
@@ -182,51 +163,6 @@ impl OsmExtract {
         {
             tags.insert(osm::PARKING_BOTH, "no_parking");
             tags.insert(osm::INFERRED_PARKING, "true");
-        }
-
-        // If there's no sidewalk data in OSM already, then make an assumption and mark that
-        // it's inferred.
-        if !tags.contains_key(osm::SIDEWALK) && opts.map_config.inferred_sidewalks {
-            tags.insert(osm::INFERRED_SIDEWALKS, "true");
-
-            if tags.contains_key("sidewalk:left") || tags.contains_key("sidewalk:right") {
-                // Attempt to mangle
-                // https://wiki.openstreetmap.org/wiki/Key:sidewalk#Separately_mapped_sidewalks_on_only_one_side
-                // into left/right/both. We have to make assumptions for missing values.
-                let right = !tags.is("sidewalk:right", "no");
-                let left = !tags.is("sidewalk:left", "no");
-                let value = match (right, left) {
-                    (true, true) => "both",
-                    (true, false) => "right",
-                    (false, true) => "left",
-                    (false, false) => "none",
-                };
-                tags.insert(osm::SIDEWALK, value);
-            } else if tags.is_any(osm::HIGHWAY, vec!["motorway", "motorway_link"])
-                || tags.is_any("junction", vec!["intersection", "roundabout"])
-                || tags.is("foot", "no")
-                || tags.is(osm::HIGHWAY, "service")
-                // TODO For now, not attempting shared walking/biking paths.
-                || tags.is_any(osm::HIGHWAY, vec!["cycleway", "pedestrian", "track"])
-            {
-                tags.insert(osm::SIDEWALK, "none");
-            } else if tags.is("oneway", "yes") {
-                if opts.map_config.driving_side == DrivingSide::Right {
-                    tags.insert(osm::SIDEWALK, "right");
-                } else {
-                    tags.insert(osm::SIDEWALK, "left");
-                }
-                if tags.is_any(osm::HIGHWAY, vec!["residential", "living_street"])
-                    && !tags.is("dual_carriageway", "yes")
-                {
-                    tags.insert(osm::SIDEWALK, "both");
-                }
-                if infer_both_sidewalks_for_oneways {
-                    tags.insert(osm::SIDEWALK, "both");
-                }
-            } else {
-                tags.insert(osm::SIDEWALK, "both");
-            }
         }
 
         self.roads.push((id, way.pts.clone(), tags));
