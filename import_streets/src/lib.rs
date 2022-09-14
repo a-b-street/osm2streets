@@ -32,9 +32,6 @@ pub struct Options {
     pub include_railroads: bool,
     /// If provided, read polygons from this GeoJSON file and add them to the RawMap as buildings.
     pub extra_buildings: Option<String>,
-    /// Only include highways and arterials. This may make sense for some region-wide maps for
-    /// particular use cases.
-    pub skip_local_roads: bool,
     /// Only include crosswalks that match a `highway=crossing` OSM node.
     pub filter_crosswalks: bool,
     /// Configure public transit using this URL to a static GTFS feed in .zip format.
@@ -51,7 +48,6 @@ impl Options {
             private_offstreet_parking: PrivateOffstreetParking::FixedPerBldg(1),
             include_railroads: true,
             extra_buildings: None,
-            skip_local_roads: false,
             filter_crosswalks: false,
             gtfs_url: None,
             elevation: false,

@@ -146,10 +146,6 @@ impl OsmExtract {
             return false;
         }
 
-        if opts.skip_local_roads && osm::RoadRank::from_highway(highway) == osm::RoadRank::Local {
-            return false;
-        }
-
         self.roads.push((id, way.pts.clone(), tags.clone()));
         true
     }
