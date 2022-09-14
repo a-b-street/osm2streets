@@ -27,9 +27,6 @@ pub const OSM_REL_ID: &str = "abst:osm_rel_id";
 pub const ENDPT_FWD: &str = "abst:endpt_fwd";
 pub const ENDPT_BACK: &str = "abst:endpt_back";
 
-// Any roads might have these.
-pub const INFERRED_PARKING: &str = "abst:parking_inferred";
-
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
 pub enum RoadRank {
     Local,
