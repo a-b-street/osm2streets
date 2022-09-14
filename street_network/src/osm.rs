@@ -29,7 +29,6 @@ pub const ENDPT_BACK: &str = "abst:endpt_back";
 
 // Any roads might have these.
 pub const INFERRED_PARKING: &str = "abst:parking_inferred";
-pub const INFERRED_SIDEWALKS: &str = "abst:sidewalks_inferred";
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
 pub enum RoadRank {

@@ -175,53 +175,7 @@ fn transform_tags(tags: &Tags, cfg: &MapConfig) -> osm_tags::Tags {
         tags.insert(osm::SIDEWALK, value);
     }
 
-    // If there's no sidewalk data in OSM already, then make an assumption and mark that it's
-    // inferred.
-    //
-    // TODO This is logic copied from import_streets/src/extract.rs. It'd be better to have this
-    // logic happen here, not during extraction.
-    if !tags.contains_key(osm::SIDEWALK) && cfg.inferred_sidewalks {
-        tags.insert(osm::INFERRED_SIDEWALKS, "true");
-
-        if tags.contains_key("sidewalk:left") || tags.contains_key("sidewalk:right") {
-            // Attempt to mangle
-            // https://wiki.openstreetmap.org/wiki/Key:sidewalk#Separately_mapped_sidewalks_on_only_one_side
-            // into left/right/both. We have to make assumptions for missing values.
-            let right = !tags.is("sidewalk:right", "no");
-            let left = !tags.is("sidewalk:left", "no");
-            let value = match (right, left) {
-                (true, true) => "both",
-                (true, false) => "right",
-                (false, true) => "left",
-                (false, false) => "no",
-            };
-            tags.insert(osm::SIDEWALK, value);
-            // Remove conflicting values
-            tags.remove("sidewalk:right");
-            tags.remove("sidewalk:left");
-        } else if tags.is_any(osm::HIGHWAY, vec!["motorway", "motorway_link"])
-            || tags.is_any("junction", vec!["intersection", "roundabout"])
-            || tags.is("foot", "no")
-            || tags.is(osm::HIGHWAY, "service")
-            // TODO For now, not attempting shared walking/biking paths.
-            || tags.is_any(osm::HIGHWAY, vec!["cycleway", "pedestrian", "track"])
-        {
-            tags.insert(osm::SIDEWALK, "no");
-        } else if tags.is("oneway", "yes") {
-            if cfg.driving_side == DrivingSide::Right {
-                tags.insert(osm::SIDEWALK, "right");
-            } else {
-                tags.insert(osm::SIDEWALK, "left");
-            }
-            if tags.is_any(osm::HIGHWAY, vec!["residential", "living_street"])
-                && !tags.is("dual_carriageway", "yes")
-            {
-                tags.insert(osm::SIDEWALK, "both");
-            }
-        } else {
-            tags.insert(osm::SIDEWALK, "both");
-        }
-    }
+    super::classic::infer_sidewalk_tags(&mut tags, cfg);
 
     // Multiple bus schemas
     if tags.has_any(vec!["bus:lanes:forward", "bus:lanes:backward"])

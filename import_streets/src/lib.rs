@@ -165,8 +165,7 @@ fn extract_osm(
     timer.start_iter("processing OSM ways", doc.ways.len());
     for (id, way) in doc.ways {
         timer.next();
-        let infer_both_sidewalks_for_oneways = false;
-        out.handle_way(id, &way, opts, infer_both_sidewalks_for_oneways);
+        out.handle_way(id, &way, opts);
     }
 
     timer.start_iter("processing OSM relations", doc.relations.len());
