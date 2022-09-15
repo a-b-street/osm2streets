@@ -173,7 +173,7 @@ impl LaneType {
             LaneType::LightRail => 'l',
             LaneType::Buffer(_) => '|',
             LaneType::Footway => 'f',
-            LaneType::SharedUse => 'V',
+            LaneType::SharedUse => 'F',
         }
     }
 
@@ -191,7 +191,7 @@ impl LaneType {
             'l' => LaneType::LightRail,
             '|' => LaneType::Buffer(BufferType::FlexPosts),
             'f' => LaneType::Footway,
-            'V' => LaneType::SharedUse,
+            'F' => LaneType::SharedUse,
             _ => panic!("from_char({}) undefined", x),
         }
     }
