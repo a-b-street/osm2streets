@@ -121,23 +121,23 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     };
 
     #[allow(clippy::if_same_then_else)] // better readability
-    let driving_lane =
-        if tags.is("access", "no") && (tags.is("bus", "yes") || tags.is("psv", "yes")) {
-            // Sup West Seattle
-            LaneType::Bus
-        } else if tags
-            .get("motor_vehicle:conditional")
-            .map(|x| x.starts_with("no"))
-            .unwrap_or(false)
-            && tags.is("bus", "yes")
-        {
-            // Example: 3rd Ave in downtown Seattle
-            LaneType::Bus
-        } else if tags.is("access", "no") || tags.is("highway", "construction") {
-            LaneType::Construction
-        } else {
-            LaneType::Driving
-        };
+    let driving_lane = if tags.is("access", "no")
+        && (tags.is("bus", "yes") || tags.is_any("psv", vec!["yes", "designated"]))
+    {
+        LaneType::Bus
+    } else if tags
+        .get("motor_vehicle:conditional")
+        .map(|x| x.starts_with("no"))
+        .unwrap_or(false)
+        && tags.is("bus", "yes")
+    {
+        // Example: 3rd Ave in downtown Seattle
+        LaneType::Bus
+    } else if tags.is("access", "no") || tags.is("highway", "construction") {
+        LaneType::Construction
+    } else {
+        LaneType::Driving
+    };
 
     // These are ordered from the road center, going outwards. Most of the members of fwd_side will
     // have Direction::Fwd, but there can be exceptions with two-way cycletracks.
