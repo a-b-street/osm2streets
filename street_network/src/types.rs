@@ -56,9 +56,8 @@ pub struct MapConfig {
     /// (Australia).
     pub driving_side: DrivingSide,
     pub bikes_can_use_bus_lanes: bool,
-    /// If true, roads without explicitly tagged sidewalks may have sidewalks or shoulders. If
-    /// false, no sidewalks will be inferred if not tagged in OSM, and separate sidewalks will be
-    /// included.
+    /// If true, roads without explicitly tagged sidewalks may be assigned sidewalks or shoulders. If
+    /// false, no inference will occur and separate sidewalks and crossings will be included.
     pub inferred_sidewalks: bool,
     /// Street parking is divided into spots of this length. 8 meters is a reasonable default, but
     /// people in some regions might be more accustomed to squeezing into smaller spaces. This

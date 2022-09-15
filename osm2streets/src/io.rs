@@ -187,6 +187,15 @@ impl From<&LaneSpec> for RoadPart {
                     carriage: Carriage::Cars,
                 },
                 LaneType::Construction => Designation::NoTravel,
+                LaneType::Footway => Designation::Travel {
+                    carriage: Carriage::Foot,
+                    direction: TrafficDirections::BothWays,
+                },
+                LaneType::SharedUse => Designation::Travel {
+                    // TODO Both foot and bike
+                    carriage: Carriage::Foot,
+                    direction: TrafficDirections::BothWays,
+                },
             },
             can_enter_from_inside: true,
             can_enter_from_outside: false,
