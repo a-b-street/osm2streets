@@ -389,6 +389,8 @@ impl Road {
         self.osm_tags.is_any(
             osm::HIGHWAY,
             vec![
+                // TODO cycleway in here is weird, reconsider. is_footway is only used in one
+                // disabled transformation right now.
                 "cycleway",
                 "footway",
                 "path",

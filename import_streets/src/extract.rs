@@ -119,15 +119,14 @@ impl OsmExtract {
             return false;
         }
 
-        // If we're only handling sidewalks tagged on roads, skip a bunch of ways
+        // If we're only handling sidewalks tagged on roads, skip crossings and separate sidewalks
+        // Note we have to do this here -- get_lane_specs_ltr doesn't support decisions like
+        // "actually, let's pretend this road doesn't exist at all"
         if opts.map_config.inferred_sidewalks {
-            if tags.is_any(
-                osm::HIGHWAY,
-                vec!["footway", "path", "pedestrian", "steps", "track"],
-            ) {
-                if !tags.is_any("bicycle", vec!["designated", "yes"]) {
-                    return false;
-                }
+            if tags.is(osm::HIGHWAY, "footway")
+                && tags.is_any("footway", vec!["crossing", "sidewalk"])
+            {
+                return false;
             }
         }
 

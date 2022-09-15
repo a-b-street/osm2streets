@@ -14,6 +14,9 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
 
     // TODO This hides a potentially expensive (on a hot-path) clone
     let mut tags = tags.clone();
+    // This'll do weird things for the special cases of railways and cycleways/footways, but the
+    // added tags will be ignored, so it doesn't matter too much. Running this later causes borrow
+    // checker problems.
     infer_sidewalk_tags(&mut tags, cfg);
 
     let fwd = |lt: LaneType| LaneSpec {
@@ -31,26 +34,11 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     if tags.is_any("railway", vec!["light_rail", "rail"]) {
         return vec![fwd(LaneType::LightRail)];
     }
-    if tags.is(osm::HIGHWAY, "steps") {
-        return vec![fwd(LaneType::Sidewalk)];
-    }
-    // Eventually, we should have some kind of special LaneType for shared walking/cycling paths of
-    // different kinds. Until then, model by making bike lanes and a shoulder for walking.
-    if tags.is_any(
-        osm::HIGHWAY,
-        vec!["cycleway", "footway", "path", "pedestrian", "track"],
-    ) {
-        // If it just allows foot traffic, simply make it a sidewalk. For most of the above highway
-        // types, assume bikes are allowed, except for footways, where they must be explicitly
-        // allowed.
-        if tags.is("bicycle", "no")
-            || (tags.is(osm::HIGHWAY, "footway")
-                && !tags.is_any("bicycle", vec!["designated", "yes", "dismount"]))
-        {
-            return vec![fwd(LaneType::Sidewalk)];
-        }
-        // Otherwise, there'll always be a bike lane.
 
+    // If it's a primarily cycleway, have directional bike lanes and add a shoulder for walking
+    // TODO Consider variations of SharedUse that specify the priority is cyclists over pedestrians
+    // in this case?
+    if tags.is(osm::HIGHWAY, "cycleway") {
         let mut fwd_side = vec![fwd(LaneType::Biking)];
         let mut back_side = if tags.is("oneway", "yes") {
             vec![]
@@ -58,6 +46,8 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
             vec![back(LaneType::Biking)]
         };
 
+        // TODO If this cycleway is parallel to a main road, we might end up with double sidewalks.
+        // Once snapping works well, this problem will improve
         if !tags.is("foot", "no") {
             fwd_side.push(fwd(LaneType::Shoulder));
             if !back_side.is_empty() {
@@ -66,6 +56,28 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         }
         return LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side);
     }
+
+    // These roads will only exist if cfg.inferred_sidewalks is false
+    if tags.is(osm::HIGHWAY, "footway") && tags.is_any("footway", vec!["crossing", "sidewalk"]) {
+        // Treating a crossing as a sidewalk for now. Eventually crossings need to be dealt with
+        // completely differently.
+        return vec![fwd(LaneType::Sidewalk)];
+    }
+
+    // Handle pedestrian-oriented spaces
+    if tags.is_any(
+        osm::HIGHWAY,
+        vec!["footway", "path", "pedestrian", "steps", "track"],
+    ) {
+        // Assume no bikes unless they're explicitly allowed
+        if tags.is_any("bicycle", vec!["designated", "yes", "dismount"]) {
+            return vec![fwd(LaneType::SharedUse)];
+        }
+
+        return vec![fwd(LaneType::Footway)];
+    }
+
+    // Most cases are below -- it's a "normal road"
 
     // TODO Reversible roads should be handled differently?
     let oneway =
