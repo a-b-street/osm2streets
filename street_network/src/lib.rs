@@ -10,6 +10,7 @@ use std::fmt;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
+use crate::types::LengthEnd;
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 
@@ -540,9 +541,13 @@ pub struct Intersection {
     /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
-    pub complexity: IntersectionComplexity,
-    pub control: ControlType,
     pub elevation: Distance,
+    pub turn_paths: Vec<TurnPath>,
+
+    /// Overall complexity classification.
+    pub complexity: IntersectionComplexity,
+    /// Overall traffic control type classification.
+    pub control: ControlType,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
@@ -555,6 +560,7 @@ impl Intersection {
             complexity,
             control,
             // Filled out later
+            turn_paths: Vec::new(),
             elevation: Distance::ZERO,
             trim_roads_for_merging: BTreeMap::new(),
         }
@@ -563,6 +569,39 @@ impl Intersection {
     fn is_border(&self) -> bool {
         self.control == ControlType::Border
     }
+}
+
+/// A TurnPath leads from the end of one Lane to the start of another.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct TurnPath {
+    pub id: TurnPathID,
+    pub turn_type: TurnType,
+    // pub geom: PolyLine, TODO add this in when intersections store their geom.
+}
+
+/// TurnPaths are uniquely identified by their (src, dst) lanes and their parent intersection.
+/// Intersection is needed to distinguish crosswalks that exist at two ends of a sidewalk.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct TurnPathID {
+    pub src: LaneID,
+    pub dst: LaneID,
+}
+
+/// A lane is identified by its parent road and its position, ordered from the left.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct LaneID {
+    pub road_id: OriginalRoad,
+    pub offset: usize,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialOrd, Ord, PartialEq, Serialize, Deserialize)]
+pub enum TurnType {
+    Straight,
+    Right,
+    Left,
+    SlightRight,
+    SlightLeft,
+    UTurn,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

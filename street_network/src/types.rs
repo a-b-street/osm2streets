@@ -97,6 +97,12 @@ pub enum DrivingSide {
     Left,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq)]
+pub enum LengthEnd {
+    Start,
+    End,
+}
+
 /// How a lane of travel is interrupted.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum InterruptionType {

@@ -6,6 +6,7 @@ pub mod classify_intersections;
 mod collapse_intersections;
 mod dual_carriageways;
 mod find_short_roads;
+mod generate_turn_paths;
 mod merge_short_road;
 mod remove_disconnected;
 mod sausage_links;
@@ -16,6 +17,7 @@ mod snappy;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
+    GenerateTurnPaths,
     ClassifyIntersections,
     TrimDeadendCycleways,
     SnapCycleways,
@@ -36,6 +38,7 @@ impl Transformation {
     /// with that are here.
     pub fn abstreet() -> Vec<Self> {
         vec![
+            Transformation::GenerateTurnPaths,
             Transformation::ClassifyIntersections,
             Transformation::TrimDeadendCycleways,
             // Not working yet
@@ -62,6 +65,7 @@ impl Transformation {
     /// clipped areas.
     pub fn standard_for_clipped_areas() -> Vec<Self> {
         vec![
+            Transformation::GenerateTurnPaths,
             Transformation::ClassifyIntersections,
             Transformation::TrimDeadendCycleways,
             Transformation::CollapseSausageLinks,
@@ -76,6 +80,7 @@ impl Transformation {
 
     fn name(&self) -> &'static str {
         match self {
+            Transformation::GenerateTurnPaths => "generate turn paths",
             Transformation::ClassifyIntersections => "classify intersections",
             Transformation::TrimDeadendCycleways => "trim dead-end cycleways",
             Transformation::SnapCycleways => "snap separate cycleways",
@@ -92,6 +97,9 @@ impl Transformation {
     fn apply(&self, streets: &mut StreetNetwork, timer: &mut Timer) {
         timer.start(self.name());
         match self {
+            Transformation::GenerateTurnPaths => {
+                generate_turn_paths::generate_turn_paths(streets);
+            }
             Transformation::ClassifyIntersections => {
                 classify_intersections::classify_intersections(streets);
             }
