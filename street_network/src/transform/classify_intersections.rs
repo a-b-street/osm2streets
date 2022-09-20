@@ -1,6 +1,6 @@
 use crate::osm::NodeID;
 use crate::IntersectionComplexity::*;
-use crate::{Direction, Intersection, IntersectionComplexity, OriginalRoad, StreetNetwork};
+use crate::{Direction, IntersectionComplexity, StreetNetwork};
 
 /// Determines the initial complexity of all intersections. Intersections marked "Crossing" are
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
@@ -36,8 +36,8 @@ fn guess_complexity(streets: &StreetNetwork, intersection_id: &NodeID) -> Inters
     // A MultiConnection is characterised by exactly one dividing line traveling through it (the
     // line that separates traffic in different directions) and no traffic that crosses it.
     if roads.len() == 3 {
-        let mut num_roads_in = 0;
-        let mut num_roads_out = 0;
+        let mut _num_roads_in = 0;
+        let mut _num_roads_out = 0;
         let mut num_roads_inout = 0;
         for road_id in roads {
             let is_outward = road_id.i1 == *intersection_id;
@@ -45,17 +45,17 @@ fn guess_complexity(streets: &StreetNetwork, intersection_id: &NodeID) -> Inters
             match road.oneway_for_driving() {
                 Some(Direction::Fwd) => {
                     if is_outward {
-                        num_roads_out += 1
+                        _num_roads_out += 1
                     } else {
-                        num_roads_in += 1
+                        _num_roads_in += 1
                     }
                 }
 
                 Some(Direction::Back) => {
                     if is_outward {
-                        num_roads_in += 1
+                        _num_roads_in += 1
                     } else {
-                        num_roads_out += 1
+                        _num_roads_out += 1
                     }
                 }
                 None => num_roads_inout += 1,
