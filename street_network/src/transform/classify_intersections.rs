@@ -20,8 +20,8 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 /// Guesses the complexity of the intersection based on the connecting roads and their lanes.
 ///
 /// The existing complexity field is ignored, so be careful how you use the guessed value.
-fn guess_complexity(streets: &StreetNetwork, id: &NodeID) -> IntersectionComplexity {
-    let roads = streets.roads_per_intersection(*id);
+fn guess_complexity(streets: &StreetNetwork, intersection_id: &NodeID) -> IntersectionComplexity {
+    let roads = streets.roads_per_intersection(*intersection_id);
 
     // A terminus is characterised by a single connected road.
     if roads.len() == 1 {
@@ -39,9 +39,9 @@ fn guess_complexity(streets: &StreetNetwork, id: &NodeID) -> IntersectionComplex
         let mut num_roads_in = 0;
         let mut num_roads_out = 0;
         let mut num_roads_inout = 0;
-        for or in roads {
-            let is_outward = or.i1 == *id;
-            let road = streets.roads.get(&or).unwrap();
+        for road_id in roads {
+            let is_outward = road_id.i1 == *intersection_id;
+            let road = streets.roads.get(&road_id).unwrap();
             match road.oneway_for_driving() {
                 Some(Direction::Fwd) => {
                     if is_outward {
