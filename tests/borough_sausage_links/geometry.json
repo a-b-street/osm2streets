@@ -3939,7 +3939,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/2217412069",
         "osm_node_id": 2217412069,
@@ -3992,7 +3992,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/2217412073",
         "osm_node_id": 2217412073,
