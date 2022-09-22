@@ -10,4 +10,4 @@ import_streets = { path = "../import_streets" }
 serde = "1.0.123"
 serde_json = "1.0.61"
 street_network = { path = "../street_network" }
-streets = { path = "../osm2streets" }
+experimental = { path = "../experimental" }

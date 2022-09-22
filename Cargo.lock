@@ -258,6 +258,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "experimental"
+version = "0.1.0"
+dependencies = [
+ "abstutil",
+ "anyhow",
+ "enum-map",
+ "import_streets",
+ "itertools",
+ "petgraph",
+ "serde",
+ "street_network",
+]
+
+[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -617,11 +631,11 @@ dependencies = [
  "abstutil",
  "anyhow",
  "console_error_panic_hook",
+ "experimental",
  "import_streets",
  "instant",
  "serde",
  "street_network",
- "streets",
  "wasm-bindgen",
 ]
 
@@ -885,20 +899,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "streets"
-version = "0.1.0"
-dependencies = [
- "abstutil",
- "anyhow",
- "enum-map",
- "import_streets",
- "itertools",
- "petgraph",
- "serde",
- "street_network",
-]
-
-[[package]]
 name = "strum"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -958,11 +958,11 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
+ "experimental",
  "import_streets",
  "serde",
  "serde_json",
  "street_network",
- "streets",
 ]
 
 [[package]]

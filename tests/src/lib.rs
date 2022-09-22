@@ -2,10 +2,10 @@
 mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
+    use experimental::RoadNetwork;
     use serde::Deserialize;
     use std::fs::File;
     use street_network::{DrivingSide, Transformation};
-    use streets::RoadNetwork;
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 

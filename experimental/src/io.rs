@@ -16,7 +16,7 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 /// ```
 /// use abstutil::Timer;
 /// use petgraph::dot::{Config, Dot};
-/// use streets::io::load_road_network;
+/// use experimental::io::load_road_network;
 /// let mut timer = Timer::new("test osm2streets");
 /// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer).unwrap();
 /// println!("{}", net.to_dot());
