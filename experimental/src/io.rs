@@ -24,10 +24,10 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetw
     let driving_side = street_network::DrivingSide::Right; // TODO
     let clip_pts = None;
 
-    let mut street_network = import_streets::osm_to_street_network(
+    let mut street_network = streets_reader::osm_to_street_network(
         &std::fs::read_to_string(osm_path).unwrap(),
         clip_pts,
-        import_streets::Options::default_for_side(driving_side),
+        streets_reader::Options::default_for_side(driving_side),
         timer,
     )?;
 

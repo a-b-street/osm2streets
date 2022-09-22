@@ -264,11 +264,11 @@ dependencies = [
  "abstutil",
  "anyhow",
  "enum-map",
- "import_streets",
  "itertools",
  "petgraph",
  "serde",
  "street_network",
+ "streets_reader",
 ]
 
 [[package]]
@@ -420,18 +420,6 @@ name = "humantime"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
-
-[[package]]
-name = "import_streets"
-version = "0.1.0"
-dependencies = [
- "abstutil",
- "anyhow",
- "geom",
- "log",
- "roxmltree",
- "street_network",
-]
 
 [[package]]
 name = "indexmap"
@@ -632,10 +620,10 @@ dependencies = [
  "anyhow",
  "console_error_panic_hook",
  "experimental",
- "import_streets",
  "instant",
  "serde",
  "street_network",
+ "streets_reader",
  "wasm-bindgen",
 ]
 
@@ -899,6 +887,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "streets_reader"
+version = "0.1.0"
+dependencies = [
+ "abstutil",
+ "anyhow",
+ "geom",
+ "log",
+ "roxmltree",
+ "street_network",
+]
+
+[[package]]
 name = "strum"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -959,10 +959,10 @@ dependencies = [
  "abstutil",
  "anyhow",
  "experimental",
- "import_streets",
  "serde",
  "serde_json",
  "street_network",
+ "streets_reader",
 ]
 
 [[package]]

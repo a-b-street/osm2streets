@@ -13,7 +13,7 @@ petgraph = "0.6.0"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 
 # OSM to street network representation
-import_streets = { path = "../streets_reader" }
+streets_reader = { path = "../streets_reader" }
 street_network = { path = "../osm2streets" }
 
 # boilerplate
