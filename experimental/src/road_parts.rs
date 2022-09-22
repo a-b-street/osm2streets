@@ -25,7 +25,7 @@ pub enum Carriage {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-// TODO, defer to street_network::osm::RoadRank and others.
+// TODO, defer to osm2streets::osm::RoadRank and others.
 pub enum RoadRanks {
     Freeway,
     Highway,
