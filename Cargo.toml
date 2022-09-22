@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "import_streets",
+    "streets_reader",
     "experimental",
     "osm2streets-js",
     "osm2streets",

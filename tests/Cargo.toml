@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
-import_streets = { path = "../import_streets" }
+import_streets = { path = "../streets_reader" }
 serde = "1.0.123"
 serde_json = "1.0.61"
 street_network = { path = "../osm2streets" }
