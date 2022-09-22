@@ -107,6 +107,14 @@ pub enum InterruptionType {
     DeadEnd,
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum ConflictType {
+    Uncontested,
+    Diverge,
+    Merge,
+    Cross,
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum IntersectionComplexity {
     /// The edge of the data that we have.

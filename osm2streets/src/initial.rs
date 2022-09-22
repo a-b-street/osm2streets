@@ -6,7 +6,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use abstutil::{Tags, Timer};
 use geom::{Circle, Distance, PolyLine, Polygon, Pt2D};
 
-use crate::{osm, ControlType, InputRoad, IntersectionComplexity, OriginalRoad, StreetNetwork};
+use crate::{
+    osm, ConflictType, ControlType, InputRoad, IntersectionComplexity, OriginalRoad, StreetNetwork,
+};
 
 pub struct InitialMap {
     pub roads: BTreeMap<OriginalRoad, Road>,
@@ -56,6 +58,7 @@ pub struct Intersection {
     pub polygon: Polygon,
     pub roads: BTreeSet<OriginalRoad>,
     pub complexity: IntersectionComplexity,
+    pub conflict_level: ConflictType,
     pub control: ControlType,
     pub elevation: Distance,
 }
@@ -76,6 +79,7 @@ impl InitialMap {
                     polygon: Circle::new(Pt2D::new(0.0, 0.0), Distance::meters(1.0)).to_polygon(),
                     roads: BTreeSet::new(),
                     complexity: i.complexity,
+                    conflict_level: i.conflict_level,
                     control: i.control,
                     elevation: i.elevation,
                 },

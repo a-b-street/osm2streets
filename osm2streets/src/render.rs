@@ -6,6 +6,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine};
 
+use crate::IntersectionComplexity::MultiConnection;
 use crate::{DebugStreets, Direction, LaneType, StreetNetwork};
 
 impl StreetNetwork {
@@ -49,7 +50,15 @@ impl StreetNetwork {
                     ("osm_node_id", id.0.into()),
                     (
                         "complexity",
-                        format!("{:?}", intersection.complexity).into(),
+                        if intersection.complexity == MultiConnection {
+                            format!(
+                                "{:?} {:?}",
+                                intersection.complexity, intersection.conflict_level
+                            )
+                        } else {
+                            format!("{:?}", intersection.complexity)
+                        }
+                        .into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
                     ("osm_link", id.to_string().into()),

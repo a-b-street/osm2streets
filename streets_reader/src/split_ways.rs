@@ -64,8 +64,9 @@ pub fn split_up_roads(
             *id,
             Intersection::new(
                 pt.to_pt2d(),
-                // Guess a safe generic complexity, specialise later.
+                // Assume a complicated intersection, until we determine otherwise.
                 IntersectionComplexity::Crossing,
+                ConflictType::Cross,
                 if input.traffic_signals.remove(pt).is_some() {
                     ControlType::TrafficSignal
                 } else {
@@ -83,6 +84,7 @@ pub fn split_up_roads(
             Intersection::new(
                 point,
                 IntersectionComplexity::Crossing,
+                ConflictType::Cross,
                 ControlType::StopSign,
             ),
         );

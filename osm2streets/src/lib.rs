@@ -20,7 +20,7 @@ pub use self::lanes::{
 };
 pub use self::transform::Transformation;
 pub use self::types::{
-    ControlType, DrivingSide, IntersectionComplexity, MapConfig, NamePerLanguage,
+    ConflictType, ControlType, DrivingSide, IntersectionComplexity, MapConfig, NamePerLanguage,
 };
 
 mod edit;
@@ -624,6 +624,7 @@ pub struct Intersection {
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
     pub complexity: IntersectionComplexity,
+    pub conflict_level: ConflictType,
     pub control: ControlType,
     pub elevation: Distance,
 
@@ -636,10 +637,16 @@ pub struct Intersection {
 }
 
 impl Intersection {
-    pub fn new(point: Pt2D, complexity: IntersectionComplexity, control: ControlType) -> Self {
+    pub fn new(
+        point: Pt2D,
+        complexity: IntersectionComplexity,
+        conflict_level: ConflictType,
+        control: ControlType,
+    ) -> Self {
         Self {
             point,
             complexity,
+            conflict_level,
             control,
             // Filled out later
             roads: Vec::new(),
