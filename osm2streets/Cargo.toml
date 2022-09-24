@@ -1,22 +1,18 @@
 [package]
-name = "streets"
+name = "osm2streets"
 version = "0.1.0"
+authors = ["Dustin Carlino <dabreegster@gmail.com>"]
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-itertools = "0.10.2"
-petgraph = "0.6.0"
-
-# utilities from abstreet
+aabb-quadtree = "0.1.0"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
-
-# OSM to street network representation
-import_streets = { path = "../import_streets" }
-street_network = { path = "../street_network" }
-
-# boilerplate
 anyhow = "1.0.38"
-enum-map = "0.6.6"
+geom = { git = "https://github.com/a-b-street/abstreet" }
+log = "0.4.14"
+osm2lanes = { git = "https://github.com/a-b-street/osm2lanes" }
+osm-tags = { git = "https://github.com/a-b-street/osm2lanes" }
+osm-tag-schemes = { git = "https://github.com/a-b-street/osm2lanes" }
+petgraph = { version = "0.6.0" }
 serde = "1.0.123"
+serde_json = "1.0.61"

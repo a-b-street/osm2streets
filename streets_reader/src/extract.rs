@@ -4,7 +4,7 @@ use osm::{NodeID, OsmID, RelationID, WayID};
 
 use abstutil::Tags;
 use geom::{HashablePt2D, Pt2D};
-use street_network::{osm, Direction, RestrictionType};
+use osm2streets::{osm, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};
 use crate::Options;

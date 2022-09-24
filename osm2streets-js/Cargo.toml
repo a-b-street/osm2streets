@@ -13,12 +13,12 @@ crate-type = ["cdylib", "rlib"]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 console_error_panic_hook = "0.1.6"
-import_streets = { path = "../import_streets" }
+streets_reader = { path = "../streets_reader" }
 # TODO Upstream this in abstutil crate. WASM is missing some runtime dep otherwise.
 instant = { version = "0.1.12", features = ["wasm-bindgen"] }
 serde = { version = "1", features = ["derive"] }
-streets = { path = "../osm2streets" }
-street_network = { path = "../street_network" }
+experimental = { path = "../experimental" }
+osm2streets = { path = "../osm2streets" }
 wasm-bindgen = { version = "=0.2.81", features = [
     "serde-serialize",
 ] } # loosen after https://github.com/rustwasm/wasm-bindgen/issues/2774

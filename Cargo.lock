@@ -258,6 +258,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "experimental"
+version = "0.1.0"
+dependencies = [
+ "abstutil",
+ "anyhow",
+ "enum-map",
+ "itertools",
+ "osm2streets",
+ "petgraph",
+ "serde",
+ "streets_reader",
+]
+
+[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -406,18 +420,6 @@ name = "humantime"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
-
-[[package]]
-name = "import_streets"
-version = "0.1.0"
-dependencies = [
- "abstutil",
- "anyhow",
- "geom",
- "log",
- "roxmltree",
- "street_network",
-]
 
 [[package]]
 name = "indexmap"
@@ -611,17 +613,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "osm2streets"
+version = "0.1.0"
+dependencies = [
+ "aabb-quadtree",
+ "abstutil",
+ "anyhow",
+ "geom",
+ "log",
+ "osm-tag-schemes",
+ "osm-tags",
+ "osm2lanes",
+ "petgraph",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "osm2streets-js"
 version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
  "console_error_panic_hook",
- "import_streets",
+ "experimental",
  "instant",
+ "osm2streets",
  "serde",
- "street_network",
- "streets",
+ "streets_reader",
  "wasm-bindgen",
 ]
 
@@ -868,34 +887,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "street_network"
+name = "streets_reader"
 version = "0.1.0"
 dependencies = [
- "aabb-quadtree",
  "abstutil",
  "anyhow",
  "geom",
  "log",
- "osm-tag-schemes",
- "osm-tags",
- "osm2lanes",
- "petgraph",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "streets"
-version = "0.1.0"
-dependencies = [
- "abstutil",
- "anyhow",
- "enum-map",
- "import_streets",
- "itertools",
- "petgraph",
- "serde",
- "street_network",
+ "osm2streets",
+ "roxmltree",
 ]
 
 [[package]]
@@ -958,11 +958,11 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
- "import_streets",
+ "experimental",
+ "osm2streets",
  "serde",
  "serde_json",
- "street_network",
- "streets",
+ "streets_reader",
 ]
 
 [[package]]

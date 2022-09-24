@@ -9,7 +9,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
 
-use street_network::{MapConfig, OriginalRoad, StreetNetwork};
+use osm2streets::{MapConfig, OriginalRoad, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -40,7 +40,7 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn default_for_side(driving_side: street_network::DrivingSide) -> Self {
+    pub fn default_for_side(driving_side: osm2streets::DrivingSide) -> Self {
         Self {
             map_config: MapConfig::default_for_side(driving_side),
             onstreet_parking: OnstreetParking::JustOSM,

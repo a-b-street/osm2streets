@@ -2,7 +2,7 @@ use abstutil::Timer;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use street_network::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
+use osm2streets::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -30,14 +30,14 @@ impl JsStreetNetwork {
             .into_serde()
             .map_err(|err| JsValue::from_str(&err.to_string()))?;
 
-        let mut options = import_streets::Options::default_for_side(input.driving_side);
+        let mut options = streets_reader::Options::default_for_side(input.driving_side);
         options.map_config.inferred_sidewalks = input.inferred_sidewalks;
         options.map_config.osm2lanes = input.osm2lanes;
 
         let clip_pts = None;
         let mut timer = Timer::throwaway();
         let mut street_network =
-            import_streets::osm_to_street_network(osm_xml_input, clip_pts, options, &mut timer)
+            streets_reader::osm_to_street_network(osm_xml_input, clip_pts, options, &mut timer)
                 .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
@@ -82,7 +82,7 @@ impl JsStreetNetwork {
     #[wasm_bindgen(js_name = toGraphviz)]
     pub fn to_graphviz(&self) -> String {
         // TODO Should we make the caller do the clone? Is that weird from JS?
-        let road_network: streets::RoadNetwork = self.inner.clone().into();
+        let road_network: experimental::RoadNetwork = self.inner.clone().into();
         road_network.to_dot()
     }
 

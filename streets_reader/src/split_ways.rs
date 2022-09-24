@@ -2,7 +2,7 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
-use street_network::{
+use osm2streets::{
     osm, ControlType, Direction, Intersection, IntersectionComplexity, OriginalRoad, Road,
     StreetNetwork,
 };

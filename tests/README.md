@@ -34,10 +34,10 @@ View `road_network.dot` files with <https://doctorbud.com/graphviz-viewer/>, or
 
 TODO [osm2streets#22 make a slippy map](https://github.com/a-b-street/osm2streets/issues/22)
 
-## Working on street_network code and preventing regressions
+## Working on osm2streets code and preventing regressions
 
-When you work on the [street_network
-code](https://github.com/a-b-street/osm2streets/tree/main/street_network) or
+When you work on the [osm2streets
+code](https://github.com/a-b-street/osm2streets/tree/main/osm2streets) or
 related dependencies, there might be an effect on the test case output. When
 there's a difference, you can generate the new GeoJSON file, manually view the
 old and new version, and decide if the changes are acceptable or not.

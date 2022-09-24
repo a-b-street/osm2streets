@@ -3,7 +3,7 @@
 use anyhow::Result;
 
 use geom::{PolyLine, Polygon, Pt2D, Ring};
-use street_network::osm::{OsmID, RelationID, WayID};
+use osm2streets::osm::{OsmID, RelationID, WayID};
 
 use super::{Document, Relation};
 
