@@ -4,7 +4,7 @@ use itertools::Itertools;
 use std::collections::HashMap;
 
 use abstutil::Timer;
-use street_network::{osm, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation};
+use osm2streets::{osm, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation};
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
@@ -21,7 +21,7 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 /// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer).unwrap();
 /// println!("{}", net.to_dot());
 pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetwork> {
-    let driving_side = street_network::DrivingSide::Right; // TODO
+    let driving_side = osm2streets::DrivingSide::Right; // TODO
     let clip_pts = None;
 
     let mut street_network = streets_reader::osm_to_street_network(
@@ -79,15 +79,15 @@ impl From<StreetNetwork> for RoadNetwork {
 impl RoadWay {
     pub fn pair_from(
         r: &Road,
-        driving_side: street_network::DrivingSide,
+        driving_side: osm2streets::DrivingSide,
     ) -> EnumMap<Direction, Option<RoadWay>> {
         let ds = DrivingSide::from(driving_side);
         let mut lanes = r.lane_specs_ltr.iter();
         // lanes are ltr, so take the left lanes until we see one in the direction of the traffic
         // on the right. Then the right hand lanes will be remaining.
         let dir_on_right = match ds.get_direction(Right) {
-            Forward => street_network::Direction::Fwd,
-            Backward => street_network::Direction::Back,
+            Forward => osm2streets::Direction::Fwd,
+            Backward => osm2streets::Direction::Back,
         };
         let left_lanes = lanes
             .take_while_ref(|&l| match l.lt {
@@ -128,19 +128,19 @@ impl RoadWay {
     }
 }
 
-impl From<&street_network::Intersection> for Intersection {
-    fn from(int: &street_network::Intersection) -> Self {
+impl From<&osm2streets::Intersection> for Intersection {
+    fn from(int: &osm2streets::Intersection) -> Self {
         Self {
             // int.intersection_type has some useful info, bit is often misleading.
             t: match int.control {
-                street_network::ControlType::Border => IntersectionType::MapEdge,
-                street_network::ControlType::TrafficSignal
-                | street_network::ControlType::Construction => IntersectionType::RoadIntersection,
+                osm2streets::ControlType::Border => IntersectionType::MapEdge,
+                osm2streets::ControlType::TrafficSignal
+                | osm2streets::ControlType::Construction => IntersectionType::RoadIntersection,
                 _ => IntersectionType::Unknown,
             },
             control: match int.control {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
-                street_network::ControlType::TrafficSignal => ControlType::Lights,
+                osm2streets::ControlType::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
         }
@@ -204,11 +204,11 @@ impl From<&LaneSpec> for RoadPart {
     }
 }
 
-impl From<street_network::DrivingSide> for DrivingSide {
-    fn from(s: street_network::DrivingSide) -> Self {
+impl From<osm2streets::DrivingSide> for DrivingSide {
+    fn from(s: osm2streets::DrivingSide) -> Self {
         match s {
-            street_network::DrivingSide::Right => RHT,
-            street_network::DrivingSide::Left => LHT,
+            osm2streets::DrivingSide::Right => RHT,
+            osm2streets::DrivingSide::Left => LHT,
         }
     }
 }

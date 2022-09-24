@@ -3,9 +3,9 @@ mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
     use experimental::RoadNetwork;
+    use osm2streets::{DrivingSide, Transformation};
     use serde::Deserialize;
     use std::fs::File;
-    use street_network::{DrivingSide, Transformation};
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 

@@ -14,7 +14,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 
 # OSM to street network representation
 streets_reader = { path = "../streets_reader" }
-street_network = { path = "../osm2streets" }
+osm2streets = { path = "../osm2streets" }
 
 # boilerplate
 anyhow = "1.0.38"

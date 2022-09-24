@@ -9,5 +9,5 @@ anyhow = "1.0.38"
 streets_reader = { path = "../streets_reader" }
 serde = "1.0.123"
 serde_json = "1.0.61"
-street_network = { path = "../osm2streets" }
+osm2streets = { path = "../osm2streets" }
 experimental = { path = "../experimental" }

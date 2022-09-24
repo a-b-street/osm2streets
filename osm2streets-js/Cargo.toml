@@ -18,7 +18,7 @@ streets_reader = { path = "../streets_reader" }
 instant = { version = "0.1.12", features = ["wasm-bindgen"] }
 serde = { version = "1", features = ["derive"] }
 experimental = { path = "../experimental" }
-street_network = { path = "../osm2streets" }
+osm2streets = { path = "../osm2streets" }
 wasm-bindgen = { version = "=0.2.81", features = [
     "serde-serialize",
 ] } # loosen after https://github.com/rustwasm/wasm-bindgen/issues/2774

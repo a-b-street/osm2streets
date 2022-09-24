@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use abstutil::Timer;
 use anyhow::Result;
 use geom::PolyLine;
-use street_network::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
+use osm2streets::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {

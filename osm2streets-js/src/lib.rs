@@ -2,7 +2,7 @@ use abstutil::Timer;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use street_network::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
+use osm2streets::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
