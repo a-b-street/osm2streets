@@ -93,7 +93,7 @@ Bindings for other languages:
 
 The [StreetExplorer web app](https://a-b-street.github.io/osm2streets/) (Javascript, CSS using Leaflet):
 
-- [tests-web](https://github.com/a-b-street/osm2streets/tree/main/tests-web): the web app
+- [street-explorer](https://github.com/a-b-street/osm2streets/tree/main/street-explorer): the web app
 - [tests](https://github.com/a-b-street/osm2streets/tree/main/tests): regression tests covering complex OSM input
 
 ## Contributing

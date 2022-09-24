@@ -5,7 +5,7 @@
 [Install wasm-pack](https://rustwasm.github.io/wasm-pack/installer/), then:
 
 ```
-tests-web/> ./serve_locally.sh
+street-explorer/> ./serve_locally.sh
 ```
 
 You can edit HTML, CSS, and JS and just refresh the page immediately. If you

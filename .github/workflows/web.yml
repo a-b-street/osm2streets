@@ -15,7 +15,7 @@ jobs:
 
       - name: Build web app
         run: |
-          cd tests-web
+          cd street-explorer
           wasm-pack build --release --target web ../osm2streets-js
           # Make a full copy of what we'll publish, dereferencing symlinks
           cp -RLv www/ publish_www
