@@ -2,10 +2,10 @@
 mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
+    use experimental::RoadNetwork;
+    use osm2streets::{DrivingSide, Transformation};
     use serde::Deserialize;
     use std::fs::File;
-    use street_network::{DrivingSide, Transformation};
-    use streets::RoadNetwork;
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
@@ -24,10 +24,10 @@ mod tests {
             .unwrap_or_else(|_| String::new());
 
         let clip_pts = None;
-        let mut street_network = import_streets::osm_to_street_network(
+        let mut street_network = streets_reader::osm_to_street_network(
             &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_pts,
-            import_streets::Options::default_for_side(cfg.driving_side),
+            streets_reader::Options::default_for_side(cfg.driving_side),
             &mut timer,
         )?;
         street_network
