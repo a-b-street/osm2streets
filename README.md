@@ -112,4 +112,4 @@ Check out the [issues](https://github.com/a-b-street/osm2streets/issues).
 
 - An early article just about [intersection geometry](https://a-b-street.github.io/docs/tech/map/geometry/index.html)
 - The [followup talk at FOSSGIS](https://dabreegster.github.io/talks/map_model_v2/slides.html) (March 2022)
-- The [State of the Map talk](https://dabreegster.github.io/talks/sotm_2022/slides.html) (August 2022)
+- The State of the Map talk: [slides](https://dabreegster.github.io/talks/sotm_2022/slides.html), [video](https://www.youtube.com/watch?v=Te39lBuhPK8) (August 2022)
