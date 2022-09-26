@@ -115,7 +115,7 @@ pub fn osm_to_street_network(
 
     // Need to do a first pass of removing cul-de-sacs here, or we wind up with loop PolyLines when
     // doing the parking hint matching.
-    streets.roads.retain(|r, _| r.i1 != r.i2);
+    streets.retain_roads(|r, _| r.i1 != r.i2);
 
     use_barrier_nodes(
         &mut streets,

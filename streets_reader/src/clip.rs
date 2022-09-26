@@ -15,7 +15,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
     // This is kind of indirect and slow, but first pass -- just remove roads that start or end
     // outside the boundary polygon.
-    streets.roads.retain(|_, r| {
+    streets.retain_roads(|_, r| {
         let first_in = boundary_polygon.contains_pt(r.osm_center_points[0]);
         let last_in = boundary_polygon.contains_pt(*r.osm_center_points.last().unwrap());
         let light_rail_ok = if r.is_light_rail() {
@@ -63,12 +63,13 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             info!("Disconnecting {} from some other stuff (starting OOB)", id);
         }
 
+        let mut mut_r = streets.remove_road(&id);
+
         let i = streets.intersections.get_mut(&move_i).unwrap();
         i.complexity = IntersectionComplexity::MapEdge;
         i.control = ControlType::Border;
 
         // Now trim it.
-        let mut mut_r = streets.roads.remove(&id).unwrap();
         let center = PolyLine::must_new(mut_r.osm_center_points.clone());
         let border_pt = boundary_ring.all_intersections(&center)[0];
         if let Some(pl) = center.reversed().get_slice_ending_at(border_pt) {
@@ -78,7 +79,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             continue;
         }
         i.point = mut_r.osm_center_points[0];
-        streets.roads.insert(
+        streets.insert_road(
             OriginalRoad {
                 osm_way_id: id.osm_way_id,
                 i1: move_i,
@@ -120,12 +121,13 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             info!("Disconnecting {} from some other stuff (ending OOB)", id);
         }
 
+        let mut mut_r = streets.remove_road(&id);
+
         let i = streets.intersections.get_mut(&move_i).unwrap();
         i.complexity = IntersectionComplexity::MapEdge;
         i.control = ControlType::Border;
 
         // Now trim it.
-        let mut mut_r = streets.roads.remove(&id).unwrap();
         let center = PolyLine::must_new(mut_r.osm_center_points.clone());
         let border_pt = boundary_ring.all_intersections(&center.reversed())[0];
         if let Some(pl) = center.get_slice_ending_at(border_pt) {
@@ -135,7 +137,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             continue;
         }
         i.point = *mut_r.osm_center_points.last().unwrap();
-        streets.roads.insert(
+        streets.insert_road(
             OriginalRoad {
                 osm_way_id: id.osm_way_id,
                 i1: id.i1,

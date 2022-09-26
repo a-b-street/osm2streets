@@ -159,15 +159,44 @@ impl StreetNetwork {
         }
     }
 
-    // TODO Might be better to maintain this instead of doing a search everytime.
-    pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<OriginalRoad> {
-        let mut results = Vec::new();
-        for id in self.roads.keys() {
-            if id.i1 == i || id.i2 == i {
-                results.push(*id);
+    pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
+        self.roads.insert(id, road);
+        // TODO Re-sort
+        self.intersections.get_mut(&id.i1).unwrap().roads.push(id);
+        self.intersections.get_mut(&id.i2).unwrap().roads.push(id);
+    }
+
+    pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
+        // TODO Re-sort
+        self.intersections
+            .get_mut(&id.i1)
+            .unwrap()
+            .roads
+            .retain(|r| r != id);
+        self.intersections
+            .get_mut(&id.i2)
+            .unwrap()
+            .roads
+            .retain(|r| r != id);
+        self.roads.remove(id).unwrap()
+    }
+
+    pub fn retain_roads<F: Fn(&OriginalRoad, &Road) -> bool>(&mut self, f: F) {
+        let mut remove = Vec::new();
+        for (id, r) in &self.roads {
+            if !f(id, r) {
+                remove.push(*id);
             }
         }
-        results
+        for id in remove {
+            self.remove_road(&id);
+        }
+    }
+
+    // TODO This'll eventually give a response in clockwise order
+    // TODO Consider not cloning. Many callers will have to change
+    pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<OriginalRoad> {
+        self.intersections[&i].roads.clone()
     }
 
     pub fn new_osm_node_id(&self, start: i64) -> osm::NodeID {
@@ -544,6 +573,11 @@ pub struct Intersection {
     pub control: ControlType,
     pub elevation: Distance,
 
+    /// All roads connected to this intersection. They may be incoming or outgoing relative to this
+    /// intersection.
+    /// TODO: Guarantee they're sorted clockwise
+    pub roads: Vec<OriginalRoad>,
+
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
 }
@@ -555,6 +589,7 @@ impl Intersection {
             complexity,
             control,
             // Filled out later
+            roads: Vec::new(),
             elevation: Distance::ZERO,
             trim_roads_for_merging: BTreeMap::new(),
         }

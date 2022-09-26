@@ -138,6 +138,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     assert_eq!(roads.len(), 2);
     let mut r1 = roads[0];
     let mut r2 = roads[1];
+    assert_ne!(r1, r2);
 
     // We'll keep r1's way ID, so it's a little more convenient for debugging to guarantee r1 is
     // the longer piece.
@@ -157,11 +158,11 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     }
 
     info!("Collapsing degenerate {}", i);
-    streets.intersections.remove(&i).unwrap();
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
-    let mut new_road = streets.roads.remove(&r1).unwrap();
-    let mut road2 = streets.roads.remove(&r2).unwrap();
+    let mut new_road = streets.remove_road(&r1);
+    let mut road2 = streets.remove_road(&r2);
+    streets.intersections.remove(&i).unwrap();
 
     // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
     let (new_i1, new_i2) = if r1.i2 == r2.i1 {
@@ -195,7 +196,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
         i1: new_i1,
         i2: new_i2,
     };
-    streets.roads.insert(new_r1, new_road);
+    streets.insert_road(new_r1, new_road);
 
     // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
     let rewrite = |x: &OriginalRoad| *x == r1 || *x == r2;
@@ -242,7 +243,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
     }
 
     for r in remove_roads {
-        streets.roads.remove(&r).unwrap();
+        streets.remove_road(&r);
     }
     for i in remove_intersections {
         streets.delete_intersection(i);

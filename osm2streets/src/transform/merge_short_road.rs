@@ -25,7 +25,7 @@ impl StreetNetwork {
         if !self.intersections.contains_key(&short.i1)
             || !self.intersections.contains_key(&short.i2)
         {
-            self.roads.remove(&short).unwrap();
+            self.remove_road(&short);
             bail!(
                 "One endpoint of {} has already been deleted, skipping",
                 short
@@ -95,17 +95,10 @@ impl StreetNetwork {
                 .extend(trim_roads_for_merging);
         }
 
-        self.roads.remove(&short).unwrap();
+        self.remove_road(&short);
 
-        // Arbitrarily keep i1 and destroy i2. If the intersection types differ, upgrade the
-        // surviving interesting.
-        {
-            // Don't use delete_intersection; we're manually fixing up connected roads
-            let i = self.intersections.remove(&i2).unwrap();
-            if i.control == ControlType::TrafficSignal {
-                self.intersections.get_mut(&i1).unwrap().control = ControlType::TrafficSignal;
-            }
-        }
+        // Arbitrarily keep i1 and destroy i2. Don't actually remove the intersection until later;
+        // remove_road needs the intersection to exist
 
         // Fix up all roads connected to i2. Delete them and create a new copy; the ID changes,
         // since one intersection changes.
@@ -115,7 +108,7 @@ impl StreetNetwork {
         let mut new_to_old = BTreeMap::new();
         for r in self.roads_per_intersection(i2) {
             deleted.push(r);
-            let road = self.roads.remove(&r).unwrap();
+            let road = self.remove_road(&r);
             let mut new_id = r;
             if r.i1 == i2 {
                 new_id.i1 = i1;
@@ -133,8 +126,17 @@ impl StreetNetwork {
             old_to_new.insert(r, new_id);
             new_to_old.insert(new_id, r);
 
-            self.roads.insert(new_id, road);
+            self.insert_road(new_id, road);
             created.push(new_id);
+        }
+
+        // If the intersection types differ, upgrade the surviving interesting.
+        {
+            // Don't use delete_intersection; we're manually fixing up connected roads
+            let i = self.intersections.remove(&i2).unwrap();
+            if i.control == ControlType::TrafficSignal {
+                self.intersections.get_mut(&i1).unwrap().control = ControlType::TrafficSignal;
+            }
         }
 
         // If we're deleting the target of a simple restriction somewhere, update it.
