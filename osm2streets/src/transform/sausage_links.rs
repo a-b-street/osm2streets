@@ -76,7 +76,7 @@ fn fix(streets: &mut StreetNetwork, id1: OriginalRoad, id2: OriginalRoad) {
     assert!(streets.roads.contains_key(&id2));
 
     // Arbitrarily remove the 2nd
-    let mut road2 = streets.roads.remove(&id2).unwrap();
+    let mut road2 = streets.remove_road(&id2);
     // And modify the 1st
     let road1 = streets.roads.get_mut(&id1).unwrap();
 
