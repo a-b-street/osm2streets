@@ -161,13 +161,14 @@ impl StreetNetwork {
 
     pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
         self.roads.insert(id, road);
-        // TODO Re-sort
-        self.intersections.get_mut(&id.i1).unwrap().roads.push(id);
-        self.intersections.get_mut(&id.i2).unwrap().roads.push(id);
+        for i in [id.i1, id.i2] {
+            self.intersections.get_mut(&i).unwrap().roads.push(id);
+            self.sort_roads(i);
+        }
     }
 
     pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
-        // TODO Re-sort
+        // Since the roads are already sorted, removing doesn't hurt anything
         self.intersections
             .get_mut(&id.i1)
             .unwrap()
@@ -193,7 +194,7 @@ impl StreetNetwork {
         }
     }
 
-    // TODO This'll eventually give a response in clockwise order
+    // This always returns roads oriented in clockwise order around the intersection
     // TODO Consider not cloning. Many callers will have to change
     pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<OriginalRoad> {
         self.intersections[&i].roads.clone()
@@ -301,6 +302,60 @@ impl StreetNetwork {
             step.polylines
                 .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
         }
+    }
+
+    // Restore the invariant that an intersection's roads are ordered clockwise
+    //
+    // TODO This doesn't handle trim_roads_for_merging
+    fn sort_roads(&mut self, i: osm::NodeID) {
+        let intersection = self.intersections.get_mut(&i).unwrap();
+
+        // (ID, polyline pointing to the intersection, sorting point that's filled out later)
+        let mut road_centers = Vec::new();
+        let mut endpoints_for_center = Vec::new();
+        for r in &intersection.roads {
+            let road = &self.roads[r];
+            // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
+            // shouldn't matter for sorting.
+            let center_pl = if r.i1 == i {
+                PolyLine::must_new(road.osm_center_points.clone()).reversed()
+            } else if r.i2 == i {
+                PolyLine::must_new(road.osm_center_points.clone())
+            } else {
+                panic!("Incident road {r} doesn't have an endpoint at {i}");
+            };
+            endpoints_for_center.push(center_pl.last_pt());
+
+            road_centers.push((*r, center_pl, Pt2D::zero()));
+        }
+        // In most cases, this will just be the same point repeated a few times, so Pt2D::center is a
+        // no-op. But when we have pretrimmed roads, this is much closer to the real "center" of the
+        // polygon we're attempting to create.
+        let intersection_center = Pt2D::center(&endpoints_for_center);
+
+        // Sort the road polylines in clockwise order around the center. This is subtle --
+        // https://a-b-street.github.io/docs/tech/map/geometry/index.html#sorting-revisited. When we
+        // get this wrong, the resulting polygon looks like a "bowtie," because the order of the
+        // intersection polygon's points follows this clockwise ordering of roads.
+        //
+        // We could use the point on each road center line farthest from the intersection center. But
+        // when some of the roads bend around, this produces incorrect ordering. Try walking along that
+        // center line a distance equal to the _shortest_ road.
+        let shortest_center = road_centers
+            .iter()
+            .map(|(_, pl, _)| pl.length())
+            .min()
+            .unwrap();
+        for (_, pl, sorting_pt) in &mut road_centers {
+            *sorting_pt = pl.must_dist_along(pl.length() - shortest_center).0;
+        }
+        road_centers.sort_by_key(|(_, _, sorting_pt)| {
+            sorting_pt
+                .angle_to(intersection_center)
+                .normalized_degrees() as i64
+        });
+
+        intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
     }
 }
 
@@ -561,8 +616,7 @@ pub struct Intersection {
     pub elevation: Distance,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
-    /// intersection.
-    /// TODO: Guarantee they're sorted clockwise
+    /// intersection. They're ordered clockwise aroundd the intersection.
     pub roads: Vec<OriginalRoad>,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
