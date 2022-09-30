@@ -223,6 +223,35 @@ impl StreetNetwork {
         let output = serde_json::to_string_pretty(&obj)?;
         Ok(output)
     }
+
+    /// For an intersection, show the clockwise ordering of roads around it
+    pub fn debug_clockwise_ordering_geojson(&self, timer: &mut Timer) -> Result<String> {
+        let initial_map = crate::initial::InitialMap::new(self, timer);
+
+        let mut pairs = Vec::new();
+
+        for (i, intersection) in &self.intersections {
+            for (idx, r) in intersection.roads.iter().enumerate() {
+                let pl = &initial_map.roads[r].trimmed_center_pts;
+                let pt = if r.i1 == *i {
+                    pl.first_pt()
+                } else {
+                    pl.last_pt()
+                };
+                pairs.push((
+                    pt.to_geojson(Some(&self.gps_bounds)),
+                    make_props(&[(
+                        "label",
+                        format!("{} / {}", idx + 1, intersection.roads.len()).into(),
+                    )]),
+                ));
+            }
+        }
+
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
 }
 
 impl DebugStreets {
