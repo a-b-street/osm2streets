@@ -1,9 +1,7 @@
-use std::collections::BTreeMap;
-
 use abstutil::Timer;
 use anyhow::Result;
 use geom::PolyLine;
-use osm2streets::{osm, ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
+use osm2streets::{ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
@@ -13,8 +11,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     let boundary_polygon = streets.boundary_polygon.clone();
     let boundary_ring = boundary_polygon.get_outer_ring();
 
-    // This is kind of indirect and slow, but first pass -- just remove roads that start or end
-    // outside the boundary polygon.
+    // This is kind of indirect and slow, but first pass -- just remove roads that both start and
+    // end outside the boundary polygon.
     streets.retain_roads(|_, r| {
         let first_in = boundary_polygon.contains_pt(r.osm_center_points[0]);
         let last_in = boundary_polygon.contains_pt(*r.osm_center_points.last().unwrap());
@@ -29,10 +27,6 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         first_in || last_in || light_rail_ok
     });
 
-    // When we split an intersection out of bounds into two, one of them gets a new ID. Remember
-    // that here.
-    let mut extra_borders: BTreeMap<osm::NodeID, osm::NodeID> = BTreeMap::new();
-
     // First pass: Clip roads beginning out of bounds
     let road_ids: Vec<OriginalRoad> = streets.roads.keys().cloned().collect();
     for id in road_ids {
@@ -42,23 +36,20 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut move_i = id.i1;
-        let orig_id = id.i1;
 
         // The road crosses the boundary. If the intersection happens to have another connected
         // road, then we need to copy the intersection before trimming it. This effectively
         // disconnects two roads in the map that would be connected if we left in some
         // partly-out-of-bounds road.
-        if streets
-            .roads
-            .keys()
-            .filter(|r2| r2.i1 == move_i || r2.i2 == move_i)
-            .count()
-            > 1
-        {
-            let copy = streets.intersections[&move_i].clone();
+        if streets.intersections[&move_i].roads.len() > 1 {
+            let mut copy = streets.intersections[&move_i].clone();
             // Don't conflict with OSM IDs
             move_i = streets.new_osm_node_id(-1);
-            extra_borders.insert(orig_id, move_i);
+
+            // TODO Do we have to fix up the other roads connected to the old intersection? A later
+            // pass should handle them, because they'll also start or end OOB
+            copy.roads.retain(|r| *r != id);
+
             streets.intersections.insert(move_i, copy);
             info!("Disconnecting {} from some other stuff (starting OOB)", id);
         }
@@ -101,22 +92,15 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut move_i = id.i2;
-        let orig_id = id.i2;
 
         // The road crosses the boundary. If the intersection happens to have another connected
         // road, then we need to copy the intersection before trimming it. This effectively
         // disconnects two roads in the map that would be connected if we left in some
         // partly-out-of-bounds road.
-        if streets
-            .roads
-            .keys()
-            .filter(|r2| r2.i1 == move_i || r2.i2 == move_i)
-            .count()
-            > 1
-        {
-            let copy = streets.intersections[&move_i].clone();
+        if streets.intersections[&move_i].roads.len() > 1 {
+            let mut copy = streets.intersections[&move_i].clone();
             move_i = streets.new_osm_node_id(-1);
-            extra_borders.insert(orig_id, move_i);
+            copy.roads.retain(|r| *r != id);
             streets.intersections.insert(move_i, copy);
             info!("Disconnecting {} from some other stuff (ending OOB)", id);
         }
