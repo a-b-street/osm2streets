@@ -199,19 +199,6 @@ impl StreetNetwork {
         self.intersections[&i].roads.clone()
     }
 
-    pub fn new_osm_node_id(&self, start: i64) -> osm::NodeID {
-        assert!(start < 0);
-        // Slow, but deterministic.
-        let mut osm_node_id = start;
-        loop {
-            if self.intersections.keys().any(|i| i.0 == osm_node_id) {
-                osm_node_id -= 1;
-            } else {
-                return osm::NodeID(osm_node_id);
-            }
-        }
-    }
-
     /// (Intersection polygon, polygons for roads, list of labeled polygons to debug)
     #[allow(clippy::type_complexity)]
     pub fn preview_intersection(

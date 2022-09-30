@@ -38,6 +38,10 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     // is a bit sensitive (because remove_road needs both intersections to exist, and due to the
     // borrow checker).
     let intersection_ids: Vec<osm::NodeID> = streets.intersections.keys().cloned().collect();
+
+    // Use negative values to avoid conflicting with OSM
+    let mut next_osm_id = -1;
+
     for id in intersection_ids {
         let intersection = &streets.intersections[&id];
         if streets.boundary_polygon.contains_pt(intersection.point) {
@@ -55,7 +59,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
                 let mut copy = streets.intersections[&id].clone();
                 copy.roads.clear();
 
-                let new_id = streets.new_osm_node_id(-1);
+                let new_id = osm::NodeID(next_osm_id);
+                next_osm_id -= 1;
                 let mut fixed_road_id = r;
                 if fixed_road_id.i1 == id {
                     fixed_road_id.i1 = new_id;
