@@ -96,6 +96,13 @@ impl JsStreetNetwork {
             .map(|x| JsValue::from(JsDebugStreets { inner: x.clone() }))
             .collect()
     }
+
+    #[wasm_bindgen(js_name = debugClockwiseOrderingGeojson)]
+    pub fn debug_clockwise_ordering_geojson(&self) -> String {
+        self.inner
+            .debug_clockwise_ordering_geojson(&mut Timer::throwaway())
+            .unwrap()
+    }
 }
 
 #[wasm_bindgen]
