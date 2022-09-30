@@ -1,7 +1,7 @@
 use abstutil::Timer;
 use anyhow::Result;
 use geom::PolyLine;
-use osm2streets::{ControlType, IntersectionComplexity, OriginalRoad, StreetNetwork};
+use osm2streets::{osm, ControlType, IntersectionComplexity, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
@@ -11,8 +11,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     let boundary_polygon = streets.boundary_polygon.clone();
     let boundary_ring = boundary_polygon.get_outer_ring();
 
-    // This is kind of indirect and slow, but first pass -- just remove roads that both start and
-    // end outside the boundary polygon.
+    // First, just remove roads that both start and end outside the boundary polygon.
     streets.retain_roads(|_, r| {
         let first_in = boundary_polygon.contains_pt(r.osm_center_points[0]);
         let last_in = boundary_polygon.contains_pt(*r.osm_center_points.last().unwrap());
@@ -27,108 +26,86 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         first_in || last_in || light_rail_ok
     });
 
-    // First pass: Clip roads beginning out of bounds
-    let road_ids: Vec<OriginalRoad> = streets.roads.keys().cloned().collect();
-    for id in road_ids {
-        let r = &streets.roads[&id];
-        if streets.boundary_polygon.contains_pt(r.osm_center_points[0]) {
+    // Get rid of orphaned intersections too
+    streets.intersections.retain(|_, i| !i.roads.is_empty());
+
+    // Look for intersections outside the map. If they happen to be connected to multiple roads,
+    // then we'll need to copy the intersection for each connecting road. This effectively
+    // disconnects two roads in the map that would be connected if we left in some
+    // partly-out-of-bounds road.
+    //
+    // Do this in one step, since we have to fix up road IDs carefully. The order of steps in here
+    // is a bit sensitive (because remove_road needs both intersections to exist, and due to the
+    // borrow checker).
+    let intersection_ids: Vec<osm::NodeID> = streets.intersections.keys().cloned().collect();
+    for id in intersection_ids {
+        let intersection = &streets.intersections[&id];
+        if streets.boundary_polygon.contains_pt(intersection.point) {
             continue;
         }
 
-        let mut move_i = id.i1;
+        let mut intersection = streets.intersections.get_mut(&id).unwrap();
+        intersection.complexity = IntersectionComplexity::MapEdge;
+        intersection.control = ControlType::Border;
 
-        // The road crosses the boundary. If the intersection happens to have another connected
-        // road, then we need to copy the intersection before trimming it. This effectively
-        // disconnects two roads in the map that would be connected if we left in some
-        // partly-out-of-bounds road.
-        if streets.intersections[&move_i].roads.len() > 1 {
-            let mut copy = streets.intersections[&move_i].clone();
-            // Don't conflict with OSM IDs
-            move_i = streets.new_osm_node_id(-1);
+        if intersection.roads.len() > 1 {
+            for r in intersection.roads.clone() {
+                let road = streets.remove_road(&r);
 
-            // TODO Do we have to fix up the other roads connected to the old intersection? A later
-            // pass should handle them, because they'll also start or end OOB
-            copy.roads.retain(|r| *r != id);
+                let mut copy = streets.intersections[&id].clone();
+                copy.roads.clear();
 
-            streets.intersections.insert(move_i, copy);
-            info!("Disconnecting {} from some other stuff (starting OOB)", id);
+                let new_id = streets.new_osm_node_id(-1);
+                let mut fixed_road_id = r;
+                if fixed_road_id.i1 == id {
+                    fixed_road_id.i1 = new_id;
+                }
+                if fixed_road_id.i2 == id {
+                    fixed_road_id.i2 = new_id;
+                }
+                assert_ne!(r, fixed_road_id);
+
+                streets.intersections.insert(new_id, copy);
+                streets.insert_road(fixed_road_id, road);
+            }
+
+            assert!(streets.intersections[&id].roads.is_empty());
+            streets.intersections.remove(&id).unwrap();
         }
-
-        let mut mut_r = streets.remove_road(&id);
-
-        let i = streets.intersections.get_mut(&move_i).unwrap();
-        i.complexity = IntersectionComplexity::MapEdge;
-        i.control = ControlType::Border;
-
-        // Now trim it.
-        let center = PolyLine::must_new(mut_r.osm_center_points.clone());
-        let border_pt = boundary_ring.all_intersections(&center)[0];
-        if let Some(pl) = center.reversed().get_slice_ending_at(border_pt) {
-            mut_r.osm_center_points = pl.reversed().into_points();
-        } else {
-            warn!("{} interacts with border strangely", id);
-            continue;
-        }
-        i.point = mut_r.osm_center_points[0];
-        streets.insert_road(
-            OriginalRoad {
-                osm_way_id: id.osm_way_id,
-                i1: move_i,
-                i2: id.i2,
-            },
-            mut_r,
-        );
     }
 
-    // Second pass: clip roads ending out of bounds
-    let road_ids: Vec<OriginalRoad> = streets.roads.keys().cloned().collect();
-    for id in road_ids {
-        let r = &streets.roads[&id];
-        if streets
-            .boundary_polygon
-            .contains_pt(*r.osm_center_points.last().unwrap())
-        {
+    // Now for all of the border intersections, find the one road they connect to and trim their
+    // points.
+    for (i, intersection) in &mut streets.intersections {
+        if intersection.control != ControlType::Border {
             continue;
         }
+        assert_eq!(intersection.roads.len(), 1);
+        let r = intersection.roads[0];
 
-        let mut move_i = id.i2;
+        let road = streets.roads.get_mut(&r).unwrap();
+        let center = PolyLine::must_new(road.osm_center_points.clone());
+        let border_pt = boundary_ring.all_intersections(&center)[0];
 
-        // The road crosses the boundary. If the intersection happens to have another connected
-        // road, then we need to copy the intersection before trimming it. This effectively
-        // disconnects two roads in the map that would be connected if we left in some
-        // partly-out-of-bounds road.
-        if streets.intersections[&move_i].roads.len() > 1 {
-            let mut copy = streets.intersections[&move_i].clone();
-            move_i = streets.new_osm_node_id(-1);
-            copy.roads.retain(|r| *r != id);
-            streets.intersections.insert(move_i, copy);
-            info!("Disconnecting {} from some other stuff (ending OOB)", id);
-        }
-
-        let mut mut_r = streets.remove_road(&id);
-
-        let i = streets.intersections.get_mut(&move_i).unwrap();
-        i.complexity = IntersectionComplexity::MapEdge;
-        i.control = ControlType::Border;
-
-        // Now trim it.
-        let center = PolyLine::must_new(mut_r.osm_center_points.clone());
-        let border_pt = boundary_ring.all_intersections(&center.reversed())[0];
-        if let Some(pl) = center.get_slice_ending_at(border_pt) {
-            mut_r.osm_center_points = pl.into_points();
+        if r.i1 == *i {
+            // Starting out-of-bounds
+            if let Some(pl) = center.get_slice_starting_at(border_pt) {
+                road.osm_center_points = pl.into_points();
+                intersection.point = road.osm_center_points[0];
+            } else {
+                warn!("{} interacts with border strangely", r);
+                continue;
+            }
         } else {
-            warn!("{} interacts with border strangely", id);
-            continue;
+            // Ending out-of-bounds
+            if let Some(pl) = center.get_slice_ending_at(border_pt) {
+                road.osm_center_points = pl.into_points();
+                intersection.point = *road.osm_center_points.last().unwrap();
+            } else {
+                warn!("{} interacts with border strangely", r);
+                continue;
+            }
         }
-        i.point = *mut_r.osm_center_points.last().unwrap();
-        streets.insert_road(
-            OriginalRoad {
-                osm_way_id: id.osm_way_id,
-                i1: id.i1,
-                i2: move_i,
-            },
-            mut_r,
-        );
     }
 
     if streets.roads.is_empty() {
