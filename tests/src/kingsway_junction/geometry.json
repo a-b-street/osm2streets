@@ -391,7 +391,7 @@
       "properties": {
         "dst_i": 2790145016,
         "osm_way_id": 59876766,
-        "src_i": -1,
+        "src_i": -3,
         "type": "road"
       },
       "type": "Feature"
@@ -641,7 +641,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 743548069,
+        "dst_i": -4,
         "osm_way_id": 59876789,
         "src_i": 743548133,
         "type": "road"
@@ -831,7 +831,7 @@
       "properties": {
         "dst_i": 637467098,
         "osm_way_id": 60007821,
-        "src_i": -2,
+        "src_i": -1,
         "type": "road"
       },
       "type": "Feature"
@@ -1097,7 +1097,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": -3,
+        "dst_i": -5,
         "osm_way_id": 60007830,
         "src_i": 745988174,
         "type": "road"
@@ -1381,7 +1381,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 745988242,
+        "dst_i": -6,
         "osm_way_id": 60007856,
         "src_i": 8778504595,
         "type": "road"
@@ -1533,7 +1533,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 637467100,
+        "dst_i": -2,
         "osm_way_id": 60577051,
         "src_i": 743547944,
         "type": "road"
@@ -3689,7 +3689,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": -4,
+        "dst_i": -8,
         "osm_way_id": 288287364,
         "src_i": 2920872874,
         "type": "road"
@@ -3741,7 +3741,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 2920872878,
+        "dst_i": -7,
         "osm_way_id": 288531255,
         "src_i": 2920872874,
         "type": "road"
@@ -6651,8 +6651,82 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/-4",
-        "osm_node_id": -4,
+        "osm_link": "https://www.openstreetmap.org/node/-8",
+        "osm_node_id": -8,
+        "type": "intersection"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -2.30937,
+              53.44631210525934
+            ],
+            [
+              -2.3093697674670994,
+              53.44633009169047
+            ],
+            [
+              -2.309218776607039,
+              53.44632939921287
+            ],
+            [
+              -2.3092190091399396,
+              53.44631141278174
+            ],
+            [
+              -2.30937,
+              53.44631210525934
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "complexity": "MapEdge",
+        "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/-7",
+        "osm_node_id": -7,
+        "type": "intersection"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -2.304560520509421,
+              53.44714
+            ],
+            [
+              -2.304523514559259,
+              53.44712443813978
+            ],
+            [
+              -2.3046106056802578,
+              53.44705097256182
+            ],
+            [
+              -2.30464761163042,
+              53.447066534422035
+            ],
+            [
+              -2.304560520509421,
+              53.44714
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "complexity": "MapEdge",
+        "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/-6",
+        "osm_node_id": -6,
         "type": "intersection"
       },
       "type": "Feature"
@@ -6688,8 +6762,8 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/-3",
-        "osm_node_id": -3,
+        "osm_link": "https://www.openstreetmap.org/node/-5",
+        "osm_node_id": -5,
         "type": "intersection"
       },
       "type": "Feature"
@@ -6699,24 +6773,24 @@
         "coordinates": [
           [
             [
-              -2.3058065465466884,
-              53.44712868743414
+              -2.3074798985971583,
+              53.447159862415894
             ],
             [
-              -2.3057378678035363,
-              53.4471865210048
+              -2.307381422423759,
+              53.4471201375841
             ],
             [
-              -2.3056299997168836,
-              53.447141082783155
+              -2.307466096108566,
+              53.44704567645717
             ],
             [
-              -2.3056986784600357,
-              53.44708324741384
+              -2.307564572281965,
+              53.44708540128897
             ],
             [
-              -2.3058065465466884,
-              53.44712868743414
+              -2.3074798985971583,
+              53.447159862415894
             ]
           ]
         ],
@@ -6725,8 +6799,8 @@
       "properties": {
         "complexity": "MapEdge",
         "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/-2",
-        "osm_node_id": -2,
+        "osm_link": "https://www.openstreetmap.org/node/-4",
+        "osm_node_id": -4,
         "type": "intersection"
       },
       "type": "Feature"
@@ -6754,6 +6828,80 @@
             [
               -2.3067056591656563,
               53.44718138408007
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "complexity": "MapEdge",
+        "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/-3",
+        "osm_node_id": -3,
+        "type": "intersection"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -2.3058557725537567,
+              53.44715787131797
+            ],
+            [
+              -2.305752549085298,
+              53.44711433336277
+            ],
+            [
+              -2.305839812341042,
+              53.447040941529174
+            ],
+            [
+              -2.3059430358095003,
+              53.447084477685735
+            ],
+            [
+              -2.3058557725537567,
+              53.44715787131797
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "properties": {
+        "complexity": "MapEdge",
+        "control": "Border",
+        "osm_link": "https://www.openstreetmap.org/node/-2",
+        "osm_node_id": -2,
+        "type": "intersection"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              -2.3058065465466884,
+              53.44712868743414
+            ],
+            [
+              -2.3057378678035363,
+              53.4471865210048
+            ],
+            [
+              -2.3056299997168836,
+              53.447141082783155
+            ],
+            [
+              -2.3056986784600357,
+              53.44708324741384
+            ],
+            [
+              -2.3058065465466884,
+              53.44712868743414
             ]
           ]
         ],
@@ -7603,43 +7751,6 @@
         "coordinates": [
           [
             [
-              -2.3058557725537567,
-              53.44715787131797
-            ],
-            [
-              -2.305752549085298,
-              53.44711433336277
-            ],
-            [
-              -2.305839812341042,
-              53.447040941529174
-            ],
-            [
-              -2.3059430358095003,
-              53.447084477685735
-            ],
-            [
-              -2.3058557725537567,
-              53.44715787131797
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "complexity": "MapEdge",
-        "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/637467100",
-        "osm_node_id": 637467100,
-        "type": "intersection"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
               -2.3042831872767513,
               53.44684272566216
             ],
@@ -7787,43 +7898,6 @@
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/743547964",
         "osm_node_id": 743547964,
-        "type": "intersection"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
-              -2.3074798985971583,
-              53.447159862415894
-            ],
-            [
-              -2.307381422423759,
-              53.4471201375841
-            ],
-            [
-              -2.307466096108566,
-              53.44704567645717
-            ],
-            [
-              -2.307564572281965,
-              53.44708540128897
-            ],
-            [
-              -2.3074798985971583,
-              53.447159862415894
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "complexity": "MapEdge",
-        "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/743548069",
-        "osm_node_id": 743548069,
         "type": "intersection"
       },
       "type": "Feature"
@@ -8357,43 +8431,6 @@
         "control": "Border",
         "osm_link": "https://www.openstreetmap.org/node/745988236",
         "osm_node_id": 745988236,
-        "type": "intersection"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
-              -2.304560520509421,
-              53.44714
-            ],
-            [
-              -2.304523514559259,
-              53.44712443813978
-            ],
-            [
-              -2.3046106056802578,
-              53.44705097256182
-            ],
-            [
-              -2.30464761163042,
-              53.447066534422035
-            ],
-            [
-              -2.304560520509421,
-              53.44714
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "complexity": "MapEdge",
-        "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/745988242",
-        "osm_node_id": 745988242,
         "type": "intersection"
       },
       "type": "Feature"
@@ -10441,43 +10478,6 @@
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/2920872874",
         "osm_node_id": 2920872874,
-        "type": "intersection"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
-              -2.30937,
-              53.44631210525934
-            ],
-            [
-              -2.3093697674670994,
-              53.44633009169047
-            ],
-            [
-              -2.309218776607039,
-              53.44632939921287
-            ],
-            [
-              -2.3092190091399396,
-              53.44631141278174
-            ],
-            [
-              -2.30937,
-              53.44631210525934
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "complexity": "MapEdge",
-        "control": "Border",
-        "osm_link": "https://www.openstreetmap.org/node/2920872878",
-        "osm_node_id": 2920872878,
         "type": "intersection"
       },
       "type": "Feature"
