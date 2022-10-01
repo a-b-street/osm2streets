@@ -90,7 +90,14 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
         let road = streets.roads.get_mut(&r).unwrap();
         let center = PolyLine::must_new(road.osm_center_points.clone());
-        let border_pt = boundary_ring.all_intersections(&center)[0];
+        let border_pts = boundary_ring.all_intersections(&center);
+        if border_pts.is_empty() {
+            // Why wouldn't the road cross the boundary at all, if the intersection was out of
+            // bounds? Observed for some light rail in the northgate_dual_carriageway test.
+            warn!("{} interacts with border strangely", r);
+            continue;
+        }
+        let border_pt = border_pts[0];
 
         if r.i1 == *i {
             // Starting out-of-bounds
