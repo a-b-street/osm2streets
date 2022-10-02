@@ -138,7 +138,8 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      const drivingSide = app.getImportSettings().drivingSideForNewImports || "Right";
+      const drivingSide =
+        app.getImportSettings().drivingSideForNewImports || "Right";
 
       importOSM("Imported area", app, osmInput, drivingSide, true);
       const bounds = app.layers
@@ -196,7 +197,7 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
       cycletrack_snapping_experiment:
         !!importSettings.cycletrackSnappingExperiment,
-      inferred_sidewalks: importSettings.sidewalks === 'infer',
+      inferred_sidewalks: importSettings.sidewalks === "infer",
       osm2lanes: !!importSettings.osm2lanes,
     });
     var group = new LayerGroup(groupName, app.map);
@@ -211,6 +212,9 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
     group.addLayer(
       "Lane markings",
       makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
+    );
+    group.addLazyLayer("Debug road ordering", () =>
+      makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
 
@@ -235,6 +239,11 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
       group.addLazyLayer("Lane markings", () =>
         makeLaneMarkingsLayer(step.getNetwork().toLaneMarkingsGeojson())
       );
+      // TODO Can we disable by default in a group? This one is very noisy, but
+      // could be useful to inspect
+      /*group.addLazyLayer("Debug road ordering", () =>
+        makeDebugLayer(step.getNetwork().debugClockwiseOrderingGeojson())
+      );*/
 
       const debugGeojson = step.toDebugGeojson();
       if (debugGeojson) {

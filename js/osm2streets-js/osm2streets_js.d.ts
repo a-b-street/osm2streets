@@ -46,6 +46,10 @@ export class JsStreetNetwork {
 * @returns {any[]}
 */
   getDebugSteps(): any[];
+/**
+* @returns {string}
+*/
+  debugClockwiseOrderingGeojson(): string;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -59,6 +63,7 @@ export interface InitOutput {
   readonly jsstreetnetwork_toLaneMarkingsGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
   readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
+  readonly jsstreetnetwork_debugClockwiseOrderingGeojson: (a: number, b: number) => void;
   readonly __wbg_jsdebugstreets_free: (a: number) => void;
   readonly jsdebugstreets_getLabel: (a: number, b: number) => void;
   readonly jsdebugstreets_getNetwork: (a: number) => number;

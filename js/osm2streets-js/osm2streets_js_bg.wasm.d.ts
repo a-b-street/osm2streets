@@ -8,6 +8,7 @@ export function jsstreetnetwork_toLanePolygonsGeojson(a: number, b: number): voi
 export function jsstreetnetwork_toLaneMarkingsGeojson(a: number, b: number): void;
 export function jsstreetnetwork_toGraphviz(a: number, b: number): void;
 export function jsstreetnetwork_getDebugSteps(a: number, b: number): void;
+export function jsstreetnetwork_debugClockwiseOrderingGeojson(a: number, b: number): void;
 export function __wbg_jsdebugstreets_free(a: number): void;
 export function jsdebugstreets_getLabel(a: number, b: number): void;
 export function jsdebugstreets_getNetwork(a: number): number;
