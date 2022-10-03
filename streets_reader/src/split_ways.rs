@@ -149,6 +149,9 @@ pub fn split_up_roads(
     // Resolve simple turn restrictions (via a node)
     let mut restrictions = Vec::new();
     for (restriction, from_osm, via_osm, to_osm) in input.simple_turn_restrictions {
+        if !streets.intersections.contains_key(&via_osm) {
+            continue;
+        }
         let roads = streets.roads_per_intersection(via_osm);
         // If some of the roads are missing, they were likely filtered out -- usually service
         // roads.
