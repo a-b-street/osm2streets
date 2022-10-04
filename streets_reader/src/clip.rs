@@ -97,10 +97,10 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             warn!("{} interacts with border strangely", r);
             continue;
         }
-        let border_pt = border_pts[0];
 
         if r.i1 == *i {
             // Starting out-of-bounds
+            let border_pt = border_pts[0];
             if let Some(pl) = center.get_slice_starting_at(border_pt) {
                 road.osm_center_points = pl.into_points();
                 intersection.point = road.osm_center_points[0];
@@ -110,6 +110,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             }
         } else {
             // Ending out-of-bounds
+            // For light rail, the center-line might cross the boundary twice. When we're looking
+            // at the outbound end, take the last time we hit the boundary
+            let border_pt = *border_pts.last().unwrap();
             if let Some(pl) = center.get_slice_ending_at(border_pt) {
                 road.osm_center_points = pl.into_points();
                 intersection.point = *road.osm_center_points.last().unwrap();
