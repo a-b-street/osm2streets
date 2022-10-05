@@ -122,11 +122,16 @@ pub fn osm_to_street_network(
         split_output.barrier_nodes,
         &split_output.pt_to_road,
     );
+    use_crossing_nodes(
+        &mut streets,
+        &split_output.crossing_nodes,
+        &split_output.pt_to_road,
+    );
 
     if opts.filter_crosswalks {
         filter_crosswalks(
             &mut streets,
-            split_output.crosswalks,
+            split_output.crossing_nodes,
             split_output.pt_to_road,
             timer,
         );
@@ -185,6 +190,19 @@ pub fn use_barrier_nodes(
             if road.is_driveable() {
                 road.barrier_nodes.push(pt.to_pt2d());
             }
+        }
+    }
+}
+
+pub fn use_crossing_nodes(
+    streets: &mut StreetNetwork,
+    crossing_nodes: &HashSet<HashablePt2D>,
+    pt_to_road: &HashMap<HashablePt2D, OriginalRoad>,
+) {
+    for pt in crossing_nodes {
+        // Some crossings are on footpaths or roads that we don't retain
+        if let Some(road) = pt_to_road.get(pt).and_then(|r| streets.roads.get_mut(r)) {
+            road.crossing_nodes.push(pt.to_pt2d());
         }
     }
 }

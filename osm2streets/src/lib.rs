@@ -417,11 +417,14 @@ pub struct Road {
     /// Is there a tagged crosswalk near each end of the road?
     pub crosswalk_forward: bool,
     pub crosswalk_backward: bool,
+    // TODO Preserving these two across transformations (especially merging dual carriageways!)
+    // could be really hard. It might be better to split the road into two pieces to match the more
+    // often used OSM style.
     /// Barrier nodes along this road's original center line.
-    // TODO Preserving these across transformations (especially merging dual carriageways!) could
-    // be really hard. It might be better to split the road into two pieces to match the more often
-    // used OSM style.
     pub barrier_nodes: Vec<Pt2D>,
+    /// Crossing nodes along this road's original center line. Attributes about the crossing are
+    /// lost.
+    pub crossing_nodes: Vec<Pt2D>,
 
     /// Derived from osm_tags. Not automatically updated.
     pub lane_specs_ltr: Vec<LaneSpec>,
@@ -446,6 +449,7 @@ impl Road {
             crosswalk_forward: true,
             crosswalk_backward: true,
             barrier_nodes: Vec::new(),
+            crossing_nodes: Vec::new(),
 
             lane_specs_ltr,
         })

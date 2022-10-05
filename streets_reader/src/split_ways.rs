@@ -10,7 +10,7 @@ use osm2streets::{
 use super::OsmExtract;
 
 pub struct Output {
-    pub crosswalks: HashSet<HashablePt2D>,
+    pub crossing_nodes: HashSet<HashablePt2D>,
     pub barrier_nodes: HashSet<HashablePt2D>,
     /// A mapping of all points to the split road. Some internal points on roads get removed in
     /// `split_up_roads`, so this mapping isn't redundant.
@@ -241,7 +241,7 @@ pub fn split_up_roads(
 
     timer.stop("splitting up roads");
     Output {
-        crosswalks: input.crosswalks,
+        crossing_nodes: input.crossing_nodes,
         barrier_nodes: input.barrier_nodes,
         pt_to_road,
     }

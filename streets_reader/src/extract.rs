@@ -19,8 +19,8 @@ pub struct OsmExtract {
     pub simple_turn_restrictions: Vec<(RestrictionType, WayID, NodeID, WayID)>,
     /// (relation ID, from way ID, via way ID, to way ID)
     pub complicated_turn_restrictions: Vec<(RelationID, WayID, WayID, WayID)>,
-    /// Crosswalks located at these points, which should be on a Road's center line
-    pub crosswalks: HashSet<HashablePt2D>,
+    /// Crossings located at these points, which should be on a Road's center line
+    pub crossing_nodes: HashSet<HashablePt2D>,
     /// Some kind of barrier nodes at these points. Only the ones on a Road center line are
     /// relevant.
     pub barrier_nodes: HashSet<HashablePt2D>,
@@ -34,7 +34,7 @@ impl OsmExtract {
             osm_node_ids: HashMap::new(),
             simple_turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
-            crosswalks: HashSet::new(),
+            crossing_nodes: HashSet::new(),
             barrier_nodes: HashSet::new(),
         }
     }
@@ -51,7 +51,7 @@ impl OsmExtract {
             self.traffic_signals.insert(node.pt.to_hashable(), dir);
         }
         if node.tags.is(osm::HIGHWAY, "crossing") {
-            self.crosswalks.insert(node.pt.to_hashable());
+            self.crossing_nodes.insert(node.pt.to_hashable());
         }
         // TODO Any kind of barrier?
         if node.tags.is("barrier", "bollard") {
