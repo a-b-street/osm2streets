@@ -107,7 +107,12 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     {
         n
     } else if let Some(n) = tags.get("lanes").and_then(|num| num.parse::<usize>().ok()) {
-        let base = n - num_driving_fwd;
+        let base = if n > num_driving_fwd {
+            n - num_driving_fwd
+        } else {
+            0
+        };
+
         if oneway {
             base
         } else {
