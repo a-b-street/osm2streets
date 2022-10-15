@@ -9,7 +9,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
 
-use osm2streets::{MapConfig, OriginalRoad, StreetNetwork};
+use osm2streets::{CrossingType, MapConfig, OriginalRoad, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -220,20 +220,20 @@ pub fn use_barrier_nodes(
 
 pub fn use_crossing_nodes(
     streets: &mut StreetNetwork,
-    crossing_nodes: &HashSet<HashablePt2D>,
+    crossing_nodes: &HashSet<(HashablePt2D, CrossingType)>,
     pt_to_road: &HashMap<HashablePt2D, OriginalRoad>,
 ) {
-    for pt in crossing_nodes {
+    for (pt, kind) in crossing_nodes {
         // Some crossings are on footpaths or roads that we don't retain
         if let Some(road) = pt_to_road.get(pt).and_then(|r| streets.roads.get_mut(r)) {
-            road.crossing_nodes.push(pt.to_pt2d());
+            road.crossing_nodes.push((pt.to_pt2d(), *kind));
         }
     }
 }
 
 pub fn filter_crosswalks(
     streets: &mut StreetNetwork,
-    crosswalks: HashSet<HashablePt2D>,
+    crosswalks: HashSet<(HashablePt2D, CrossingType)>,
     pt_to_road: HashMap<HashablePt2D, OriginalRoad>,
     timer: &mut Timer,
 ) {
@@ -246,7 +246,7 @@ pub fn filter_crosswalks(
 
     // Match each crosswalk node to a road
     timer.start_iter("filter crosswalks", crosswalks.len());
-    for pt in crosswalks {
+    for (pt, _) in crosswalks {
         timer.next();
         // Some crossing nodes are outside the map boundary or otherwise not on a road that we
         // retained

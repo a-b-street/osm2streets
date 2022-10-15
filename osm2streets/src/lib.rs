@@ -422,9 +422,8 @@ pub struct Road {
     // often used OSM style.
     /// Barrier nodes along this road's original center line.
     pub barrier_nodes: Vec<Pt2D>,
-    /// Crossing nodes along this road's original center line. Attributes about the crossing are
-    /// lost.
-    pub crossing_nodes: Vec<Pt2D>,
+    /// Crossing nodes along this road's original center line.
+    pub crossing_nodes: Vec<(Pt2D, CrossingType)>,
 
     /// Derived from osm_tags. Not automatically updated.
     pub lane_specs_ltr: Vec<LaneSpec>,
@@ -608,6 +607,15 @@ impl Road {
         let right = center.shift_from_center(total_width, total_width / 2.0)?;
         Ok((left, right))
     }
+}
+
+/// Classifies pedestrian and cyclist crossings. Note lots of detail is missing.
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum CrossingType {
+    /// Part of some traffic signal
+    Signalized,
+    /// Not part of a traffic signal
+    Unsignalized,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

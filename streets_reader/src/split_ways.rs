@@ -3,14 +3,14 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, ControlType, Direction, Intersection, IntersectionComplexity, OriginalRoad, Road,
-    StreetNetwork,
+    osm, ControlType, CrossingType, Direction, Intersection, IntersectionComplexity, OriginalRoad,
+    Road, StreetNetwork,
 };
 
 use super::OsmExtract;
 
 pub struct Output {
-    pub crossing_nodes: HashSet<HashablePt2D>,
+    pub crossing_nodes: HashSet<(HashablePt2D, CrossingType)>,
     pub barrier_nodes: HashSet<HashablePt2D>,
     /// A mapping of all points to the split road. Some internal points on roads get removed in
     /// `split_up_roads`, so this mapping isn't redundant.
