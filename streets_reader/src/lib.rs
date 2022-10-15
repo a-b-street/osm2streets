@@ -183,12 +183,36 @@ pub fn use_barrier_nodes(
     barrier_nodes: HashSet<HashablePt2D>,
     pt_to_road: &HashMap<HashablePt2D, OriginalRoad>,
 ) {
+    let mut pt_to_intersection = HashMap::new();
+    for (id, i) in &streets.intersections {
+        pt_to_intersection.insert(i.point.to_hashable(), *id);
+    }
+
     for pt in barrier_nodes {
         // Many barriers are on footpaths or roads that we don't retain
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             // Filters on roads that're already car-free are redundant
             if road.is_driveable() {
                 road.barrier_nodes.push(pt.to_pt2d());
+            }
+        } else if let Some(i) = pt_to_intersection.get(&pt) {
+            let roads = &streets.intersections[i].roads;
+            if roads.len() == 2 {
+                // Arbitrarily put the barrier on one of the roads
+                streets
+                    .roads
+                    .get_mut(&roads[0])
+                    .unwrap()
+                    .barrier_nodes
+                    .push(pt.to_pt2d());
+            } else {
+                // TODO Look for real examples at non-2-way intersections to understand what to do.
+                // If there's a barrier in the middle of a 4-way, does that disconnect all
+                // movements?
+                warn!(
+                    "There's a barrier at {i}, but there are {} roads connected",
+                    roads.len()
+                );
             }
         }
     }
