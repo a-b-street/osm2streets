@@ -91,6 +91,12 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         let road = streets.roads.get_mut(&r).unwrap();
         let center = PolyLine::must_new(road.osm_center_points.clone());
         let border_pts = boundary_ring.all_intersections(&center);
+        if border_pts.is_empty() {
+            // The intersection is out-of-bounds, but a road leading to it doesn't cross the
+            // boundary?
+            warn!("{} interacts with border strangely", r);
+            continue;
+        }
 
         if r.i1 == *i {
             // Starting out-of-bounds
