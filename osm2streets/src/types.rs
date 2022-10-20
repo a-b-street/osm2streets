@@ -166,3 +166,7 @@ pub enum ControlType {
     Border,        //TODO move to using IntersectionComplexity::MapEdge
     Construction,  // Are these treated as "closed"?
 }
+
+/// The path that some lanes of traffic can take through an intersection.
+/// This representation is the (from, to) roads, identified by their index in the Intersection.
+pub type IndexedMovement = (usize, usize);

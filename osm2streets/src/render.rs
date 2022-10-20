@@ -261,6 +261,45 @@ impl StreetNetwork {
         let output = serde_json::to_string_pretty(&obj)?;
         Ok(output)
     }
+
+    /// For an intersection, show all the movements.
+    pub fn debug_movements_geojson(&self, timer: &mut Timer) -> Result<String> {
+        let initial_map = crate::initial::InitialMap::new(self, timer);
+
+        let mut pairs = Vec::new();
+
+        for (i, intersection) in &self.intersections {
+            // Find the endpoints
+            let road_points: Vec<_> = intersection
+                .roads
+                .iter()
+                .map(|r| {
+                    let pl = &initial_map.roads[r].trimmed_center_pts;
+                    let pt = if r.i1 == *i {
+                        pl.first_pt()
+                    } else {
+                        pl.last_pt()
+                    };
+                    pt
+                })
+                .collect();
+            for (a, b) in intersection.movements.iter() {
+                if *a != *b {
+                    pairs.push((
+                        Line::must_new(road_points[*a], road_points[*b])
+                            .to_polyline()
+                            .make_arrow(Distance::meters(0.3), ArrowCap::Triangle)
+                            .to_geojson(Some(&self.gps_bounds)),
+                        make_props(&[]),
+                    ))
+                }
+            }
+        }
+
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
 }
 
 impl DebugStreets {

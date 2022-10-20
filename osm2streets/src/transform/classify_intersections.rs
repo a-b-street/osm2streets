@@ -1,4 +1,5 @@
 use crate::osm::NodeID;
+use crate::types::IndexedMovement;
 use crate::IntersectionComplexity::*;
 use crate::{
     ConflictType, IntersectionComplexity, OriginalRoad, RestrictionType, Road, StreetNetwork,
@@ -9,17 +10,18 @@ use std::collections::BTreeMap;
 /// Determines the initial complexity of all intersections. Intersections marked "Crossing" are
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
 pub fn classify_intersections(streets: &mut StreetNetwork) {
-    let mut changes: Vec<(NodeID, (IntersectionComplexity, ConflictType))> = Vec::new();
+    let mut changes: Vec<_> = Vec::new();
     for (id, inter) in &streets.intersections {
         if let Crossing = inter.complexity {
             changes.push((*id, guess_complexity(streets, id)));
         }
     }
 
-    for (id, complexity) in changes.into_iter() {
+    for (id, (complexity, conflict_level, movements)) in changes.into_iter() {
         let intersection = streets.intersections.get_mut(&id).unwrap();
-        intersection.complexity = complexity.0;
-        intersection.conflict_level = complexity.1;
+        intersection.complexity = complexity;
+        intersection.conflict_level = conflict_level;
+        intersection.movements = movements;
     }
 }
 
@@ -29,7 +31,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: &NodeID,
-) -> (IntersectionComplexity, ConflictType) {
+) -> (IntersectionComplexity, ConflictType, Vec<IndexedMovement>) {
     use ConflictType::*;
     let road_ids = streets.roads_per_intersection(*intersection_id);
     let roads: Vec<&Road> = road_ids
@@ -39,12 +41,13 @@ fn guess_complexity(
 
     // A terminus is characterised by a single connected road.
     if road_ids.len() == 1 {
-        return (Terminus, Uncontested);
+        return (Terminus, Uncontested, vec![(0, 0)]);
     }
 
     // A Connection is characterised by exactly two connected roads.
     if road_ids.len() == 2 {
-        return (Connection, Uncontested);
+        // TODO check directions of roads and determine movements and if it is well formed etc.
+        return (Connection, Uncontested, vec![(0, 1), (1, 0)]);
     }
 
     // Calculate all the possible movements, except (U-turns).
@@ -79,8 +82,8 @@ fn guess_complexity(
     }
 
     match worst_conflict {
-        Cross => (Crossing, Cross),
-        c => (MultiConnection, c),
+        Cross => (Crossing, Cross, connections),
+        c => (MultiConnection, c, connections),
     }
 }
 

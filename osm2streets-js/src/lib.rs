@@ -103,6 +103,13 @@ impl JsStreetNetwork {
             .debug_clockwise_ordering_geojson(&mut Timer::throwaway())
             .unwrap()
     }
+
+    #[wasm_bindgen(js_name = debugMovementsGeojson)]
+    pub fn debug_movements_geojson(&self) -> String {
+        self.inner
+            .debug_movements_geojson(&mut Timer::throwaway())
+            .unwrap()
+    }
 }
 
 #[wasm_bindgen]
