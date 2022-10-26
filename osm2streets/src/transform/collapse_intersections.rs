@@ -157,7 +157,6 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
         return;
     }
 
-    info!("Collapsing degenerate {}", i);
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
     let mut new_road = streets.remove_road(&r1);
