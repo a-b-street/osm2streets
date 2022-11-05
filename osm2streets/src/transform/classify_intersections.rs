@@ -2,7 +2,8 @@ use crate::osm::NodeID;
 use crate::types::IndexedMovement;
 use crate::IntersectionComplexity::*;
 use crate::{
-    ConflictType, IntersectionComplexity, OriginalRoad, RestrictionType, Road, StreetNetwork,
+    ConflictType, DrivingSide, IntersectionComplexity, OriginalRoad, RestrictionType, Road,
+    StreetNetwork,
 };
 use std::cmp::{max, min};
 use std::collections::BTreeMap;
@@ -75,7 +76,7 @@ fn guess_complexity(
     let mut each_con = connections.iter();
     while let Some(small_con) = each_con.next() {
         for large_con in each_con.clone() {
-            let conflict = calc_conflict(small_con, large_con);
+            let conflict = calc_conflict(small_con, large_con, streets.config.driving_side);
             worst_conflict = max(worst_conflict, conflict);
             conflicts.insert((small_con, large_con), conflict);
         }
@@ -107,29 +108,65 @@ fn turn_is_allowed(src: &Road, dst_id: &OriginalRoad) -> bool {
     !has_exclusive_allows
 }
 
-fn calc_conflict(a: &(usize, usize), b: &(usize, usize)) -> ConflictType {
+fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> ConflictType {
     use ConflictType::*;
+
+    // If the traffic starts of ends at the same place in the same direction...
+    if a.0 == b.0 && a.1 == b.1 {
+        return Uncontested;
+    }
     if a.0 == b.0 {
         return Diverge;
     }
     if a.1 == b.1 {
         return Merge;
     }
-    if a.0 == b.1 || a.1 == b.0 {
-        // TODO depends on driving side and arm order?
-        // It would be clear if a and b were flows instead of roads.
-    }
 
-    // The intersection has a boundary that we have labelled 0 to n in clockwise order (from an
-    // arbitrary point), like a string layed in a circle. If we represent `a` as an arc from one point
-    // on the string to another, then there is a section of the string that connects the two points
-    // and two ends. A second arc, `b`, crosses `a` if and only if `b` has one end between the points
-    // and one end outside.
+    // The intersection has a boundary that we have labelled 0 to n-1 in clockwise order (from an
+    // arbitrary point), like a string laying in a circle. If we represent `a` as an arc from one
+    // point on the string to another, then there is a section of the string between the two points,
+    // connecting them the two points and two ends of string "on the outside". A second arc, `b`,
+    // crosses `a` if and only if `b` has one end between the points and one end outside.
     //     ______
     //    /  |   \
     //   |   |a   n
     //   |   |    0
     //    \__|___/
+
+    // What if the traffic meets going in opposite directions?
+    // It depends on where the traffic came from, and which side we're driving on.
+
+    // Below: If a movement going in the other direction, `b`, joins the indicated LHT movement `a`
+    // (at either end), it will join the road on the dotted side. Whether the other end of `b` is
+    // between the endpoints of `a` or not corresponds to the crossing of the road.
+    // Therefore, if `a` is drawn pointing upwards from low .0 to high .1,
+    // then LHT would be crossed by movements joining from the "inside".
+    //     ______          ______
+    //    /  ^:  \        /  :|  \
+    //   |  a|:   n      |   :|   n
+    //   |   |:   0      |   :|a  0
+    //    \__|:__/        \__:V__/
+
+    // This equation (hopefully) works. Once it does, just trust it:
+    let is_driving_side_between = (side == DrivingSide::Left) == (a.0 < a.1); // `==` or `^`?
+
+    if a.0 == b.1 {
+        return if is_driving_side_between ^ is_between(b.0, a) {
+            // `==` or `^`?
+            Cross
+        } else {
+            Uncontested
+        };
+    }
+    if a.1 == b.0 {
+        return if is_driving_side_between ^ is_between(b.1, a) {
+            // `==` or `^`?
+            Cross
+        } else {
+            Uncontested
+        };
+    }
+
     if is_between(a.0, b) ^ is_between(a.1, b) {
         return Cross;
     }
