@@ -51,7 +51,8 @@ fn guess_complexity(
 
     // Calculate all the possible movements, (except U-turns, for now).
     let mut connections = Vec::new();
-    // Consider turns pairs of roads, from s to d, using their position as index, so we can them later.
+    // Consider all pairs of roads, from s to d. Identify them using their index in the list - which
+    // is sorted in clockwise order - so that we can compare their position later.
     for s in 0..road_ids.len() {
         for d in 0..road_ids.len() {
             if s == d {
