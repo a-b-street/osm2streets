@@ -163,23 +163,22 @@ impl StreetNetwork {
     pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
         self.roads.insert(id, road);
         for i in [id.i1, id.i2] {
-            self.intersections.get_mut(&i).unwrap().roads.push(id);
+            {
+                let intersection = self.intersections.get_mut(&i).unwrap();
+                intersection.roads.push(id);
+                intersection.movements = Vec::new(); // TODO restore this
+            }
             self.sort_roads(i);
         }
     }
 
     pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
-        // Since the roads are already sorted, removing doesn't hurt anything
-        self.intersections
-            .get_mut(&id.i1)
-            .unwrap()
-            .roads
-            .retain(|r| r != id);
-        self.intersections
-            .get_mut(&id.i2)
-            .unwrap()
-            .roads
-            .retain(|r| r != id);
+        for i in [id.i1, id.i2] {
+            // Since the roads are already sorted, removing doesn't break the sort.
+            let intersection = self.intersections.get_mut(&i).unwrap();
+            intersection.roads.retain(|r| r != id);
+            intersection.movements = Vec::new(); // TODO restore this
+        }
         self.roads.remove(id).unwrap()
     }
 
