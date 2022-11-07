@@ -137,14 +137,25 @@ impl JsDebugStreets {
 }
 
 fn do_snap(streets: &StreetNetwork) -> String {
-    use geom::{Line, FindClosest, Polygon, Circle, Distance};
+    use geom::{Circle, Distance, FindClosest, Line, PolyLine, Polygon};
+    use osm2streets::LaneType;
 
     let input = r###"{"type": "FeatureCollection", "features": [ { "type": "Feature", "properties": {}, "geometry": { "coordinates": [ [ [-0.11145331549823823, 51.48936377244081], [-0.11588958774200364, 51.49078063223098], [-0.11688893065218053, 51.48951092609991], [-0.11545743945600861, 51.48908628139077], [-0.11308737620268516, 51.488119253928176], [-0.11235137365375181, 51.489027419435786], [-0.11150058171699584, 51.48899798842976], [-0.11145331549823823, 51.48936377244081] ] ], "type": "Polygon" } } ]}"###;
     let require_in_bounds = false;
-    let ring = Polygon::from_geojson_bytes(input.as_bytes(), &streets.gps_bounds, require_in_bounds).unwrap()[0].0.clone().into_outer_ring();
+    let ring =
+        Polygon::from_geojson_bytes(input.as_bytes(), &streets.gps_bounds, require_in_bounds)
+            .unwrap()[0]
+            .0
+            .clone()
+            .into_outer_ring();
 
     let mut snap_to_intersections = FindClosest::new(&streets.gps_bounds.to_bounds());
     for (id, i) in &streets.intersections {
+        // Just focus on vehicle roads right now
+        if i.roads.iter().all(|r| !streets.roads[r].is_driveable()) {
+            continue;
+        }
+
         // TODO Time to rethink FindClosest. It can't handle a single point, it needs something
         // with a real bbox
         snap_to_intersections.add_polygon(
@@ -167,16 +178,37 @@ fn do_snap(streets: &StreetNetwork) -> String {
 
             // Visualize that snapping...
             if let Ok(line) = Line::new(*pt, snapped_pt) {
-                debug_out.push((line.make_polygons(Distance::meters(2.0)).to_geojson(Some(&streets.gps_bounds)), "blue"));
+                debug_out.push((
+                    line.make_polygons(Distance::meters(2.0))
+                        .to_geojson(Some(&streets.gps_bounds)),
+                    "blue",
+                ));
             }
         }
     }
 
-    let debug_out = debug_out.into_iter().map(|(geometry, color)| {
-        let mut props = serde_json::Map::new();
-        props.insert("fill".to_string(), color.into());
-        props.insert("fillOpacity".to_string(), 0.5.into());
-        (geometry, props)
-    }).collect::<Vec<_>>();
+    // Now pathfind between each pair of waypoints
+    for pair in intersection_waypoints.windows(2) {
+        if let Some(path) = streets.simple_path(pair[0], pair[1], &[LaneType::Driving]) {
+            for (r, _) in path {
+                debug_out.push((
+                    PolyLine::unchecked_new(streets.roads[&r].osm_center_points.clone())
+                        .make_polygons(Distance::meters(5.0))
+                        .to_geojson(Some(&streets.gps_bounds)),
+                    "green",
+                ));
+            }
+        }
+    }
+
+    let debug_out = debug_out
+        .into_iter()
+        .map(|(geometry, color)| {
+            let mut props = serde_json::Map::new();
+            props.insert("fill".to_string(), color.into());
+            props.insert("fillOpacity".to_string(), 0.5.into());
+            (geometry, props)
+        })
+        .collect::<Vec<_>>();
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(debug_out))
 }
