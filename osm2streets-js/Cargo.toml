@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
+serde_json = "1.0.61"
 geom = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 console_error_panic_hook = "0.1.6"

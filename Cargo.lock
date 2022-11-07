@@ -641,6 +641,7 @@ dependencies = [
  "instant",
  "osm2streets",
  "serde",
+ "serde_json",
  "streets_reader",
  "wasm-bindgen",
 ]

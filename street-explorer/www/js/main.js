@@ -219,7 +219,7 @@ function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
     group.addLayer("Snap", new L.geoJSON(JSON.parse(network.snap()), {
       style: function (feature) {
-        return { color: "red", fillOpacity: 0.5 };
+        return feature.properties;
       }
     }));
 

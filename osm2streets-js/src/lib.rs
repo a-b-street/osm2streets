@@ -137,11 +137,46 @@ impl JsDebugStreets {
 }
 
 fn do_snap(streets: &StreetNetwork) -> String {
-    use geom::Polygon;
+    use geom::{Line, FindClosest, Polygon, Circle, Distance};
 
     let input = r###"{"type": "FeatureCollection", "features": [ { "type": "Feature", "properties": {}, "geometry": { "coordinates": [ [ [-0.11145331549823823, 51.48936377244081], [-0.11588958774200364, 51.49078063223098], [-0.11688893065218053, 51.48951092609991], [-0.11545743945600861, 51.48908628139077], [-0.11308737620268516, 51.488119253928176], [-0.11235137365375181, 51.489027419435786], [-0.11150058171699584, 51.48899798842976], [-0.11145331549823823, 51.48936377244081] ] ], "type": "Polygon" } } ]}"###;
     let require_in_bounds = false;
     let ring = Polygon::from_geojson_bytes(input.as_bytes(), &streets.gps_bounds, require_in_bounds).unwrap()[0].0.clone().into_outer_ring();
 
-    input.to_string()
+    let mut snap_to_intersections = FindClosest::new(&streets.gps_bounds.to_bounds());
+    for (id, i) in &streets.intersections {
+        // TODO Time to rethink FindClosest. It can't handle a single point, it needs something
+        // with a real bbox
+        snap_to_intersections.add_polygon(
+            *id,
+            &Circle::new(i.point, Distance::meters(1.0)).to_polygon(),
+        );
+    }
+
+    // Algorithm idea: for each point in the input, snap to the closest intersection. Then pathfind
+    // between those.
+    let threshold = Distance::meters(50.0);
+
+    let mut debug_out = Vec::new();
+    debug_out.push((ring.to_geojson(Some(&streets.gps_bounds)), "red"));
+
+    let mut intersection_waypoints = Vec::new();
+    for pt in ring.points() {
+        if let Some((id, snapped_pt)) = snap_to_intersections.closest_pt(*pt, threshold) {
+            intersection_waypoints.push(id);
+
+            // Visualize that snapping...
+            if let Ok(line) = Line::new(*pt, snapped_pt) {
+                debug_out.push((line.make_polygons(Distance::meters(2.0)).to_geojson(Some(&streets.gps_bounds)), "blue"));
+            }
+        }
+    }
+
+    let debug_out = debug_out.into_iter().map(|(geometry, color)| {
+        let mut props = serde_json::Map::new();
+        props.insert("fill".to_string(), color.into());
+        props.insert("fillOpacity".to_string(), 0.5.into());
+        (geometry, props)
+    }).collect::<Vec<_>>();
+    abstutil::to_json(&geom::geometries_with_properties_to_geojson(debug_out))
 }
