@@ -586,7 +586,7 @@ dependencies = [
 [[package]]
 name = "osm-tag-schemes"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm2lanes#25ac3ccdc862d82293de05c0c3973047d214ea49"
+source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
 dependencies = [
  "osm-tags",
  "strum",
@@ -595,7 +595,7 @@ dependencies = [
 [[package]]
 name = "osm-tags"
 version = "0.1.1"
-source = "git+https://github.com/a-b-street/osm2lanes#25ac3ccdc862d82293de05c0c3973047d214ea49"
+source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
 dependencies = [
  "kstring",
 ]
@@ -603,7 +603,7 @@ dependencies = [
 [[package]]
 name = "osm2lanes"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm2lanes#25ac3ccdc862d82293de05c0c3973047d214ea49"
+source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
 dependencies = [
  "celes",
  "locale-codes",
