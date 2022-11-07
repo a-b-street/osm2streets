@@ -1,5 +1,6 @@
 use crate::osm::NodeID;
 use crate::types::IndexedMovement;
+use crate::Direction;
 use crate::IntersectionComplexity::*;
 use crate::{
     ConflictType, DrivingSide, IntersectionComplexity, OriginalRoad, RestrictionType, Road,
@@ -51,17 +52,43 @@ fn guess_complexity(
         return (Connection, Uncontested, vec![(0, 1), (1, 0)]);
     }
 
-    // Calculate all the possible movements, except (U-turns).
-    //FIXME assert!(roads is sorted clockwise), which it isn't
+    // Calculate all the possible movements, (except U-turns, for now).
     let mut connections = Vec::new();
     // Consider turns pairs of roads, from s to d, using their position as index, so we can them later.
     for s in 0..road_ids.len() {
         for d in 0..road_ids.len() {
             if s == d {
-                continue;
+                continue; // Ignore U-turns.
             }
-            // FIXME check if we can travel into the intersection on s and out of the intersection on d
-            if turn_is_allowed(roads.get(s).unwrap(), road_ids.get(d).unwrap()) {
+
+            // Calculate if it is possible to emerge from s into the intersection.
+            let src_road = roads[s];
+            let inbound_dir = if road_ids[s].i2 == *intersection_id {
+                Direction::Fwd
+            } else {
+                Direction::Back
+            };
+            if let Some(dir) = src_road.oneway_for_driving() {
+                if dir != inbound_dir {
+                    continue;
+                }
+            }
+
+            // Calculate if it is possible to leave the intersection into d.
+            let dst_road = roads[d];
+            let outbound_dir = if road_ids[d].i1 == *intersection_id {
+                Direction::Fwd
+            } else {
+                Direction::Back
+            };
+            if let Some(dir) = dst_road.oneway_for_driving() {
+                if dir != outbound_dir {
+                    continue;
+                }
+            }
+
+            // Check for any turn restrictions.
+            if turn_is_allowed(src_road, &road_ids[d]) {
                 connections.push((s, d));
             }
         }
