@@ -103,6 +103,11 @@ impl JsStreetNetwork {
             .debug_clockwise_ordering_geojson(&mut Timer::throwaway())
             .unwrap()
     }
+
+    #[wasm_bindgen(js_name = snap)]
+    pub fn snap(&self) -> String {
+        do_snap(&self.inner)
+    }
 }
 
 #[wasm_bindgen]
@@ -129,4 +134,14 @@ impl JsDebugStreets {
     pub fn to_debug_geojson(&self) -> Option<String> {
         self.inner.to_debug_geojson()
     }
+}
+
+fn do_snap(streets: &StreetNetwork) -> String {
+    use geom::Polygon;
+
+    let input = r###"{"type": "FeatureCollection", "features": [ { "type": "Feature", "properties": {}, "geometry": { "coordinates": [ [ [-0.11145331549823823, 51.48936377244081], [-0.11588958774200364, 51.49078063223098], [-0.11688893065218053, 51.48951092609991], [-0.11545743945600861, 51.48908628139077], [-0.11308737620268516, 51.488119253928176], [-0.11235137365375181, 51.489027419435786], [-0.11150058171699584, 51.48899798842976], [-0.11145331549823823, 51.48936377244081] ] ], "type": "Polygon" } } ]}"###;
+    let require_in_bounds = false;
+    let ring = Polygon::from_geojson_bytes(input.as_bytes(), &streets.gps_bounds, require_in_bounds).unwrap()[0].0.clone().into_outer_ring();
+
+    input.to_string()
 }
