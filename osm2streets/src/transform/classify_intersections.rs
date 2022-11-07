@@ -19,7 +19,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
         }
     }
 
-    for (id, (complexity, conflict_level, movements)) in changes.into_iter() {
+    for (id, (complexity, conflict_level, movements)) in changes {
         let intersection = streets.intersections.get_mut(&id).unwrap();
         intersection.complexity = complexity;
         intersection.conflict_level = conflict_level;
@@ -36,10 +36,7 @@ fn guess_complexity(
 ) -> (IntersectionComplexity, ConflictType, Vec<IndexedMovement>) {
     use ConflictType::*;
     let road_ids = streets.roads_per_intersection(*intersection_id);
-    let roads: Vec<&Road> = road_ids
-        .iter()
-        .map(|id| streets.roads.get(id).unwrap())
-        .collect();
+    let roads: Vec<&Road> = road_ids.iter().map(|id| &streets.roads[id]).collect();
 
     // A terminus is characterised by a single connected road.
     if road_ids.len() == 1 {
