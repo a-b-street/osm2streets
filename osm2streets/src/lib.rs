@@ -153,7 +153,7 @@ impl StreetNetwork {
             // Some nonsense thing
             boundary_polygon: Polygon::rectangle(1.0, 1.0),
             gps_bounds: GPSBounds::new(),
-            config: MapConfig::default_for_side(DrivingSide::Right),
+            config: MapConfig::default(),
 
             debug_steps: RefCell::new(Vec::new()),
         }

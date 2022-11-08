@@ -202,6 +202,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "driving-side"
+version = "0.1.0"
+source = "git+https://github.com/a-b-street/osm2lanes#997d5ed09c4ec5775111d3dcd306d83aaf50696a"
+dependencies = [
+ "geo 0.23.0",
+ "geojson 0.24.0",
+]
+
+[[package]]
 name = "earcutr"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -314,14 +323,30 @@ dependencies = [
 ]
 
 [[package]]
-name = "geo-types"
-version = "0.7.6"
+name = "geo"
+version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9805fbfcea97de816e6408e938603241879cc41eea3fba3f84f122f4f6f9c54"
+checksum = "b684179d4c034f9e6718692601a7ec77e4a3b654dbc09b5e4fd342f0e48f2ba1"
+dependencies = [
+ "float_next_after",
+ "geo-types",
+ "geographiclib-rs",
+ "log",
+ "num-traits",
+ "robust",
+ "rstar",
+]
+
+[[package]]
+name = "geo-types"
+version = "0.7.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8d77ceb80f375dc4cda113a3ae1b06a36ef623f8f035c03752ca6698f4ddfee"
 dependencies = [
  "approx",
  "num-traits",
  "rstar",
+ "serde",
 ]
 
 [[package]]
@@ -347,6 +372,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "geojson"
+version = "0.24.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff2cc39a555a57b2a5514e223d76e23779f853840cc3c67767f77f58dc2272b7"
+dependencies = [
+ "geo-types",
+ "log",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "geom"
 version = "0.1.0"
 source = "git+https://github.com/a-b-street/abstreet#466fc05b2a72a868ec02d8d34cdb176b6030e391"
@@ -356,8 +394,8 @@ dependencies = [
  "anyhow",
  "earcutr",
  "fs-err",
- "geo",
- "geojson",
+ "geo 0.22.1",
+ "geojson 0.23.0",
  "histogram",
  "instant",
  "ordered-float",
@@ -586,7 +624,7 @@ dependencies = [
 [[package]]
 name = "osm-tag-schemes"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
+source = "git+https://github.com/a-b-street/osm2lanes#997d5ed09c4ec5775111d3dcd306d83aaf50696a"
 dependencies = [
  "osm-tags",
  "strum",
@@ -595,7 +633,7 @@ dependencies = [
 [[package]]
 name = "osm-tags"
 version = "0.1.1"
-source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
+source = "git+https://github.com/a-b-street/osm2lanes#997d5ed09c4ec5775111d3dcd306d83aaf50696a"
 dependencies = [
  "kstring",
 ]
@@ -603,7 +641,7 @@ dependencies = [
 [[package]]
 name = "osm2lanes"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm2lanes#4f0466ec306e33281d54a6ab7277541bdd90a6ee"
+source = "git+https://github.com/a-b-street/osm2lanes#997d5ed09c4ec5775111d3dcd306d83aaf50696a"
 dependencies = [
  "celes",
  "locale-codes",
@@ -659,7 +697,7 @@ name = "polylabel"
 version = "2.4.0"
 source = "git+https://github.com/urschrei/polylabel-rs?rev=b919b8587b491b9a952a6d4c0670558bfd38e034#b919b8587b491b9a952a6d4c0670558bfd38e034"
 dependencies = [
- "geo",
+ "geo 0.22.1",
  "libc",
  "num-traits",
  "thiserror",
@@ -883,6 +921,7 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
+ "driving-side",
  "geom",
  "log",
  "osm2streets",

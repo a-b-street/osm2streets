@@ -9,7 +9,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
 
-use osm2streets::{CrossingType, MapConfig, OriginalRoad, StreetNetwork};
+use osm2streets::{CrossingType, DrivingSide, MapConfig, OriginalRoad, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -40,9 +40,9 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn default_for_side(driving_side: osm2streets::DrivingSide) -> Self {
+    pub fn default() -> Self {
         Self {
-            map_config: MapConfig::default_for_side(driving_side),
+            map_config: MapConfig::default(),
             onstreet_parking: OnstreetParking::JustOSM,
             public_offstreet_parking: PublicOffstreetParking::None,
             private_offstreet_parking: PrivateOffstreetParking::FixedPerBldg(1),
@@ -100,7 +100,8 @@ pub fn osm_to_street_network(
     timer: &mut Timer,
 ) -> Result<StreetNetwork> {
     let mut streets = StreetNetwork::blank();
-    // Do this early. Calculating Roads uses DrivingSide, for example!
+    // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
+    // happens in split_ways.
     streets.config = opts.map_config.clone();
 
     if let Some(ref pts) = clip_pts {
@@ -154,6 +155,13 @@ fn extract_osm(
         streets.gps_bounds = doc.gps_bounds.clone();
         streets.boundary_polygon = streets.gps_bounds.to_bounds().get_rectangle();
     }
+    // Calculate DrivingSide from some arbitrary point
+    streets.config.driving_side =
+        if driving_side::is_left_handed(streets.gps_bounds.get_rectangle()[0].into()) {
+            DrivingSide::Left
+        } else {
+            DrivingSide::Right
+        };
 
     let mut out = OsmExtract::new();
 

@@ -54,6 +54,9 @@ impl NamePerLanguage {
 pub struct MapConfig {
     /// If true, driving happens on the right side of the road (USA). If false, on the left
     /// (Australia).
+    ///
+    /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
+    /// to set it.
     pub driving_side: DrivingSide,
     pub bikes_can_use_bus_lanes: bool,
     /// If true, roads without explicitly tagged sidewalks may be assigned sidewalks or shoulders.
@@ -77,9 +80,10 @@ pub struct MapConfig {
 }
 
 impl MapConfig {
-    pub fn default_for_side(driving_side: DrivingSide) -> Self {
+    pub fn default() -> Self {
         Self {
-            driving_side,
+            // Just a dummy value that'll be set later
+            driving_side: DrivingSide::Right,
             bikes_can_use_bus_lanes: true,
             inferred_sidewalks: true,
             street_parking_spot_length: Distance::meters(8.0),
