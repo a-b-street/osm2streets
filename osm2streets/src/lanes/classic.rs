@@ -152,7 +152,6 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     let mut back_side: Vec<LaneSpec> = iter::repeat_with(|| back(driving_lane))
         .take(num_driving_back)
         .collect();
-    // TODO Fix upstream. https://wiki.openstreetmap.org/wiki/Key:centre_turn_lane
     if tags.is("lanes:both_ways", "1") || tags.is("centre_turn_lane", "yes") {
         fwd_side.insert(0, fwd(LaneType::SharedLeftTurn));
     }
@@ -177,12 +176,18 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         ""
     };
     if !fwd_bus_spec.is_empty() {
-        let parts: Vec<&str> = fwd_bus_spec.split('|').collect();
+        let mut parts: Vec<&str> = fwd_bus_spec.split('|').collect();
         let offset = if fwd_side[0].lt == LaneType::SharedLeftTurn {
             1
         } else {
             0
         };
+        // Per https://wiki.openstreetmap.org/wiki/Lanes#Description, the parts are ordered
+        // left-to-right when facing forwards. fwd_side is in-to-out, which is left-to-right only
+        // for right-handed driving. So for left-handed, invert.
+        if cfg.driving_side == DrivingSide::Left {
+            parts.reverse();
+        }
         if parts.len() == fwd_side.len() - offset {
             for (idx, part) in parts.into_iter().enumerate() {
                 if part == "designated" {
@@ -195,7 +200,13 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         .get("bus:lanes:backward")
         .or_else(|| tags.get("psv:lanes:backward"))
     {
-        let parts: Vec<&str> = spec.split('|').collect();
+        let mut parts: Vec<&str> = spec.split('|').collect();
+        // Again, the parts are ordered left-to-right when facing backwards. back_side is
+        // in-to-out, which is left-to-right only for right-handed driving. So for left-handed,
+        // invert.
+        if cfg.driving_side == DrivingSide::Left {
+            parts.reverse();
+        }
         if parts.len() == back_side.len() {
             for (idx, part) in parts.into_iter().enumerate() {
                 if part == "designated" {
