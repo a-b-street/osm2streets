@@ -7,10 +7,6 @@ members = [
     "tests",
 ]
 
-[patch.crates-io]
-# avoid duplicating geo dependency, until next polylabel release
-polylabel = { git = "https://github.com/urschrei/polylabel-rs", rev = "b919b8587b491b9a952a6d4c0670558bfd38e034" }
-
 # To temporarily work on dependencies locally, uncomment this
 #[patch."https://github.com/a-b-street/abstreet"]
 #abstutil = { path = "/home/dabreegster/abstreet/abstutil" }
