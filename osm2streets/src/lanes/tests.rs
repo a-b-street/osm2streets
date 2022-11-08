@@ -164,6 +164,20 @@ fn test_osm_to_specs() {
             "SddS",
             "vv^^",
         ),
+        (
+            "https://www.openstreetmap.org/way/632329263",
+            vec![
+                "bus:lanes:backward=designated|yes",
+                "lanes=3",
+                "lanes:backward=2",
+                "lanes:bus:backward=1",
+                "lanes:forward=1",
+                "psv=yes",
+            ],
+            DrivingSide::Left,
+            "sddBs",
+            "^^vvv",
+        ),
     ] {
         let cfg = MapConfig {
             driving_side,
