@@ -151,28 +151,11 @@ fn transform_tags(tags: &Tags, cfg: &MapConfig) -> osm_tags::Tags {
     let mut tags = tags.clone();
 
     // Patch around some common issues. We should upstream fixes in osm2lanes, of course.
-    if tags.is(osm::SIDEWALK, "none") {
-        tags.insert(osm::SIDEWALK, "no");
-    }
     if tags.is("oneway", "reversible") {
         tags.insert("oneway", "yes");
     }
     if tags.is("highway", "living_street") {
         tags.insert("highway", "residential");
-    }
-
-    if tags.is(osm::SIDEWALK, "separate") && cfg.inferred_sidewalks {
-        // Make blind guesses
-        let value = if tags.is("oneway", "yes") {
-            if cfg.driving_side == DrivingSide::Right {
-                "right"
-            } else {
-                "left"
-            }
-        } else {
-            "both"
-        };
-        tags.insert(osm::SIDEWALK, value);
     }
 
     super::classic::infer_sidewalk_tags(&mut tags, cfg);

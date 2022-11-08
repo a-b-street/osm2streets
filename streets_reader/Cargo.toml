@@ -9,5 +9,5 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 geom = { git = "https://github.com/a-b-street/abstreet" }
 log = "0.4.14"
-roxmltree = { version = "0.14.0", features=["std"] }
 osm2streets = { path = "../osm2streets" }
+xmlparser = "0.13.5"
