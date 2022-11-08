@@ -3,8 +3,9 @@
 Come hang out at https://github.com/a-b-street/osm2streets to ask questions and improve these docs.
 
 ## Pre-requisites
-- rust beta
-- 
+
+- latest stable Rust
+- [wasm-pack](https://github.com/rustwasm/wasm-pack)
 
 ## Tests
 
