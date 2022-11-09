@@ -37,16 +37,27 @@ fn guess_complexity(
     use ConflictType::*;
     let road_ids = streets.roads_per_intersection(*intersection_id);
     let roads: Vec<&Road> = road_ids.iter().map(|id| &streets.roads[id]).collect();
+    // TODO filter out all non-driving roads before continuing.
 
     // A terminus is characterised by a single connected road.
     if road_ids.len() == 1 {
-        return (Terminus, Uncontested, vec![(0, 0)]);
+        return (Terminus, Uncontested, Vec::new());
     }
 
     // A Connection is characterised by exactly two connected roads.
     if road_ids.len() == 2 {
-        // TODO check directions of roads and determine movements and if it is well formed etc.
-        return (Connection, Uncontested, vec![(0, 1), (1, 0)]);
+        let mut movements = Vec::new();
+        if can_drive_out_of(roads[0], road_ids[0], *intersection_id)
+            && can_drive_into(roads[1], road_ids[1], *intersection_id)
+        {
+            movements.push((0, 1));
+        }
+        if can_drive_out_of(roads[1], road_ids[1], *intersection_id)
+            && can_drive_into(roads[0], road_ids[0], *intersection_id)
+        {
+            movements.push((1, 0));
+        }
+        return (Connection, Uncontested, movements);
     }
 
     // Calculate all the possible movements, (except U-turns, for now).
