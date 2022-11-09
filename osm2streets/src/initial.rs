@@ -58,6 +58,7 @@ pub struct Intersection {
     pub polygon: Polygon,
     pub roads: BTreeSet<OriginalRoad>,
     pub complexity: IntersectionComplexity,
+    /// The most dangerous type of conflict present in the intersection.
     pub conflict_level: ConflictType,
     pub control: ControlType,
     pub elevation: Distance,

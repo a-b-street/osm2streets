@@ -97,7 +97,7 @@ pub enum DrivingSide {
     Left,
 }
 
-/// How a lane of travel is interrupted.
+/// How a lane of travel is interrupted, as it meets another or ends.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum InterruptionType {
     Uninterrupted,
@@ -107,6 +107,7 @@ pub enum InterruptionType {
     DeadEnd,
 }
 
+/// How two lanes of travel conflict with each other.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ConflictType {
     Uncontested,
