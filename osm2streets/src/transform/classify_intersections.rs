@@ -35,25 +35,28 @@ fn guess_complexity(
     intersection_id: &NodeID,
 ) -> (IntersectionComplexity, ConflictType, Vec<IndexedMovement>) {
     use ConflictType::*;
-    let road_ids = streets.roads_per_intersection(*intersection_id);
-    let roads: Vec<&Road> = road_ids.iter().map(|id| &streets.roads[id]).collect();
-    // TODO filter out all non-driving roads before continuing.
+    let roads: Vec<_> = streets
+        .roads_per_intersection(*intersection_id)
+        .iter()
+        .map(|id| streets.roads.get_key_value(id).unwrap())
+        //TODO .filter(|(_id, road)| road.is_driveable())
+        .collect();
 
     // A terminus is characterised by a single connected road.
-    if road_ids.len() == 1 {
+    if roads.len() == 1 {
         return (Terminus, Uncontested, Vec::new());
     }
 
     // A Connection is characterised by exactly two connected roads.
-    if road_ids.len() == 2 {
+    if roads.len() == 2 {
         let mut movements = Vec::new();
-        if can_drive_out_of(roads[0], road_ids[0], *intersection_id)
-            && can_drive_into(roads[1], road_ids[1], *intersection_id)
+        if can_drive_out_of(roads[0], *intersection_id)
+            && can_drive_into(roads[1], *intersection_id)
         {
             movements.push((0, 1));
         }
-        if can_drive_out_of(roads[1], road_ids[1], *intersection_id)
-            && can_drive_into(roads[0], road_ids[0], *intersection_id)
+        if can_drive_out_of(roads[1], *intersection_id)
+            && can_drive_into(roads[0], *intersection_id)
         {
             movements.push((1, 0));
         }
@@ -64,26 +67,26 @@ fn guess_complexity(
     let mut connections = Vec::new();
     // Consider all pairs of roads, from s to d. Identify them using their index in the list - which
     // is sorted in clockwise order - so that we can compare their position later.
-    for s in 0..road_ids.len() {
-        for d in 0..road_ids.len() {
+    for s in 0..roads.len() {
+        for d in 0..roads.len() {
             if s == d {
                 continue; // Ignore U-turns.
             }
 
             // Calculate if it is possible to emerge from s into the intersection.
             let src_road = roads[s];
-            if !can_drive_out_of(src_road, road_ids[s], *intersection_id) {
+            if !can_drive_out_of(src_road, *intersection_id) {
                 continue;
             }
 
             // Calculate if it is possible to leave the intersection into d.
             let dst_road = roads[d];
-            if !can_drive_into(dst_road, road_ids[d], *intersection_id) {
+            if !can_drive_into(dst_road, *intersection_id) {
                 continue;
             }
 
             // Check for any turn restrictions.
-            if turn_is_allowed(src_road, &road_ids[d]) {
+            if turn_is_allowed(src_road, dst_road) {
                 connections.push((s, d));
             }
         }
@@ -110,12 +113,12 @@ fn guess_complexity(
     }
 }
 
-fn can_drive_out_of(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bool {
-    if !road.is_driveable() {
+fn can_drive_out_of(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
+    if !id_road.1.is_driveable() {
         return false;
     }
-    if let Some(driving_dir) = road.oneway_for_driving() {
-        let required_dir = if road_id.i2 == which_end {
+    if let Some(driving_dir) = id_road.1.oneway_for_driving() {
+        let required_dir = if id_road.0.i2 == which_end {
             Direction::Fwd
         } else {
             Direction::Back
@@ -125,12 +128,12 @@ fn can_drive_out_of(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bo
     return true;
 }
 
-fn can_drive_into(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bool {
-    if !road.is_driveable() {
+fn can_drive_into(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
+    if !id_road.1.is_driveable() {
         return false;
     }
-    if let Some(driving_dir) = road.oneway_for_driving() {
-        let required_dir = if road_id.i1 == which_end {
+    if let Some(driving_dir) = id_road.1.oneway_for_driving() {
+        let required_dir = if id_road.0.i1 == which_end {
             Direction::Fwd
         } else {
             Direction::Back
@@ -140,17 +143,17 @@ fn can_drive_into(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bool
     return true;
 }
 
-fn turn_is_allowed(src: &Road, dst_id: &OriginalRoad) -> bool {
+fn turn_is_allowed(src: (&OriginalRoad, &Road), dst: (&OriginalRoad, &Road)) -> bool {
     let mut has_exclusive_allows = false;
-    for (t, other) in &src.turn_restrictions {
+    for (t, other) in src.1.turn_restrictions.iter() {
         match t {
             RestrictionType::BanTurns => {
-                if other == dst_id {
+                if *other == *dst.0 {
                     return false;
                 }
             }
             RestrictionType::OnlyAllowTurns => {
-                if other == dst_id {
+                if *other == *dst.0 {
                     return true;
                 }
                 has_exclusive_allows = true;
