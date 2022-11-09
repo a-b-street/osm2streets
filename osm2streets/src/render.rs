@@ -7,7 +7,7 @@ use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine};
 
 use crate::IntersectionComplexity::MultiConnection;
-use crate::{DebugStreets, Direction, LaneType, StreetNetwork};
+use crate::{DebugStreets, Direction, DrivingSide, LaneType, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -265,6 +265,11 @@ impl StreetNetwork {
     /// For an intersection, show all the movements.
     pub fn debug_movements_geojson(&self, timer: &mut Timer) -> Result<String> {
         let initial_map = crate::initial::InitialMap::new(self, timer);
+        let arrow_shift_dist = if self.config.driving_side == DrivingSide::Right {
+            Distance::meters(-1.3)
+        } else {
+            Distance::meters(1.3)
+        };
 
         let mut pairs = Vec::new();
 
@@ -275,23 +280,39 @@ impl StreetNetwork {
                 .iter()
                 .map(|r| {
                     let pl = &initial_map.roads[r].trimmed_center_pts;
-                    let pt = if r.i1 == *i {
-                        pl.first_pt()
+                    let first_road_segment = if r.i1 == *i {
+                        pl.first_line()
                     } else {
-                        pl.last_pt()
+                        pl.last_line().reversed()
                     };
-                    pt
+                    if self
+                        .roads
+                        .get(r)
+                        .map_or(false, |road| road.oneway_for_driving().is_some())
+                    {
+                        (first_road_segment.pt1(), first_road_segment.pt1())
+                    } else {
+                        (
+                            first_road_segment
+                                .shift_either_direction(arrow_shift_dist)
+                                .pt1(),
+                            first_road_segment
+                                .shift_either_direction(-arrow_shift_dist)
+                                .pt1(),
+                        )
+                    }
                 })
                 .collect();
             for (a, b) in intersection.movements.iter() {
                 if *a != *b {
-                    pairs.push((
-                        Line::must_new(road_points[*a], road_points[*b])
-                            .to_polyline()
-                            .make_arrow(Distance::meters(0.3), ArrowCap::Triangle)
-                            .to_geojson(Some(&self.gps_bounds)),
-                        make_props(&[]),
-                    ))
+                    if let Ok(line) = Line::new(road_points[*a].0, road_points[*b].1) {
+                        pairs.push((
+                            line.to_polyline()
+                                .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)
+                                .to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[]),
+                        ))
+                    }
                 }
             }
         }
