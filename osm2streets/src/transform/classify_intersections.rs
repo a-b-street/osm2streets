@@ -61,28 +61,14 @@ fn guess_complexity(
 
             // Calculate if it is possible to emerge from s into the intersection.
             let src_road = roads[s];
-            let inbound_dir = if road_ids[s].i2 == *intersection_id {
-                Direction::Fwd
-            } else {
-                Direction::Back
-            };
-            if let Some(dir) = src_road.oneway_for_driving() {
-                if dir != inbound_dir {
-                    continue;
-                }
+            if !can_drive_out_of(src_road, road_ids[s], *intersection_id) {
+                continue;
             }
 
             // Calculate if it is possible to leave the intersection into d.
             let dst_road = roads[d];
-            let outbound_dir = if road_ids[d].i1 == *intersection_id {
-                Direction::Fwd
-            } else {
-                Direction::Back
-            };
-            if let Some(dir) = dst_road.oneway_for_driving() {
-                if dir != outbound_dir {
-                    continue;
-                }
+            if !can_drive_into(dst_road, road_ids[d], *intersection_id) {
+                continue;
             }
 
             // Check for any turn restrictions.
@@ -111,6 +97,36 @@ fn guess_complexity(
         Cross => (Crossing, Cross, connections),
         c => (MultiConnection, c, connections),
     }
+}
+
+fn can_drive_out_of(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bool {
+    if !road.is_driveable() {
+        return false;
+    }
+    if let Some(driving_dir) = road.oneway_for_driving() {
+        let required_dir = if road_id.i2 == which_end {
+            Direction::Fwd
+        } else {
+            Direction::Back
+        };
+        return driving_dir == required_dir;
+    }
+    return true;
+}
+
+fn can_drive_into(road: &Road, road_id: OriginalRoad, which_end: NodeID) -> bool {
+    if !road.is_driveable() {
+        return false;
+    }
+    if let Some(driving_dir) = road.oneway_for_driving() {
+        let required_dir = if road_id.i1 == which_end {
+            Direction::Fwd
+        } else {
+            Direction::Back
+        };
+        return driving_dir == required_dir;
+    }
+    return true;
 }
 
 fn turn_is_allowed(src: &Road, dst_id: &OriginalRoad) -> bool {
