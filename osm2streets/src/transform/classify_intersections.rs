@@ -39,7 +39,7 @@ fn guess_complexity(
         .roads_per_intersection(*intersection_id)
         .iter()
         .map(|id| streets.roads.get_key_value(id).unwrap())
-        //TODO .filter(|(_id, road)| road.is_driveable())
+        .filter(|(_id, road)| road.is_driveable())
         .collect();
 
     // A terminus is characterised by a single connected road.
@@ -114,9 +114,6 @@ fn guess_complexity(
 }
 
 fn can_drive_out_of(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
-    if !id_road.1.is_driveable() {
-        return false;
-    }
     if let Some(driving_dir) = id_road.1.oneway_for_driving() {
         let required_dir = if id_road.0.i2 == which_end {
             Direction::Fwd
@@ -129,9 +126,6 @@ fn can_drive_out_of(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool 
 }
 
 fn can_drive_into(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
-    if !id_road.1.is_driveable() {
-        return false;
-    }
     if let Some(driving_dir) = id_road.1.oneway_for_driving() {
         let required_dir = if id_road.0.i1 == which_end {
             Direction::Fwd
