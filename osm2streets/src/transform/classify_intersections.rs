@@ -200,11 +200,11 @@ fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> C
     //    \__|:__/        \__:V__/
 
     // This equation (hopefully) works. Once it does, just trust it:
-    let is_driving_side_between = (side == DrivingSide::Left) == (a.0 < a.1); // `==` or `^`?
+    // TODO unit test these three equations.
+    let is_driving_side_between = (side == DrivingSide::Left) ^ (a.0 < a.1); // `==` or `^`?
 
     if a.0 == b.1 {
         return if is_driving_side_between ^ is_between(b.0, a) {
-            // `==` or `^`?
             Cross
         } else {
             Uncontested
@@ -212,7 +212,6 @@ fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> C
     }
     if a.1 == b.0 {
         return if is_driving_side_between ^ is_between(b.1, a) {
-            // `==` or `^`?
             Cross
         } else {
             Uncontested
