@@ -126,9 +126,9 @@ pub fn split_up_roads(
                 }
 
                 let osm_center_pts = simplify_linestring(std::mem::take(&mut pts));
-                match Road::new(osm_center_pts, tags, &streets.config) {
-                    Ok(road) => {
-                        streets.insert_road(id, road);
+                match PolyLine::new(osm_center_pts) {
+                    Ok(pl) => {
+                        streets.insert_road(id, Road::new(pl, tags, &streets.config));
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");

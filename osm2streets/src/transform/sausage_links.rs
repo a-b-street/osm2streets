@@ -1,5 +1,7 @@
 use std::collections::BTreeSet;
 
+use geom::PolyLine;
+
 use crate::{
     osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, OriginalRoad, StreetNetwork,
 };
@@ -86,10 +88,10 @@ fn fix(streets: &mut StreetNetwork, id1: OriginalRoad, id2: OriginalRoad) {
     // bend away from the median in some unrealistic way.
     //
     // Alternate idea: Try to average the two PolyLines somehow
-    road1.osm_center_points = vec![
-        road1.osm_center_points[0],
-        *road1.osm_center_points.last().unwrap(),
-    ];
+    road1.osm_center_points = PolyLine::must_new(vec![
+        road1.osm_center_points.first_pt(),
+        road1.osm_center_points.last_pt(),
+    ]);
 
     // Lanes
     //

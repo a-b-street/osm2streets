@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 
 use anyhow::Result;
 
-use geom::{Distance, Pt2D};
+use geom::{Distance, PolyLine, Pt2D};
 
 use crate::osm::NodeID;
 use crate::{osm, ControlType, OriginalRoad, StreetNetwork};
@@ -160,25 +160,28 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
     let mut new_road = streets.remove_road(&r1);
-    let mut road2 = streets.remove_road(&r2);
+    let road2 = streets.remove_road(&r2);
     streets.intersections.remove(&i).unwrap();
 
     // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
+    // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
+    let mut new_pts;
     let (new_i1, new_i2) = if r1.i2 == r2.i1 {
-        new_road.osm_center_points.extend(road2.osm_center_points);
+        new_pts = new_road.osm_center_points.clone().into_points();
+        new_pts.extend(road2.osm_center_points.into_points());
         (r1.i1, r2.i2)
     } else if r1.i2 == r2.i2 {
-        road2.osm_center_points.reverse();
-        new_road.osm_center_points.extend(road2.osm_center_points);
+        new_pts = new_road.osm_center_points.clone().into_points();
+        new_pts.extend(road2.osm_center_points.reversed().into_points());
         (r1.i1, r2.i1)
     } else if r1.i1 == r2.i1 {
-        road2.osm_center_points.reverse();
-        road2.osm_center_points.extend(new_road.osm_center_points);
-        new_road.osm_center_points = road2.osm_center_points;
+        new_pts = road2.osm_center_points.into_points();
+        new_pts.reverse();
+        new_pts.extend(new_road.osm_center_points.clone().into_points());
         (r2.i2, r1.i2)
     } else if r1.i1 == r2.i2 {
-        road2.osm_center_points.extend(new_road.osm_center_points);
-        new_road.osm_center_points = road2.osm_center_points;
+        new_pts = road2.osm_center_points.into_points();
+        new_pts.extend(new_road.osm_center_points.clone().into_points());
         (r2.i1, r1.i2)
     } else {
         unreachable!()
@@ -188,7 +191,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // Simplify curves and dedupe points. The epsilon was tuned for only one location that was
     // breaking
     let epsilon = 1.0;
-    new_road.osm_center_points = Pt2D::simplify_rdp(new_road.osm_center_points, epsilon);
+    new_road.osm_center_points = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
     let new_r1 = OriginalRoad {
         osm_way_id: r1.osm_way_id,

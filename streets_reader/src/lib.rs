@@ -7,7 +7,7 @@ use std::collections::{HashMap, HashSet};
 
 use abstutil::Timer;
 use anyhow::Result;
-use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
+use geom::{GPSBounds, HashablePt2D, LonLat, Ring};
 
 use osm2streets::{CrossingType, DrivingSide, MapConfig, OriginalRoad, StreetNetwork};
 
@@ -259,26 +259,21 @@ pub fn filter_crosswalks(
         // Some crossing nodes are outside the map boundary or otherwise not on a road that we
         // retained
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
-            // TODO Support cul-de-sacs and other loop roads
-            if let Ok(pl) = PolyLine::new(road.osm_center_points.clone()) {
-                // Crossings aren't right at an intersection. Where is this point along the center
-                // line?
-                if let Some((dist, _)) = pl.dist_along_of_point(pt.to_pt2d()) {
-                    let pct = dist / pl.length();
-                    // Don't throw away any crossings. If it occurs in the first half of the road,
-                    // snap to the first intersection. If there's a mid-block crossing mapped,
-                    // that'll likely not be correctly interpreted, unless an intersection is there
-                    // anyway.
-                    if pct <= 0.5 {
-                        road.crosswalk_backward = true;
-                    } else {
-                        road.crosswalk_forward = true;
-                    }
-
-                    // TODO Some crosswalks incorrectly snap to the intersection near a short
-                    // service road, which later gets trimmed. So the crosswalk effectively
-                    // disappears.
+            // Crossings aren't right at an intersection. Where is this point along the center
+            // line?
+            if let Some((dist, _)) = road.osm_center_points.dist_along_of_point(pt.to_pt2d()) {
+                let pct = dist / road.osm_center_points.length();
+                // Don't throw away any crossings. If it occurs in the first half of the road, snap
+                // to the first intersection. If there's a mid-block crossing mapped, that'll
+                // likely not be correctly interpreted, unless an intersection is there anyway.
+                if pct <= 0.5 {
+                    road.crosswalk_backward = true;
+                } else {
+                    road.crosswalk_forward = true;
                 }
+
+                // TODO Some crosswalks incorrectly snap to the intersection near a short service
+                // road, which later gets trimmed. So the crosswalk effectively disappears.
             }
         }
     }

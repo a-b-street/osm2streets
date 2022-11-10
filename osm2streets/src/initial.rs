@@ -82,14 +82,10 @@ impl InitialMap {
             );
         }
 
-        for (id, road) in &streets.roads {
-            let id = *id;
-            // TODO Neither of these should still be happening. If they are, flush out the problem
+        for id in streets.roads.keys().cloned() {
+            // This should never happen. This check can go away when InitialMap is gone.
             if id.i1 == id.i2 {
                 panic!("There's a loop {}", id);
-            }
-            if PolyLine::new(road.osm_center_points.clone()).is_err() {
-                panic!("There's broken geom {}", id);
             }
 
             m.intersections.get_mut(&id.i1).unwrap().roads.insert(id);
