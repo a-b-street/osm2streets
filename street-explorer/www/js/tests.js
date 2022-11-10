@@ -23,6 +23,7 @@ export function loadTests() {
     "taipei",
     "tempe_light_rail",
     "tempe_split",
+    "tiny_loop",
   ];
 
   // Add all the test cases to the list.
