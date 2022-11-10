@@ -318,9 +318,9 @@ impl StreetNetwork {
             // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
             // shouldn't matter for sorting.
             let center_pl = if r.i1 == i {
-                PolyLine::must_new(road.osm_center_points.clone()).reversed()
+                road.osm_center_points.reversed()
             } else if r.i2 == i {
-                PolyLine::must_new(road.osm_center_points.clone())
+                road.osm_center_points.clone()
             } else {
                 panic!("Incident road {r} doesn't have an endpoint at {i}");
             };
@@ -383,17 +383,23 @@ impl StreetNetwork {
         for r in self.roads_per_intersection(id) {
             fixed.push(r);
             let road = self.roads.get_mut(&r).unwrap();
+            let mut pts = road.osm_center_points.clone().into_points();
             if r.i1 == id {
-                road.osm_center_points[0] = point;
+                pts[0] = point;
             } else {
                 assert_eq!(r.i2, id);
-                *road.osm_center_points.last_mut().unwrap() = point;
+                *pts.last_mut().unwrap() = point;
             }
+            // TODO This could panic if someone moves the intersection a certain way. We could
+            // dedupe points or try to workaround it, but this method is only used by one
+            // low-priority caller right now
+            road.osm_center_points = PolyLine::must_new(pts);
         }
 
         Some(fixed)
     }
 
+    /// Brute-force search; doesn't use a quadtree
     pub fn closest_intersection(&self, pt: Pt2D) -> osm::NodeID {
         self.intersections
             .iter()
@@ -405,10 +411,9 @@ impl StreetNetwork {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
-    /// This is effectively a PolyLine, except there's a case where we need to plumb forward
-    /// cul-de-sac roads for roundabout handling. No transformation of these points whatsoever has
-    /// happened.
-    pub osm_center_points: Vec<Pt2D>,
+    /// This represents the original OSM geometry. No transformation has happened, besides slightly
+    /// smoothing the polyline.
+    pub osm_center_points: PolyLine,
     pub osm_tags: Tags,
     pub turn_restrictions: Vec<(RestrictionType, OriginalRoad)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
@@ -430,14 +435,9 @@ pub struct Road {
 }
 
 impl Road {
-    pub fn new(osm_center_points: Vec<Pt2D>, osm_tags: Tags, config: &MapConfig) -> Result<Self> {
-        // Just flush out errors immediately.
-        // TODO Store the PolyLine, not a Vec<Pt2D>
-        let _ = PolyLine::new(osm_center_points.clone())?;
-
+    pub fn new(osm_center_points: PolyLine, osm_tags: Tags, config: &MapConfig) -> Self {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
-
-        Ok(Self {
+        Self {
             osm_center_points,
             osm_tags,
             turn_restrictions: Vec::new(),
@@ -451,7 +451,7 @@ impl Road {
             crossing_nodes: Vec::new(),
 
             lane_specs_ltr,
-        })
+        }
     }
 
     // TODO For the moment, treating all rail things as light rail
@@ -504,11 +504,13 @@ impl Road {
 
     /// Points from first to last point. Undefined for loops.
     pub fn angle(&self) -> Angle {
-        self.osm_center_points[0].angle_to(*self.osm_center_points.last().unwrap())
+        self.osm_center_points
+            .first_pt()
+            .angle_to(self.osm_center_points.last_pt())
     }
 
     pub fn length(&self) -> Distance {
-        PolyLine::unchecked_new(self.osm_center_points.clone()).length()
+        self.osm_center_points.length()
     }
 
     pub fn get_zorder(&self) -> isize {
@@ -545,14 +547,7 @@ impl Road {
         // If there's a sidewalk on only one side, adjust the true center of the road.
         // TODO I don't remember the rationale for doing this in the first place. What if there's a
         // shoulder and a sidewalk of different widths? We don't do anything then
-        let mut true_center = match PolyLine::new(self.osm_center_points.clone()) {
-            Ok(pl) => pl,
-            Err(err) => panic!(
-                "untrimmed_road_geometry of {} failed: {}",
-                self.osm_url(),
-                err
-            ),
-        };
+        let mut true_center = self.osm_center_points.clone();
         match (sidewalk_right, sidewalk_left) {
             (Some(w), None) => {
                 true_center = true_center.must_shift_right(w / 2.0);
