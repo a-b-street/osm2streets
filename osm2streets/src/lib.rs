@@ -5,7 +5,6 @@ extern crate log;
 
 use std::cell::RefCell;
 use std::collections::BTreeMap;
-use std::fmt;
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -14,6 +13,7 @@ use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
+pub use self::ids::OriginalRoad;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
     SIDEWALK_THICKNESS,
@@ -25,6 +25,7 @@ pub use self::types::{
 
 mod edit;
 mod geometry;
+mod ids;
 pub mod initial;
 mod lanes;
 pub mod osm;
@@ -64,85 +65,6 @@ pub struct DebugStreets {
     pub points: Vec<(Pt2D, String)>,
     /// Extra labelled polylines to debug
     pub polylines: Vec<(PolyLine, String)>,
-}
-
-/// A way to refer to roads across many maps and over time. Also trivial to relate with OSM to find
-/// upstream problems.
-//
-// - Using LonLat is more indirect, and f64's need to be trimmed and compared carefully with epsilon
-//   checks.
-// - TODO Look at some stable ID standard like linear referencing
-// (https://github.com/opentraffic/architecture/issues/1).
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct OriginalRoad {
-    pub osm_way_id: osm::WayID,
-    pub i1: osm::NodeID,
-    pub i2: osm::NodeID,
-}
-
-impl fmt::Display for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "OriginalRoad({} from {} to {}",
-            self.osm_way_id, self.i1, self.i2
-        )
-    }
-}
-impl fmt::Debug for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-impl OriginalRoad {
-    pub fn new(way: i64, (i1, i2): (i64, i64)) -> OriginalRoad {
-        OriginalRoad {
-            osm_way_id: osm::WayID(way),
-            i1: osm::NodeID(i1),
-            i2: osm::NodeID(i2),
-        }
-    }
-
-    /// Prints the OriginalRoad in a way that can be copied to Rust code.
-    pub fn as_string_code(&self) -> String {
-        format!(
-            "OriginalRoad::new({}, ({}, {}))",
-            self.osm_way_id.0, self.i1.0, self.i2.0
-        )
-    }
-
-    pub fn has_common_endpoint(&self, other: OriginalRoad) -> bool {
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return true;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return true;
-        }
-        false
-    }
-
-    // TODO Doesn't handle two roads between the same pair of intersections
-    pub fn common_endpt(&self, other: OriginalRoad) -> osm::NodeID {
-        #![allow(clippy::suspicious_operation_groupings)]
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return self.i1;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return self.i2;
-        }
-        panic!("{:?} and {:?} have no common_endpt", self, other);
-    }
-
-    pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
-        if self.i1 == i {
-            self.i2
-        } else if self.i2 == i {
-            self.i1
-        } else {
-            panic!("{} doesn't have {} on either side", self, i);
-        }
-    }
 }
 
 impl StreetNetwork {
