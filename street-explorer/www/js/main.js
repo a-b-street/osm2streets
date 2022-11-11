@@ -273,9 +273,9 @@ function setupLeafletMap(mapContainer) {
   const map = L.map(mapContainer, {
     layers: [osm],
     maxZoom: 21,
-    scrollWheelZoom: false,
-    smoothWheelZoom: true,
-    smoothSensitivity: 1,
+    // Make it smoother to zoom farther into the map
+    zoomSnap: 0.5,
+    zoomDelta: 0.5,
     wheelPxPerZoomLevel: 120,
   }).setView([40.0, 10.0], 4);
 
