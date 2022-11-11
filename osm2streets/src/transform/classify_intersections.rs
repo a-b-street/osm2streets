@@ -85,8 +85,15 @@ fn guess_complexity(
                 continue;
             }
 
+            // TODO detect U-Turns that should be assumed forbidden.
+            // if src and dst are oneway and
+            // adjacent on the intersection and
+            // ordered with the "insides" touching and
+            // the angle between them is small enough.
+
             // Check for any turn restrictions.
             if turn_is_allowed(src_road, dst_road) {
+                //FIXME this is no longer accurate because s and d are indexes into a filtered list:
                 connections.push((s, d));
             }
         }
