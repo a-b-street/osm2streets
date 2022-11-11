@@ -6,6 +6,7 @@ pub mod classify_intersections;
 mod collapse_intersections;
 mod dual_carriageways;
 mod find_short_roads;
+mod intersection_geometry;
 mod merge_short_road;
 mod remove_disconnected;
 mod sausage_links;
@@ -27,6 +28,7 @@ pub enum Transformation {
     CollapseSausageLinks,
     ShrinkOverlappingRoads,
     MergeDualCarriageways,
+    GenerateIntersectionGeometry,
 }
 
 impl Transformation {
@@ -55,6 +57,7 @@ impl Transformation {
             Transformation::MergeShortRoads,
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
+            Transformation::GenerateIntersectionGeometry,
         ]
     }
 
@@ -71,6 +74,7 @@ impl Transformation {
             Transformation::MergeShortRoads,
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
+            Transformation::GenerateIntersectionGeometry,
         ]
     }
 
@@ -86,6 +90,7 @@ impl Transformation {
             Transformation::CollapseSausageLinks => "collapse sausage links",
             Transformation::ShrinkOverlappingRoads => "shrink overlapping roads",
             Transformation::MergeDualCarriageways => "merge dual carriageways",
+            Transformation::GenerateIntersectionGeometry => "generate intersection geometry",
         }
     }
 
@@ -123,6 +128,9 @@ impl Transformation {
             }
             Transformation::MergeDualCarriageways => {
                 dual_carriageways::merge(streets);
+            }
+            Transformation::GenerateIntersectionGeometry => {
+                intersection_geometry::generate(streets, timer);
             }
         }
         timer.stop(self.name());

@@ -59,7 +59,7 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
                 let mut candidates = Vec::new();
                 for r in streets.roads_per_intersection(i) {
                     let road = &streets.roads[&r];
-                    if road.length() < SHORT_ROAD_THRESHOLD {
+                    if road.untrimmed_length() < SHORT_ROAD_THRESHOLD {
                         candidates.push(r);
                     }
                 }

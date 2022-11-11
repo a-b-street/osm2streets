@@ -25,7 +25,6 @@ digraph {
     23 [ label = "Unknown" ]
     24 [ label = "Unknown" ]
     25 [ label = "Unknown" ]
-    26 [ label = "MapEdge" ]
     5 -> 13 [ label = "2 lanes" ]
     13 -> 5 [ label = "2 lanes" ]
     6 -> 25 [ label = "2 lanes" ]
