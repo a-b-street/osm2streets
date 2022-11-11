@@ -273,10 +273,10 @@ function setupLeafletMap(mapContainer) {
   const map = L.map(mapContainer, {
     layers: [osm],
     maxZoom: 21,
-    // Make it smoother to zoom farther into the map
-    zoomSnap: 0.5,
-    zoomDelta: 0.5,
-    wheelPxPerZoomLevel: 120,
+    zoomSnap: 0, // Allow any fractional zoom level.
+    zoomDelta: 0.5, // Zoom half a zoom level when clicking the zoom buttons.
+    wheelPxPerZoomLevel: 90, // Make zooming with the scroll wheel a little less sensitive than default.
+    wheelDebounceTime: 80,
   }).setView([40.0, 10.0], 4);
 
   new GeoSearch.GeoSearchControl({
