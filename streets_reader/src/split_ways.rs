@@ -125,8 +125,8 @@ pub fn split_up_roads(
                     }
                 }
 
-                let osm_center_pts = simplify_linestring(std::mem::take(&mut pts));
-                match PolyLine::new(osm_center_pts) {
+                let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
+                match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
                         streets.insert_road(id, Road::new(pl, tags, &streets.config));
                     }
