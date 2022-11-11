@@ -139,7 +139,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
 
     // We'll keep r1's way ID, so it's a little more convenient for debugging to guarantee r1 is
     // the longer piece.
-    if streets.roads[&r1].length() < streets.roads[&r2].length() {
+    if streets.roads[&r1].untrimmed_length() < streets.roads[&r2].untrimmed_length() {
         std::mem::swap(&mut r1, &mut r2);
     }
 
@@ -234,7 +234,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
             continue;
         }
         let road = &streets.roads[&roads[0]];
-        if road.length() < SHORT_THRESHOLD
+        if road.untrimmed_length() < SHORT_THRESHOLD
             && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
         {
             remove_roads.insert(roads[0]);

@@ -61,21 +61,17 @@ impl JsStreetNetwork {
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
     pub fn to_geojson_plain(&self) -> String {
-        self.inner.to_geojson(&mut Timer::throwaway()).unwrap()
+        self.inner.to_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toLanePolygonsGeojson)]
     pub fn to_lane_polygons_geojson(&self) -> String {
-        self.inner
-            .to_lane_polygons_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.to_lane_polygons_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toLaneMarkingsGeojson)]
     pub fn to_lane_markings_geojson(&self) -> String {
-        self.inner
-            .to_lane_markings_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.to_lane_markings_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toGraphviz)]
@@ -98,9 +94,7 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = debugClockwiseOrderingGeojson)]
     pub fn debug_clockwise_ordering_geojson(&self) -> String {
-        self.inner
-            .debug_clockwise_ordering_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.debug_clockwise_ordering_geojson().unwrap()
     }
 }
 

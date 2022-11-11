@@ -18,6 +18,9 @@ use geom::{Distance, PolyLine, Polygon};
 use crate::{osm, OriginalRoad};
 pub use algorithm::intersection_polygon;
 
+// For anyone considering removing this indirection in the future: it's used to recalculate one or
+// two intersections at a time in A/B Street's edit mode. Within just this repo, it does seem
+// redundant.
 #[derive(Clone)]
 pub struct InputRoad {
     pub id: OriginalRoad,

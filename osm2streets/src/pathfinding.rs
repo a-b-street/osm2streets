@@ -18,8 +18,7 @@ impl StreetNetwork {
             }
         }
         petgraph::algo::dijkstra(&graph, from, Some(to), |(_, _, r)| {
-            // TODO Expensive!
-            self.roads[r].length()
+            self.roads[r].untrimmed_length()
         })
         .get(&to)
         .cloned()
@@ -57,8 +56,7 @@ impl StreetNetwork {
             &graph,
             from,
             |i| i == to,
-            // TODO Expensive!
-            |(_, _, (r, _))| self.roads[r].length(),
+            |(_, _, (r, _))| self.roads[r].untrimmed_length(),
             |_| Distance::ZERO,
         )?;
         let roads: Vec<(OriginalRoad, Direction)> = path

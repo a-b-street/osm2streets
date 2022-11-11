@@ -74,7 +74,7 @@ impl StreetNetwork {
                         continue;
                     }
 
-                    let pl = self.trimmed_road_geometry(r).unwrap();
+                    let pl = self.estimate_trimmed_geometry(r).unwrap();
                     if r.i1 == i {
                         if trim_roads_for_merging.contains_key(&(r.osm_way_id, true)) {
                             panic!("trim_roads_for_merging has an i1 duplicate for {}", r);

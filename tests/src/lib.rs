@@ -29,7 +29,7 @@ mod tests {
         )?;
         street_network
             .apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
-        street_network.save_to_geojson(format!("{path}/geometry.json"), &mut timer)?;
+        street_network.save_to_geojson(format!("{path}/geometry.json"))?;
 
         let road_network: RoadNetwork = street_network.into();
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
