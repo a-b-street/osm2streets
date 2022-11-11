@@ -167,21 +167,21 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
     let mut new_pts;
     let (new_i1, new_i2) = if r1.i2 == r2.i1 {
-        new_pts = new_road.osm_center_points.clone().into_points();
-        new_pts.extend(road2.osm_center_points.into_points());
+        new_pts = new_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(road2.untrimmed_center_line.into_points());
         (r1.i1, r2.i2)
     } else if r1.i2 == r2.i2 {
-        new_pts = new_road.osm_center_points.clone().into_points();
-        new_pts.extend(road2.osm_center_points.reversed().into_points());
+        new_pts = new_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(road2.untrimmed_center_line.reversed().into_points());
         (r1.i1, r2.i1)
     } else if r1.i1 == r2.i1 {
-        new_pts = road2.osm_center_points.into_points();
+        new_pts = road2.untrimmed_center_line.into_points();
         new_pts.reverse();
-        new_pts.extend(new_road.osm_center_points.clone().into_points());
+        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
         (r2.i2, r1.i2)
     } else if r1.i1 == r2.i2 {
-        new_pts = road2.osm_center_points.into_points();
-        new_pts.extend(new_road.osm_center_points.clone().into_points());
+        new_pts = road2.untrimmed_center_line.into_points();
+        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
         (r2.i1, r1.i2)
     } else {
         unreachable!()
@@ -191,7 +191,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // Simplify curves and dedupe points. The epsilon was tuned for only one location that was
     // breaking
     let epsilon = 1.0;
-    new_road.osm_center_points = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
+    new_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
     let new_r1 = OriginalRoad {
         osm_way_id: r1.osm_way_id,

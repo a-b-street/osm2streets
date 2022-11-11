@@ -261,8 +261,8 @@ pub fn filter_crosswalks(
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             // Crossings aren't right at an intersection. Where is this point along the center
             // line?
-            if let Some((dist, _)) = road.osm_center_points.dist_along_of_point(pt.to_pt2d()) {
-                let pct = dist / road.osm_center_points.length();
+            if let Some((dist, _)) = road.untrimmed_center_line.dist_along_of_point(pt.to_pt2d()) {
+                let pct = dist / road.untrimmed_center_line.length();
                 // Don't throw away any crossings. If it occurs in the first half of the road, snap
                 // to the first intersection. If there's a mid-block crossing mapped, that'll
                 // likely not be correctly interpreted, unless an intersection is there anyway.
