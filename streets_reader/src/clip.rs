@@ -54,7 +54,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
         if intersection.roads.len() > 1 {
             for r in intersection.roads.clone() {
-                let road = streets.remove_road(&r);
+                let mut road = streets.remove_road(&r);
 
                 let mut copy = streets.intersections[&id].clone();
                 copy.roads.clear();
@@ -69,6 +69,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
                     fixed_road_id.i2 = new_id;
                 }
                 assert_ne!(r, fixed_road_id);
+                road.id = fixed_road_id;
 
                 streets.intersections.insert(new_id, copy);
                 streets.insert_road(fixed_road_id, road);

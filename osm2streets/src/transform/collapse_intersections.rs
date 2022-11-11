@@ -5,7 +5,7 @@ use anyhow::Result;
 use geom::{Distance, PolyLine, Pt2D};
 
 use crate::osm::NodeID;
-use crate::{osm, ControlType, OriginalRoad, StreetNetwork};
+use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -17,7 +17,7 @@ pub fn collapse(streets: &mut StreetNetwork) {
         if roads.len() != 2 {
             continue;
         }
-        match should_collapse(roads[0], roads[1], streets) {
+        match should_collapse(&streets.roads[&roads[0]], &streets.roads[&roads[1]]) {
             Ok(()) => {
                 merge.push(*id);
             }
@@ -35,10 +35,7 @@ pub fn collapse(streets: &mut StreetNetwork) {
     // Results look good so far.
 }
 
-fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) -> Result<()> {
-    let road1 = &streets.roads[&r1];
-    let road2 = &streets.roads[&r2];
-
+fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     // Don't attempt to merge roads with these.
     if !road1.turn_restrictions.is_empty() || !road1.complicated_turn_restrictions.is_empty() {
         bail!("one road has turn restrictions");
@@ -51,7 +48,7 @@ fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) 
     // a bizarre example. These are actually blackholed, some problem with service roads.
     if road1.oneway_for_driving().is_some()
         && road2.oneway_for_driving().is_some()
-        && r1.i2 == r2.i2
+        && road1.id.i2 == road2.id.i2
     {
         bail!("oneway roads point at each other");
     }
@@ -198,6 +195,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
         i1: new_i1,
         i2: new_i2,
     };
+    new_road.id = new_r1;
     streets.insert_road(new_r1, new_road);
 
     // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
