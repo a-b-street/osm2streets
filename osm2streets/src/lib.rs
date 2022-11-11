@@ -82,6 +82,7 @@ impl StreetNetwork {
     }
 
     pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
+        assert_eq!(id, road.id);
         self.roads.insert(id, road);
         for i in [id.i1, id.i2] {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
@@ -333,6 +334,8 @@ impl StreetNetwork {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
+    /// This determines the orientation of the road -- what intersection it points at.
+    pub id: OriginalRoad,
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
     /// smoothing the polyline.
     pub untrimmed_center_line: PolyLine,
@@ -357,9 +360,15 @@ pub struct Road {
 }
 
 impl Road {
-    pub fn new(untrimmed_center_line: PolyLine, osm_tags: Tags, config: &MapConfig) -> Self {
+    pub fn new(
+        id: OriginalRoad,
+        untrimmed_center_line: PolyLine,
+        osm_tags: Tags,
+        config: &MapConfig,
+    ) -> Self {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
         Self {
+            id,
             untrimmed_center_line,
             osm_tags,
             turn_restrictions: Vec::new(),
@@ -537,6 +546,8 @@ pub enum CrossingType {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Intersection {
+    pub id: osm::NodeID,
+
     /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
@@ -553,8 +564,14 @@ pub struct Intersection {
 }
 
 impl Intersection {
-    pub fn new(point: Pt2D, complexity: IntersectionComplexity, control: ControlType) -> Self {
+    pub fn new(
+        id: osm::NodeID,
+        point: Pt2D,
+        complexity: IntersectionComplexity,
+        control: ControlType,
+    ) -> Self {
         Self {
+            id,
             point,
             complexity,
             control,

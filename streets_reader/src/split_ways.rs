@@ -63,6 +63,7 @@ pub fn split_up_roads(
         streets.intersections.insert(
             *id,
             Intersection::new(
+                *id,
                 pt.to_pt2d(),
                 // Guess a safe generic complexity, specialise later.
                 IntersectionComplexity::Crossing,
@@ -81,6 +82,7 @@ pub fn split_up_roads(
         streets.intersections.insert(
             id,
             Intersection::new(
+                id,
                 point,
                 IntersectionComplexity::Crossing,
                 ControlType::StopSign,
@@ -128,7 +130,7 @@ pub fn split_up_roads(
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
-                        streets.insert_road(id, Road::new(pl, tags, &streets.config));
+                        streets.insert_road(id, Road::new(id, pl, tags, &streets.config));
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");
