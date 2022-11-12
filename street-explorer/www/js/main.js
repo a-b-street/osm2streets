@@ -273,10 +273,11 @@ function setupLeafletMap(mapContainer) {
   const map = L.map(mapContainer, {
     layers: [osm],
     maxZoom: 21,
+    zoomSnap: 0,
+    zoomDelta: 0.5,
     scrollWheelZoom: false,
     smoothWheelZoom: true,
     smoothSensitivity: 1,
-    wheelPxPerZoomLevel: 120,
   }).setView([40.0, 10.0], 4);
 
   new GeoSearch.GeoSearchControl({
