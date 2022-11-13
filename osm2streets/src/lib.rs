@@ -131,7 +131,7 @@ impl StreetNetwork {
             for r in self.roads_per_intersection(road_id.i1) {
                 let road = &self.roads[&r];
                 // trimmed_center_line hasn't been initialized yet, so override this
-                let mut input = road.to_input_road(&r);
+                let mut input = road.to_input_road();
                 input.center_pts = road.untrimmed_road_geometry().0;
                 input_roads.push(input);
             }
@@ -149,7 +149,7 @@ impl StreetNetwork {
             let mut input_roads = Vec::new();
             for r in self.roads_per_intersection(road_id.i2) {
                 let road = &self.roads[&r];
-                let mut input = road.to_input_road(&r);
+                let mut input = road.to_input_road();
                 if r == road_id {
                     input.center_pts = trimmed_center_pts.clone();
                 } else {
@@ -519,10 +519,9 @@ impl Road {
         Ok((left, right))
     }
 
-    // TODO Don't take our own ID
-    pub(crate) fn to_input_road(&self, id: &OriginalRoad) -> InputRoad {
+    pub(crate) fn to_input_road(&self) -> InputRoad {
         InputRoad {
-            id: *id,
+            id: self.id,
             center_pts: self.trimmed_center_line.clone(),
             half_width: self.total_width() / 2.0,
             osm_tags: self.osm_tags.clone(),

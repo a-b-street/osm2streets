@@ -70,6 +70,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
                 }
                 assert_ne!(r, fixed_road_id);
                 road.id = fixed_road_id;
+                copy.id = new_id;
 
                 streets.intersections.insert(new_id, copy);
                 streets.insert_road(fixed_road_id, road);
