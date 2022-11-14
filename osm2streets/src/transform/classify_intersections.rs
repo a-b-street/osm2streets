@@ -29,7 +29,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 /// Guesses the complexity of the intersection based on the connecting roads and their lanes.
 ///
 /// The existing complexity field is ignored, so be careful how you use the guessed value.
-fn guess_complexity(
+pub fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: &NodeID,
 ) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {

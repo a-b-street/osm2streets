@@ -5124,7 +5124,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "MultiConnection Merge",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1950975923",
         "osm_node_id": 1950975923,
@@ -6919,7 +6919,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Connection",
+        "complexity": "Terminus",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/5572469746",
         "osm_node_id": 5572469746,

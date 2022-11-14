@@ -85,21 +85,37 @@ impl StreetNetwork {
         assert_eq!(id, road.id);
         self.roads.insert(id, road);
         for i in [id.i1, id.i2] {
-            {
-                let intersection = self.intersections.get_mut(&i).unwrap();
-                intersection.roads.push(id);
-                intersection.movements = Vec::new(); // TODO restore this
-            }
+            self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
+            // Recalculate movements and complexity.
+            let (complexity, conflict_level, movements) =
+                crate::transform::classify_intersections::guess_complexity(self, &i);
+            let int = self.intersections.get_mut(&i).unwrap();
+            if int.complexity != IntersectionComplexity::MapEdge {
+                int.complexity = complexity;
+            }
+            int.conflict_level = conflict_level;
+            int.movements = movements;
         }
     }
 
     pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
         for i in [id.i1, id.i2] {
+            self.intersections
+                .get_mut(&i)
+                .unwrap()
+                .roads
+                .retain(|r| r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
-            let intersection = self.intersections.get_mut(&i).unwrap();
-            intersection.roads.retain(|r| r != id);
-            intersection.movements = Vec::new(); // TODO restore this
+            // Recalculate movements and complexity.
+            let (complexity, conflict_level, movements) =
+                crate::transform::classify_intersections::guess_complexity(self, &i);
+            let int = self.intersections.get_mut(&i).unwrap();
+            if int.complexity != IntersectionComplexity::MapEdge {
+                int.complexity = complexity;
+            }
+            int.conflict_level = conflict_level;
+            int.movements = movements;
         }
         self.roads.remove(id).unwrap()
     }
