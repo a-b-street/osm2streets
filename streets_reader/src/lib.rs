@@ -7,9 +7,9 @@ use std::collections::{HashMap, HashSet};
 
 use abstutil::Timer;
 use anyhow::Result;
-use geom::{GPSBounds, HashablePt2D, LonLat, PolyLine, Ring};
+use geom::{GPSBounds, HashablePt2D, LonLat, Ring};
 
-use osm2streets::{CrossingType, MapConfig, OriginalRoad, StreetNetwork};
+use osm2streets::{CrossingType, DrivingSide, MapConfig, OriginalRoad, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -40,9 +40,9 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn default_for_side(driving_side: osm2streets::DrivingSide) -> Self {
+    pub fn default() -> Self {
         Self {
-            map_config: MapConfig::default_for_side(driving_side),
+            map_config: MapConfig::default(),
             onstreet_parking: OnstreetParking::JustOSM,
             public_offstreet_parking: PublicOffstreetParking::None,
             private_offstreet_parking: PrivateOffstreetParking::FixedPerBldg(1),
@@ -100,7 +100,8 @@ pub fn osm_to_street_network(
     timer: &mut Timer,
 ) -> Result<StreetNetwork> {
     let mut streets = StreetNetwork::blank();
-    // Do this early. Calculating Roads uses DrivingSide, for example!
+    // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
+    // happens in split_ways.
     streets.config = opts.map_config.clone();
 
     if let Some(ref pts) = clip_pts {
@@ -154,6 +155,13 @@ fn extract_osm(
         streets.gps_bounds = doc.gps_bounds.clone();
         streets.boundary_polygon = streets.gps_bounds.to_bounds().get_rectangle();
     }
+    // Calculate DrivingSide from some arbitrary point
+    streets.config.driving_side =
+        if driving_side::is_left_handed(streets.gps_bounds.get_rectangle()[0].into()) {
+            DrivingSide::Left
+        } else {
+            DrivingSide::Right
+        };
 
     let mut out = OsmExtract::new();
 
@@ -251,26 +259,21 @@ pub fn filter_crosswalks(
         // Some crossing nodes are outside the map boundary or otherwise not on a road that we
         // retained
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
-            // TODO Support cul-de-sacs and other loop roads
-            if let Ok(pl) = PolyLine::new(road.osm_center_points.clone()) {
-                // Crossings aren't right at an intersection. Where is this point along the center
-                // line?
-                if let Some((dist, _)) = pl.dist_along_of_point(pt.to_pt2d()) {
-                    let pct = dist / pl.length();
-                    // Don't throw away any crossings. If it occurs in the first half of the road,
-                    // snap to the first intersection. If there's a mid-block crossing mapped,
-                    // that'll likely not be correctly interpreted, unless an intersection is there
-                    // anyway.
-                    if pct <= 0.5 {
-                        road.crosswalk_backward = true;
-                    } else {
-                        road.crosswalk_forward = true;
-                    }
-
-                    // TODO Some crosswalks incorrectly snap to the intersection near a short
-                    // service road, which later gets trimmed. So the crosswalk effectively
-                    // disappears.
+            // Crossings aren't right at an intersection. Where is this point along the center
+            // line?
+            if let Some((dist, _)) = road.untrimmed_center_line.dist_along_of_point(pt.to_pt2d()) {
+                let pct = dist / road.untrimmed_center_line.length();
+                // Don't throw away any crossings. If it occurs in the first half of the road, snap
+                // to the first intersection. If there's a mid-block crossing mapped, that'll
+                // likely not be correctly interpreted, unless an intersection is there anyway.
+                if pct <= 0.5 {
+                    road.crosswalk_backward = true;
+                } else {
+                    road.crosswalk_forward = true;
                 }
+
+                // TODO Some crosswalks incorrectly snap to the intersection near a short service
+                // road, which later gets trimmed. So the crosswalk effectively disappears.
             }
         }
     }

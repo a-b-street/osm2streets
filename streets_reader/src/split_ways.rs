@@ -63,6 +63,7 @@ pub fn split_up_roads(
         streets.intersections.insert(
             *id,
             Intersection::new(
+                *id,
                 pt.to_pt2d(),
                 // Assume a complicated intersection, until we determine otherwise.
                 IntersectionComplexity::Crossing,
@@ -82,6 +83,7 @@ pub fn split_up_roads(
         streets.intersections.insert(
             id,
             Intersection::new(
+                id,
                 point,
                 IntersectionComplexity::Crossing,
                 ConflictType::Cross,
@@ -127,10 +129,10 @@ pub fn split_up_roads(
                     }
                 }
 
-                let osm_center_pts = simplify_linestring(std::mem::take(&mut pts));
-                match Road::new(osm_center_pts, tags, &streets.config) {
-                    Ok(road) => {
-                        streets.insert_road(id, road);
+                let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
+                match PolyLine::new(untrimmed_center_line) {
+                    Ok(pl) => {
+                        streets.insert_road(id, Road::new(id, pl, tags, &streets.config));
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");

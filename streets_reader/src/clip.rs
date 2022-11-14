@@ -1,6 +1,5 @@
 use abstutil::Timer;
 use anyhow::Result;
-use geom::PolyLine;
 use osm2streets::{osm, ControlType, IntersectionComplexity, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
@@ -13,11 +12,12 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
     // First, just remove roads that both start and end outside the boundary polygon.
     streets.retain_roads(|_, r| {
-        let first_in = boundary_polygon.contains_pt(r.osm_center_points[0]);
-        let last_in = boundary_polygon.contains_pt(*r.osm_center_points.last().unwrap());
+        let first_in = boundary_polygon.contains_pt(r.untrimmed_center_line.first_pt());
+        let last_in = boundary_polygon.contains_pt(r.untrimmed_center_line.last_pt());
         let light_rail_ok = if r.is_light_rail() {
             // Make sure it's in the boundary somewhere
-            r.osm_center_points
+            r.untrimmed_center_line
+                .points()
                 .iter()
                 .any(|pt| boundary_polygon.contains_pt(*pt))
         } else {
@@ -54,7 +54,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
         if intersection.roads.len() > 1 {
             for r in intersection.roads.clone() {
-                let road = streets.remove_road(&r);
+                let mut road = streets.remove_road(&r);
 
                 let mut copy = streets.intersections[&id].clone();
                 copy.roads.clear();
@@ -69,6 +69,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
                     fixed_road_id.i2 = new_id;
                 }
                 assert_ne!(r, fixed_road_id);
+                road.id = fixed_road_id;
+                copy.id = new_id;
 
                 streets.intersections.insert(new_id, copy);
                 streets.insert_road(fixed_road_id, road);
@@ -89,8 +91,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         let r = intersection.roads[0];
 
         let road = streets.roads.get_mut(&r).unwrap();
-        let center = PolyLine::must_new(road.osm_center_points.clone());
-        let border_pts = boundary_ring.all_intersections(&center);
+        let border_pts = boundary_ring.all_intersections(&road.untrimmed_center_line);
         if border_pts.is_empty() {
             // The intersection is out-of-bounds, but a road leading to it doesn't cross the
             // boundary?
@@ -101,9 +102,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         if r.i1 == *i {
             // Starting out-of-bounds
             let border_pt = border_pts[0];
-            if let Some(pl) = center.get_slice_starting_at(border_pt) {
-                road.osm_center_points = pl.into_points();
-                intersection.point = road.osm_center_points[0];
+            if let Some(pl) = road.untrimmed_center_line.get_slice_starting_at(border_pt) {
+                road.untrimmed_center_line = pl;
+                intersection.point = road.untrimmed_center_line.first_pt();
             } else {
                 warn!("{} interacts with border strangely", r);
                 continue;
@@ -113,9 +114,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             // For light rail, the center-line might cross the boundary twice. When we're looking
             // at the outbound end, take the last time we hit the boundary
             let border_pt = *border_pts.last().unwrap();
-            if let Some(pl) = center.get_slice_ending_at(border_pt) {
-                road.osm_center_points = pl.into_points();
-                intersection.point = *road.osm_center_points.last().unwrap();
+            if let Some(pl) = road.untrimmed_center_line.get_slice_ending_at(border_pt) {
+                road.untrimmed_center_line = pl;
+                intersection.point = road.untrimmed_center_line.last_pt();
             } else {
                 warn!("{} interacts with border strangely", r);
                 continue;

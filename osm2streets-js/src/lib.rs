@@ -2,11 +2,10 @@ use abstutil::Timer;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use osm2streets::{DebugStreets, DrivingSide, StreetNetwork, Transformation};
+use osm2streets::{DebugStreets, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
-    driving_side: DrivingSide,
     debug_each_step: bool,
     dual_carriageway_experiment: bool,
     cycletrack_snapping_experiment: bool,
@@ -30,7 +29,7 @@ impl JsStreetNetwork {
             .into_serde()
             .map_err(|err| JsValue::from_str(&err.to_string()))?;
 
-        let mut options = streets_reader::Options::default_for_side(input.driving_side);
+        let mut options = streets_reader::Options::default();
         options.map_config.inferred_sidewalks = input.inferred_sidewalks;
         options.map_config.osm2lanes = input.osm2lanes;
 
@@ -62,21 +61,17 @@ impl JsStreetNetwork {
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
     pub fn to_geojson_plain(&self) -> String {
-        self.inner.to_geojson(&mut Timer::throwaway()).unwrap()
+        self.inner.to_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toLanePolygonsGeojson)]
     pub fn to_lane_polygons_geojson(&self) -> String {
-        self.inner
-            .to_lane_polygons_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.to_lane_polygons_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toLaneMarkingsGeojson)]
     pub fn to_lane_markings_geojson(&self) -> String {
-        self.inner
-            .to_lane_markings_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.to_lane_markings_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = toGraphviz)]
@@ -99,9 +94,7 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = debugClockwiseOrderingGeojson)]
     pub fn debug_clockwise_ordering_geojson(&self) -> String {
-        self.inner
-            .debug_clockwise_ordering_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.debug_clockwise_ordering_geojson().unwrap()
     }
 
     #[wasm_bindgen(js_name = debugMovementsGeojson)]

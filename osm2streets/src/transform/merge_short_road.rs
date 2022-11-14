@@ -74,7 +74,7 @@ impl StreetNetwork {
                         continue;
                     }
 
-                    let pl = self.trimmed_road_geometry(r).unwrap();
+                    let pl = self.estimate_trimmed_geometry(r).unwrap();
                     if r.i1 == i {
                         if trim_roads_for_merging.contains_key(&(r.osm_way_id, true)) {
                             panic!("trim_roads_for_merging has an i1 duplicate for {}", r);
@@ -108,7 +108,7 @@ impl StreetNetwork {
         let mut new_to_old = BTreeMap::new();
         for r in self.roads_per_intersection(i2) {
             deleted.push(r);
-            let road = self.remove_road(&r);
+            let mut road = self.remove_road(&r);
             let mut new_id = r;
             if r.i1 == i2 {
                 new_id.i1 = i1;
@@ -116,6 +116,7 @@ impl StreetNetwork {
                 assert_eq!(r.i2, i2);
                 new_id.i2 = i1;
             }
+            road.id = new_id;
 
             if new_id.i1 == new_id.i2 {
                 // When merging many roads around some junction, we wind up with loops. We can

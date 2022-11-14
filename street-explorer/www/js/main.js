@@ -88,11 +88,10 @@ export class StreetExplorer {
 }
 
 class TestCase {
-  constructor(app, name, osmXML, drivingSide, bounds) {
+  constructor(app, name, osmXML, bounds) {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
-    this.drivingSide = drivingSide;
     this.bounds = bounds;
   }
 
@@ -111,11 +110,7 @@ class TestCase {
     group.addLayer("Geometry", geometryLayer);
     app.layers.addGroup(group);
 
-    const drivingSide = JSON.parse(await loadFile(prefix + "test.json"))[
-      "driving_side"
-    ];
-
-    return new TestCase(app, name, osmInput, drivingSide, bounds);
+    return new TestCase(app, name, osmInput, bounds);
   }
 
   static async importCurrentView(app, importButton) {
@@ -138,10 +133,7 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      const drivingSide =
-        app.getImportSettings().drivingSideForNewImports || "Right";
-
-      importOSM("Imported area", app, osmInput, drivingSide, true);
+      importOSM("Imported area", app, osmInput, true);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
         .getData()
@@ -152,7 +144,7 @@ class TestCase {
       fixURL.searchParams.delete("test");
       window.history.pushState({}, "", fixURL);
 
-      return new TestCase(app, null, osmInput, drivingSide, bounds);
+      return new TestCase(app, null, osmInput, bounds);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
       // There won't be a currentTest
@@ -176,7 +168,7 @@ class TestCase {
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
-        importOSM("Details", this.app, this.osmXML, this.drivingSide, false);
+        importOSM("Details", this.app, this.osmXML, false);
       };
     }
 
@@ -188,11 +180,10 @@ class TestCase {
   }
 }
 
-function importOSM(groupName, app, osmXML, drivingSide, addOSMLayer) {
+function importOSM(groupName, app, osmXML, addOSMLayer) {
   try {
     const importSettings = app.getImportSettings();
     const network = new JsStreetNetwork(osmXML, {
-      driving_side: drivingSide,
       debug_each_step: !!importSettings.debugEachStep,
       dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
       cycletrack_snapping_experiment:
@@ -285,10 +276,11 @@ function setupLeafletMap(mapContainer) {
   const map = L.map(mapContainer, {
     layers: [osm],
     maxZoom: 21,
-    // Make it smoother to zoom farther into the map
-    zoomSnap: 0.5,
+    zoomSnap: 0,
     zoomDelta: 0.5,
-    wheelPxPerZoomLevel: 120,
+    scrollWheelZoom: false,
+    smoothWheelZoom: true,
+    smoothSensitivity: 1,
   }).setView([40.0, 10.0], 4);
 
   new GeoSearch.GeoSearchControl({

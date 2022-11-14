@@ -3,9 +3,7 @@ mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
     use experimental::RoadNetwork;
-    use osm2streets::{DrivingSide, Transformation};
-    use serde::Deserialize;
-    use std::fs::File;
+    use osm2streets::Transformation;
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
@@ -15,7 +13,6 @@ mod tests {
         let mut timer = Timer::new("test osm2streets");
 
         println!("Working on {path}");
-        let cfg: TestCase = serde_json::from_reader(File::open(format!("{path}/test.json"))?)?;
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
         let prior_json = std::fs::read_to_string(format!("{path}/geometry.json"))
@@ -27,12 +24,12 @@ mod tests {
         let mut street_network = streets_reader::osm_to_street_network(
             &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_pts,
-            streets_reader::Options::default_for_side(cfg.driving_side),
+            streets_reader::Options::default(),
             &mut timer,
         )?;
         street_network
             .apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
-        street_network.save_to_geojson(format!("{path}/geometry.json"), &mut timer)?;
+        street_network.save_to_geojson(format!("{path}/geometry.json"))?;
 
         let road_network: RoadNetwork = street_network.into();
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
@@ -54,11 +51,5 @@ mod tests {
             );
         }
         Ok(())
-    }
-
-    #[derive(Deserialize)]
-    struct TestCase {
-        driving_side: DrivingSide,
-        // There's also a notes field that's ignored
     }
 }

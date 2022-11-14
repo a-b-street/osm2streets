@@ -33,7 +33,7 @@ pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> V
 }
 
 fn distance_heuristic(id: OriginalRoad, streets: &StreetNetwork) -> bool {
-    let road_length = if let Ok(pl) = streets.trimmed_road_geometry(id) {
+    let road_length = if let Ok(pl) = streets.estimate_trimmed_geometry(id) {
         pl.length()
     } else {
         // The road or something near it collapsed down into a single point or something. This can
@@ -107,7 +107,7 @@ impl StreetNetwork {
 
         let mut results = Vec::new();
         'ROAD: for id in self.roads.keys() {
-            let road_length = if let Ok(pl) = self.trimmed_road_geometry(*id) {
+            let road_length = if let Ok(pl) = self.estimate_trimmed_geometry(*id) {
                 pl.length()
             } else {
                 continue;

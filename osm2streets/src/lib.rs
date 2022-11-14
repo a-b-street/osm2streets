@@ -5,7 +5,6 @@ extern crate log;
 
 use std::cell::RefCell;
 use std::collections::BTreeMap;
-use std::fmt;
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -14,6 +13,7 @@ use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::{Angle, Distance, GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
+pub use self::ids::OriginalRoad;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
     SIDEWALK_THICKNESS,
@@ -26,7 +26,7 @@ pub use self::types::{
 
 mod edit;
 mod geometry;
-pub mod initial;
+mod ids;
 mod lanes;
 pub mod osm;
 mod pathfinding;
@@ -67,85 +67,6 @@ pub struct DebugStreets {
     pub polylines: Vec<(PolyLine, String)>,
 }
 
-/// A way to refer to roads across many maps and over time. Also trivial to relate with OSM to find
-/// upstream problems.
-//
-// - Using LonLat is more indirect, and f64's need to be trimmed and compared carefully with epsilon
-//   checks.
-// - TODO Look at some stable ID standard like linear referencing
-// (https://github.com/opentraffic/architecture/issues/1).
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct OriginalRoad {
-    pub osm_way_id: osm::WayID,
-    pub i1: osm::NodeID,
-    pub i2: osm::NodeID,
-}
-
-impl fmt::Display for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "OriginalRoad({} from {} to {}",
-            self.osm_way_id, self.i1, self.i2
-        )
-    }
-}
-impl fmt::Debug for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-impl OriginalRoad {
-    pub fn new(way: i64, (i1, i2): (i64, i64)) -> OriginalRoad {
-        OriginalRoad {
-            osm_way_id: osm::WayID(way),
-            i1: osm::NodeID(i1),
-            i2: osm::NodeID(i2),
-        }
-    }
-
-    /// Prints the OriginalRoad in a way that can be copied to Rust code.
-    pub fn as_string_code(&self) -> String {
-        format!(
-            "OriginalRoad::new({}, ({}, {}))",
-            self.osm_way_id.0, self.i1.0, self.i2.0
-        )
-    }
-
-    pub fn has_common_endpoint(&self, other: OriginalRoad) -> bool {
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return true;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return true;
-        }
-        false
-    }
-
-    // TODO Doesn't handle two roads between the same pair of intersections
-    pub fn common_endpt(&self, other: OriginalRoad) -> osm::NodeID {
-        #![allow(clippy::suspicious_operation_groupings)]
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return self.i1;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return self.i2;
-        }
-        panic!("{:?} and {:?} have no common_endpt", self, other);
-    }
-
-    pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
-        if self.i1 == i {
-            self.i2
-        } else if self.i2 == i {
-            self.i1
-        } else {
-            panic!("{} doesn't have {} on either side", self, i);
-        }
-    }
-}
-
 impl StreetNetwork {
     pub fn blank() -> Self {
         Self {
@@ -154,13 +75,14 @@ impl StreetNetwork {
             // Some nonsense thing
             boundary_polygon: Polygon::rectangle(1.0, 1.0),
             gps_bounds: GPSBounds::new(),
-            config: MapConfig::default_for_side(DrivingSide::Right),
+            config: MapConfig::default(),
 
             debug_steps: RefCell::new(Vec::new()),
         }
     }
 
     pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
+        assert_eq!(id, road.id);
         self.roads.insert(id, road);
         for i in [id.i1, id.i2] {
             {
@@ -200,40 +122,18 @@ impl StreetNetwork {
         self.intersections[&i].roads.clone()
     }
 
-    /// (Intersection polygon, polygons for roads, list of labeled polygons to debug)
-    #[allow(clippy::type_complexity)]
-    pub fn preview_intersection(
-        &self,
-        id: osm::NodeID,
-    ) -> Result<(Polygon, Vec<Polygon>, Vec<(String, Polygon)>)> {
-        let mut input_roads = Vec::new();
-        for r in self.roads_per_intersection(id) {
-            input_roads.push(initial::Road::new(self, r).to_input_road());
-        }
-        let results = intersection_polygon(
-            id,
-            input_roads,
-            // This'll be empty unless we've called merge_short_road
-            &self.intersections[&id].trim_roads_for_merging,
-        )?;
-        Ok((
-            results.intersection_polygon,
-            results
-                .trimmed_center_pts
-                .into_values()
-                .map(|(pl, half_width)| pl.make_polygons(2.0 * half_width))
-                .collect(),
-            results.debug,
-        ))
-    }
-
-    /// Generate the trimmed `PolyLine` for a single Road by calculating both intersections
-    pub fn trimmed_road_geometry(&self, road_id: OriginalRoad) -> Result<PolyLine> {
+    /// This calculates a road's `trimmed_center_line` early, before
+    /// `Transformation::GenerateIntersectionGeometry` has run. Use sparingly.
+    pub(crate) fn estimate_trimmed_geometry(&self, road_id: OriginalRoad) -> Result<PolyLine> {
         // First trim at one of the endpoints
         let trimmed_center_pts = {
             let mut input_roads = Vec::new();
             for r in self.roads_per_intersection(road_id.i1) {
-                input_roads.push(initial::Road::new(self, r).to_input_road());
+                let road = &self.roads[&r];
+                // trimmed_center_line hasn't been initialized yet, so override this
+                let mut input = road.to_input_road();
+                input.center_pts = road.untrimmed_road_geometry().0;
+                input_roads.push(input);
             }
             let mut results = intersection_polygon(
                 road_id.i1,
@@ -248,11 +148,14 @@ impl StreetNetwork {
         {
             let mut input_roads = Vec::new();
             for r in self.roads_per_intersection(road_id.i2) {
-                let mut road = initial::Road::new(self, r).to_input_road();
+                let road = &self.roads[&r];
+                let mut input = road.to_input_road();
                 if r == road_id {
-                    road.center_pts = trimmed_center_pts.clone();
+                    input.center_pts = trimmed_center_pts.clone();
+                } else {
+                    input.center_pts = road.untrimmed_road_geometry().0;
                 }
-                input_roads.push(road);
+                input_roads.push(input);
             }
             let mut results = intersection_polygon(
                 road_id.i2,
@@ -318,9 +221,9 @@ impl StreetNetwork {
             // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
             // shouldn't matter for sorting.
             let center_pl = if r.i1 == i {
-                PolyLine::must_new(road.osm_center_points.clone()).reversed()
+                road.untrimmed_center_line.reversed()
             } else if r.i2 == i {
-                PolyLine::must_new(road.osm_center_points.clone())
+                road.untrimmed_center_line.clone()
             } else {
                 panic!("Incident road {r} doesn't have an endpoint at {i}");
             };
@@ -383,17 +286,23 @@ impl StreetNetwork {
         for r in self.roads_per_intersection(id) {
             fixed.push(r);
             let road = self.roads.get_mut(&r).unwrap();
+            let mut pts = road.untrimmed_center_line.clone().into_points();
             if r.i1 == id {
-                road.osm_center_points[0] = point;
+                pts[0] = point;
             } else {
                 assert_eq!(r.i2, id);
-                *road.osm_center_points.last_mut().unwrap() = point;
+                *pts.last_mut().unwrap() = point;
             }
+            // TODO This could panic if someone moves the intersection a certain way. We could
+            // dedupe points or try to workaround it, but this method is only used by one
+            // low-priority caller right now
+            road.untrimmed_center_line = PolyLine::must_new(pts);
         }
 
         Some(fixed)
     }
 
+    /// Brute-force search; doesn't use a quadtree
     pub fn closest_intersection(&self, pt: Pt2D) -> osm::NodeID {
         self.intersections
             .iter()
@@ -405,10 +314,14 @@ impl StreetNetwork {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
-    /// This is effectively a PolyLine, except there's a case where we need to plumb forward
-    /// cul-de-sac roads for roundabout handling. No transformation of these points whatsoever has
-    /// happened.
-    pub osm_center_points: Vec<Pt2D>,
+    /// This determines the orientation of the road -- what intersection it points at.
+    pub id: OriginalRoad,
+    /// This represents the original OSM geometry. No transformation has happened, besides slightly
+    /// smoothing the polyline.
+    pub untrimmed_center_line: PolyLine,
+    /// The physical center of the road, including sidewalks. This won't actually be trimmed until
+    /// `Transformation::GenerateIntersectionGeometry` runs.
+    pub trimmed_center_line: PolyLine,
     pub osm_tags: Tags,
     pub turn_restrictions: Vec<(RestrictionType, OriginalRoad)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
@@ -430,15 +343,17 @@ pub struct Road {
 }
 
 impl Road {
-    pub fn new(osm_center_points: Vec<Pt2D>, osm_tags: Tags, config: &MapConfig) -> Result<Self> {
-        // Just flush out errors immediately.
-        // TODO Store the PolyLine, not a Vec<Pt2D>
-        let _ = PolyLine::new(osm_center_points.clone())?;
-
+    pub fn new(
+        id: OriginalRoad,
+        untrimmed_center_line: PolyLine,
+        osm_tags: Tags,
+        config: &MapConfig,
+    ) -> Self {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
-
-        Ok(Self {
-            osm_center_points,
+        Self {
+            id,
+            untrimmed_center_line,
+            trimmed_center_line: PolyLine::dummy(),
             osm_tags,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
@@ -451,7 +366,7 @@ impl Road {
             crossing_nodes: Vec::new(),
 
             lane_specs_ltr,
-        })
+        }
     }
 
     // TODO For the moment, treating all rail things as light rail
@@ -504,11 +419,14 @@ impl Road {
 
     /// Points from first to last point. Undefined for loops.
     pub fn angle(&self) -> Angle {
-        self.osm_center_points[0].angle_to(*self.osm_center_points.last().unwrap())
+        self.untrimmed_center_line
+            .first_pt()
+            .angle_to(self.untrimmed_center_line.last_pt())
     }
 
-    pub fn length(&self) -> Distance {
-        PolyLine::unchecked_new(self.osm_center_points.clone()).length()
+    /// The length of the original OSM center line, before any trimming away from intersections
+    pub fn untrimmed_length(&self) -> Distance {
+        self.untrimmed_center_line.length()
     }
 
     pub fn get_zorder(&self) -> isize {
@@ -545,14 +463,7 @@ impl Road {
         // If there's a sidewalk on only one side, adjust the true center of the road.
         // TODO I don't remember the rationale for doing this in the first place. What if there's a
         // shoulder and a sidewalk of different widths? We don't do anything then
-        let mut true_center = match PolyLine::new(self.osm_center_points.clone()) {
-            Ok(pl) => pl,
-            Err(err) => panic!(
-                "untrimmed_road_geometry of {} failed: {}",
-                self.osm_url(),
-                err
-            ),
-        };
+        let mut true_center = self.untrimmed_center_line.clone();
         match (sidewalk_right, sidewalk_left) {
             (Some(w), None) => {
                 true_center = true_center.must_shift_right(w / 2.0);
@@ -579,10 +490,10 @@ impl Road {
         self.lane_specs_ltr.iter().map(|l| l.width).sum()
     }
 
-    /// Returns one PolyLine representing the center of each lane in this road. Pass in
-    /// `road_center` generated from `InitialMap` (trimmed from the intersection) or from
-    /// `osm_center_points`. The result also faces the same direction as the road.
-    pub fn get_lane_center_lines(&self, road_center: &PolyLine) -> Vec<PolyLine> {
+    /// Returns one PolyLine representing the center of each lane in this road. This must be called
+    /// after `Transformation::GenerateIntersectionGeometry` is run. The result also faces the same
+    /// direction as the road.
+    pub(crate) fn get_lane_center_lines(&self) -> Vec<PolyLine> {
         let total_width = self.total_width();
 
         let mut width_so_far = Distance::ZERO;
@@ -590,9 +501,9 @@ impl Road {
         for lane in &self.lane_specs_ltr {
             width_so_far += lane.width / 2.0;
             output.push(
-                road_center
+                self.trimmed_center_line
                     .shift_from_center(total_width, width_so_far)
-                    .unwrap_or_else(|_| road_center.clone()),
+                    .unwrap_or_else(|_| self.trimmed_center_line.clone()),
             );
             width_so_far += lane.width / 2.0;
         }
@@ -607,6 +518,15 @@ impl Road {
         let right = center.shift_from_center(total_width, total_width / 2.0)?;
         Ok((left, right))
     }
+
+    pub(crate) fn to_input_road(&self) -> InputRoad {
+        InputRoad {
+            id: self.id,
+            center_pts: self.trimmed_center_line.clone(),
+            half_width: self.total_width() / 2.0,
+            osm_tags: self.osm_tags.clone(),
+        }
+    }
 }
 
 /// Classifies pedestrian and cyclist crossings. Note lots of detail is missing.
@@ -620,9 +540,13 @@ pub enum CrossingType {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Intersection {
+    pub id: osm::NodeID,
+
     /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
+    /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
+    pub polygon: Polygon,
     pub complexity: IntersectionComplexity,
     pub conflict_level: ConflictType,
     pub control: ControlType,
@@ -639,13 +563,16 @@ pub struct Intersection {
 
 impl Intersection {
     pub fn new(
+        id: osm::NodeID,
         point: Pt2D,
         complexity: IntersectionComplexity,
         conflict_level: ConflictType,
         control: ControlType,
     ) -> Self {
         Self {
+            id,
             point,
+            polygon: Polygon::dummy(),
             complexity,
             conflict_level,
             control,

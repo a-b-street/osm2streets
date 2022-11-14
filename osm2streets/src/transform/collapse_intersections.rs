@@ -2,10 +2,10 @@ use std::collections::BTreeSet;
 
 use anyhow::Result;
 
-use geom::{Distance, Pt2D};
+use geom::{Distance, PolyLine, Pt2D};
 
 use crate::osm::NodeID;
-use crate::{osm, ControlType, OriginalRoad, StreetNetwork};
+use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -17,7 +17,7 @@ pub fn collapse(streets: &mut StreetNetwork) {
         if roads.len() != 2 {
             continue;
         }
-        match should_collapse(roads[0], roads[1], streets) {
+        match should_collapse(&streets.roads[&roads[0]], &streets.roads[&roads[1]]) {
             Ok(()) => {
                 merge.push(*id);
             }
@@ -35,10 +35,7 @@ pub fn collapse(streets: &mut StreetNetwork) {
     // Results look good so far.
 }
 
-fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) -> Result<()> {
-    let road1 = &streets.roads[&r1];
-    let road2 = &streets.roads[&r2];
-
+fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     // Don't attempt to merge roads with these.
     if !road1.turn_restrictions.is_empty() || !road1.complicated_turn_restrictions.is_empty() {
         bail!("one road has turn restrictions");
@@ -51,7 +48,7 @@ fn should_collapse(r1: OriginalRoad, r2: OriginalRoad, streets: &StreetNetwork) 
     // a bizarre example. These are actually blackholed, some problem with service roads.
     if road1.oneway_for_driving().is_some()
         && road2.oneway_for_driving().is_some()
-        && r1.i2 == r2.i2
+        && road1.id.i2 == road2.id.i2
     {
         bail!("oneway roads point at each other");
     }
@@ -142,7 +139,7 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
 
     // We'll keep r1's way ID, so it's a little more convenient for debugging to guarantee r1 is
     // the longer piece.
-    if streets.roads[&r1].length() < streets.roads[&r2].length() {
+    if streets.roads[&r1].untrimmed_length() < streets.roads[&r2].untrimmed_length() {
         std::mem::swap(&mut r1, &mut r2);
     }
 
@@ -160,25 +157,28 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
     let mut new_road = streets.remove_road(&r1);
-    let mut road2 = streets.remove_road(&r2);
+    let road2 = streets.remove_road(&r2);
     streets.intersections.remove(&i).unwrap();
 
     // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
+    // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
+    let mut new_pts;
     let (new_i1, new_i2) = if r1.i2 == r2.i1 {
-        new_road.osm_center_points.extend(road2.osm_center_points);
+        new_pts = new_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(road2.untrimmed_center_line.into_points());
         (r1.i1, r2.i2)
     } else if r1.i2 == r2.i2 {
-        road2.osm_center_points.reverse();
-        new_road.osm_center_points.extend(road2.osm_center_points);
+        new_pts = new_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(road2.untrimmed_center_line.reversed().into_points());
         (r1.i1, r2.i1)
     } else if r1.i1 == r2.i1 {
-        road2.osm_center_points.reverse();
-        road2.osm_center_points.extend(new_road.osm_center_points);
-        new_road.osm_center_points = road2.osm_center_points;
+        new_pts = road2.untrimmed_center_line.into_points();
+        new_pts.reverse();
+        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
         (r2.i2, r1.i2)
     } else if r1.i1 == r2.i2 {
-        road2.osm_center_points.extend(new_road.osm_center_points);
-        new_road.osm_center_points = road2.osm_center_points;
+        new_pts = road2.untrimmed_center_line.into_points();
+        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
         (r2.i1, r1.i2)
     } else {
         unreachable!()
@@ -188,13 +188,14 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     // Simplify curves and dedupe points. The epsilon was tuned for only one location that was
     // breaking
     let epsilon = 1.0;
-    new_road.osm_center_points = Pt2D::simplify_rdp(new_road.osm_center_points, epsilon);
+    new_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
     let new_r1 = OriginalRoad {
         osm_way_id: r1.osm_way_id,
         i1: new_i1,
         i2: new_i2,
     };
+    new_road.id = new_r1;
     streets.insert_road(new_r1, new_road);
 
     // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
@@ -233,7 +234,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
             continue;
         }
         let road = &streets.roads[&roads[0]];
-        if road.length() < SHORT_THRESHOLD
+        if road.untrimmed_length() < SHORT_THRESHOLD
             && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
         {
             remove_roads.insert(roads[0]);

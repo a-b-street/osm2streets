@@ -2,7 +2,6 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-use abstutil::Timer;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine};
 
@@ -11,8 +10,8 @@ use crate::{DebugStreets, Direction, DrivingSide, LaneType, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
-    pub fn save_to_geojson(&self, output_path: String, timer: &mut Timer) -> Result<()> {
-        let json_output = self.to_geojson(timer)?;
+    pub fn save_to_geojson(&self, output_path: String) -> Result<()> {
+        let json_output = self.to_geojson()?;
         std::fs::create_dir_all(Path::new(&output_path).parent().unwrap())?;
         let mut file = File::create(output_path)?;
         file.write_all(json_output.as_bytes())?;
@@ -20,17 +19,14 @@ impl StreetNetwork {
     }
 
     /// Generates a plain GeoJSON rendering with one polygon per road and intersection.
-    pub fn to_geojson(&self, timer: &mut Timer) -> Result<String> {
-        // TODO InitialMap is going away very soon, but we still need it
-        let initial_map = crate::initial::InitialMap::new(self, timer);
-
+    pub fn to_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();
 
         // Add a polygon per road
-        for (id, road) in &initial_map.roads {
+        for (id, road) in &self.roads {
             pairs.push((
-                road.trimmed_center_pts
-                    .make_polygons(2.0 * road.half_width)
+                road.trimmed_center_line
+                    .make_polygons(2.0 * road.total_width() / 2.0)
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
                     ("type", "road".into()),
@@ -42,7 +38,7 @@ impl StreetNetwork {
         }
 
         // Polygon per intersection
-        for (id, intersection) in &initial_map.intersections {
+        for (id, intersection) in &self.intersections {
             pairs.push((
                 intersection.polygon.to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
@@ -72,17 +68,15 @@ impl StreetNetwork {
     }
 
     /// Generates a polygon per lane, with a property indicating type.
-    pub fn to_lane_polygons_geojson(&self, timer: &mut Timer) -> Result<String> {
-        // TODO InitialMap is going away very soon, but we still need it
-        let initial_map = crate::initial::InitialMap::new(self, timer);
-
+    pub fn to_lane_polygons_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();
 
         for (id, road) in &self.roads {
-            for (lane, pl) in road.lane_specs_ltr.iter().zip(
-                road.get_lane_center_lines(&initial_map.roads[id].trimmed_center_pts)
-                    .into_iter(),
-            ) {
+            for (lane, pl) in road
+                .lane_specs_ltr
+                .iter()
+                .zip(road.get_lane_center_lines().into_iter())
+            {
                 pairs.push((
                     pl.make_polygons(lane.width)
                         .to_geojson(Some(&self.gps_bounds)),
@@ -102,18 +96,14 @@ impl StreetNetwork {
     }
 
     /// Generate polygons representing lane markings, with a property indicating type.
-    pub fn to_lane_markings_geojson(&self, timer: &mut Timer) -> Result<String> {
-        // TODO InitialMap is going away very soon, but we still need it
-        let initial_map = crate::initial::InitialMap::new(self, timer);
-
+    pub fn to_lane_markings_geojson(&self) -> Result<String> {
         let gps_bounds = Some(&self.gps_bounds);
 
         let mut pairs = Vec::new();
 
-        for (id, road) in &self.roads {
+        for road in self.roads.values() {
             // Always oriented in the direction of the road
-            let mut lane_centers =
-                road.get_lane_center_lines(&initial_map.roads[id].trimmed_center_pts);
+            let mut lane_centers = road.get_lane_center_lines();
 
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
                 // Generate a "center line" between lanes of different directions
@@ -234,14 +224,12 @@ impl StreetNetwork {
     }
 
     /// For an intersection, show the clockwise ordering of roads around it
-    pub fn debug_clockwise_ordering_geojson(&self, timer: &mut Timer) -> Result<String> {
-        let initial_map = crate::initial::InitialMap::new(self, timer);
-
+    pub fn debug_clockwise_ordering_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();
 
         for (i, intersection) in &self.intersections {
             for (idx, r) in intersection.roads.iter().enumerate() {
-                let pl = &initial_map.roads[r].trimmed_center_pts;
+                let pl = &self.roads[r].trimmed_center_line;
                 let pt = if r.i1 == *i {
                     pl.first_pt()
                 } else {
