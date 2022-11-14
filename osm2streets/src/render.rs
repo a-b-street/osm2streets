@@ -251,8 +251,7 @@ impl StreetNetwork {
     }
 
     /// For an intersection, show all the movements.
-    pub fn debug_movements_geojson(&self, timer: &mut Timer) -> Result<String> {
-        let initial_map = crate::initial::InitialMap::new(self, timer);
+    pub fn debug_movements_geojson(&self) -> Result<String> {
         let arrow_shift_dist = if self.config.driving_side == DrivingSide::Right {
             Distance::meters(-1.3)
         } else {
@@ -262,22 +261,19 @@ impl StreetNetwork {
         let mut pairs = Vec::new();
 
         for (i, intersection) in &self.intersections {
-            // Find the endpoints
+            // Find the points where the arrows should (leave, enter) the roads.
             let road_points: Vec<_> = intersection
                 .roads
                 .iter()
                 .map(|r| {
-                    let pl = &initial_map.roads[r].trimmed_center_pts;
-                    let first_road_segment = if r.i1 == *i {
-                        pl.first_line()
+                    let road = &self.roads[r];
+                    let first_road_segment = if road.id.i1 == *i {
+                        road.trimmed_center_line.first_line()
                     } else {
-                        pl.last_line().reversed()
+                        road.trimmed_center_line.last_line().reversed()
                     };
-                    if self
-                        .roads
-                        .get(r)
-                        .map_or(false, |road| road.oneway_for_driving().is_some())
-                    {
+                    // Offset the arrow start/end points if it is bidirectional.
+                    if road.oneway_for_driving().is_some() {
                         (first_road_segment.pt1(), first_road_segment.pt1())
                     } else {
                         (

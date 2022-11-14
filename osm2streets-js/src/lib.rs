@@ -99,9 +99,7 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = debugMovementsGeojson)]
     pub fn debug_movements_geojson(&self) -> String {
-        self.inner
-            .debug_movements_geojson(&mut Timer::throwaway())
-            .unwrap()
+        self.inner.debug_movements_geojson().unwrap()
     }
 }
 
