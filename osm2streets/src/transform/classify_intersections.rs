@@ -38,8 +38,8 @@ fn guess_complexity(
     let roads: Vec<_> = streets
         .roads_per_intersection(*intersection_id)
         .iter()
-        .map(|id| streets.roads.get_key_value(id).unwrap())
-        .filter(|(_id, road)| road.is_driveable())
+        .map(|id| &streets.roads[id])
+        .filter(|road| road.is_driveable())
         .collect();
 
     // A terminus is characterised by a single connected road.
@@ -120,9 +120,9 @@ fn guess_complexity(
     }
 }
 
-fn can_drive_out_of(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
-    if let Some(driving_dir) = id_road.1.oneway_for_driving() {
-        let required_dir = if id_road.0.i2 == which_end {
+fn can_drive_out_of(road: &Road, which_end: NodeID) -> bool {
+    if let Some(driving_dir) = road.oneway_for_driving() {
+        let required_dir = if road.id.i2 == which_end {
             Direction::Fwd
         } else {
             Direction::Back
@@ -132,9 +132,9 @@ fn can_drive_out_of(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool 
     return true;
 }
 
-fn can_drive_into(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
-    if let Some(driving_dir) = id_road.1.oneway_for_driving() {
-        let required_dir = if id_road.0.i1 == which_end {
+fn can_drive_into(road: &Road, which_end: NodeID) -> bool {
+    if let Some(driving_dir) = road.oneway_for_driving() {
+        let required_dir = if road.id.i1 == which_end {
             Direction::Fwd
         } else {
             Direction::Back
@@ -144,17 +144,17 @@ fn can_drive_into(id_road: (&OriginalRoad, &Road), which_end: NodeID) -> bool {
     return true;
 }
 
-fn turn_is_allowed(src: (&OriginalRoad, &Road), dst: (&OriginalRoad, &Road)) -> bool {
+fn turn_is_allowed(src: &Road, dst: &Road) -> bool {
     let mut has_exclusive_allows = false;
-    for (t, other) in src.1.turn_restrictions.iter() {
+    for (t, other) in src.turn_restrictions.iter() {
         match t {
             RestrictionType::BanTurns => {
-                if *other == *dst.0 {
+                if *other == dst.id {
                     return false;
                 }
             }
             RestrictionType::OnlyAllowTurns => {
-                if *other == *dst.0 {
+                if *other == dst.id {
                     return true;
                 }
                 has_exclusive_allows = true;
