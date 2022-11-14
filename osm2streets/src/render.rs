@@ -6,8 +6,9 @@ use std::path::Path;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine};
 
-use crate::IntersectionComplexity::MultiConnection;
-use crate::{DebugStreets, Direction, DrivingSide, LaneType, StreetNetwork};
+use crate::{
+    DebugStreets, Direction, DrivingSide, IntersectionComplexity, LaneType, StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -47,7 +48,7 @@ impl StreetNetwork {
                     ("osm_node_id", id.0.into()),
                     (
                         "complexity",
-                        if intersection.complexity == MultiConnection {
+                        if intersection.complexity == IntersectionComplexity::MultiConnection {
                             format!(
                                 "{:?} {:?}",
                                 intersection.complexity, intersection.conflict_level

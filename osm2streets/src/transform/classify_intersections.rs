@@ -76,7 +76,6 @@ pub fn guess_complexity(
 
             // Check for any turn restrictions.
             if turn_is_allowed(src_road, dst_road) {
-                //FIXME this is no longer accurate because s and d are indexes into a filtered list:
                 connections.push((s, d));
             }
         }
