@@ -1,10 +1,9 @@
 use crate::osm::NodeID;
-use crate::types::IndexedMovement;
+use crate::types::Movement;
 use crate::Direction;
 use crate::IntersectionComplexity::*;
 use crate::{
-    ConflictType, DrivingSide, IntersectionComplexity, OriginalRoad, RestrictionType, Road,
-    StreetNetwork,
+    ConflictType, DrivingSide, IntersectionComplexity, RestrictionType, Road, StreetNetwork,
 };
 use std::cmp::{max, min};
 use std::collections::BTreeMap;
@@ -33,7 +32,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: &NodeID,
-) -> (IntersectionComplexity, ConflictType, Vec<IndexedMovement>) {
+) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {
     use ConflictType::*;
     let roads: Vec<_> = streets
         .roads_per_intersection(*intersection_id)
@@ -45,22 +44,6 @@ fn guess_complexity(
     // A terminus is characterised by a single connected road.
     if roads.len() == 1 {
         return (Terminus, Uncontested, Vec::new());
-    }
-
-    // A Connection is characterised by exactly two connected roads.
-    if roads.len() == 2 {
-        let mut movements = Vec::new();
-        if can_drive_out_of(roads[0], *intersection_id)
-            && can_drive_into(roads[1], *intersection_id)
-        {
-            movements.push((0, 1));
-        }
-        if can_drive_out_of(roads[1], *intersection_id)
-            && can_drive_into(roads[0], *intersection_id)
-        {
-            movements.push((1, 0));
-        }
-        return (Connection, Uncontested, movements);
     }
 
     // Calculate all the possible movements, (except U-turns, for now).
@@ -114,9 +97,21 @@ fn guess_complexity(
         }
     }
 
+    let full_connections = connections
+        .iter()
+        .map(|(s, d)| (roads[*s].id, roads[*d].id))
+        .collect();
     match worst_conflict {
-        Cross => (Crossing, Cross, connections),
-        c => (MultiConnection, c, connections),
+        Cross => (Crossing, Cross, full_connections),
+        c => (
+            if roads.len() == 2 {
+                Connection
+            } else {
+                MultiConnection
+            },
+            c,
+            full_connections,
+        ),
     }
 }
 

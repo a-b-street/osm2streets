@@ -172,6 +172,5 @@ pub enum ControlType {
     Construction,  // Are these treated as "closed"?
 }
 
-/// The path that some lanes of traffic can take through an intersection.
-/// This representation is the (from, to) roads, identified by their index in the Intersection.
-pub type IndexedMovement = (usize, usize);
+/// The path that some group of adjacent lanes of traffic can take through an intersection.
+pub type Movement = (OriginalRoad, OriginalRoad);

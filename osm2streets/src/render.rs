@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
@@ -262,7 +263,7 @@ impl StreetNetwork {
 
         for (i, intersection) in &self.intersections {
             // Find the points where the arrows should (leave, enter) the roads.
-            let road_points: Vec<_> = intersection
+            let road_points: BTreeMap<_, _> = intersection
                 .roads
                 .iter()
                 .map(|r| {
@@ -273,23 +274,26 @@ impl StreetNetwork {
                         road.trimmed_center_line.last_line().reversed()
                     };
                     // Offset the arrow start/end points if it is bidirectional.
-                    if road.oneway_for_driving().is_some() {
-                        (first_road_segment.pt1(), first_road_segment.pt1())
-                    } else {
-                        (
-                            first_road_segment
-                                .shift_either_direction(arrow_shift_dist)
-                                .pt1(),
-                            first_road_segment
-                                .shift_either_direction(-arrow_shift_dist)
-                                .pt1(),
-                        )
-                    }
+                    (
+                        r,
+                        if road.oneway_for_driving().is_some() {
+                            (first_road_segment.pt1(), first_road_segment.pt1())
+                        } else {
+                            (
+                                first_road_segment
+                                    .shift_either_direction(arrow_shift_dist)
+                                    .pt1(),
+                                first_road_segment
+                                    .shift_either_direction(-arrow_shift_dist)
+                                    .pt1(),
+                            )
+                        },
+                    )
                 })
                 .collect();
             for (a, b) in intersection.movements.iter() {
-                if *a != *b {
-                    if let Ok(line) = Line::new(road_points[*a].0, road_points[*b].1) {
+                if a != b {
+                    if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
                         pairs.push((
                             line.to_polyline()
                                 .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)

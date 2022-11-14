@@ -20,7 +20,7 @@ pub use self::lanes::{
 };
 pub use self::transform::Transformation;
 pub use self::types::{
-    ConflictType, ControlType, DrivingSide, IndexedMovement, IntersectionComplexity, MapConfig,
+    ConflictType, ControlType, DrivingSide, IntersectionComplexity, MapConfig, Movement,
     NamePerLanguage,
 };
 
@@ -555,7 +555,7 @@ pub struct Intersection {
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
     /// intersection. They're ordered clockwise aroundd the intersection.
     pub roads: Vec<OriginalRoad>,
-    pub movements: Vec<IndexedMovement>,
+    pub movements: Vec<Movement>,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
