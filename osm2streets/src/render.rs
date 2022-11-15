@@ -295,7 +295,7 @@ impl StreetNetwork {
                     )
                 })
                 .collect();
-            for (a, b) in intersection.movements.iter() {
+            for (a, b) in &intersection.movements {
                 if a != b {
                     if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
                         pairs.push((

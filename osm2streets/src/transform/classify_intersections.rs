@@ -1,19 +1,19 @@
 use crate::osm::NodeID;
 use crate::types::Movement;
 use crate::Direction;
-use crate::IntersectionComplexity::*;
 use crate::{
     ConflictType, DrivingSide, IntersectionComplexity, RestrictionType, Road, StreetNetwork,
 };
 use std::cmp::{max, min};
-use std::collections::BTreeMap;
+use ConflictType::*;
+use IntersectionComplexity::*;
 
 /// Determines the initial complexity of all intersections. Intersections marked "Crossing" are
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
 pub fn classify_intersections(streets: &mut StreetNetwork) {
     let mut changes: Vec<_> = Vec::new();
     for (id, inter) in &streets.intersections {
-        if let Crossing = inter.complexity {
+        if inter.complexity == Crossing {
             changes.push((*id, guess_complexity(streets, id)));
         }
     }
@@ -33,7 +33,6 @@ pub fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: &NodeID,
 ) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {
-    use ConflictType::*;
     let roads: Vec<_> = streets
         .roads_per_intersection(*intersection_id)
         .iter()
