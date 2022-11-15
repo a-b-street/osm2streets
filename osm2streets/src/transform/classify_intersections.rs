@@ -165,7 +165,7 @@ fn turn_is_allowed(src: &Road, dst: &Road) -> bool {
 fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> ConflictType {
     use ConflictType::*;
 
-    // If the traffic starts of ends at the same place in the same direction...
+    // If the traffic starts and ends at the same place in the same direction...
     if a.0 == b.0 && a.1 == b.1 {
         return Uncontested;
     }
@@ -179,8 +179,8 @@ fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> C
     // The intersection has a boundary that we have labelled 0 to n-1 in clockwise order (from an
     // arbitrary point), like a string laying in a circle. If we represent `a` as an arc from one
     // point on the string to another, then there is a section of the string between the two points,
-    // connecting them the two points and two ends of string "on the outside". A second arc, `b`,
-    // crosses `a` if and only if `b` has one end between the points and one end outside.
+    // connecting them and two ends of string "on the outside". A second arc, `b`, crosses `a` if
+    // and only if `b` has one end between the points and one end outside.
     //     ______
     //    /  |   \
     //   |   |a   n
