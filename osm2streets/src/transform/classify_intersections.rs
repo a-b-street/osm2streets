@@ -81,27 +81,31 @@ pub fn guess_complexity(
         }
     }
 
-    // Calculate all the collisions.
-    let mut conflicts = BTreeMap::new();
+    // Calculate the highest level of conflict between movements.
     let mut worst_conflict = Uncontested;
-    // Compare every pair of connections. Use the order of the roads around the intersection to
-    // detect if they diverge, merge, or cross.
-    // assert!(connections is sorted) so small_con large_con makes sense.
+    // Compare every unordered pair of connections. Use the order of the roads around the
+    // intersection to detect if they diverge, merge, or cross.
     let mut each_con = connections.iter();
-    while let Some(small_con) = each_con.next() {
-        for large_con in each_con.clone() {
-            let conflict = calc_conflict(small_con, large_con, streets.config.driving_side);
-            worst_conflict = max(worst_conflict, conflict);
-            conflicts.insert((small_con, large_con), conflict);
+    while let Some(con_a) = each_con.next() {
+        for con_b in each_con.clone() {
+            worst_conflict = max(
+                worst_conflict,
+                calc_conflict(con_a, con_b, streets.config.driving_side),
+            );
+
+            // Stop looking if we've already found the worst.
+            if worst_conflict == ConflictType::Cross {
+                break;
+            }
         }
     }
 
-    let full_connections = connections
+    let movements = connections
         .iter()
         .map(|(s, d)| (roads[*s].id, roads[*d].id))
         .collect();
     match worst_conflict {
-        Cross => (Crossing, Cross, full_connections),
+        Cross => (Crossing, Cross, movements),
         c => (
             if roads.len() == 2 {
                 Connection
@@ -109,7 +113,7 @@ pub fn guess_complexity(
                 MultiConnection
             },
             c,
-            full_connections,
+            movements,
         ),
     }
 }
