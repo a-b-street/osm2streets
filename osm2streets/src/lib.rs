@@ -88,14 +88,7 @@ impl StreetNetwork {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
             // Recalculate movements and complexity.
-            let (complexity, conflict_level, movements) =
-                crate::transform::classify_intersections::guess_complexity(self, &i);
-            let int = self.intersections.get_mut(&i).unwrap();
-            if int.complexity != IntersectionComplexity::MapEdge {
-                int.complexity = complexity;
-            }
-            int.conflict_level = conflict_level;
-            int.movements = movements;
+            self.recalculate_movements(i);
         }
     }
 
@@ -107,15 +100,7 @@ impl StreetNetwork {
                 .roads
                 .retain(|r| r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
-            // Recalculate movements and complexity.
-            let (complexity, conflict_level, movements) =
-                crate::transform::classify_intersections::guess_complexity(self, &i);
-            let int = self.intersections.get_mut(&i).unwrap();
-            if int.complexity != IntersectionComplexity::MapEdge {
-                int.complexity = complexity;
-            }
-            int.conflict_level = conflict_level;
-            int.movements = movements;
+            self.recalculate_movements(i);
         }
         self.roads.remove(id).unwrap()
     }
@@ -275,6 +260,20 @@ impl StreetNetwork {
         });
 
         intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
+    }
+
+    /// Recalculate movements, complexity, and conflict_level of an intersection.
+    fn recalculate_movements(&mut self, i: osm::NodeID) {
+        let (complexity, conflict_level, movements) =
+            crate::transform::classify_intersections::guess_complexity(self, &i);
+        let int = self.intersections.get_mut(&i).unwrap();
+        int.movements = movements;
+        int.conflict_level = conflict_level;
+        // The fact that an intersection represents a road leaving the map bounds is stored in the
+        // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
+        if int.complexity != IntersectionComplexity::MapEdge {
+            int.complexity = complexity;
+        }
     }
 }
 
