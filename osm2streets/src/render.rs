@@ -254,7 +254,10 @@ impl StreetNetwork {
 
     /// For an intersection, show all the movements.
     pub fn debug_movements_geojson(&self) -> Result<String> {
-        let arrow_shift_dist = if self.config.driving_side == DrivingSide::Right {
+        // Each movement is represented as an arrow from the end of one road to the beginning of
+        // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
+        // the center to the appropriate driving side.
+        let arrow_fwd_offset_dist = if self.config.driving_side == DrivingSide::Right {
             Distance::meters(-1.3)
         } else {
             Distance::meters(1.3)
@@ -282,10 +285,10 @@ impl StreetNetwork {
                         } else {
                             (
                                 first_road_segment
-                                    .shift_either_direction(arrow_shift_dist)
+                                    .shift_either_direction(arrow_fwd_offset_dist)
                                     .pt1(),
                                 first_road_segment
-                                    .shift_either_direction(-arrow_shift_dist)
+                                    .shift_either_direction(-arrow_fwd_offset_dist)
                                     .pt1(),
                             )
                         },
