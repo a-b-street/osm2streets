@@ -1831,7 +1831,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Merge",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/25496664",
         "osm_node_id": 25496664,
@@ -1892,7 +1892,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/25496666",
         "osm_node_id": 25496666,
@@ -1945,7 +1945,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/25496667",
         "osm_node_id": 25496667,
@@ -1986,7 +1986,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1080429761",
         "osm_node_id": 1080429761,
@@ -2035,7 +2035,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1080429785",
         "osm_node_id": 1080429785,
@@ -2080,7 +2080,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1080429836",
         "osm_node_id": 1080429836,
@@ -2129,7 +2129,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1080429864",
         "osm_node_id": 1080429864,
@@ -2203,7 +2203,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1080430042",
         "osm_node_id": 1080430042,
@@ -2240,7 +2240,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1249482198",
         "osm_node_id": 1249482198,
@@ -2314,7 +2314,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1701264964",
         "osm_node_id": 1701264964,
@@ -2371,7 +2371,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1701265003",
         "osm_node_id": 1701265003,
@@ -2412,7 +2412,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1701265007",
         "osm_node_id": 1701265007,
@@ -2453,7 +2453,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Connection",
+        "complexity": "Terminus",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1701265019",
         "osm_node_id": 1701265019,
@@ -2527,7 +2527,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1933344140",
         "osm_node_id": 1933344140,
@@ -2564,7 +2564,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/3080103386",
         "osm_node_id": 3080103386,
@@ -2691,7 +2691,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915239",
         "osm_node_id": 9568915239,
@@ -2748,7 +2748,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915240",
         "osm_node_id": 9568915240,
@@ -2805,7 +2805,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915241",
         "osm_node_id": 9568915241,
@@ -2854,7 +2854,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915256",
         "osm_node_id": 9568915256,
@@ -2911,7 +2911,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915258",
         "osm_node_id": 9568915258,
@@ -2948,7 +2948,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Terminus",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9568915259",
         "osm_node_id": 9568915259,
@@ -3005,7 +3005,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9586144486",
         "osm_node_id": 9586144486,
@@ -3054,7 +3054,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9586144488",
         "osm_node_id": 9586144488,
@@ -3103,7 +3103,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/9586144492",
         "osm_node_id": 9586144492,

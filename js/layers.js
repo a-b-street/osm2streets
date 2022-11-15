@@ -171,7 +171,9 @@ export const makeDotLayer = async (text, { bounds }) => {
 export const makeDebugLayer = (text) => {
   return new L.geoJSON(JSON.parse(text), {
     onEachFeature: function (feature, layer) {
-      layer.bindTooltip(feature.properties.label, { permanent: true });
+        if (feature.properties.label) {
+          layer.bindTooltip(feature.properties.label, { permanent: true });
+        }
     },
   });
 };

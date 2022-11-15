@@ -207,6 +207,9 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
+    group.addLazyLayer("Debug movements", () =>
+      makeDebugLayer(network.debugMovementsGeojson())
+    );
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
 
     const numDebugSteps = network.getDebugSteps().length;
