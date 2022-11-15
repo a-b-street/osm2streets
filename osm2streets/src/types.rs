@@ -120,6 +120,12 @@ pub enum ConflictType {
     Cross,
 }
 
+/// What kind of feature an Intersection actually represents. Any connection between roads in the
+/// network graph is represented by an Intersection, but many of them are not "intersections" in
+/// the traditional sense.
+///
+/// This type might be better named IntersectionType and the distinction between MultiConnection,
+/// Merge and Crossing is of dubious value and will probably change in the future.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum IntersectionComplexity {
     /// The edge of the data that we have.
