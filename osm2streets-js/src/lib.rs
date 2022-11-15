@@ -51,6 +51,18 @@ impl JsStreetNetwork {
         }
         if input.debug_each_step {
             street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
+
+            // For all but the last step, generate intersection geometry, so these
+            // intermediate states can be rendered.
+            // TODO Revisit this -- rendering should use untrimmed geometry, or an initial guess of
+            // trimmed geometry.
+            let mut steps = street_network.debug_steps.borrow_mut();
+            for i in 0..steps.len() - 1 {
+                steps[i].streets.apply_transformations(
+                    vec![Transformation::GenerateIntersectionGeometry],
+                    &mut timer,
+                );
+            }
         } else {
             street_network.apply_transformations(transformations, &mut timer);
         }
