@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
@@ -5,7 +6,9 @@ use std::path::Path;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine};
 
-use crate::{DebugStreets, Direction, LaneType, StreetNetwork};
+use crate::{
+    DebugStreets, Direction, DrivingSide, IntersectionComplexity, LaneType, StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -45,7 +48,15 @@ impl StreetNetwork {
                     ("osm_node_id", id.0.into()),
                     (
                         "complexity",
-                        format!("{:?}", intersection.complexity).into(),
+                        if intersection.complexity == IntersectionComplexity::MultiConnection {
+                            format!(
+                                "{:?} {:?}",
+                                intersection.complexity, intersection.conflict_level
+                            )
+                        } else {
+                            format!("{:?}", intersection.complexity)
+                        }
+                        .into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
                     ("osm_link", id.to_string().into()),
@@ -233,6 +244,68 @@ impl StreetNetwork {
                         format!("{} / {}", idx + 1, intersection.roads.len()).into(),
                     )]),
                 ));
+            }
+        }
+
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
+
+    /// For an intersection, show all the movements.
+    pub fn debug_movements_geojson(&self) -> Result<String> {
+        // Each movement is represented as an arrow from the end of one road to the beginning of
+        // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
+        // the center to the appropriate driving side.
+        let arrow_fwd_offset_dist = if self.config.driving_side == DrivingSide::Right {
+            Distance::meters(-1.3)
+        } else {
+            Distance::meters(1.3)
+        };
+
+        let mut pairs = Vec::new();
+
+        for (i, intersection) in &self.intersections {
+            // Find the points where the arrows should (leave, enter) the roads.
+            let road_points: BTreeMap<_, _> = intersection
+                .roads
+                .iter()
+                .map(|r| {
+                    let road = &self.roads[r];
+                    let first_road_segment = if road.id.i1 == *i {
+                        road.trimmed_center_line.first_line()
+                    } else {
+                        road.trimmed_center_line.last_line().reversed()
+                    };
+                    // Offset the arrow start/end points if it is bidirectional.
+                    (
+                        r,
+                        if road.oneway_for_driving().is_some() {
+                            (first_road_segment.pt1(), first_road_segment.pt1())
+                        } else {
+                            (
+                                first_road_segment
+                                    .shift_either_direction(arrow_fwd_offset_dist)
+                                    .pt1(),
+                                first_road_segment
+                                    .shift_either_direction(-arrow_fwd_offset_dist)
+                                    .pt1(),
+                            )
+                        },
+                    )
+                })
+                .collect();
+            for (a, b) in &intersection.movements {
+                if a != b {
+                    if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
+                        pairs.push((
+                            line.to_polyline()
+                                .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)
+                                .to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[]),
+                        ))
+                    }
+                }
             }
         }
 

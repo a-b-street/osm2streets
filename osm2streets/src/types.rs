@@ -101,7 +101,7 @@ pub enum DrivingSide {
     Left,
 }
 
-/// How a lane of travel is interrupted.
+/// How a lane of travel is interrupted, as it meets another or ends.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum InterruptionType {
     Uninterrupted,
@@ -111,6 +111,21 @@ pub enum InterruptionType {
     DeadEnd,
 }
 
+/// How two lanes of travel conflict with each other.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum ConflictType {
+    Uncontested,
+    Diverge,
+    Merge,
+    Cross,
+}
+
+/// What kind of feature an Intersection actually represents. Any connection between roads in the
+/// network graph is represented by an Intersection, but many of them are not "intersections" in
+/// the traditional sense.
+///
+/// This type might be better named IntersectionType and the distinction between MultiConnection,
+/// Merge and Crossing is of dubious value and will probably change in the future.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum IntersectionComplexity {
     /// The edge of the data that we have.
@@ -162,3 +177,6 @@ pub enum ControlType {
     Border,        //TODO move to using IntersectionComplexity::MapEdge
     Construction,  // Are these treated as "closed"?
 }
+
+/// The path that some group of adjacent lanes of traffic can take through an intersection.
+pub type Movement = (OriginalRoad, OriginalRoad);

@@ -108,6 +108,11 @@ impl JsStreetNetwork {
     pub fn debug_clockwise_ordering_geojson(&self) -> String {
         self.inner.debug_clockwise_ordering_geojson().unwrap()
     }
+
+    #[wasm_bindgen(js_name = debugMovementsGeojson)]
+    pub fn debug_movements_geojson(&self) -> String {
+        self.inner.debug_movements_geojson().unwrap()
+    }
 }
 
 #[wasm_bindgen]

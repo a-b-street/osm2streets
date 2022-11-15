@@ -3,8 +3,8 @@ use std::collections::{hash_map::Entry, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, ControlType, CrossingType, Direction, Intersection, IntersectionComplexity, OriginalRoad,
-    Road, StreetNetwork,
+    osm, ConflictType, ControlType, CrossingType, Direction, Intersection, IntersectionComplexity,
+    OriginalRoad, Road, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -65,8 +65,9 @@ pub fn split_up_roads(
             Intersection::new(
                 *id,
                 pt.to_pt2d(),
-                // Guess a safe generic complexity, specialise later.
+                // Assume a complicated intersection, until we determine otherwise.
                 IntersectionComplexity::Crossing,
+                ConflictType::Cross,
                 if input.traffic_signals.remove(pt).is_some() {
                     ControlType::TrafficSignal
                 } else {
@@ -85,6 +86,7 @@ pub fn split_up_roads(
                 id,
                 point,
                 IntersectionComplexity::Crossing,
+                ConflictType::Cross,
                 ControlType::StopSign,
             ),
         );

@@ -806,7 +806,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Merge",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/21257313",
         "osm_node_id": 21257313,
@@ -966,7 +966,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/154650255",
         "osm_node_id": 154650255,
@@ -1003,7 +1003,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/1316486886",
         "osm_node_id": 1316486886,
@@ -1109,7 +1109,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "MultiConnection Uncontested",
         "control": "StopSign",
         "osm_link": "https://www.openstreetmap.org/node/1695906751",
         "osm_node_id": 1695906751,
@@ -1294,7 +1294,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/4740760678",
         "osm_node_id": 4740760678,
@@ -1331,7 +1331,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/4740760680",
         "osm_node_id": 4740760680,
@@ -1421,7 +1421,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "complexity": "Crossing",
+        "complexity": "Connection",
         "control": "TrafficSignal",
         "osm_link": "https://www.openstreetmap.org/node/4740760690",
         "osm_node_id": 4740760690,

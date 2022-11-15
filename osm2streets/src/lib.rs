@@ -20,7 +20,8 @@ pub use self::lanes::{
 };
 pub use self::transform::Transformation;
 pub use self::types::{
-    ControlType, DrivingSide, IntersectionComplexity, MapConfig, NamePerLanguage,
+    ConflictType, ControlType, DrivingSide, IntersectionComplexity, MapConfig, Movement,
+    NamePerLanguage,
 };
 
 mod edit;
@@ -86,21 +87,21 @@ impl StreetNetwork {
         for i in [id.i1, id.i2] {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
+            // Recalculate movements and complexity.
+            self.recalculate_movements(i);
         }
     }
 
     pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
-        // Since the roads are already sorted, removing doesn't hurt anything
-        self.intersections
-            .get_mut(&id.i1)
-            .unwrap()
-            .roads
-            .retain(|r| r != id);
-        self.intersections
-            .get_mut(&id.i2)
-            .unwrap()
-            .roads
-            .retain(|r| r != id);
+        for i in [id.i1, id.i2] {
+            self.intersections
+                .get_mut(&i)
+                .unwrap()
+                .roads
+                .retain(|r| r != id);
+            // Since the roads are already sorted, removing doesn't break the sort.
+            self.recalculate_movements(i);
+        }
         self.roads.remove(id).unwrap()
     }
 
@@ -259,6 +260,20 @@ impl StreetNetwork {
         });
 
         intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
+    }
+
+    /// Recalculate movements, complexity, and conflict_level of an intersection.
+    fn recalculate_movements(&mut self, i: osm::NodeID) {
+        let (complexity, conflict_level, movements) =
+            crate::transform::classify_intersections::guess_complexity(self, &i);
+        let int = self.intersections.get_mut(&i).unwrap();
+        int.movements = movements;
+        int.conflict_level = conflict_level;
+        // The fact that an intersection represents a road leaving the map bounds is stored in the
+        // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
+        if int.complexity != IntersectionComplexity::MapEdge {
+            int.complexity = complexity;
+        }
     }
 }
 
@@ -548,12 +563,14 @@ pub struct Intersection {
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
     pub polygon: Polygon,
     pub complexity: IntersectionComplexity,
+    pub conflict_level: ConflictType,
     pub control: ControlType,
     pub elevation: Distance,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
     /// intersection. They're ordered clockwise aroundd the intersection.
     pub roads: Vec<OriginalRoad>,
+    pub movements: Vec<Movement>,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
@@ -564,6 +581,7 @@ impl Intersection {
         id: osm::NodeID,
         point: Pt2D,
         complexity: IntersectionComplexity,
+        conflict_level: ConflictType,
         control: ControlType,
     ) -> Self {
         Self {
@@ -571,9 +589,11 @@ impl Intersection {
             point,
             polygon: Polygon::dummy(),
             complexity,
+            conflict_level,
             control,
             // Filled out later
             roads: Vec::new(),
+            movements: Vec::new(),
             elevation: Distance::ZERO,
             trim_roads_for_merging: BTreeMap::new(),
         }
