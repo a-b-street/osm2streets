@@ -4,10 +4,10 @@ use crate::StreetNetwork;
 
 pub mod classify_intersections;
 mod collapse_intersections;
+mod collapse_short_road;
 mod dual_carriageways;
 mod find_short_roads;
 mod intersection_geometry;
-mod merge_short_road;
 mod remove_disconnected;
 mod sausage_links;
 mod separate_cycletracks;
@@ -23,7 +23,7 @@ pub enum Transformation {
     RemoveDisconnectedRoads,
     // TODO Move dog leg config here
     FindShortRoads { consolidate_all_intersections: bool },
-    MergeShortRoads,
+    CollapseShortRoads,
     CollapseDegenerateIntersections,
     CollapseSausageLinks,
     ShrinkOverlappingRoads,
@@ -54,7 +54,7 @@ impl Transformation {
             Transformation::FindShortRoads {
                 consolidate_all_intersections: false,
             },
-            Transformation::MergeShortRoads,
+            Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
             Transformation::GenerateIntersectionGeometry,
@@ -71,7 +71,7 @@ impl Transformation {
             Transformation::FindShortRoads {
                 consolidate_all_intersections: false,
             },
-            Transformation::MergeShortRoads,
+            Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
             Transformation::GenerateIntersectionGeometry,
@@ -85,7 +85,7 @@ impl Transformation {
             Transformation::SnapCycleways => "snap separate cycleways",
             Transformation::RemoveDisconnectedRoads => "remove disconnected roads",
             Transformation::FindShortRoads { .. } => "find short roads",
-            Transformation::MergeShortRoads => "merge short roads",
+            Transformation::CollapseShortRoads => "collapse short roads",
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
             Transformation::CollapseSausageLinks => "collapse sausage links",
             Transformation::ShrinkOverlappingRoads => "shrink overlapping roads",
@@ -114,8 +114,8 @@ impl Transformation {
             } => {
                 find_short_roads::find_short_roads(streets, *consolidate_all_intersections);
             }
-            Transformation::MergeShortRoads => {
-                merge_short_road::merge_all_junctions(streets);
+            Transformation::CollapseShortRoads => {
+                collapse_short_road::collapse_all_junction_roads(streets);
             }
             Transformation::CollapseDegenerateIntersections => {
                 collapse_intersections::collapse(streets);

@@ -40,8 +40,8 @@ impl JsStreetNetwork {
                 .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
-            // Merging short roads tries to touch "bridges," making debugging harder
-            transformations.retain(|t| !matches!(t, Transformation::MergeShortRoads));
+            // Collapsing short roads tries to touch "bridges," making debugging harder
+            transformations.retain(|t| !matches!(t, Transformation::CollapseShortRoads));
             transformations.push(Transformation::MergeDualCarriageways);
         }
         if input.cycletrack_snapping_experiment {

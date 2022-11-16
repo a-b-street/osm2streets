@@ -4,13 +4,14 @@ use anyhow::Result;
 
 use crate::{osm, ControlType, OriginalRoad, RestrictionType, StreetNetwork};
 
-// TODO After merging a road, trying to drag the surviving intersection in map_editor crashes. I
+// TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
 // too.
 
 impl StreetNetwork {
-    /// Returns (the surviving intersection, the deleted intersection, deleted roads, new roads)
-    pub fn merge_short_road(
+    /// Collapses a road, merging the two intersections together. Returns (the surviving
+    /// intersection, the deleted intersection, deleted roads, new roads)
+    pub fn collapse_short_road(
         &mut self,
         short: OriginalRoad,
     ) -> Result<(
@@ -53,7 +54,7 @@ impl StreetNetwork {
         // TODO This has maybe become impossible
         let (i1, i2) = (short.i1, short.i2);
         if i1 == i2 {
-            bail!("Can't merge {} -- it's a loop on {}", short, i1);
+            bail!("Can't collapse {} -- it's a loop on {}", short, i1);
         }
         // Remember the original connections to i1 before we merge. None of these will change IDs.
         let mut connected_to_i1 = self.roads_per_intersection(i1);
@@ -119,7 +120,7 @@ impl StreetNetwork {
             road.id = new_id;
 
             if new_id.i1 == new_id.i2 {
-                // When merging many roads around some junction, we wind up with loops. We can
+                // When collapsing many roads around some junction, we wind up with loops. We can
                 // immediately discard those.
                 continue;
             }
@@ -191,8 +192,8 @@ impl StreetNetwork {
     }
 }
 
-/// Merge all roads marked with `junction=intersection`
-pub fn merge_all_junctions(streets: &mut StreetNetwork) {
+/// Collapse all roads marked with `junction=intersection`
+pub fn collapse_all_junction_roads(streets: &mut StreetNetwork) {
     let mut queue: VecDeque<OriginalRoad> = VecDeque::new();
     for (id, road) in &streets.roads {
         if road.osm_tags.is("junction", "intersection") {
@@ -204,18 +205,18 @@ pub fn merge_all_junctions(streets: &mut StreetNetwork) {
     while !queue.is_empty() {
         let id = queue.pop_front().unwrap();
 
-        // The road might've been deleted by a previous merge_short_road call
+        // The road might've been deleted by a previous collapse_short_road call
         if !streets.roads.contains_key(&id) {
             continue;
         }
 
         i += 1;
-        streets.maybe_start_debug_step(format!("merge road {i}"));
-        streets.debug_road(id, "merge");
-        match streets.merge_short_road(id) {
+        streets.maybe_start_debug_step(format!("collapse road {i}"));
+        streets.debug_road(id, "collapse");
+        match streets.collapse_short_road(id) {
             Ok((_, _, _, new_roads)) => {
                 // Some road IDs still in the queue might have changed, so check the new_roads for
-                // anything we should try to merge
+                // anything we should try to collapse
                 for r in new_roads {
                     if streets.roads[&r].osm_tags.is("junction", "intersection") {
                         queue.push_back(r);
@@ -223,7 +224,7 @@ pub fn merge_all_junctions(streets: &mut StreetNetwork) {
                 }
             }
             Err(err) => {
-                warn!("Not merging short road / junction=intersection: {}", err);
+                warn!("Not collapsing short road / junction=intersection: {}", err);
             }
         }
     }
