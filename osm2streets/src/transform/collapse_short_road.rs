@@ -57,35 +57,35 @@ impl StreetNetwork {
             bail!("Can't collapse {} -- it's a loop on {}", short, i1);
         }
         // Remember the original connections to i1 before we merge. None of these will change IDs.
-        let mut connected_to_i1 = self.roads_per_intersection(i1);
+        let mut connected_to_i1 = self.intersections[&i1].roads.clone();
         connected_to_i1.retain(|x| *x != short);
 
         // Retain some geometry...
         {
             let mut trim_roads_for_merging = BTreeMap::new();
             for i in [i1, i2] {
-                for r in self.roads_per_intersection(i) {
+                for road in self.roads_per_intersection(i) {
                     // If we keep this in there, it might accidentally overwrite the
                     // trim_roads_for_merging key for a surviving road!
-                    if r == short {
+                    if road.id == short {
                         continue;
                     }
                     // If we're going to delete this later, don't bother!
-                    if self.roads[&r].osm_tags.is("junction", "intersection") {
+                    if road.osm_tags.is("junction", "intersection") {
                         continue;
                     }
 
-                    let pl = self.estimate_trimmed_geometry(r).unwrap();
-                    if r.i1 == i {
-                        if trim_roads_for_merging.contains_key(&(r.osm_way_id, true)) {
-                            panic!("trim_roads_for_merging has an i1 duplicate for {}", r);
+                    let pl = self.estimate_trimmed_geometry(road.id).unwrap();
+                    if road.id.i1 == i {
+                        if trim_roads_for_merging.contains_key(&(road.id.osm_way_id, true)) {
+                            panic!("trim_roads_for_merging has an i1 duplicate for {}", road.id);
                         }
-                        trim_roads_for_merging.insert((r.osm_way_id, true), pl.first_pt());
+                        trim_roads_for_merging.insert((road.id.osm_way_id, true), pl.first_pt());
                     } else {
-                        if trim_roads_for_merging.contains_key(&(r.osm_way_id, false)) {
-                            panic!("trim_roads_for_merging has an i2 duplicate for {}", r);
+                        if trim_roads_for_merging.contains_key(&(road.id.osm_way_id, false)) {
+                            panic!("trim_roads_for_merging has an i2 duplicate for {}", road.id);
                         }
-                        trim_roads_for_merging.insert((r.osm_way_id, false), pl.last_pt());
+                        trim_roads_for_merging.insert((road.id.osm_way_id, false), pl.last_pt());
                     }
                 }
             }
@@ -107,7 +107,7 @@ impl StreetNetwork {
         let mut created = Vec::new();
         let mut old_to_new = BTreeMap::new();
         let mut new_to_old = BTreeMap::new();
-        for r in self.roads_per_intersection(i2) {
+        for r in self.intersections[&i2].roads.clone() {
             deleted.push(r);
             let mut road = self.remove_road(&r);
             let mut new_id = r;

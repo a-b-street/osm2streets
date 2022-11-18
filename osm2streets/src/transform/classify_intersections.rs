@@ -35,8 +35,7 @@ pub fn guess_complexity(
 ) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {
     let roads: Vec<_> = streets
         .roads_per_intersection(*intersection_id)
-        .iter()
-        .map(|id| &streets.roads[id])
+        .into_iter()
         .filter(|road| road.is_driveable())
         .collect();
 

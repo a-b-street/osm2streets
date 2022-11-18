@@ -17,7 +17,7 @@ pub fn collapse(streets: &mut StreetNetwork) {
         if roads.len() != 2 {
             continue;
         }
-        match should_collapse(&streets.roads[&roads[0]], &streets.roads[&roads[1]]) {
+        match should_collapse(roads[0], roads[1]) {
             Ok(()) => {
                 merge.push(*id);
             }
@@ -131,7 +131,7 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
 }
 
 pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
-    let roads = streets.roads_per_intersection(i);
+    let roads = streets.intersections[&i].roads.clone();
     assert_eq!(roads.len(), 2);
     let mut r1 = roads[0];
     let mut r2 = roads[1];
@@ -233,11 +233,11 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
         if roads.len() != 1 || i.control == ControlType::Border {
             continue;
         }
-        let road = &streets.roads[&roads[0]];
+        let road = &roads[0];
         if road.untrimmed_length() < SHORT_THRESHOLD
             && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
         {
-            remove_roads.insert(roads[0]);
+            remove_roads.insert(roads[0].id);
             remove_intersections.insert(*id);
         }
     }

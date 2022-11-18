@@ -1,6 +1,6 @@
 use geom::Distance;
 
-use crate::{osm, ControlType, OriginalRoad, StreetNetwork};
+use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
 
 /// Combines a few different sources/methods to decide which roads are short. Marks them for
 /// merging.
@@ -121,15 +121,15 @@ impl StreetNetwork {
                 if connections.len() != 3 {
                     continue 'ROAD;
                 }
-                for r in &connections {
+                for road in &connections {
                     // Are both intersections 3-ways of driveable roads? (Don't even attempt
                     // cycleways yet...)
-                    if !self.roads[r].is_driveable() {
+                    if !road.is_driveable() {
                         continue 'ROAD;
                     }
                     // Don't do anything near border intersections
-                    if self.intersections[&r.i1].is_border()
-                        || self.intersections[&r.i2].is_border()
+                    if self.intersections[&road.id.i1].is_border()
+                        || self.intersections[&road.id.i2].is_border()
                     {
                         continue 'ROAD;
                     }
@@ -137,7 +137,7 @@ impl StreetNetwork {
 
                 // Don't touch the point where dual carriageways split/join, like
                 // https://www.openstreetmap.org/node/496331163
-                if dual_carriageway_split(self, connections) {
+                if dual_carriageway_split(connections) {
                     continue 'ROAD;
                 }
             }
@@ -149,16 +149,14 @@ impl StreetNetwork {
 }
 
 // TODO Dedupe with find_divided_highways logic in parking_mapper
-fn dual_carriageway_split(streets: &StreetNetwork, roads: Vec<OriginalRoad>) -> bool {
+fn dual_carriageway_split(roads: Vec<&Road>) -> bool {
     assert_eq!(roads.len(), 3);
     // Look for one-way roads with the same name
-    for (r1, r2) in [
+    for (road1, road2) in [
         (roads[0], roads[1]),
         (roads[0], roads[2]),
         (roads[1], roads[2]),
     ] {
-        let road1 = &streets.roads[&r1];
-        let road2 = &streets.roads[&r2];
         if road1.oneway_for_driving().is_some()
             && road2.oneway_for_driving().is_some()
             && road1.osm_tags.get(osm::NAME) == road2.osm_tags.get(osm::NAME)
