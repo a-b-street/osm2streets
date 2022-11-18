@@ -156,7 +156,7 @@ pub fn split_up_roads(
         if !streets.intersections.contains_key(&via_osm) {
             continue;
         }
-        let roads = streets.roads_per_intersection(via_osm);
+        let roads = &streets.intersections[&via_osm].roads;
         // If some of the roads are missing, they were likely filtered out -- usually service
         // roads.
         if let (Some(from), Some(to)) = (
@@ -195,15 +195,15 @@ pub fn split_up_roads(
         }
         let via = via_candidates[0];
 
-        let maybe_from = streets
-            .roads_per_intersection(via.i1)
-            .into_iter()
-            .chain(streets.roads_per_intersection(via.i2).into_iter())
+        let maybe_from = streets.intersections[&via.i1]
+            .roads
+            .iter()
+            .chain(&streets.intersections[&via.i2].roads)
             .find(|r| r.osm_way_id == from_osm);
-        let maybe_to = streets
-            .roads_per_intersection(via.i1)
-            .into_iter()
-            .chain(streets.roads_per_intersection(via.i2).into_iter())
+        let maybe_to = streets.intersections[&via.i1]
+            .roads
+            .iter()
+            .chain(&streets.intersections[&via.i2].roads)
             .find(|r| r.osm_way_id == to_osm);
         match (maybe_from, maybe_to) {
             (Some(from), Some(to)) => {
@@ -223,7 +223,7 @@ pub fn split_up_roads(
             .get_mut(&from)
             .unwrap()
             .complicated_turn_restrictions
-            .push((via, to));
+            .push((via, *to));
     }
 
     timer.start("match traffic signals to intersections");

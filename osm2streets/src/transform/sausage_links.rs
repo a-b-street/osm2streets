@@ -25,8 +25,8 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
         }
         // Find roads that lead between the two endpoints
         let mut common_roads: BTreeSet<OriginalRoad> =
-            into_set(streets.roads_per_intersection(id1.i1))
-                .intersection(&into_set(streets.roads_per_intersection(id1.i2)))
+            into_set(streets.intersections[&id1.i1].roads.clone())
+                .intersection(&into_set(streets.intersections[&id1.i2].roads.clone()))
                 .cloned()
                 .collect();
         // Normally it's just this one road

@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{osm, OriginalRoad, StreetNetwork};
+use crate::{osm, OriginalRoad, Road, StreetNetwork};
 
 pub fn merge(streets: &mut StreetNetwork) {
     for i in streets.intersections.keys() {
@@ -42,15 +42,14 @@ impl MultiConnection {
         }
 
         // First group roads by name.
-        let mut roads_by_name: BTreeMap<String, Vec<OriginalRoad>> = BTreeMap::new();
-        for r in roads {
-            let road = &streets.roads[&r];
+        let mut roads_by_name: BTreeMap<String, Vec<&Road>> = BTreeMap::new();
+        for road in roads {
             // Skip unnamed roads for now
             if let Some(name) = road.osm_tags.get(osm::NAME) {
                 roads_by_name
                     .entry(name.clone())
                     .or_insert_with(Vec::new)
-                    .push(r);
+                    .push(road);
             }
         }
 
@@ -61,11 +60,11 @@ impl MultiConnection {
             }
             let mut oneway_roads = Vec::new();
             let mut bidi_roads = Vec::new();
-            for r in groups {
-                if streets.roads[&r].oneway_for_driving().is_some() {
-                    oneway_roads.push(r);
+            for road in groups {
+                if road.oneway_for_driving().is_some() {
+                    oneway_roads.push(road);
                 } else {
-                    bidi_roads.push(r);
+                    bidi_roads.push(road);
                 }
             }
 
@@ -82,8 +81,8 @@ impl MultiConnection {
 
             return Some(Self {
                 i,
-                side1: oneway_roads.remove(0),
-                side2: oneway_roads.remove(0),
+                side1: oneway_roads.remove(0).id,
+                side2: oneway_roads.remove(0).id,
                 road_name,
             });
         }
@@ -176,17 +175,16 @@ impl DualCarriagewayPt1 {
         let mut last_i = join;
         'LOOP: loop {
             let other_side = current.other_side(last_i);
-            for r in streets.roads_per_intersection(other_side) {
+            for road in streets.roads_per_intersection(other_side) {
                 // TODO Helper method to just find roads originating at other_side and pointing
                 // away (or towards) something?
-                if r == current {
+                if road.id == current {
                     continue;
                 }
-                let road = &streets.roads[&r];
                 if road.osm_tags.is(osm::NAME, road_name) {
                     if road.oneway_for_driving().is_some() {
-                        current = r.clone();
-                        sequence.push(r);
+                        current = road.id;
+                        sequence.push(road.id);
                         last_i = other_side;
                         continue 'LOOP;
                     }
@@ -297,7 +295,7 @@ impl DualCarriagewayPt2 {
         for pair in side.windows(2) {
             dist += streets.roads[&pair[0]].untrimmed_road_geometry().0.length();
             let i = pair[0].i2;
-            for r in streets.roads_per_intersection(i) {
+            for r in streets.intersections[&i].roads.clone() {
                 if r == pair[0] || r == pair[1] {
                     continue;
                 }

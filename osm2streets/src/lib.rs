@@ -117,10 +117,13 @@ impl StreetNetwork {
         }
     }
 
-    // This always returns roads oriented in clockwise order around the intersection
-    // TODO Consider not cloning. Many callers will have to change
-    pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<OriginalRoad> {
-        self.intersections[&i].roads.clone()
+    /// Returns roads oriented in clockwise order around the intersection
+    pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<&Road> {
+        self.intersections[&i]
+            .roads
+            .iter()
+            .map(|r| &self.roads[r])
+            .collect()
     }
 
     /// This calculates a road's `trimmed_center_line` early, before
@@ -129,8 +132,7 @@ impl StreetNetwork {
         // First trim at one of the endpoints
         let trimmed_center_pts = {
             let mut input_roads = Vec::new();
-            for r in self.roads_per_intersection(road_id.i1) {
-                let road = &self.roads[&r];
+            for road in self.roads_per_intersection(road_id.i1) {
                 // trimmed_center_line hasn't been initialized yet, so override this
                 let mut input = road.to_input_road();
                 input.center_pts = road.untrimmed_road_geometry().0;
@@ -148,10 +150,9 @@ impl StreetNetwork {
         // Now the second
         {
             let mut input_roads = Vec::new();
-            for r in self.roads_per_intersection(road_id.i2) {
-                let road = &self.roads[&r];
+            for road in self.roads_per_intersection(road_id.i2) {
                 let mut input = road.to_input_road();
-                if r == road_id {
+                if road.id == road_id {
                     input.center_pts = trimmed_center_pts.clone();
                 } else {
                     input.center_pts = road.untrimmed_road_geometry().0;
@@ -298,9 +299,9 @@ impl StreetNetwork {
 
         // Update all the roads.
         let mut fixed = Vec::new();
-        for r in self.roads_per_intersection(id) {
-            fixed.push(r);
-            let road = self.roads.get_mut(&r).unwrap();
+        for r in &self.intersections[&id].roads {
+            fixed.push(*r);
+            let road = self.roads.get_mut(r).unwrap();
             let mut pts = road.untrimmed_center_line.clone().into_points();
             if r.i1 == id {
                 pts[0] = point;
