@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use anyhow::Result;
 
 use abstutil::wraparound_get;
-use geom::{Circle, Distance, InfiniteLine, Line, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
+use geom::{Circle, Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
 use super::Results;
 use crate::{osm, InputRoad, OriginalRoad};
@@ -12,12 +12,15 @@ const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5
 
 pub fn intersection_polygon(
     intersection_id: osm::NodeID,
+    // These must be sorted clockwise already
     input_roads: Vec<InputRoad>,
     trim_roads_for_merging: &BTreeMap<(osm::WayID, bool), Pt2D>,
 ) -> Result<Results> {
     // TODO Possibly take this as input in the first place
     let mut roads: BTreeMap<OriginalRoad, InputRoad> = BTreeMap::new();
+    let mut sorted_roads: Vec<OriginalRoad> = Vec::new();
     for r in input_roads {
+        sorted_roads.push(r.id);
         roads.insert(r.id, r);
     }
 
@@ -55,84 +58,30 @@ pub fn intersection_polygon(
         }
     }
 
+    // Sorted clockwise
     let mut road_lines = Vec::new();
-    let mut endpoints_for_center = Vec::new();
-    for road in roads.values() {
-        let center_pl = if road.id.i1 == intersection_id {
+    for id in sorted_roads {
+        let road = &roads[&id];
+        let center_pl = if id.i1 == intersection_id {
             road.center_pts.reversed()
-        } else if road.id.i2 == intersection_id {
+        } else if id.i2 == intersection_id {
             road.center_pts.clone()
         } else {
-            panic!(
-                "Incident road {} doesn't have an endpoint at {}",
-                road.id, intersection_id
-            );
+            panic!("Incident road {id} doesn't have an endpoint at {intersection_id}");
         };
-        endpoints_for_center.push(center_pl.last_pt());
         road_lines.push(RoadLine {
-            id: road.id,
-            // Filled out momentarily
-            sorting_pt: Pt2D::zero(),
+            id,
             fwd_pl: center_pl.shift_right(road.half_width)?,
             back_pl: center_pl.shift_left(road.half_width)?,
-            center_pl,
         });
     }
-    // In most cases, this will just be the same point repeated a few times, so Pt2D::center is a
-    // no-op. But when we have pretrimmed roads, this is much closer to the real "center" of the
-    // polygon we're attempting to create.
-    let intersection_center = Pt2D::center(&endpoints_for_center);
 
-    // Sort the polylines in clockwise order around the center. This is subtle --
-    // https://a-b-street.github.io/docs/tech/map/geometry/index.html#sorting-revisited. When we
-    // get this wrong, the resulting polygon looks like a "bowtie," because the order of the
-    // intersection polygon's points follows this clockwise ordering of roads.
-    //
-    // We could use the point on each road center line farthest from the intersection center. But
-    // when some of the roads bend around, this produces incorrect ordering. Try walking along that
-    // center line a distance equal to the _shortest_ road.
-    let shortest_center = road_lines
-        .iter()
-        .map(|r| r.center_pl.length())
-        .min()
-        .unwrap();
-    for r in &mut road_lines {
-        r.sorting_pt = r
-            .center_pl
-            .must_dist_along(r.center_pl.length() - shortest_center)
-            .0;
-    }
-    road_lines.sort_by_key(|r| {
-        r.sorting_pt
-            .angle_to(intersection_center)
-            .normalized_degrees() as i64
-    });
-
-    let mut results = Results {
+    let results = Results {
         intersection_id,
         intersection_polygon: Polygon::dummy(),
         debug: Vec::new(),
         trimmed_center_pts: BTreeMap::new(),
     };
-
-    // Debug the sorted order.
-    if true {
-        results.debug.push((
-            "center".to_string(),
-            Circle::new(intersection_center, Distance::meters(1.0)).to_polygon(),
-        ));
-        for (idx, r) in road_lines.iter().enumerate() {
-            results.debug.push((
-                idx.to_string(),
-                Circle::new(r.sorting_pt, Distance::meters(1.0)).to_polygon(),
-            ));
-            if let Ok(l) = Line::new(intersection_center, r.sorting_pt) {
-                results
-                    .debug
-                    .push((idx.to_string(), l.make_polygons(Distance::meters(0.5))));
-            }
-        }
-    }
 
     if road_lines.len() == 1 {
         return deadend(results, roads, &road_lines);
@@ -151,8 +100,6 @@ pub fn intersection_polygon(
 #[derive(Clone)]
 struct RoadLine {
     id: OriginalRoad,
-    sorting_pt: Pt2D,
-    center_pl: PolyLine,
     // Both are oriented to be incoming to the intersection (ending at it).
     // TODO Maybe express as the "right" and "left"
     fwd_pl: PolyLine,
