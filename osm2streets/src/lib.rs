@@ -119,6 +119,13 @@ impl StreetNetwork {
         }
     }
 
+    pub fn remove_intersection(&mut self, id: osm::NodeID) {
+        let i = self.intersections.remove(&id).unwrap();
+        if !i.roads.is_empty() {
+            panic!("Can't remove_intersection({id}), it has roads still connected");
+        }
+    }
+
     /// Returns roads oriented in clockwise order around the intersection
     pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<&Road> {
         self.intersections[&i]
@@ -277,56 +284,6 @@ impl StreetNetwork {
         if int.complexity != IntersectionComplexity::MapEdge {
             int.complexity = complexity;
         }
-    }
-}
-
-// Mutations and supporting queries
-impl StreetNetwork {
-    pub fn can_delete_intersection(&self, i: osm::NodeID) -> bool {
-        self.roads_per_intersection(i).is_empty()
-    }
-
-    pub fn delete_intersection(&mut self, id: osm::NodeID) {
-        if !self.can_delete_intersection(id) {
-            panic!(
-                "Can't delete_intersection {}, must have roads connected",
-                id
-            );
-        }
-        self.intersections.remove(&id).unwrap();
-    }
-
-    pub fn move_intersection(&mut self, id: osm::NodeID, point: Pt2D) -> Option<Vec<OriginalRoad>> {
-        self.intersections.get_mut(&id).unwrap().point = point;
-
-        // Update all the roads.
-        let mut fixed = Vec::new();
-        for r in &self.intersections[&id].roads {
-            fixed.push(*r);
-            let road = self.roads.get_mut(r).unwrap();
-            let mut pts = road.untrimmed_center_line.clone().into_points();
-            if r.i1 == id {
-                pts[0] = point;
-            } else {
-                assert_eq!(r.i2, id);
-                *pts.last_mut().unwrap() = point;
-            }
-            // TODO This could panic if someone moves the intersection a certain way. We could
-            // dedupe points or try to workaround it, but this method is only used by one
-            // low-priority caller right now
-            road.untrimmed_center_line = PolyLine::must_new(pts);
-        }
-
-        Some(fixed)
-    }
-
-    /// Brute-force search; doesn't use a quadtree
-    pub fn closest_intersection(&self, pt: Pt2D) -> osm::NodeID {
-        self.intersections
-            .iter()
-            .min_by_key(|(_, i)| i.point.dist_to(pt))
-            .map(|(id, _)| *id)
-            .unwrap()
     }
 }
 

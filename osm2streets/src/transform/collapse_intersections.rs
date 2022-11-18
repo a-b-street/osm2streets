@@ -246,7 +246,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
         streets.remove_road(&r);
     }
     for i in remove_intersections {
-        streets.delete_intersection(i);
+        streets.remove_intersection(i);
     }
 
     // It's possible we need to do this in a fixed-point until there are no changes, but meh.
