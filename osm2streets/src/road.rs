@@ -221,6 +221,10 @@ impl Road {
         Ok((left, right))
     }
 
+    pub fn endpoints(&self) -> Vec<osm::NodeID> {
+        vec![self.src_i, self.dst_i]
+    }
+
     pub(crate) fn to_input_road(&self) -> InputRoad {
         InputRoad {
             id: self.id,

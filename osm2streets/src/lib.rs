@@ -86,7 +86,7 @@ impl StreetNetwork {
     }
 
     pub fn insert_road(&mut self, road: Road) {
-        let endpts = vec![road.src_i, road.dst_i];
+        let endpts = road.endpoints();
         let id = road.id;
         self.roads.insert(road.id, road);
         for i in endpts {
@@ -98,11 +98,7 @@ impl StreetNetwork {
     }
 
     pub fn remove_road(&mut self, id: OriginalRoad) -> Road {
-        let endpts = {
-            let r = &self.roads[&id];
-            vec![r.src_i, r.dst_i]
-        };
-        for i in endpts {
+        for i in self.roads[&id].endpoints() {
             self.intersections
                 .get_mut(&i)
                 .unwrap()

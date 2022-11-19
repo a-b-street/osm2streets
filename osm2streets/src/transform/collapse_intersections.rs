@@ -145,13 +145,9 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
 
     // Skip loops; they break. Easiest way to detect is see how many total vertices we've got.
     {
-        let road1 = &streets.roads[&r1];
-        let road2 = &streets.roads[&r2];
         let mut endpts = BTreeSet::new();
-        endpts.insert(road1.src_i);
-        endpts.insert(road1.dst_i);
-        endpts.insert(road2.src_i);
-        endpts.insert(road2.dst_i);
+        endpts.extend(streets.roads[&r1].endpoints());
+        endpts.extend(streets.roads[&r2].endpoints());
         if endpts.len() != 3 {
             info!("Not collapsing degenerate {i}, because it's a loop");
             return;
