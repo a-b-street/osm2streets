@@ -26,7 +26,7 @@ impl StreetNetwork {
         if !self.intersections.contains_key(&short.i1)
             || !self.intersections.contains_key(&short.i2)
         {
-            self.remove_road(&short);
+            self.remove_road(short);
             bail!(
                 "One endpoint of {} has already been deleted, skipping",
                 short
@@ -76,7 +76,7 @@ impl StreetNetwork {
                     }
 
                     let pl = self.estimate_trimmed_geometry(road.id).unwrap();
-                    if road.id.i1 == i {
+                    if road.src_i == i {
                         if trim_roads_for_merging.contains_key(&(road.id.osm_way_id, true)) {
                             panic!("trim_roads_for_merging has an i1 duplicate for {}", road.id);
                         }
@@ -96,7 +96,7 @@ impl StreetNetwork {
                 .extend(trim_roads_for_merging);
         }
 
-        self.remove_road(&short);
+        self.remove_road(short);
 
         // Arbitrarily keep i1 and destroy i2. Don't actually remove the intersection until later;
         // remove_road needs the intersection to exist
@@ -109,7 +109,7 @@ impl StreetNetwork {
         let mut new_to_old = BTreeMap::new();
         for r in self.intersections[&i2].roads.clone() {
             deleted.push(r);
-            let mut road = self.remove_road(&r);
+            let mut road = self.remove_road(r);
             let mut new_id = r;
             if r.i1 == i2 {
                 new_id.i1 = i1;
@@ -118,6 +118,8 @@ impl StreetNetwork {
                 new_id.i2 = i1;
             }
             road.id = new_id;
+            road.src_i = new_id.i1;
+            road.dst_i = new_id.i2;
 
             if new_id.i1 == new_id.i2 {
                 // When collapsing many roads around some junction, we wind up with loops. We can
@@ -128,7 +130,7 @@ impl StreetNetwork {
             old_to_new.insert(r, new_id);
             new_to_old.insert(new_id, r);
 
-            self.insert_road(new_id, road);
+            self.insert_road(road);
             created.push(new_id);
         }
 

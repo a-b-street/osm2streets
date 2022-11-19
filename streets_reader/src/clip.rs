@@ -11,7 +11,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     let boundary_ring = boundary_polygon.get_outer_ring();
 
     // First, just remove roads that both start and end outside the boundary polygon.
-    streets.retain_roads(|_, r| {
+    streets.retain_roads(|r| {
         let first_in = boundary_polygon.contains_pt(r.untrimmed_center_line.first_pt());
         let last_in = boundary_polygon.contains_pt(r.untrimmed_center_line.last_pt());
         let light_rail_ok = if r.is_light_rail() {
@@ -54,7 +54,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
         if intersection.roads.len() > 1 {
             for r in intersection.roads.clone() {
-                let mut road = streets.remove_road(&r);
+                let mut road = streets.remove_road(r);
 
                 let mut copy = streets.intersections[&id].clone();
                 copy.roads.clear();
@@ -70,10 +70,12 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
                 }
                 assert_ne!(r, fixed_road_id);
                 road.id = fixed_road_id;
+                road.src_i = fixed_road_id.i1;
+                road.dst_i = fixed_road_id.i2;
                 copy.id = new_id;
 
                 streets.intersections.insert(new_id, copy);
-                streets.insert_road(fixed_road_id, road);
+                streets.insert_road(road);
             }
 
             assert!(streets.intersections[&id].roads.is_empty());

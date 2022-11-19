@@ -132,7 +132,7 @@ pub fn split_up_roads(
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
-                        streets.insert_road(id, Road::new(id, pl, tags, &streets.config));
+                        streets.insert_road(Road::new(id, id.i1, id.i2, pl, tags, &streets.config));
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");

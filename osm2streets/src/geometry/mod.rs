@@ -24,6 +24,8 @@ pub use algorithm::intersection_polygon;
 #[derive(Clone)]
 pub struct InputRoad {
     pub id: OriginalRoad,
+    pub src_i: osm::NodeID,
+    pub dst_i: osm::NodeID,
     /// The true center of the road, including sidewalks. The input is untrimmed when called on the
     /// first endpoint, then trimmed on that one side when called on th second endpoint.
     pub center_pts: PolyLine,

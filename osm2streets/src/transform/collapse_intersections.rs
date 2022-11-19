@@ -48,7 +48,7 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     // a bizarre example. These are actually blackholed, some problem with service roads.
     if road1.oneway_for_driving().is_some()
         && road2.oneway_for_driving().is_some()
-        && road1.id.i2 == road2.id.i2
+        && road1.dst_i == road2.dst_i
     {
         bail!("oneway roads point at each other");
     }
@@ -144,42 +144,46 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     }
 
     // Skip loops; they break. Easiest way to detect is see how many total vertices we've got.
-    let mut endpts = BTreeSet::new();
-    endpts.insert(r1.i1);
-    endpts.insert(r1.i2);
-    endpts.insert(r2.i1);
-    endpts.insert(r2.i2);
-    if endpts.len() != 3 {
-        info!("Not collapsing degenerate {}, because it's a loop", i);
-        return;
+    {
+        let road1 = &streets.roads[&r1];
+        let road2 = &streets.roads[&r2];
+        let mut endpts = BTreeSet::new();
+        endpts.insert(road1.src_i);
+        endpts.insert(road1.dst_i);
+        endpts.insert(road2.src_i);
+        endpts.insert(road2.dst_i);
+        if endpts.len() != 3 {
+            info!("Not collapsing degenerate {i}, because it's a loop");
+            return;
+        }
     }
 
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
-    let mut new_road = streets.remove_road(&r1);
-    let road2 = streets.remove_road(&r2);
+    let mut new_road = streets.remove_road(r1);
+    let road2 = streets.remove_road(r2);
     streets.intersections.remove(&i).unwrap();
 
     // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
     // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
     let mut new_pts;
-    let (new_i1, new_i2) = if r1.i2 == r2.i1 {
+    let (new_i1, new_i2) = if new_road.dst_i == road2.src_i {
         new_pts = new_road.untrimmed_center_line.clone().into_points();
         new_pts.extend(road2.untrimmed_center_line.into_points());
-        (r1.i1, r2.i2)
-    } else if r1.i2 == r2.i2 {
+        (new_road.src_i, road2.dst_i)
+    } else if new_road.dst_i == road2.dst_i {
         new_pts = new_road.untrimmed_center_line.clone().into_points();
         new_pts.extend(road2.untrimmed_center_line.reversed().into_points());
-        (r1.i1, r2.i1)
-    } else if r1.i1 == r2.i1 {
+        (new_road.src_i, road2.src_i)
+    } else if new_road.src_i == road2.src_i {
         new_pts = road2.untrimmed_center_line.into_points();
         new_pts.reverse();
         new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
-        (r2.i2, r1.i2)
-    } else if r1.i1 == r2.i2 {
+        (road2.dst_i, new_road.dst_i)
+    } else if new_road.src_i == road2.dst_i {
         new_pts = road2.untrimmed_center_line.into_points();
         new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
-        (r2.i1, r1.i2)
+        (road2.src_i, new_road.dst_i)
     } else {
         unreachable!()
     };
@@ -196,7 +200,9 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
         i2: new_i2,
     };
     new_road.id = new_r1;
-    streets.insert_road(new_r1, new_road);
+    new_road.src_i = new_i1;
+    new_road.dst_i = new_i2;
+    streets.insert_road(new_road);
 
     // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
     let rewrite = |x: &OriginalRoad| *x == r1 || *x == r2;
@@ -243,7 +249,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
     }
 
     for r in remove_roads {
-        streets.remove_road(&r);
+        streets.remove_road(r);
     }
     for i in remove_intersections {
         streets.remove_intersection(i);

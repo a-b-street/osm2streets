@@ -85,10 +85,11 @@ impl StreetNetwork {
         }
     }
 
-    pub fn insert_road(&mut self, id: OriginalRoad, road: Road) {
-        assert_eq!(id, road.id);
-        self.roads.insert(id, road);
-        for i in [id.i1, id.i2] {
+    pub fn insert_road(&mut self, road: Road) {
+        let endpts = vec![road.src_i, road.dst_i];
+        let id = road.id;
+        self.roads.insert(road.id, road);
+        for i in endpts {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
             // Recalculate movements and complexity.
@@ -96,28 +97,32 @@ impl StreetNetwork {
         }
     }
 
-    pub fn remove_road(&mut self, id: &OriginalRoad) -> Road {
-        for i in [id.i1, id.i2] {
+    pub fn remove_road(&mut self, id: OriginalRoad) -> Road {
+        let endpts = {
+            let r = &self.roads[&id];
+            vec![r.src_i, r.dst_i]
+        };
+        for i in endpts {
             self.intersections
                 .get_mut(&i)
                 .unwrap()
                 .roads
-                .retain(|r| r != id);
+                .retain(|r| *r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
             self.recalculate_movements(i);
         }
-        self.roads.remove(id).unwrap()
+        self.roads.remove(&id).unwrap()
     }
 
-    pub fn retain_roads<F: Fn(&OriginalRoad, &Road) -> bool>(&mut self, f: F) {
+    pub fn retain_roads<F: Fn(&Road) -> bool>(&mut self, f: F) {
         let mut remove = Vec::new();
-        for (id, r) in &self.roads {
-            if !f(id, r) {
-                remove.push(*id);
+        for r in self.roads.values() {
+            if !f(r) {
+                remove.push(r.id);
             }
         }
         for id in remove {
-            self.remove_road(&id);
+            self.remove_road(id);
         }
     }
 

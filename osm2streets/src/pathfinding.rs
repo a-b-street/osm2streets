@@ -11,10 +11,10 @@ impl StreetNetwork {
     /// through intersections.
     pub fn path_dist_to(&self, from: osm::NodeID, to: osm::NodeID) -> Option<Distance> {
         let mut graph = DiGraphMap::new();
-        for (id, r) in &self.roads {
-            graph.add_edge(id.i1, id.i2, id);
+        for r in self.roads.values() {
+            graph.add_edge(r.src_i, r.dst_i, r.id);
             if r.oneway_for_driving().is_none() {
-                graph.add_edge(id.i2, id.i1, id);
+                graph.add_edge(r.dst_i, r.src_i, r.id);
             }
         }
         petgraph::algo::dijkstra(&graph, from, Some(to), |(_, _, r)| {
@@ -33,7 +33,7 @@ impl StreetNetwork {
         lane_types: &[LaneType],
     ) -> Option<Vec<(OriginalRoad, Direction)>> {
         let mut graph = DiGraphMap::new();
-        for (id, r) in &self.roads {
+        for r in self.roads.values() {
             let mut fwd = false;
             let mut back = false;
             for lane in &r.lane_specs_ltr {
@@ -46,10 +46,10 @@ impl StreetNetwork {
                 }
             }
             if fwd {
-                graph.add_edge(id.i1, id.i2, (*id, Direction::Fwd));
+                graph.add_edge(r.src_i, r.dst_i, (r.id, Direction::Fwd));
             }
             if back {
-                graph.add_edge(id.i2, id.i1, (*id, Direction::Back));
+                graph.add_edge(r.dst_i, r.src_i, (r.id, Direction::Back));
             }
         }
         let (_, path) = petgraph::algo::astar(

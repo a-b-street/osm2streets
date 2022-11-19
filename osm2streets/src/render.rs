@@ -25,16 +25,16 @@ impl StreetNetwork {
         let mut pairs = Vec::new();
 
         // Add a polygon per road
-        for (id, road) in &self.roads {
+        for road in self.roads.values() {
             pairs.push((
                 road.trimmed_center_line
                     .make_polygons(2.0 * road.total_width() / 2.0)
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
                     ("type", "road".into()),
-                    ("osm_way_id", id.osm_way_id.0.into()),
-                    ("src_i", id.i1.0.into()),
-                    ("dst_i", id.i2.0.into()),
+                    ("osm_way_id", road.id.osm_way_id.0.into()),
+                    ("src_i", road.src_i.0.into()),
+                    ("dst_i", road.dst_i.0.into()),
                 ]),
             ));
         }
@@ -272,7 +272,7 @@ impl StreetNetwork {
                 .iter()
                 .map(|r| {
                     let road = &self.roads[r];
-                    let first_road_segment = if road.id.i1 == *i {
+                    let first_road_segment = if road.src_i == *i {
                         road.trimmed_center_line.first_line()
                     } else {
                         road.trimmed_center_line.last_line().reversed()

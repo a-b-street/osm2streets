@@ -17,7 +17,7 @@ pub fn collapse_sausage_links(streets: &mut StreetNetwork) {
 fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, OriginalRoad)> {
     let mut pairs: BTreeSet<(OriginalRoad, OriginalRoad)> = BTreeSet::new();
 
-    for (id1, road1) in &streets.roads {
+    for road1 in streets.roads.values() {
         // TODO People often forget to fix the lanes when splitting a dual carriageway, but don't
         // attempt to detect/repair that yet.
         if road1.oneway_for_driving().is_none() {
@@ -25,12 +25,12 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
         }
         // Find roads that lead between the two endpoints
         let mut common_roads: BTreeSet<OriginalRoad> =
-            into_set(streets.intersections[&id1.i1].roads.clone())
-                .intersection(&into_set(streets.intersections[&id1.i2].roads.clone()))
+            into_set(streets.intersections[&road1.src_i].roads.clone())
+                .intersection(&into_set(streets.intersections[&road1.dst_i].roads.clone()))
                 .cloned()
                 .collect();
         // Normally it's just this one road
-        assert!(common_roads.remove(id1));
+        assert!(common_roads.remove(&road1.id));
         // If there's many roads between these intersections, something weird is happening; ignore
         // it
         if common_roads.len() != 1 {
@@ -39,7 +39,7 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
 
         let id2 = common_roads.into_iter().next().unwrap();
         // Ignore if we've already found this match
-        if pairs.contains(&(id2, *id1)) {
+        if pairs.contains(&(id2, road1.id)) {
             continue;
         }
 
@@ -53,19 +53,19 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
         // The two roads must point in a loop. Since they're both one-way, we can just
         // check the endpoints.
         // See the 'service_road_loop' test for why this is needed.
-        if !(id1.i2 == id2.i1 && id2.i2 == id1.i1) {
+        if !(road1.dst_i == road2.src_i && road2.dst_i == road1.src_i) {
             continue;
         }
 
         // Both intersections must connect to something else. If one of them is degenerate, we
         // would collapse a loop down. See the 'oneway_loop' test for an example.
-        if streets.roads_per_intersection(id1.i1).len() < 3
-            || streets.roads_per_intersection(id1.i2).len() < 3
+        if streets.roads_per_intersection(road1.src_i).len() < 3
+            || streets.roads_per_intersection(road1.dst_i).len() < 3
         {
             continue;
         }
 
-        pairs.insert((*id1, id2));
+        pairs.insert((road1.id, id2));
     }
 
     pairs
@@ -78,7 +78,7 @@ fn fix(streets: &mut StreetNetwork, id1: OriginalRoad, id2: OriginalRoad) {
     assert!(streets.roads.contains_key(&id2));
 
     // Arbitrarily remove the 2nd
-    let mut road2 = streets.remove_road(&id2);
+    let mut road2 = streets.remove_road(id2);
     // And modify the 1st
     let road1 = streets.roads.get_mut(&id1).unwrap();
 

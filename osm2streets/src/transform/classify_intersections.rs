@@ -118,7 +118,7 @@ pub fn guess_complexity(
 
 fn can_drive_out_of(road: &Road, which_end: NodeID) -> bool {
     if let Some(driving_dir) = road.oneway_for_driving() {
-        let required_dir = if road.id.i2 == which_end {
+        let required_dir = if road.dst_i == which_end {
             Direction::Fwd
         } else {
             Direction::Back
@@ -130,7 +130,7 @@ fn can_drive_out_of(road: &Road, which_end: NodeID) -> bool {
 
 fn can_drive_into(road: &Road, which_end: NodeID) -> bool {
     if let Some(driving_dir) = road.oneway_for_driving() {
-        let required_dir = if road.id.i1 == which_end {
+        let required_dir = if road.src_i == which_end {
             Direction::Fwd
         } else {
             Direction::Back
