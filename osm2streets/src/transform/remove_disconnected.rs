@@ -49,7 +49,7 @@ pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
     for p in partitions.iter().skip(1) {
         for id in p {
             info!("Removing {} because it's disconnected from most roads", id);
-            streets.remove_road(id);
+            streets.remove_road(*id);
             next_roads.remove(id.i1, *id);
             next_roads.remove(id.i2, *id);
         }
@@ -57,7 +57,7 @@ pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
 
     // Also remove cul-de-sacs here. TODO Support them properly, but for now, they mess up parking
     // hint matching (loop PolyLine) and pathfinding later.
-    streets.retain_roads(|id, _| id.i1 != id.i2);
+    streets.retain_roads(|r| r.src_i != r.dst_i);
 
     // Remove intersections without any roads
     streets

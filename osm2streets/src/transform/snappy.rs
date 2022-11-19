@@ -52,7 +52,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
         snapped_ids.push(cycleway_id);
 
         // Remove the separate cycleway
-        let deleted_cycleway = streets.remove_road(&cycleway_id);
+        let deleted_cycleway = streets.remove_road(cycleway_id);
 
         // Add it as an attribute to the roads instead
         for (road_id, dir) in roads {

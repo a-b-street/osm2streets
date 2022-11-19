@@ -11,8 +11,9 @@ use crate::{
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
-    /// This determines the orientation of the road -- what intersection it points at.
     pub id: OriginalRoad,
+    pub src_i: osm::NodeID,
+    pub dst_i: osm::NodeID,
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
     /// smoothing the polyline.
     pub untrimmed_center_line: PolyLine,
@@ -42,6 +43,8 @@ pub struct Road {
 impl Road {
     pub fn new(
         id: OriginalRoad,
+        src_i: osm::NodeID,
+        dst_i: osm::NodeID,
         untrimmed_center_line: PolyLine,
         osm_tags: Tags,
         config: &MapConfig,
@@ -49,6 +52,8 @@ impl Road {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
         Self {
             id,
+            src_i,
+            dst_i,
             untrimmed_center_line,
             trimmed_center_line: PolyLine::dummy(),
             osm_tags,
@@ -219,6 +224,8 @@ impl Road {
     pub(crate) fn to_input_road(&self) -> InputRoad {
         InputRoad {
             id: self.id,
+            src_i: self.src_i,
+            dst_i: self.dst_i,
             center_pts: self.trimmed_center_line.clone(),
             half_width: self.total_width() / 2.0,
             osm_tags: self.osm_tags.clone(),

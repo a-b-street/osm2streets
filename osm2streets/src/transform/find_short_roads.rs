@@ -69,12 +69,12 @@ impl StreetNetwork {
         // After trying out around Loop 101, what we really want to do is find clumps of 2 or 4
         // traffic signals, find all the segments between them, and merge those.
         let mut results = Vec::new();
-        for (id, road) in &self.roads {
+        for road in self.roads.values() {
             if road.osm_tags.is("junction", "intersection") {
                 continue;
             }
-            let i1 = &self.intersections[&id.i1];
-            let i2 = &self.intersections[&id.i2];
+            let i1 = &self.intersections[&road.src_i];
+            let i2 = &self.intersections[&road.dst_i];
             if i1.is_border() || i2.is_border() {
                 continue;
             }
@@ -83,7 +83,7 @@ impl StreetNetwork {
                 continue;
             }
             if road.untrimmed_road_geometry().0.length() <= threshold {
-                results.push(*id);
+                results.push(road.id);
             }
         }
 
@@ -106,8 +106,8 @@ impl StreetNetwork {
         let threshold = Distance::meters(5.0);
 
         let mut results = Vec::new();
-        'ROAD: for id in self.roads.keys() {
-            let road_length = if let Ok(pl) = self.estimate_trimmed_geometry(*id) {
+        'ROAD: for road in self.roads.values() {
+            let road_length = if let Ok(pl) = self.estimate_trimmed_geometry(road.id) {
                 pl.length()
             } else {
                 continue;
@@ -116,20 +116,20 @@ impl StreetNetwork {
                 continue;
             }
 
-            for i in [id.i1, id.i2] {
+            for i in [road.src_i, road.dst_i] {
                 let connections = self.roads_per_intersection(i);
                 if connections.len() != 3 {
                     continue 'ROAD;
                 }
-                for road in &connections {
+                for connection in &connections {
                     // Are both intersections 3-ways of driveable roads? (Don't even attempt
                     // cycleways yet...)
-                    if !road.is_driveable() {
+                    if !connection.is_driveable() {
                         continue 'ROAD;
                     }
                     // Don't do anything near border intersections
-                    if self.intersections[&road.id.i1].is_border()
-                        || self.intersections[&road.id.i2].is_border()
+                    if self.intersections[&connection.src_i].is_border()
+                        || self.intersections[&connection.dst_i].is_border()
                     {
                         continue 'ROAD;
                     }
@@ -142,7 +142,7 @@ impl StreetNetwork {
                 }
             }
 
-            results.push(*id);
+            results.push(road.id);
         }
         self.mark_short_roads(results)
     }
