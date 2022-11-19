@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use aabb_quadtree::QuadTree;
 use abstutil::Timer;
 
-use crate::{osm, StreetNetwork};
+use crate::{osm, CommonEndpoint, StreetNetwork};
 
 /// Look for roads that physically overlap, but aren't connected by an intersection. Shrink their
 /// width.
@@ -13,7 +13,7 @@ pub fn shrink(streets: &mut StreetNetwork, timer: &mut Timer) {
     let mut overlapping = Vec::new();
     let mut quadtree = QuadTree::default(streets.gps_bounds.to_bounds().as_bbox());
     timer.start_iter("find overlapping roads", streets.roads.len());
-    for (id, road) in &streets.roads {
+    for road in streets.roads.values() {
         timer.next();
         if road.is_light_rail() {
             continue;
@@ -28,21 +28,24 @@ pub fn shrink(streets: &mut StreetNetwork, timer: &mut Timer) {
 
         // Any conflicts with existing?
         for (other_id, _, _) in quadtree.query(polygon.get_bounds().as_bbox()) {
+            let other_road = &streets.roads[other_id];
             // Only dual carriageways
-            if road.osm_tags.get(osm::NAME) != streets.roads[other_id].osm_tags.get(osm::NAME) {
+            if road.osm_tags.get(osm::NAME) != other_road.osm_tags.get(osm::NAME) {
                 continue;
             }
-            if !id.has_common_endpoint(*other_id) && polygon.intersects(&road_polygons[other_id]) {
+            if road.common_endpoint(other_road) == CommonEndpoint::None
+                && polygon.intersects(&road_polygons[other_id])
+            {
                 // If the polylines don't overlap, then it's probably just a bridge/tunnel
                 if center.intersection(&road_centers[other_id]).is_none() {
-                    overlapping.push((*id, *other_id));
+                    overlapping.push((road.id, *other_id));
                 }
             }
         }
 
-        quadtree.insert_with_box(*id, polygon.get_bounds().as_bbox());
-        road_centers.insert(*id, center);
-        road_polygons.insert(*id, polygon);
+        quadtree.insert_with_box(road.id, polygon.get_bounds().as_bbox());
+        road_centers.insert(road.id, center);
+        road_polygons.insert(road.id, polygon);
     }
 
     timer.start_iter("shrink overlapping roads", overlapping.len());

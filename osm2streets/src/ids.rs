@@ -37,27 +37,6 @@ impl OriginalRoad {
             i2: NodeID(i2),
         }
     }
-
-    pub fn has_common_endpoint(&self, other: OriginalRoad) -> bool {
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return true;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return true;
-        }
-        false
-    }
-
-    // TODO Doesn't handle two roads between the same pair of intersections
-    pub fn common_endpt(&self, other: OriginalRoad) -> NodeID {
-        if self.i1 == other.i1 || self.i1 == other.i2 {
-            return self.i1;
-        }
-        if self.i2 == other.i1 || self.i2 == other.i2 {
-            return self.i2;
-        }
-        panic!("{:?} and {:?} have no common_endpt", self, other);
-    }
 }
 
 /// It's sometimes useful to track both a road's ID and endpoints together. Use this sparingly.
@@ -77,6 +56,8 @@ impl RoadWithEndpoints {
         }
     }
 
+    /// Note the special case of roads that're loops on a single intersection -- the `other_side`
+    /// is the same as the input in that case.
     pub fn other_side(&self, i: NodeID) -> NodeID {
         if self.src_i == i {
             self.dst_i
@@ -85,5 +66,37 @@ impl RoadWithEndpoints {
         } else {
             panic!("{} doesn't have {} on either side", self.road, i);
         }
+    }
+
+    pub fn common_endpoint(&self, other: &Self) -> CommonEndpoint {
+        CommonEndpoint::new((self.src_i, self.dst_i), (other.src_i, other.dst_i))
+    }
+}
+
+#[derive(PartialEq)]
+pub enum CommonEndpoint {
+    /// Two lanes or roads share one endpoint
+    One(NodeID),
+    /// Two lanes or roads share both endpoints, because they're both lanes belonging to the same
+    /// road, or there are two different roads connecting the same pair of intersections
+    Both,
+    /// Two lanes or roads don't have any common endpoints
+    None,
+}
+
+impl CommonEndpoint {
+    pub fn new(obj1: (NodeID, NodeID), obj2: (NodeID, NodeID)) -> Self {
+        let src = obj1.0 == obj2.0 || obj1.0 == obj2.1;
+        let dst = obj1.1 == obj2.0 || obj1.1 == obj2.1;
+        if src && dst {
+            return Self::Both;
+        }
+        if src {
+            return Self::One(obj1.0);
+        }
+        if dst {
+            return Self::One(obj1.1);
+        }
+        Self::None
     }
 }
