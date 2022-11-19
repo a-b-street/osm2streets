@@ -10,10 +10,11 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap};
-use geom::{Distance, GPSBounds, PolyLine, Polygon, Pt2D};
+use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub use self::ids::OriginalRoad;
+pub use self::intersection::Intersection;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
     SIDEWALK_THICKNESS,
@@ -28,6 +29,7 @@ pub use self::types::{
 mod edit;
 mod geometry;
 mod ids;
+mod intersection;
 mod lanes;
 pub mod osm;
 mod pathfinding;
@@ -294,57 +296,6 @@ pub enum CrossingType {
     Signalized,
     /// Not part of a traffic signal
     Unsignalized,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Intersection {
-    pub id: osm::NodeID,
-
-    /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
-    /// StreetNetwork; roads and intersections get merged and deleted.
-    pub point: Pt2D,
-    /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
-    pub polygon: Polygon,
-    pub complexity: IntersectionComplexity,
-    pub conflict_level: ConflictType,
-    pub control: ControlType,
-    pub elevation: Distance,
-
-    /// All roads connected to this intersection. They may be incoming or outgoing relative to this
-    /// intersection. They're ordered clockwise aroundd the intersection.
-    pub roads: Vec<OriginalRoad>,
-    pub movements: Vec<Movement>,
-
-    // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
-    pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
-}
-
-impl Intersection {
-    pub fn new(
-        id: osm::NodeID,
-        point: Pt2D,
-        complexity: IntersectionComplexity,
-        conflict_level: ConflictType,
-        control: ControlType,
-    ) -> Self {
-        Self {
-            id,
-            point,
-            polygon: Polygon::dummy(),
-            complexity,
-            conflict_level,
-            control,
-            // Filled out later
-            roads: Vec::new(),
-            movements: Vec::new(),
-            elevation: Distance::ZERO,
-            trim_roads_for_merging: BTreeMap::new(),
-        }
-    }
-
-    fn is_border(&self) -> bool {
-        self.control == ControlType::Border
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
