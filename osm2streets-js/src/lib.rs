@@ -48,6 +48,9 @@ impl JsStreetNetwork {
             transformations.push(Transformation::SnapCycleways);
             transformations.push(Transformation::TrimDeadendCycleways);
             transformations.push(Transformation::CollapseDegenerateIntersections);
+            // TODO Indeed it'd be much nicer to recalculate this as the above transformations
+            // modify things
+            transformations.push(Transformation::GenerateIntersectionGeometry);
         }
         if input.debug_each_step {
             street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
