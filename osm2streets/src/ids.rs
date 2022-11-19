@@ -3,6 +3,7 @@ use std::fmt;
 use serde::{Deserialize, Serialize};
 
 use crate::osm::{NodeID, WayID};
+use crate::Road;
 
 /// Refers to a road segment between two nodes, using OSM IDs. Note OSM IDs are not stable over
 /// time.
@@ -37,14 +38,6 @@ impl OriginalRoad {
         }
     }
 
-    /// Prints the OriginalRoad in a way that can be copied to Rust code.
-    pub fn as_string_code(&self) -> String {
-        format!(
-            "OriginalRoad::new({}, ({}, {}))",
-            self.osm_way_id.0, self.i1.0, self.i2.0
-        )
-    }
-
     pub fn has_common_endpoint(&self, other: OriginalRoad) -> bool {
         if self.i1 == other.i1 || self.i1 == other.i2 {
             return true;
@@ -65,14 +58,32 @@ impl OriginalRoad {
         }
         panic!("{:?} and {:?} have no common_endpt", self, other);
     }
+}
+
+/// It's sometimes useful to track both a road's ID and endpoints together. Use this sparingly.
+#[derive(Clone)]
+pub struct RoadWithEndpoints {
+    pub road: OriginalRoad,
+    pub src_i: NodeID,
+    pub dst_i: NodeID,
+}
+
+impl RoadWithEndpoints {
+    pub fn new(road: &Road) -> Self {
+        Self {
+            road: road.id,
+            src_i: road.src_i,
+            dst_i: road.dst_i,
+        }
+    }
 
     pub fn other_side(&self, i: NodeID) -> NodeID {
-        if self.i1 == i {
-            self.i2
-        } else if self.i2 == i {
-            self.i1
+        if self.src_i == i {
+            self.dst_i
+        } else if self.dst_i == i {
+            self.src_i
         } else {
-            panic!("{} doesn't have {} on either side", self, i);
+            panic!("{} doesn't have {} on either side", self.road, i);
         }
     }
 }

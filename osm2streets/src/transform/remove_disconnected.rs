@@ -1,20 +1,11 @@
 use std::collections::BTreeSet;
 
-use abstutil::MultiMap;
-
-use crate::{osm, OriginalRoad, StreetNetwork};
+use crate::{OriginalRoad, StreetNetwork};
 
 /// Some roads might be totally disconnected from the largest clump because of how the map's
 /// bounding polygon was drawn, or bad map data, or which roads are filtered from OSM. Remove them.
 pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
     // This is a simple floodfill, not Tarjan's. Assumes all roads bidirectional.
-    // All the usizes are indices into the original list of roads
-
-    let mut next_roads: MultiMap<osm::NodeID, OriginalRoad> = MultiMap::new();
-    for id in streets.roads.keys() {
-        next_roads.insert(id.i1, *id);
-        next_roads.insert(id.i2, *id);
-    }
 
     let mut partitions: Vec<Vec<OriginalRoad>> = Vec::new();
     let mut unvisited_roads: BTreeSet<OriginalRoad> = streets
@@ -34,11 +25,8 @@ pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
             unvisited_roads.remove(&current);
             current_partition.push(current);
 
-            for other_r in next_roads.get(current.i1).iter() {
-                queue_roads.push(*other_r);
-            }
-            for other_r in next_roads.get(current.i2).iter() {
-                queue_roads.push(*other_r);
+            for i in streets.roads[&current].endpoints() {
+                queue_roads.extend(streets.intersections[&i].roads.clone());
             }
         }
         partitions.push(current_partition);
@@ -50,8 +38,6 @@ pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
         for id in p {
             info!("Removing {} because it's disconnected from most roads", id);
             streets.remove_road(*id);
-            next_roads.remove(id.i1, *id);
-            next_roads.remove(id.i2, *id);
         }
     }
 
@@ -60,7 +46,5 @@ pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
     streets.retain_roads(|r| r.src_i != r.dst_i);
 
     // Remove intersections without any roads
-    streets
-        .intersections
-        .retain(|id, _| !next_roads.get(*id).is_empty());
+    streets.intersections.retain(|_, i| !i.roads.is_empty());
 }

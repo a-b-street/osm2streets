@@ -31,16 +31,16 @@ struct Cycleway {
     cycleway_center: PolyLine,
     // Just to distinguish different cycleways when debugging
     debug_idx: usize,
-    main_road_i1: osm::NodeID,
-    main_road_i2: osm::NodeID,
+    main_road_src_i: osm::NodeID,
+    main_road_dst_i: osm::NodeID,
     main_roads: Vec<OriginalRoad>,
 }
 
 impl Cycleway {
     fn debug(&self, streets: &StreetNetwork) {
         streets.debug_road(self.cycleway, format!("cycleway {}", self.debug_idx));
-        streets.debug_intersection(self.main_road_i1, format!("i1 of {}", self.debug_idx));
-        streets.debug_intersection(self.main_road_i2, format!("i2 of {}", self.debug_idx));
+        streets.debug_intersection(self.main_road_src_i, format!("src_i of {}", self.debug_idx));
+        streets.debug_intersection(self.main_road_dst_i, format!("dst_i of {}", self.debug_idx));
         for x in &self.main_roads {
             streets.debug_road(*x, format!("main road along {}", self.debug_idx));
         }
@@ -51,11 +51,11 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
     const SHORT_ROAD_THRESHOLD: Distance = Distance::const_meters(10.0);
 
     let mut cycleways = Vec::new();
-    for (cycleway_id, cycleway_road) in &streets.roads {
+    for cycleway_road in streets.roads.values() {
         if cycleway_road.is_cycleway() {
             // Look at other roads connected to both endpoints. One of them should be "very short."
             let mut main_road_endpoints = Vec::new();
-            for i in [cycleway_id.i1, cycleway_id.i2] {
+            for i in cycleway_road.endpoints() {
                 let mut candidates = Vec::new();
                 for road in streets.roads_per_intersection(i) {
                     if road.untrimmed_length() < SHORT_ROAD_THRESHOLD {
@@ -63,30 +63,30 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
                     }
                 }
                 if candidates.len() == 1 {
-                    main_road_endpoints.push(candidates[0].other_side(i));
+                    main_road_endpoints.push(streets.roads[&candidates[0]].other_side(i));
                 }
             }
 
             if main_road_endpoints.len() == 2 {
                 // Often the main road parallel to this cycleway segment is just one road, but it
                 // might be more.
-                let main_road_i1 = main_road_endpoints[0];
-                let main_road_i2 = main_road_endpoints[1];
+                let main_road_src_i = main_road_endpoints[0];
+                let main_road_dst_i = main_road_endpoints[1];
                 // Find all main road segments "parallel to" this cycleway, by pathfinding between
                 // the main road intersections. We don't care about the order, but simple_path
                 // does. In case it's one-way for driving, try both.
                 if let Some(path) = streets
-                    .simple_path(main_road_i1, main_road_i2, &[LaneType::Driving])
+                    .simple_path(main_road_src_i, main_road_dst_i, &[LaneType::Driving])
                     .or_else(|| {
-                        streets.simple_path(main_road_i2, main_road_i1, &[LaneType::Driving])
+                        streets.simple_path(main_road_dst_i, main_road_src_i, &[LaneType::Driving])
                     })
                 {
                     cycleways.push(Cycleway {
-                        cycleway: *cycleway_id,
+                        cycleway: cycleway_road.id,
                         cycleway_center: cycleway_road.untrimmed_road_geometry().0,
                         debug_idx: cycleways.len(),
-                        main_road_i1,
-                        main_road_i2,
+                        main_road_src_i,
+                        main_road_dst_i,
                         main_roads: path.into_iter().map(|(r, _)| r).collect(),
                     });
                 }
@@ -101,11 +101,7 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
     assert!(streets.roads.contains_key(&input.cycleway));
 
     // Remove the cycleway, but remember the lanes it contained
-    let mut cycleway_lanes = streets
-        .roads
-        .remove(&input.cycleway)
-        .unwrap()
-        .lane_specs_ltr;
+    let mut cycleway_lanes = streets.remove_road(input.cycleway).lane_specs_ltr;
 
     // The cycleway likely had shoulder lanes assigned to it by get_lane_specs_ltr, because we have
     // many partially competing strategies for representing shared walking/cycling roads. Remove

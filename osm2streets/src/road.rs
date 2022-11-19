@@ -6,7 +6,7 @@ use geom::{Angle, Distance, PolyLine, Pt2D};
 
 use crate::{
     get_lane_specs_ltr, osm, CrossingType, Direction, InputRoad, LaneSpec, LaneType, MapConfig,
-    OriginalRoad, RestrictionType,
+    OriginalRoad, RestrictionType, RoadWithEndpoints,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -234,5 +234,9 @@ impl Road {
             half_width: self.total_width() / 2.0,
             osm_tags: self.osm_tags.clone(),
         }
+    }
+
+    pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
+        RoadWithEndpoints::new(self).other_side(i)
     }
 }

@@ -96,7 +96,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
         //
         // Do all of these in one batch after snapping everything. Otherwise, some cycleway IDs
         // totally disappear.
-        for i in [r.i1, r.i2] {
+        for i in streets.roads[&r].endpoints() {
             if streets.roads_per_intersection(i).len() == 2 {
                 crate::transform::collapse_intersections::collapse_intersection(streets, i);
             }

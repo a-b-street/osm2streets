@@ -215,7 +215,7 @@ fn generalized_trim_back(
             }
         }
 
-        let new_center = if r1.i2 == i {
+        let new_center = if roads[r1].dst_i == i {
             shortest_center
         } else {
             shortest_center.reversed()
@@ -562,7 +562,7 @@ fn on_off_ramp(
         roads.get_mut(&thin.id).unwrap().center_pts = trimmed_thin;
 
         // Trim the thick extra ends at the intersection
-        let extra = if thick_id.i2 == results.intersection_id {
+        let extra = if roads[&thick_id].dst_i == results.intersection_id {
             roads[&thick_id]
                 .center_pts
                 .get_slice_starting_at(trimmed_thick.last_pt())?

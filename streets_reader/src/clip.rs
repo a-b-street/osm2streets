@@ -101,7 +101,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             continue;
         }
 
-        if r.i1 == *i {
+        if road.src_i == *i {
             // Starting out-of-bounds
             let border_pt = border_pts[0];
             if let Some(pl) = road.untrimmed_center_line.get_slice_starting_at(border_pt) {

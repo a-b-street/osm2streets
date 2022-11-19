@@ -39,7 +39,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                 if let Some(r) = i.roads.iter().next() {
                     // Don't trim lines back at all
                     let road = &streets.roads[r];
-                    let pt = if r.i1 == i.id {
+                    let pt = if road.src_i == i.id {
                         road.trimmed_center_line.first_pt()
                     } else {
                         road.trimmed_center_line.last_pt()
@@ -82,7 +82,7 @@ fn fix_borders(streets: &mut StreetNetwork) {
         if road.trimmed_center_line.length() >= min_len {
             continue;
         }
-        if r.i2 == i.id {
+        if road.dst_i == i.id {
             road.trimmed_center_line = road.trimmed_center_line.extend_to_length(min_len);
         } else {
             road.trimmed_center_line = road
