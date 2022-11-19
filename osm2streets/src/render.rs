@@ -231,11 +231,11 @@ impl StreetNetwork {
 
         for (i, intersection) in &self.intersections {
             for (idx, r) in intersection.roads.iter().enumerate() {
-                let pl = &self.roads[r].trimmed_center_line;
-                let pt = if r.i1 == *i {
-                    pl.first_pt()
+                let road = &self.roads[r];
+                let pt = if road.src_i == *i {
+                    road.trimmed_center_line.first_pt()
                 } else {
-                    pl.last_pt()
+                    road.trimmed_center_line.last_pt()
                 };
                 pairs.push((
                     pt.to_geojson(Some(&self.gps_bounds)),

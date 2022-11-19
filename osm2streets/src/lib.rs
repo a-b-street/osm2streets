@@ -14,6 +14,7 @@ use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub use self::ids::OriginalRoad;
+pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::intersection::Intersection;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
@@ -141,17 +142,19 @@ impl StreetNetwork {
     /// This calculates a road's `trimmed_center_line` early, before
     /// `Transformation::GenerateIntersectionGeometry` has run. Use sparingly.
     pub(crate) fn estimate_trimmed_geometry(&self, road_id: OriginalRoad) -> Result<PolyLine> {
+        let endpts = self.roads[&road_id].endpoints();
+
         // First trim at one of the endpoints
         let trimmed_center_pts = {
             let mut input_roads = Vec::new();
-            for road in self.roads_per_intersection(road_id.i1) {
+            for road in self.roads_per_intersection(endpts[0]) {
                 // trimmed_center_line hasn't been initialized yet, so override this
                 let mut input = road.to_input_road();
                 input.center_pts = road.untrimmed_road_geometry().0;
                 input_roads.push(input);
             }
             let mut results = intersection_polygon(
-                road_id.i1,
+                endpts[0],
                 input_roads,
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
@@ -162,7 +165,7 @@ impl StreetNetwork {
         // Now the second
         {
             let mut input_roads = Vec::new();
-            for road in self.roads_per_intersection(road_id.i2) {
+            for road in self.roads_per_intersection(endpts[1]) {
                 let mut input = road.to_input_road();
                 if road.id == road_id {
                     input.center_pts = trimmed_center_pts.clone();
@@ -172,7 +175,7 @@ impl StreetNetwork {
                 input_roads.push(input);
             }
             let mut results = intersection_polygon(
-                road_id.i2,
+                endpts[1],
                 input_roads,
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
@@ -234,9 +237,9 @@ impl StreetNetwork {
             let road = &self.roads[r];
             // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
             // shouldn't matter for sorting.
-            let center_pl = if r.i1 == i {
+            let center_pl = if road.src_i == i {
                 road.untrimmed_center_line.reversed()
-            } else if r.i2 == i {
+            } else if road.dst_i == i {
                 road.untrimmed_center_line.clone()
             } else {
                 panic!("Incident road {r} doesn't have an endpoint at {i}");

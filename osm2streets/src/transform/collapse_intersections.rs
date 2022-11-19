@@ -230,8 +230,8 @@ const SHORT_THRESHOLD: Distance = Distance::const_meters(30.0);
 pub fn trim_deadends(streets: &mut StreetNetwork) {
     let mut remove_roads = BTreeSet::new();
     let mut remove_intersections = BTreeSet::new();
-    for (id, i) in &streets.intersections {
-        let roads = streets.roads_per_intersection(*id);
+    for i in streets.intersections.values() {
+        let roads = streets.roads_per_intersection(i.id);
         if roads.len() != 1 || i.control == ControlType::Border {
             continue;
         }
@@ -240,7 +240,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
             && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
         {
             remove_roads.insert(roads[0].id);
-            remove_intersections.insert(*id);
+            remove_intersections.insert(i.id);
         }
     }
 

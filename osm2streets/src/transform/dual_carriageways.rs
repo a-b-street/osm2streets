@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{osm, OriginalRoad, Road, StreetNetwork};
+use crate::{osm, OriginalRoad, Road, RoadWithEndpoints, StreetNetwork};
 
 pub fn merge(streets: &mut StreetNetwork) {
     for i in streets.intersections.keys() {
@@ -101,47 +101,47 @@ impl MultiConnection {
 // splits/rejoins
 struct DualCarriagewayPt1 {
     road_name: String,
-    i1: osm::NodeID,
-    i2: osm::NodeID,
-    // side1 points from i1 to i2
-    side1: Vec<OriginalRoad>,
-    // side2 points from i2 to i1
-    side2: Vec<OriginalRoad>,
+    src_i: osm::NodeID,
+    dst_i: osm::NodeID,
+    // side1 points from src_i to dst_i
+    side1: Vec<RoadWithEndpoints>,
+    // side2 points from dst_i to src_i
+    side2: Vec<RoadWithEndpoints>,
 }
 
 impl DualCarriagewayPt1 {
     fn new(streets: &StreetNetwork, mc: &MultiConnection) -> Option<Self> {
-        let (side1, i2_v1) = Self::trace_side(streets, &mc.side1, mc.i, &mc.road_name)?;
-        let (side2, i2_v2) = Self::trace_side(streets, &mc.side2, mc.i, &mc.road_name)?;
+        let (side1, dst_i_v1) = Self::trace_side(streets, mc.side1, mc.i, &mc.road_name)?;
+        let (side2, dst_i_v2) = Self::trace_side(streets, mc.side2, mc.i, &mc.road_name)?;
 
         // TODO Something very odd has happened. Make a new copy of the map for debugging and label
         // the strangeness.
-        if i2_v1 != i2_v2 {
+        if dst_i_v1 != dst_i_v2 {
             return None;
         }
 
         let mut side1 = Self::orient_oneways(side1)?;
         let mut side2 = Self::orient_oneways(side2)?;
 
-        // Which one goes from i1->i2?
-        let i1 = mc.i;
-        let i2 = i2_v1;
+        // Which one goes from src_i->dst_i?
+        let src_i = mc.i;
+        let dst_i = dst_i_v1;
         for swap in [false, true] {
             if swap {
                 std::mem::swap(&mut side1, &mut side2);
             }
-            let side1_endpts = (side1[0].i1, side1.last().as_ref().unwrap().i2);
-            let side2_endpts = (side2[0].i1, side2.last().as_ref().unwrap().i2);
+            let side1_endpts = (side1[0].src_i, side1.last().as_ref().unwrap().dst_i);
+            let side2_endpts = (side2[0].src_i, side2.last().as_ref().unwrap().dst_i);
 
-            if side1_endpts == (i1, i2) {
-                if side2_endpts != (i2, i1) {
+            if side1_endpts == (src_i, dst_i) {
+                if side2_endpts != (dst_i, src_i) {
                     // Why doesn't the other side point the opposite way?
                     return None;
                 }
                 return Some(Self {
                     road_name: mc.road_name.clone(),
-                    i1,
-                    i2,
+                    src_i,
+                    dst_i,
                     side1,
                     side2,
                 });
@@ -151,13 +151,13 @@ impl DualCarriagewayPt1 {
     }
 
     fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_intersection(self.i1, format!("start of {}", self.road_name));
-        streets.debug_intersection(self.i2, "end");
+        streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
+        streets.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {
-            streets.debug_road(*r, format!("side1, {}", idx));
+            streets.debug_road(r.road, format!("side1, {idx}"));
         }
         for (idx, r) in self.side2.iter().enumerate() {
-            streets.debug_road(*r, format!("side2, {}", idx));
+            streets.debug_road(r.road, format!("side2, {idx}"));
         }
     }
 
@@ -165,26 +165,26 @@ impl DualCarriagewayPt1 {
     // found, where the one-ways end.
     fn trace_side(
         streets: &StreetNetwork,
-        start: &OriginalRoad,
+        start: OriginalRoad,
         join: osm::NodeID,
         road_name: &str,
-    ) -> Option<(Vec<OriginalRoad>, osm::NodeID)> {
-        let mut sequence = vec![start.clone()];
+    ) -> Option<(Vec<RoadWithEndpoints>, osm::NodeID)> {
+        let mut sequence = vec![RoadWithEndpoints::new(&streets.roads[&start])];
 
-        let mut current = start.clone();
+        let mut current = sequence[0].clone();
         let mut last_i = join;
         'LOOP: loop {
             let other_side = current.other_side(last_i);
             for road in streets.roads_per_intersection(other_side) {
                 // TODO Helper method to just find roads originating at other_side and pointing
                 // away (or towards) something?
-                if road.id == current {
+                if road.id == current.road {
                     continue;
                 }
                 if road.osm_tags.is(osm::NAME, road_name) {
                     if road.oneway_for_driving().is_some() {
-                        current = road.id;
-                        sequence.push(road.id);
+                        current = RoadWithEndpoints::new(road);
+                        sequence.push(current.clone());
                         last_i = other_side;
                         continue 'LOOP;
                     }
@@ -199,12 +199,12 @@ impl DualCarriagewayPt1 {
 
     // The input should already be ordered so that the first road points at the second, or reversed
     // relative to the way the one-ways are defined. Flip the order if needed.
-    fn orient_oneways(mut seq: Vec<OriginalRoad>) -> Option<Vec<OriginalRoad>> {
+    fn orient_oneways(mut seq: Vec<RoadWithEndpoints>) -> Option<Vec<RoadWithEndpoints>> {
         for reverse in [false, true] {
             if reverse {
                 seq.reverse();
             }
-            if seq.windows(2).all(|pair| pair[0].i2 == pair[1].i1) {
+            if seq.windows(2).all(|pair| pair[0].dst_i == pair[1].src_i) {
                 return Some(seq);
             }
         }
@@ -217,17 +217,17 @@ impl DualCarriagewayPt1 {
 // sides
 struct DualCarriagewayPt2 {
     road_name: String,
-    i1: osm::NodeID,
-    i2: osm::NodeID,
-    // side1 points from i1 to i2
-    side1: Vec<OriginalRoad>,
-    // side2 points from i2 to i1
-    side2: Vec<OriginalRoad>,
+    src_i: osm::NodeID,
+    dst_i: osm::NodeID,
+    // side1 points from src_i to dst_i
+    side1: Vec<RoadWithEndpoints>,
+    // side2 points from dst_i to src_i
+    side2: Vec<RoadWithEndpoints>,
 
     // The branches also track the linear untrimmed distance from the beginning of the side
     side1_branches: Vec<(OriginalRoad, Distance)>,
     side2_branches: Vec<(OriginalRoad, Distance)>,
-    // The linear untrimmed distance is relative to side1 (i1 -> i2). Only bridges consisting of a
+    // The linear untrimmed distance is relative to side1 (src_i -> dst_i). Only bridges consisting of a
     // single OriginalRoad are detected; no multi-step ones yet.
     bridges: Vec<(OriginalRoad, Distance)>,
 
@@ -251,8 +251,8 @@ impl DualCarriagewayPt2 {
 
         Some(Self {
             road_name: orig.road_name.clone(),
-            i1: orig.i1,
-            i2: orig.i2,
+            src_i: orig.src_i,
+            dst_i: orig.dst_i,
             side1: orig.side1.clone(),
             side2: orig.side2.clone(),
 
@@ -263,21 +263,21 @@ impl DualCarriagewayPt2 {
             side1_length: orig
                 .side1
                 .iter()
-                .map(|r| streets.roads[r].untrimmed_road_geometry().0.length())
+                .map(|r| streets.roads[&r.road].untrimmed_road_geometry().0.length())
                 .sum(),
             side2_length: orig
                 .side2
                 .iter()
-                .map(|r| streets.roads[r].untrimmed_road_geometry().0.length())
+                .map(|r| streets.roads[&r.road].untrimmed_road_geometry().0.length())
                 .sum(),
         })
     }
 
-    fn side_to_intersections(side: &Vec<OriginalRoad>) -> BTreeSet<osm::NodeID> {
+    fn side_to_intersections(side: &Vec<RoadWithEndpoints>) -> BTreeSet<osm::NodeID> {
         let mut set = BTreeSet::new();
         for r in side {
-            set.insert(r.i1);
-            set.insert(r.i2);
+            set.insert(r.src_i);
+            set.insert(r.dst_i);
         }
         set
     }
@@ -285,7 +285,7 @@ impl DualCarriagewayPt2 {
     // TODO The types are getting gross. Returns (branches, bridges).
     fn find_branches_and_bridges(
         streets: &StreetNetwork,
-        side: &Vec<OriginalRoad>,
+        side: &Vec<RoadWithEndpoints>,
         other_side_intersections: BTreeSet<osm::NodeID>,
     ) -> (Vec<(OriginalRoad, Distance)>, Vec<(OriginalRoad, Distance)>) {
         let mut branches = Vec::new();
@@ -293,15 +293,18 @@ impl DualCarriagewayPt2 {
         let mut dist = Distance::ZERO;
 
         for pair in side.windows(2) {
-            dist += streets.roads[&pair[0]].untrimmed_road_geometry().0.length();
-            let i = pair[0].i2;
+            dist += streets.roads[&pair[0].road]
+                .untrimmed_road_geometry()
+                .0
+                .length();
+            let i = pair[0].dst_i;
             for r in streets.intersections[&i].roads.clone() {
-                if r == pair[0] || r == pair[1] {
+                if r == pair[0].road || r == pair[1].road {
                     continue;
                 }
                 // It's a branch or a bridge. Is the intersection it connects to part of the other
                 // side or not?
-                if other_side_intersections.contains(&r.other_side(i)) {
+                if other_side_intersections.contains(&streets.roads[&r].other_side(i)) {
                     bridges.push((r, dist));
                 } else {
                     branches.push((r, dist));
@@ -313,36 +316,36 @@ impl DualCarriagewayPt2 {
     }
 
     fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_intersection(self.i1, format!("start of {}", self.road_name));
-        streets.debug_intersection(self.i2, "end");
+        streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
+        streets.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {
             if idx == 0 {
                 streets.debug_road(
-                    *r,
+                    r.road,
                     format!("side1, {}, total length {}", idx, self.side1_length),
                 );
             } else {
-                streets.debug_road(*r, format!("side1, {}", idx));
+                streets.debug_road(r.road, format!("side1, {}", idx));
             }
         }
         for (idx, r) in self.side2.iter().enumerate() {
             if idx == 0 {
                 streets.debug_road(
-                    *r,
+                    r.road,
                     format!("side2, {}, total length {}", idx, self.side2_length),
                 );
             } else {
-                streets.debug_road(*r, format!("side2, {}", idx));
+                streets.debug_road(r.road, format!("side2, {}", idx));
             }
         }
         for (r, dist) in &self.side1_branches {
-            streets.debug_road(*r, format!("side1 branch, {dist} from i1"));
+            streets.debug_road(*r, format!("side1 branch, {dist} from src_i"));
         }
         for (r, dist) in &self.side2_branches {
-            streets.debug_road(*r, format!("side2 branch, {dist} from i2"));
+            streets.debug_road(*r, format!("side2 branch, {dist} from dst_i"));
         }
         for (r, dist) in &self.bridges {
-            streets.debug_road(*r, format!("bridge, {dist} from i1"));
+            streets.debug_road(*r, format!("bridge, {dist} from src_i"));
         }
     }
 }
