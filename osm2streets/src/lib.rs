@@ -13,8 +13,8 @@ use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
-pub use self::ids::OriginalRoad;
 pub(crate) use self::ids::RoadWithEndpoints;
+pub use self::ids::{CommonEndpoint, OriginalRoad};
 pub use self::intersection::Intersection;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,

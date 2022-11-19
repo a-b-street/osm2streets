@@ -5,8 +5,8 @@ use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine, Pt2D};
 
 use crate::{
-    get_lane_specs_ltr, osm, CrossingType, Direction, InputRoad, LaneSpec, LaneType, MapConfig,
-    OriginalRoad, RestrictionType, RoadWithEndpoints,
+    get_lane_specs_ltr, osm, CommonEndpoint, CrossingType, Direction, InputRoad, LaneSpec,
+    LaneType, MapConfig, OriginalRoad, RestrictionType, RoadWithEndpoints,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -238,5 +238,9 @@ impl Road {
 
     pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
         RoadWithEndpoints::new(self).other_side(i)
+    }
+
+    pub fn common_endpoint(&self, other: &Road) -> CommonEndpoint {
+        CommonEndpoint::new((self.src_i, self.dst_i), (other.src_i, other.dst_i))
     }
 }

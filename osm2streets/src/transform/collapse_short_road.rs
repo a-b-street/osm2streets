@@ -2,7 +2,10 @@ use std::collections::{BTreeMap, VecDeque};
 
 use anyhow::Result;
 
-use crate::{osm, ControlType, OriginalRoad, RestrictionType, StreetNetwork};
+use crate::{
+    osm, CommonEndpoint, ControlType, OriginalRoad, RestrictionType, RoadWithEndpoints,
+    StreetNetwork,
+};
 
 // TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
@@ -26,6 +29,8 @@ impl StreetNetwork {
             let r = &self.roads[&short];
             (r.src_i, r.dst_i)
         };
+
+        let short_endpts = RoadWithEndpoints::new(&self.roads[&short]);
 
         // If either intersection attached to this road has been deleted, then we're probably
         // dealing with a short segment in the middle of a cluster of intersections. Just delete
@@ -117,6 +122,8 @@ impl StreetNetwork {
         for r in self.intersections[&dst_i].roads.clone() {
             deleted.push(r);
             let mut road = self.remove_road(r);
+            let old_endpts = RoadWithEndpoints::new(&road);
+
             let mut new_id = r;
             if road.src_i == dst_i {
                 new_id.i1 = src_i;
@@ -135,7 +142,7 @@ impl StreetNetwork {
             }
 
             old_to_new.insert(r, new_id);
-            new_to_old.insert(new_id, r);
+            new_to_old.insert(new_id, old_endpts);
 
             self.insert_road(road);
             created.push(new_id);
@@ -152,23 +159,24 @@ impl StreetNetwork {
 
         // If we're deleting the target of a simple restriction somewhere, update it.
         for (from_id, road) in &mut self.roads {
+            let from_endpt = new_to_old
+                .get(from_id)
+                .cloned()
+                .unwrap_or(RoadWithEndpoints::new(road));
+
             let mut fix_trs = Vec::new();
             for (rt, to) in road.turn_restrictions.drain(..) {
                 if to == short && rt == RestrictionType::BanTurns {
                     // Remove this restriction, replace it with a new one to each of the successors
                     // of the deleted road. Depending if the intersection we kept is the one
                     // connecting these two roads, the successors differ.
-                    if new_to_old
-                        .get(from_id)
-                        .cloned()
-                        .unwrap_or(*from_id)
-                        .common_endpt(short)
-                        == src_i
-                    {
+                    if from_endpt.common_endpoint(&short_endpts) == CommonEndpoint::One(src_i) {
                         for x in &created {
                             fix_trs.push((rt, *x));
                         }
                     } else {
+                        // It cant be CommonEndpoint::Both, because we bail out on loop roads
+                        // earlier
                         for x in &connected_to_src_i {
                             fix_trs.push((rt, *x));
                         }
