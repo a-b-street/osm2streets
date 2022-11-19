@@ -116,7 +116,7 @@ impl StreetNetwork {
                 continue;
             }
 
-            for i in [road.src_i, road.dst_i] {
+            for i in road.endpoints() {
                 let connections = self.roads_per_intersection(i);
                 if connections.len() != 3 {
                     continue 'ROAD;
