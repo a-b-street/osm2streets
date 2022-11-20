@@ -2,10 +2,7 @@ use std::collections::{BTreeMap, VecDeque};
 
 use anyhow::Result;
 
-use crate::{
-    osm, CommonEndpoint, ControlType, OriginalRoad, RestrictionType, RoadWithEndpoints,
-    StreetNetwork,
-};
+use crate::{ControlType, IntersectionID, OriginalRoad, StreetNetwork};
 
 // TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
@@ -15,36 +12,32 @@ use crate::{
 
 impl StreetNetwork {
     /// Collapses a road, merging the two intersections together. Returns (the surviving
-    /// intersection, the deleted intersection, deleted roads, new roads)
+    /// intersection, the deleted intersection). The caller can see all roads connected to the
+    /// surviving intersection.
     pub fn collapse_short_road(
         &mut self,
         short: OriginalRoad,
-    ) -> Result<(
-        osm::NodeID,
-        osm::NodeID,
-        Vec<OriginalRoad>,
-        Vec<OriginalRoad>,
-    )> {
-        let (src_i, dst_i) = {
+    ) -> Result<(IntersectionID, IntersectionID)> {
+        // Arbitrarily keep src_i and destroy dst_i.
+        let (keep_i, destroy_i) = {
             let r = &self.roads[&short];
             (r.src_i, r.dst_i)
         };
-
-        let short_endpts = RoadWithEndpoints::new(&self.roads[&short]);
 
         // If either intersection attached to this road has been deleted, then we're probably
         // dealing with a short segment in the middle of a cluster of intersections. Just delete
         // the segment and move on.
         //
         // TODO Revisit after opaque IDs. How does this happen?
-        if !self.intersections.contains_key(&src_i) || !self.intersections.contains_key(&dst_i) {
+        if !self.intersections.contains_key(&keep_i) || !self.intersections.contains_key(&destroy_i)
+        {
             self.remove_road(short);
             bail!("One endpoint of {short} has already been deleted, skipping",);
         }
 
         // First a sanity check.
-        if self.intersections[&src_i].control == ControlType::Border
-            || self.intersections[&dst_i].control == ControlType::Border
+        if self.intersections[&keep_i].control == ControlType::Border
+            || self.intersections[&destroy_i].control == ControlType::Border
         {
             bail!("{} touches a border", short);
         }
@@ -58,18 +51,13 @@ impl StreetNetwork {
         // [X] road we're deleting is the 'via' of a complicated restriction
         // [ ] road we're deleting has turn lanes that wind up orphaning something
 
-        if src_i == dst_i {
-            bail!("Can't collapse {short} -- it's a loop on {src_i}");
+        if keep_i == destroy_i {
+            bail!("Can't collapse {short} -- it's a loop on {keep_i}");
         }
-        // Remember the original connections to src_i before we merge. None of these will change
-        // IDs.
-        let mut connected_to_src_i = self.intersections[&src_i].roads.clone();
-        connected_to_src_i.retain(|x| *x != short);
-
         // Retain some geometry...
         {
             let mut trim_roads_for_merging = BTreeMap::new();
-            for i in [src_i, dst_i] {
+            for i in [keep_i, destroy_i] {
                 for road in self.roads_per_intersection(i) {
                     // If we keep this in there, it might accidentally overwrite the
                     // trim_roads_for_merging key for a surviving road!
@@ -102,7 +90,7 @@ impl StreetNetwork {
                 }
             }
             self.intersections
-                .get_mut(&src_i)
+                .get_mut(&keep_i)
                 .unwrap()
                 .trim_roads_for_merging
                 .extend(trim_roads_for_merging);
@@ -110,55 +98,39 @@ impl StreetNetwork {
 
         self.remove_road(short);
 
-        // Arbitrarily keep src_i and destroy dst_i. Don't actually remove the intersection until
-        // later; remove_road needs the intersection to exist
-
-        // Fix up all roads connected to dst_i. Delete them and create a new copy; the ID changes,
-        // since one intersection changes.
-        let mut deleted = vec![short];
-        let mut created = Vec::new();
-        let mut old_to_new = BTreeMap::new();
-        let mut new_to_old = BTreeMap::new();
-        for r in self.intersections[&dst_i].roads.clone() {
-            deleted.push(r);
-            let mut road = self.remove_road(r);
-            let old_endpts = RoadWithEndpoints::new(&road);
-
-            let mut new_id = r;
-            if road.src_i == dst_i {
-                new_id.i1 = src_i;
-                road.src_i = src_i;
-            } else {
-                assert_eq!(road.dst_i, dst_i);
-                new_id.i2 = src_i;
-                road.dst_i = src_i;
-            }
-            road.id = new_id;
-
-            if new_id.i1 == new_id.i2 {
-                // When collapsing many roads around some junction, we wind up with loops. We can
-                // immediately discard those.
-                continue;
-            }
-
-            old_to_new.insert(r, new_id);
-            new_to_old.insert(new_id, old_endpts);
-
-            self.insert_road(road);
-            created.push(new_id);
-        }
+        let destroy_i = self.intersections.remove(&destroy_i).unwrap();
 
         // If the intersection types differ, upgrade the surviving interesting.
-        {
-            // Don't use delete_intersection; we're manually fixing up connected roads
-            let i = self.intersections.remove(&dst_i).unwrap();
-            if i.control == ControlType::TrafficSignal {
-                self.intersections.get_mut(&src_i).unwrap().control = ControlType::TrafficSignal;
+        if destroy_i.control == ControlType::TrafficSignal {
+            self.intersections.get_mut(&keep_i).unwrap().control = ControlType::TrafficSignal;
+        }
+
+        // Remember the merge
+        self.intersections
+            .get_mut(&keep_i)
+            .unwrap()
+            .osm_ids
+            .extend(destroy_i.osm_ids);
+
+        // Fix the endpoint of all roads connected to destroy_i.
+        for r in destroy_i.roads {
+            self.intersections.get_mut(&keep_i).unwrap().roads.push(r);
+
+            let road = self.roads.get_mut(&r).unwrap();
+            if road.src_i == destroy_i.id {
+                road.src_i = keep_i;
+            } else {
+                assert_eq!(road.dst_i, destroy_i.id);
+                road.dst_i = keep_i;
             }
         }
 
+        // We just connected a bunch of things to keep_i. Fix ordering and movements.
+        self.sort_roads(keep_i);
+        self.recalculate_movements(keep_i);
+
         // If we're deleting the target of a simple restriction somewhere, update it.
-        for (from_id, road) in &mut self.roads {
+        /*for (from_id, road) in &mut self.roads {
             let from_endpt = new_to_old
                 .get(from_id)
                 .cloned()
@@ -170,7 +142,7 @@ impl StreetNetwork {
                     // Remove this restriction, replace it with a new one to each of the successors
                     // of the deleted road. Depending if the intersection we kept is the one
                     // connecting these two roads, the successors differ.
-                    if from_endpt.common_endpoint(&short_endpts) == CommonEndpoint::One(src_i) {
+                    if from_endpt.common_endpoint(&short_endpts) == CommonEndpoint::One(keep_i) {
                         for x in &created {
                             fix_trs.push((rt, *x));
                         }
@@ -203,9 +175,9 @@ impl StreetNetwork {
                 }
             });
             road.turn_restrictions.extend(add);
-        }
+        }*/
 
-        Ok((src_i, dst_i, deleted, created))
+        Ok((keep_i, destroy_i.id))
     }
 }
 
@@ -221,28 +193,11 @@ pub fn collapse_all_junction_roads(streets: &mut StreetNetwork) {
     let mut i = 0;
     while !queue.is_empty() {
         let id = queue.pop_front().unwrap();
-
-        // The road might've been deleted by a previous collapse_short_road call
-        if !streets.roads.contains_key(&id) {
-            continue;
-        }
-
         i += 1;
         streets.maybe_start_debug_step(format!("collapse road {i}"));
         streets.debug_road(id, "collapse");
-        match streets.collapse_short_road(id) {
-            Ok((_, _, _, new_roads)) => {
-                // Some road IDs still in the queue might have changed, so check the new_roads for
-                // anything we should try to collapse
-                for r in new_roads {
-                    if streets.roads[&r].osm_tags.is("junction", "intersection") {
-                        queue.push_back(r);
-                    }
-                }
-            }
-            Err(err) => {
-                warn!("Not collapsing short road / junction=intersection: {}", err);
-            }
+        if let Err(err) = streets.collapse_short_road(id) {
+            warn!("Not collapsing short road / junction=intersection: {}", err);
         }
     }
 }

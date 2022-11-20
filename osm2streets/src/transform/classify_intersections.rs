@@ -1,10 +1,9 @@
-use crate::osm::NodeID;
-use crate::types::Movement;
-use crate::Direction;
-use crate::{
-    ConflictType, DrivingSide, IntersectionComplexity, RestrictionType, Road, StreetNetwork,
-};
 use std::cmp::{max, min};
+
+use crate::{
+    ConflictType, Direction, DrivingSide, IntersectionComplexity, IntersectionID, Movement,
+    RestrictionType, Road, StreetNetwork,
+};
 use ConflictType::*;
 use IntersectionComplexity::*;
 
@@ -12,9 +11,9 @@ use IntersectionComplexity::*;
 /// considered "unclassified" and will be updated with a guess, others will be left unchanged.
 pub fn classify_intersections(streets: &mut StreetNetwork) {
     let mut changes: Vec<_> = Vec::new();
-    for (id, inter) in &streets.intersections {
-        if inter.complexity == Crossing {
-            changes.push((*id, guess_complexity(streets, id)));
+    for i in streets.intersections.values() {
+        if i.complexity == Crossing {
+            changes.push((i.id, guess_complexity(streets, i.id)));
         }
     }
 
@@ -31,10 +30,10 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 /// The existing complexity field is ignored, so be careful how you use the guessed value.
 pub fn guess_complexity(
     streets: &StreetNetwork,
-    intersection_id: &NodeID,
+    intersection_id: IntersectionID,
 ) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {
     let roads: Vec<_> = streets
-        .roads_per_intersection(*intersection_id)
+        .roads_per_intersection(intersection_id)
         .into_iter()
         .filter(|road| road.is_driveable())
         .collect();
@@ -56,13 +55,13 @@ pub fn guess_complexity(
 
             // Calculate if it is possible to emerge from s into the intersection.
             let src_road = roads[s];
-            if !can_drive_out_of(src_road, *intersection_id) {
+            if !can_drive_out_of(src_road, intersection_id) {
                 continue;
             }
 
             // Calculate if it is possible to leave the intersection into d.
             let dst_road = roads[d];
-            if !can_drive_into(dst_road, *intersection_id) {
+            if !can_drive_into(dst_road, intersection_id) {
                 continue;
             }
 
@@ -116,7 +115,7 @@ pub fn guess_complexity(
     }
 }
 
-fn can_drive_out_of(road: &Road, which_end: NodeID) -> bool {
+fn can_drive_out_of(road: &Road, which_end: IntersectionID) -> bool {
     if let Some(driving_dir) = road.oneway_for_driving() {
         let required_dir = if road.dst_i == which_end {
             Direction::Fwd
@@ -128,7 +127,7 @@ fn can_drive_out_of(road: &Road, which_end: NodeID) -> bool {
     return true;
 }
 
-fn can_drive_into(road: &Road, which_end: NodeID) -> bool {
+fn can_drive_into(road: &Road, which_end: IntersectionID) -> bool {
     if let Some(driving_dir) = road.oneway_for_driving() {
         let required_dir = if road.src_i == which_end {
             Direction::Fwd

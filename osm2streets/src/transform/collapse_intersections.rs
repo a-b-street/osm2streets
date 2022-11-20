@@ -4,14 +4,13 @@ use anyhow::Result;
 
 use geom::{Distance, PolyLine, Pt2D};
 
-use crate::osm::NodeID;
-use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
+use crate::{osm, ControlType, IntersectionID, OriginalRoad, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
 /// - when the lane specs match and only "unimportant" OSM tags differ
 pub fn collapse(streets: &mut StreetNetwork) {
-    let mut merge: Vec<NodeID> = Vec::new();
+    let mut merge: Vec<IntersectionID> = Vec::new();
     for id in streets.intersections.keys() {
         let roads = streets.roads_per_intersection(*id);
         if roads.len() != 2 {
@@ -130,7 +129,7 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     Ok(())
 }
 
-pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
+pub fn collapse_intersection(streets: &mut StreetNetwork, i: IntersectionID) {
     let roads = streets.intersections[&i].roads.clone();
     assert_eq!(roads.len(), 2);
     let mut r1 = roads[0];
@@ -190,11 +189,8 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: NodeID) {
     let epsilon = 1.0;
     new_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
-    let new_r1 = OriginalRoad {
-        osm_way_id: r1.osm_way_id,
-        i1: new_i1,
-        i2: new_i2,
-    };
+    // TODO This will change soon
+    let new_r1 = r1;
     new_road.id = new_r1;
     new_road.src_i = new_i1;
     new_road.dst_i = new_i2;

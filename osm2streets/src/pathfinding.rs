@@ -1,7 +1,7 @@
 use geom::Distance;
 use petgraph::graphmap::DiGraphMap;
 
-use crate::{osm, Direction, LaneType, OriginalRoad, StreetNetwork};
+use crate::{Direction, IntersectionID, LaneType, OriginalRoad, StreetNetwork};
 
 // A/B Street's map_model has lots of pathfinding support at both a road segment and lane level.
 // This is a delibrately simple subset of functionality for now.
@@ -9,7 +9,7 @@ use crate::{osm, Direction, LaneType, OriginalRoad, StreetNetwork};
 impl StreetNetwork {
     /// Calculates a rough driving distance between intersections, excluding the turning movement
     /// through intersections.
-    pub fn path_dist_to(&self, from: osm::NodeID, to: osm::NodeID) -> Option<Distance> {
+    pub fn path_dist_to(&self, from: IntersectionID, to: IntersectionID) -> Option<Distance> {
         let mut graph = DiGraphMap::new();
         for r in self.roads.values() {
             graph.add_edge(r.src_i, r.dst_i, r.id);
@@ -28,8 +28,8 @@ impl StreetNetwork {
     /// each road.
     pub fn simple_path(
         &self,
-        from: osm::NodeID,
-        to: osm::NodeID,
+        from: IntersectionID,
+        to: IntersectionID,
         lane_types: &[LaneType],
     ) -> Option<Vec<(OriginalRoad, Direction)>> {
         let mut graph = DiGraphMap::new();

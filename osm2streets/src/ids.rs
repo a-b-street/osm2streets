@@ -1,9 +1,42 @@
 use std::fmt;
 
+use abstutil::{deserialize_usize, serialize_usize};
 use serde::{Deserialize, Serialize};
 
 use crate::osm::{NodeID, WayID};
 use crate::Road;
+
+/// Opaque and non-contiguous
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct RoadID(
+    #[serde(
+        serialize_with = "serialize_usize",
+        deserialize_with = "deserialize_usize"
+    )]
+    pub usize,
+);
+
+impl fmt::Display for RoadID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Road #{}", self.0)
+    }
+}
+
+/// Opaque and non-contiguous
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct IntersectionID(
+    #[serde(
+        serialize_with = "serialize_usize",
+        deserialize_with = "deserialize_usize"
+    )]
+    pub usize,
+);
+
+impl fmt::Display for IntersectionID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Intersection #{}", self.0)
+    }
+}
 
 /// Refers to a road segment between two nodes, using OSM IDs. Note OSM IDs are not stable over
 /// time.
@@ -43,8 +76,8 @@ impl OriginalRoad {
 #[derive(Clone)]
 pub struct RoadWithEndpoints {
     pub road: OriginalRoad,
-    pub src_i: NodeID,
-    pub dst_i: NodeID,
+    pub src_i: IntersectionID,
+    pub dst_i: IntersectionID,
 }
 
 impl RoadWithEndpoints {
@@ -58,7 +91,7 @@ impl RoadWithEndpoints {
 
     /// Note the special case of roads that're loops on a single intersection -- the `other_side`
     /// is the same as the input in that case.
-    pub fn other_side(&self, i: NodeID) -> NodeID {
+    pub fn other_side(&self, i: IntersectionID) -> IntersectionID {
         if self.src_i == i {
             self.dst_i
         } else if self.dst_i == i {
@@ -67,16 +100,12 @@ impl RoadWithEndpoints {
             panic!("{} doesn't have {} on either side", self.road, i);
         }
     }
-
-    pub fn common_endpoint(&self, other: &Self) -> CommonEndpoint {
-        CommonEndpoint::new((self.src_i, self.dst_i), (other.src_i, other.dst_i))
-    }
 }
 
 #[derive(PartialEq)]
 pub enum CommonEndpoint {
     /// Two lanes or roads share one endpoint
-    One(NodeID),
+    One(IntersectionID),
     /// Two lanes or roads share both endpoints, because they're both lanes belonging to the same
     /// road, or there are two different roads connecting the same pair of intersections
     Both,
@@ -85,7 +114,10 @@ pub enum CommonEndpoint {
 }
 
 impl CommonEndpoint {
-    pub fn new(obj1: (NodeID, NodeID), obj2: (NodeID, NodeID)) -> Self {
+    pub fn new(
+        obj1: (IntersectionID, IntersectionID),
+        obj2: (IntersectionID, IntersectionID),
+    ) -> Self {
         let src = obj1.0 == obj2.0 || obj1.0 == obj2.1;
         let dst = obj1.1 == obj2.0 || obj1.1 == obj2.1;
         if src && dst {

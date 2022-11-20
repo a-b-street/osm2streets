@@ -1,6 +1,7 @@
 use abstutil::Timer;
 use anyhow::Result;
-use osm2streets::{osm, ControlType, IntersectionComplexity, StreetNetwork};
+
+use osm2streets::{ControlType, IntersectionComplexity, IntersectionID, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
@@ -33,59 +34,48 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     // then we'll need to copy the intersection for each connecting road. This effectively
     // disconnects two roads in the map that would be connected if we left in some
     // partly-out-of-bounds road.
-    //
-    // Do this in one step, since we have to fix up road IDs carefully. The order of steps in here
-    // is a bit sensitive (because remove_road needs both intersections to exist, and due to the
-    // borrow checker).
-    let intersection_ids: Vec<osm::NodeID> = streets.intersections.keys().cloned().collect();
-
-    // Use negative values to avoid conflicting with OSM
-    let mut next_osm_id = -1;
-
-    for id in intersection_ids {
-        let intersection = &streets.intersections[&id];
-        if streets.boundary_polygon.contains_pt(intersection.point) {
+    let intersection_ids: Vec<IntersectionID> = streets.intersections.keys().cloned().collect();
+    for old_id in intersection_ids {
+        if streets
+            .boundary_polygon
+            .contains_pt(streets.intersections[&old_id].point)
+        {
             continue;
         }
 
-        let mut intersection = streets.intersections.get_mut(&id).unwrap();
-        intersection.complexity = IntersectionComplexity::MapEdge;
-        intersection.control = ControlType::Border;
+        let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
+        old_intersection.complexity = IntersectionComplexity::MapEdge;
+        old_intersection.control = ControlType::Border;
 
-        if intersection.roads.len() > 1 {
-            for r in intersection.roads.clone() {
-                let mut road = streets.remove_road(r);
+        if old_intersection.roads.len() <= 1 {
+            // We don't need to make copies of the intersection; put it back
+            streets.intersections.insert(old_id, old_intersection);
+            continue;
+        }
+        for r in old_intersection.roads.clone() {
+            let mut copy = old_intersection.clone();
+            copy.roads = vec![r];
+            copy.id = streets.next_intersection_id();
+            // Leave osm_ids alone; all copies of this intersection share provenance
 
-                let mut copy = streets.intersections[&id].clone();
-                copy.roads.clear();
-
-                let new_id = osm::NodeID(next_osm_id);
-                next_osm_id -= 1;
-                let mut fixed_road_id = r;
-                if fixed_road_id.i1 == id {
-                    fixed_road_id.i1 = new_id;
-                }
-                if fixed_road_id.i2 == id {
-                    fixed_road_id.i2 = new_id;
-                }
-                assert_ne!(r, fixed_road_id);
-                road.id = fixed_road_id;
-                road.src_i = fixed_road_id.i1;
-                road.dst_i = fixed_road_id.i2;
-                copy.id = new_id;
-
-                streets.intersections.insert(new_id, copy);
-                streets.insert_road(road);
+            let road = streets.roads.get_mut(&r).unwrap();
+            if road.src_i == old_id {
+                road.src_i = copy.id;
+            }
+            if road.dst_i == old_id {
+                road.dst_i = copy.id;
             }
 
-            assert!(streets.intersections[&id].roads.is_empty());
-            streets.intersections.remove(&id).unwrap();
+            streets.intersections.insert(copy.id, copy);
+
+            // classify_intersections hasn't happened yet, so we don't need to update the copied
+            // intersection
         }
     }
 
     // Now for all of the border intersections, find the one road they connect to and trim their
     // points.
-    for (i, intersection) in &mut streets.intersections {
+    for intersection in streets.intersections.values_mut() {
         if intersection.control != ControlType::Border {
             continue;
         }
@@ -101,7 +91,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             continue;
         }
 
-        if road.src_i == *i {
+        if road.src_i == intersection.id {
             // Starting out-of-bounds
             let border_pt = border_pts[0];
             if let Some(pl) = road.untrimmed_center_line.get_slice_starting_at(border_pt) {

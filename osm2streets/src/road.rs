@@ -5,15 +5,15 @@ use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine, Pt2D};
 
 use crate::{
-    get_lane_specs_ltr, osm, CommonEndpoint, CrossingType, Direction, InputRoad, LaneSpec,
-    LaneType, MapConfig, OriginalRoad, RestrictionType, RoadWithEndpoints,
+    get_lane_specs_ltr, osm, CommonEndpoint, CrossingType, Direction, InputRoad, IntersectionID,
+    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadWithEndpoints,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
     pub id: OriginalRoad,
-    pub src_i: osm::NodeID,
-    pub dst_i: osm::NodeID,
+    pub src_i: IntersectionID,
+    pub dst_i: IntersectionID,
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
     /// smoothing the polyline.
     pub untrimmed_center_line: PolyLine,
@@ -43,8 +43,8 @@ pub struct Road {
 impl Road {
     pub fn new(
         id: OriginalRoad,
-        src_i: osm::NodeID,
-        dst_i: osm::NodeID,
+        src_i: IntersectionID,
+        dst_i: IntersectionID,
         untrimmed_center_line: PolyLine,
         osm_tags: Tags,
         config: &MapConfig,
@@ -221,7 +221,7 @@ impl Road {
         Ok((left, right))
     }
 
-    pub fn endpoints(&self) -> Vec<osm::NodeID> {
+    pub fn endpoints(&self) -> Vec<IntersectionID> {
         vec![self.src_i, self.dst_i]
     }
 
@@ -236,7 +236,7 @@ impl Road {
         }
     }
 
-    pub fn other_side(&self, i: osm::NodeID) -> osm::NodeID {
+    pub fn other_side(&self, i: IntersectionID) -> IntersectionID {
         RoadWithEndpoints::new(self).other_side(i)
     }
 

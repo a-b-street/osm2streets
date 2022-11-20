@@ -4,7 +4,9 @@ use itertools::Itertools;
 use std::collections::HashMap;
 
 use abstutil::Timer;
-use osm2streets::{osm, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation};
+use osm2streets::{
+    IntersectionID, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation,
+};
 
 use crate::network::RoadNetwork;
 use crate::road_functions::IntersectionType;
@@ -38,7 +40,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetw
 impl From<StreetNetwork> for RoadNetwork {
     fn from(streets: StreetNetwork) -> Self {
         let mut net = RoadNetwork::new();
-        let intersections: HashMap<&osm::NodeID, _> = streets
+        let intersections: HashMap<&IntersectionID, _> = streets
             .intersections
             .iter()
             .map(|(node_id, int)| (node_id, net.add_intersection(Intersection::from(int))))
@@ -54,15 +56,15 @@ impl From<StreetNetwork> for RoadNetwork {
                         ways[Forward].take().map(|f| {
                             net.add_closing_roadway(
                                 f.clone(),
-                                intersections[&rid.i1],
-                                intersections[&rid.i2],
+                                intersections[&road.src_i],
+                                intersections[&road.dst_i],
                             )
                         }),
                         ways[Backward].take().map(|b| {
                             net.add_closing_roadway(
                                 b,
-                                intersections[&rid.i2],
-                                intersections[&rid.i1],
+                                intersections[&road.dst_i],
+                                intersections[&road.src_i],
                             )
                         }),
                     ),
