@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{osm, OriginalRoad, Road, RoadWithEndpoints, StreetNetwork};
+use crate::{osm, IntersectionID, OriginalRoad, Road, RoadWithEndpoints, StreetNetwork};
 
 pub fn merge(streets: &mut StreetNetwork) {
     for i in streets.intersections.keys() {
@@ -28,14 +28,14 @@ pub fn merge(streets: &mut StreetNetwork) {
 // TODO We should do this in classify_intersections.rs?
 // Step 1: just find where dual carriageways start or end
 struct MultiConnection {
-    i: osm::NodeID,
+    i: IntersectionID,
     side1: OriginalRoad,
     side2: OriginalRoad,
     road_name: String,
 }
 
 impl MultiConnection {
-    fn new(streets: &StreetNetwork, i: osm::NodeID) -> Option<Self> {
+    fn new(streets: &StreetNetwork, i: IntersectionID) -> Option<Self> {
         let roads = streets.roads_per_intersection(i);
         if roads.len() < 3 {
             return None;
@@ -101,8 +101,8 @@ impl MultiConnection {
 // splits/rejoins
 struct DualCarriagewayPt1 {
     road_name: String,
-    src_i: osm::NodeID,
-    dst_i: osm::NodeID,
+    src_i: IntersectionID,
+    dst_i: IntersectionID,
     // side1 points from src_i to dst_i
     side1: Vec<RoadWithEndpoints>,
     // side2 points from dst_i to src_i
@@ -166,9 +166,9 @@ impl DualCarriagewayPt1 {
     fn trace_side(
         streets: &StreetNetwork,
         start: OriginalRoad,
-        join: osm::NodeID,
+        join: IntersectionID,
         road_name: &str,
-    ) -> Option<(Vec<RoadWithEndpoints>, osm::NodeID)> {
+    ) -> Option<(Vec<RoadWithEndpoints>, IntersectionID)> {
         let mut sequence = vec![RoadWithEndpoints::new(&streets.roads[&start])];
 
         let mut current = sequence[0].clone();
@@ -217,8 +217,8 @@ impl DualCarriagewayPt1 {
 // sides
 struct DualCarriagewayPt2 {
     road_name: String,
-    src_i: osm::NodeID,
-    dst_i: osm::NodeID,
+    src_i: IntersectionID,
+    dst_i: IntersectionID,
     // side1 points from src_i to dst_i
     side1: Vec<RoadWithEndpoints>,
     // side2 points from dst_i to src_i
@@ -273,7 +273,7 @@ impl DualCarriagewayPt2 {
         })
     }
 
-    fn side_to_intersections(side: &Vec<RoadWithEndpoints>) -> BTreeSet<osm::NodeID> {
+    fn side_to_intersections(side: &Vec<RoadWithEndpoints>) -> BTreeSet<IntersectionID> {
         let mut set = BTreeSet::new();
         for r in side {
             set.insert(r.src_i);
@@ -286,7 +286,7 @@ impl DualCarriagewayPt2 {
     fn find_branches_and_bridges(
         streets: &StreetNetwork,
         side: &Vec<RoadWithEndpoints>,
-        other_side_intersections: BTreeSet<osm::NodeID>,
+        other_side_intersections: BTreeSet<IntersectionID>,
     ) -> (Vec<(OriginalRoad, Distance)>, Vec<(OriginalRoad, Distance)>) {
         let mut branches = Vec::new();
         let mut bridges = Vec::new();

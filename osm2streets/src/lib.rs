@@ -14,7 +14,7 @@ use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
-pub use self::ids::{CommonEndpoint, OriginalRoad};
+pub use self::ids::{CommonEndpoint, IntersectionID, OriginalRoad, RoadID};
 pub use self::intersection::Intersection;
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
@@ -50,7 +50,7 @@ pub struct StreetNetwork {
         serialize_with = "serialize_btreemap",
         deserialize_with = "deserialize_btreemap"
     )]
-    pub intersections: BTreeMap<osm::NodeID, Intersection>,
+    pub intersections: BTreeMap<IntersectionID, Intersection>,
 
     pub boundary_polygon: Polygon,
     pub gps_bounds: GPSBounds,
@@ -58,6 +58,9 @@ pub struct StreetNetwork {
 
     #[serde(skip_serializing, skip_deserializing)]
     pub debug_steps: RefCell<Vec<DebugStreets>>,
+
+    intersection_id_counter: usize,
+    road_id_counter: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -83,6 +86,9 @@ impl StreetNetwork {
             config: MapConfig::default(),
 
             debug_steps: RefCell::new(Vec::new()),
+
+            intersection_id_counter: 0,
+            road_id_counter: 0,
         }
     }
 
@@ -123,7 +129,7 @@ impl StreetNetwork {
         }
     }
 
-    pub fn remove_intersection(&mut self, id: osm::NodeID) {
+    pub fn remove_intersection(&mut self, id: IntersectionID) {
         let i = self.intersections.remove(&id).unwrap();
         if !i.roads.is_empty() {
             panic!("Can't remove_intersection({id}), it has roads still connected");
@@ -131,7 +137,7 @@ impl StreetNetwork {
     }
 
     /// Returns roads oriented in clockwise order around the intersection
-    pub fn roads_per_intersection(&self, i: osm::NodeID) -> Vec<&Road> {
+    pub fn roads_per_intersection(&self, i: IntersectionID) -> Vec<&Road> {
         self.intersections[&i]
             .roads
             .iter()
@@ -194,6 +200,8 @@ impl StreetNetwork {
                 gps_bounds: self.gps_bounds.clone(),
                 config: self.config.clone(),
                 debug_steps: RefCell::new(Vec::new()),
+                intersection_id_counter: self.intersection_id_counter,
+                road_id_counter: self.road_id_counter,
             },
             points: Vec::new(),
             polylines: Vec::new(),
@@ -210,7 +218,7 @@ impl StreetNetwork {
         self.start_debug_step(label);
     }
 
-    pub(crate) fn debug_intersection<I: Into<String>>(&self, i: osm::NodeID, label: I) {
+    pub(crate) fn debug_intersection<I: Into<String>>(&self, i: IntersectionID, label: I) {
         if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
             step.points
                 .push((self.intersections[&i].point, label.into()));
@@ -227,7 +235,7 @@ impl StreetNetwork {
     // Restore the invariant that an intersection's roads are ordered clockwise
     //
     // TODO This doesn't handle trim_roads_for_merging
-    fn sort_roads(&mut self, i: osm::NodeID) {
+    fn sort_roads(&mut self, i: IntersectionID) {
         let intersection = self.intersections.get_mut(&i).unwrap();
 
         // (ID, polyline pointing to the intersection, sorting point that's filled out later)
@@ -279,9 +287,9 @@ impl StreetNetwork {
     }
 
     /// Recalculate movements, complexity, and conflict_level of an intersection.
-    fn recalculate_movements(&mut self, i: osm::NodeID) {
+    fn recalculate_movements(&mut self, i: IntersectionID) {
         let (complexity, conflict_level, movements) =
-            crate::transform::classify_intersections::guess_complexity(self, &i);
+            crate::transform::classify_intersections::guess_complexity(self, i);
         let int = self.intersections.get_mut(&i).unwrap();
         int.movements = movements;
         int.conflict_level = conflict_level;

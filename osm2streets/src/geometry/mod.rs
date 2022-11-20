@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 use abstutil::Tags;
 use geom::{Distance, PolyLine, Polygon};
 
-use crate::{osm, OriginalRoad};
+use crate::{IntersectionID, OriginalRoad};
 pub use algorithm::intersection_polygon;
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
@@ -24,8 +24,8 @@ pub use algorithm::intersection_polygon;
 #[derive(Clone)]
 pub struct InputRoad {
     pub id: OriginalRoad,
-    pub src_i: osm::NodeID,
-    pub dst_i: osm::NodeID,
+    pub src_i: IntersectionID,
+    pub dst_i: IntersectionID,
     /// The true center of the road, including sidewalks. The input is untrimmed when called on the
     /// first endpoint, then trimmed on that one side when called on th second endpoint.
     pub center_pts: PolyLine,
@@ -37,7 +37,7 @@ pub struct InputRoad {
 
 #[derive(Clone)]
 pub struct Results {
-    pub intersection_id: osm::NodeID,
+    pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
     /// Road -> (trimmed center line, half width)
     pub trimmed_center_pts: BTreeMap<OriginalRoad, (PolyLine, Distance)>,

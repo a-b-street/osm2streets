@@ -1,6 +1,8 @@
 use geom::{Distance, PolyLine};
 
-use crate::{osm, BufferType, Direction, LaneSpec, LaneType, OriginalRoad, StreetNetwork};
+use crate::{
+    BufferType, Direction, IntersectionID, LaneSpec, LaneType, OriginalRoad, StreetNetwork,
+};
 
 /// Find cycleway segments that exist as separate objects, parallel to a main road. Merge (or
 /// "snap") them into the main road, inserting a buffer lane to represent the physical division.
@@ -31,8 +33,8 @@ struct Cycleway {
     cycleway_center: PolyLine,
     // Just to distinguish different cycleways when debugging
     debug_idx: usize,
-    main_road_src_i: osm::NodeID,
-    main_road_dst_i: osm::NodeID,
+    main_road_src_i: IntersectionID,
+    main_road_dst_i: IntersectionID,
     main_roads: Vec<OriginalRoad>,
 }
 

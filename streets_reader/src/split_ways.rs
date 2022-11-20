@@ -1,10 +1,10 @@
-use std::collections::{hash_map::Entry, HashMap, HashSet};
+use std::collections::{btree_map::Entry, BTreeMap, HashMap, HashSet};
 
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, ConflictType, ControlType, CrossingType, Direction, Intersection, IntersectionComplexity,
-    OriginalRoad, Road, StreetNetwork,
+    osm, ConflictType, ControlType, CrossingType, Direction, IntersectionComplexity,
+    IntersectionID, OriginalRoad, Road, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -24,18 +24,29 @@ pub fn split_up_roads(
 ) -> Output {
     timer.start("splitting up roads");
 
-    let mut roundabout_centers: HashMap<osm::NodeID, Pt2D> = HashMap::new();
-    let mut pt_to_intersection: HashMap<HashablePt2D, osm::NodeID> = HashMap::new();
+    let mut roundabout_centers: Vec<(Pt2D, Vec<osm::NodeID>)> = Vec::new();
+    // Note we iterate over this later and assign IDs based on the order, so HashMap would be
+    // non-deterministic
+    let mut pt_to_intersection: BTreeMap<HashablePt2D, osm::NodeID> = BTreeMap::new();
 
     input.roads.retain(|(id, pts, tags)| {
         if should_collapse_roundabout(pts, tags) {
             info!("Collapsing tiny roundabout {}", id);
+
+            let ids: Vec<osm::NodeID> = pts
+                .iter()
+                .map(|pt| input.osm_node_ids[&pt.to_hashable()])
+                .collect();
+
             // Arbitrarily use the first node's ID
-            let id = input.osm_node_ids[&pts[0].to_hashable()];
-            roundabout_centers.insert(id, Pt2D::center(pts));
+            // TODO Test more carefully after opaque IDs
+            let id = ids[0];
+
             for pt in pts {
                 pt_to_intersection.insert(pt.to_hashable(), id);
             }
+
+            roundabout_centers.push((Pt2D::center(pts), ids));
 
             false
         } else {
@@ -59,37 +70,36 @@ pub fn split_up_roads(
         }
     }
 
-    for (pt, id) in &pt_to_intersection {
-        streets.intersections.insert(
-            *id,
-            Intersection::new(
-                *id,
-                pt.to_pt2d(),
-                // Assume a complicated intersection, until we determine otherwise.
-                IntersectionComplexity::Crossing,
-                ConflictType::Cross,
-                if input.traffic_signals.remove(pt).is_some() {
-                    ControlType::TrafficSignal
-                } else {
-                    // TODO default to uncontrolled, guess StopSign as a transform
-                    ControlType::StopSign
-                },
-            ),
+    let mut osm_id_to_id: HashMap<osm::NodeID, IntersectionID> = HashMap::new();
+    for (pt, osm_id) in &pt_to_intersection {
+        let id = streets.insert_intersection(
+            vec![*osm_id],
+            pt.to_pt2d(),
+            // Assume a complicated intersection, until we determine otherwise.
+            IntersectionComplexity::Crossing,
+            ConflictType::Cross,
+            if input.traffic_signals.remove(pt).is_some() {
+                ControlType::TrafficSignal
+            } else {
+                // TODO default to uncontrolled, guess StopSign as a transform
+                ControlType::StopSign
+            },
         );
+        osm_id_to_id.insert(*osm_id, id);
     }
 
     // Set roundabouts to their center
-    for (id, point) in roundabout_centers {
-        streets.intersections.insert(
-            id,
-            Intersection::new(
-                id,
-                point,
-                IntersectionComplexity::Crossing,
-                ConflictType::Cross,
-                ControlType::StopSign,
-            ),
+    for (pt, osm_ids) in roundabout_centers {
+        let id = streets.insert_intersection(
+            osm_ids.clone(),
+            pt,
+            IntersectionComplexity::Crossing,
+            ConflictType::Cross,
+            ControlType::StopSign,
         );
+        for osm_id in osm_ids {
+            osm_id_to_id.insert(osm_id, id);
+        }
     }
 
     let mut pt_to_road: HashMap<HashablePt2D, OriginalRoad> = HashMap::new();
@@ -132,7 +142,14 @@ pub fn split_up_roads(
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
-                        streets.insert_road(Road::new(id, id.i1, id.i2, pl, tags, &streets.config));
+                        streets.insert_road(Road::new(
+                            id,
+                            osm_id_to_id[&id.i1],
+                            osm_id_to_id[&id.i2],
+                            pl,
+                            tags,
+                            &streets.config,
+                        ));
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");
@@ -153,10 +170,11 @@ pub fn split_up_roads(
     // Resolve simple turn restrictions (via a node)
     let mut restrictions = Vec::new();
     for (restriction, from_osm, via_osm, to_osm) in input.simple_turn_restrictions {
-        if !streets.intersections.contains_key(&via_osm) {
+        let via_id = osm_id_to_id[&via_osm];
+        if !streets.intersections.contains_key(&via_id) {
             continue;
         }
-        let roads = &streets.intersections[&via_osm].roads;
+        let roads = &streets.intersections[&via_id].roads;
         // If some of the roads are missing, they were likely filtered out -- usually service
         // roads.
         if let (Some(from), Some(to)) = (
@@ -179,11 +197,10 @@ pub fn split_up_roads(
     // connected to both roads, for now
     let mut complicated_restrictions = Vec::new();
     for (rel_osm, from_osm, via_osm, to_osm) in input.complicated_turn_restrictions {
-        let via_candidates: Vec<OriginalRoad> = streets
+        let via_candidates: Vec<&Road> = streets
             .roads
-            .keys()
-            .filter(|r| r.osm_way_id == via_osm)
-            .cloned()
+            .values()
+            .filter(|r| r.id.osm_way_id == via_osm)
             .collect();
         if via_candidates.len() != 1 {
             warn!(
@@ -195,19 +212,19 @@ pub fn split_up_roads(
         }
         let via = via_candidates[0];
 
-        let maybe_from = streets.intersections[&via.i1]
+        let maybe_from = streets.intersections[&via.src_i]
             .roads
             .iter()
-            .chain(&streets.intersections[&via.i2].roads)
+            .chain(&streets.intersections[&via.dst_i].roads)
             .find(|r| r.osm_way_id == from_osm);
-        let maybe_to = streets.intersections[&via.i1]
+        let maybe_to = streets.intersections[&via.src_i]
             .roads
             .iter()
-            .chain(&streets.intersections[&via.i2].roads)
+            .chain(&streets.intersections[&via.dst_i].roads)
             .find(|r| r.osm_way_id == to_osm);
         match (maybe_from, maybe_to) {
             (Some(from), Some(to)) => {
-                complicated_restrictions.push((from, via, to));
+                complicated_restrictions.push((from, via.id, *to));
             }
             _ => {
                 warn!(
@@ -223,7 +240,7 @@ pub fn split_up_roads(
             .get_mut(&from)
             .unwrap()
             .complicated_turn_restrictions
-            .push((via, *to));
+            .push((via, to));
     }
 
     timer.start("match traffic signals to intersections");
@@ -235,7 +252,11 @@ pub fn split_up_roads(
             if let Some(road) = streets.roads.get(r) {
                 // Example: https://www.openstreetmap.org/node/26734224
                 if !road.osm_tags.is(osm::HIGHWAY, "construction") {
-                    let i = if dir == Direction::Fwd { r.i2 } else { r.i1 };
+                    let i = if dir == Direction::Fwd {
+                        road.dst_i
+                    } else {
+                        road.src_i
+                    };
                     streets.intersections.get_mut(&i).unwrap().control = ControlType::TrafficSignal;
                 }
             }

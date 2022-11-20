@@ -6,12 +6,12 @@ use abstutil::wraparound_get;
 use geom::{Circle, Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
 use super::Results;
-use crate::{osm, InputRoad, OriginalRoad};
+use crate::{osm, InputRoad, IntersectionID, OriginalRoad};
 
 const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
 
 pub fn intersection_polygon(
-    intersection_id: osm::NodeID,
+    intersection_id: IntersectionID,
     // These must be sorted clockwise already
     input_roads: Vec<InputRoad>,
     trim_roads_for_merging: &BTreeMap<(osm::WayID, bool), Pt2D>,
@@ -430,7 +430,7 @@ fn close_off_polygon(mut pts: Vec<Pt2D>) -> Vec<Pt2D> {
 // The lines all end at the intersection
 struct Piece {
     id: OriginalRoad,
-    dst_i: osm::NodeID,
+    dst_i: IntersectionID,
     left: PolyLine,
     center: PolyLine,
     right: PolyLine,
