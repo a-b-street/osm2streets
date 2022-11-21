@@ -72,8 +72,6 @@ impl StreetNetwork {
                         .into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
-                    // TODO opaque IDs
-                    //("osm_link", id.to_string().into()),
                 ]),
             ));
         }
@@ -100,8 +98,15 @@ impl StreetNetwork {
                         ("type", format!("{:?}", lane.lt).into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
-                        // TODO opaque IDs
-                        //("osm_link", id.osm_way_id.to_string().into()),
+                        (
+                            "osm_way_ids",
+                            serde_json::Value::Array(
+                                road.osm_ids
+                                    .iter()
+                                    .map(|id| id.osm_way_id.0.into())
+                                    .collect(),
+                            ),
+                        ),
                     ]),
                 ));
             }
