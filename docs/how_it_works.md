@@ -10,7 +10,7 @@ Intersections have a `ControlType` -- stop signs, traffic signals, uncontrolled,
 
 ### IDs
 
-Roads and intersections are currently identified by OSM IDs, but this will soon change to opaque IDs. As we merge, split, or fix things, the model diverges from what's in OSM. Instead, roads and intersections will keep a list of OSM IDs that went into the osm2streets object.
+Roads and intersections have opaque (meaningless) IDs. At the very beginning, they map over to exactly one object in OSM, but as the library performs transformations, this mapping becomes more complex. Thus, roads and intersections track a list of OSM objects that they represent.
 
 ## Import walkthrough
 
@@ -52,15 +52,13 @@ Some of the below transformations do something complicated worth calling out. Li
 
 ### Collapsing an intersection
 
-`collapse_intersection` removes an intersection that has only two roads connected to it. Transformations below describe when this is called. The operation itself mostly just stitches together the geometry of the two roads in a straightforward way. It fixes turn restrictions (which should get simpler with opaque IDs). The caller is responsible for fixing up lanes between the two roads -- or rather, making sure they match up compatibly in the first place.
+`collapse_intersection` removes an intersection that has only two roads connected to it. Transformations below describe when this is called. The operation itself mostly just stitches together the geometry of the two roads in a straightforward way. It fixes turn restrictions referring to the deleted road. The caller is responsible for fixing up lanes between the two roads -- or rather, making sure they match up compatibly in the first place.
 
 ### Collapsing a short road
 
 `collapse_short_road` removes a road, then combines the two intersections into one.
 
 It first calculates trimmed intersection geometry for the two intersections. On each connected road (besides the short one being collapsed, of course), we store the trimming distance in `trim_roads_for_merging`, so that later the intersection geometry algorithm can follow a special case for the single merged intersection.
-
-Most of the complexity here comes from fixing up IDs and turn restrictions. Opaque IDs likely make this a much simpler operation!
 
 ## The transformations
 
@@ -78,7 +76,7 @@ We sometimes wind up with short dead-end roads that're nice to remove. One examp
 
 ### SnapCycleways (experimental)
 
-TODO
+See <https://github.com/a-b-street/osm2streets/pull/61> for now
 
 ### RemoveDisconnectedRoads
 
@@ -117,7 +115,7 @@ There are special cases documented in the code.
 
 ### CollapseSausageLinks
 
-A "simpl esausage link" is a dual carriageway that split very briefly and then re-joins, with no intermediate roads. These are collapsed into one road between the intersections, with a barrier lane inserted in the middle. The code is well-documented and better reference.
+A "simple sausage link" is a dual carriageway that split very briefly and then re-joins, with no intermediate roads. These are collapsed into one road between the intersections, with a barrier lane inserted in the middle. The code is well-documented and better reference.
 
 ### ShrinkOverlappingRoads
 
