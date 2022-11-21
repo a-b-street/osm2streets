@@ -45,7 +45,7 @@ pub struct StreetNetwork {
         serialize_with = "serialize_btreemap",
         deserialize_with = "deserialize_btreemap"
     )]
-    pub roads: BTreeMap<OriginalRoad, Road>,
+    pub roads: BTreeMap<RoadID, Road>,
     #[serde(
         serialize_with = "serialize_btreemap",
         deserialize_with = "deserialize_btreemap"
@@ -104,7 +104,7 @@ impl StreetNetwork {
         }
     }
 
-    pub fn remove_road(&mut self, id: OriginalRoad) -> Road {
+    pub fn remove_road(&mut self, id: RoadID) -> Road {
         for i in self.roads[&id].endpoints() {
             self.intersections
                 .get_mut(&i)
@@ -147,7 +147,7 @@ impl StreetNetwork {
 
     /// This calculates a road's `trimmed_center_line` early, before
     /// `Transformation::GenerateIntersectionGeometry` has run. Use sparingly.
-    pub(crate) fn estimate_trimmed_geometry(&self, road_id: OriginalRoad) -> Result<PolyLine> {
+    pub(crate) fn estimate_trimmed_geometry(&self, road_id: RoadID) -> Result<PolyLine> {
         let endpts = self.roads[&road_id].endpoints();
 
         // First trim at one of the endpoints
@@ -225,7 +225,7 @@ impl StreetNetwork {
         }
     }
 
-    pub(crate) fn debug_road<I: Into<String>>(&self, r: OriginalRoad, label: I) {
+    pub(crate) fn debug_road<I: Into<String>>(&self, r: RoadID, label: I) {
         if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
             step.polylines
                 .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
@@ -317,7 +317,7 @@ pub enum RestrictionType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct TurnRestriction(pub OriginalRoad, pub RestrictionType, pub OriginalRoad);
+pub struct TurnRestriction(pub RoadID, pub RestrictionType, pub RoadID);
 
 impl RestrictionType {
     pub fn new(restriction: &str) -> Option<RestrictionType> {

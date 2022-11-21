@@ -1,6 +1,6 @@
 use geom::Distance;
 
-use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
+use crate::{osm, ControlType, Road, RoadID, StreetNetwork};
 
 /// Combines a few different sources/methods to decide which roads are short. Marks them for
 /// merging.
@@ -8,7 +8,7 @@ use crate::{osm, ControlType, OriginalRoad, Road, StreetNetwork};
 /// 1) Anything tagged in OSM
 /// 2) Anything a temporary local merge_osm_ways.json file
 /// 3) If `consolidate_all` is true, an experimental distance-based heuristic
-pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> Vec<OriginalRoad> {
+pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> Vec<RoadID> {
     let mut roads = Vec::new();
     for (id, road) in &streets.roads {
         if road.osm_tags.is("junction", "intersection") {
@@ -25,14 +25,23 @@ pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> V
     if streets.config.find_dog_legs_experiment {
         roads.extend(streets.find_dog_legs());
     }
+
     // Use this to quickly test overrides to some ways before upstreaming in OSM. Since these IDs
     // might be based on already merged roads, do these last.
-    roads.extend(streets.config.merge_osm_ways.clone());
+    for road in streets.roads.values() {
+        if road
+            .osm_ids
+            .iter()
+            .any(|id| streets.config.merge_osm_ways.contains(id))
+        {
+            roads.push(road.id);
+        }
+    }
 
     streets.mark_short_roads(roads)
 }
 
-fn distance_heuristic(id: OriginalRoad, streets: &StreetNetwork) -> bool {
+fn distance_heuristic(id: RoadID, streets: &StreetNetwork) -> bool {
     let road_length = if let Ok(pl) = streets.estimate_trimmed_geometry(id) {
         pl.length()
     } else {
@@ -46,7 +55,7 @@ fn distance_heuristic(id: OriginalRoad, streets: &StreetNetwork) -> bool {
 }
 
 impl StreetNetwork {
-    fn mark_short_roads(&mut self, list: Vec<OriginalRoad>) -> Vec<OriginalRoad> {
+    fn mark_short_roads(&mut self, list: Vec<RoadID>) -> Vec<RoadID> {
         for id in &list {
             self.roads
                 .get_mut(id)
@@ -58,7 +67,7 @@ impl StreetNetwork {
     }
 
     /// A heuristic to find short roads near traffic signals
-    pub fn find_traffic_signal_clusters(&mut self) -> Vec<OriginalRoad> {
+    pub fn find_traffic_signal_clusters(&mut self) -> Vec<RoadID> {
         let threshold = Distance::meters(20.0);
 
         // Simplest start: look for short roads connected to traffic signals.
@@ -73,12 +82,13 @@ impl StreetNetwork {
             if road.osm_tags.is("junction", "intersection") {
                 continue;
             }
-            let i1 = &self.intersections[&road.src_i];
-            let i2 = &self.intersections[&road.dst_i];
-            if i1.is_border() || i2.is_border() {
+            let src_i = &self.intersections[&road.src_i];
+            let dst_i = &self.intersections[&road.dst_i];
+            if src_i.is_border() || dst_i.is_border() {
                 continue;
             }
-            if i1.control != ControlType::TrafficSignal && i2.control != ControlType::TrafficSignal
+            if src_i.control != ControlType::TrafficSignal
+                && dst_i.control != ControlType::TrafficSignal
             {
                 continue;
             }
@@ -102,7 +112,7 @@ impl StreetNetwork {
     /// ```
     ///
     /// The ~~ is the short road we want to detect
-    pub fn find_dog_legs(&mut self) -> Vec<OriginalRoad> {
+    pub fn find_dog_legs(&mut self) -> Vec<RoadID> {
         let threshold = Distance::meters(5.0);
 
         let mut results = Vec::new();

@@ -32,7 +32,15 @@ impl StreetNetwork {
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
                     ("type", "road".into()),
-                    ("osm_way_id", road.id.osm_way_id.0.into()),
+                    (
+                        "osm_way_ids",
+                        serde_json::Value::Array(
+                            road.osm_ids
+                                .iter()
+                                .map(|id| id.osm_way_id.0.into())
+                                .collect(),
+                        ),
+                    ),
                     ("src_i", road.src_i.0.into()),
                     ("dst_i", road.dst_i.0.into()),
                 ]),
@@ -40,12 +48,17 @@ impl StreetNetwork {
         }
 
         // Polygon per intersection
-        for (id, intersection) in &self.intersections {
+        for intersection in self.intersections.values() {
             pairs.push((
                 intersection.polygon.to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
                     ("type", "intersection".into()),
-                    ("osm_node_id", id.0.into()),
+                    (
+                        "osm_node_ids",
+                        serde_json::Value::Array(
+                            intersection.osm_ids.iter().map(|id| id.0.into()).collect(),
+                        ),
+                    ),
                     (
                         "complexity",
                         if intersection.complexity == IntersectionComplexity::MultiConnection {
@@ -59,7 +72,8 @@ impl StreetNetwork {
                         .into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
-                    ("osm_link", id.to_string().into()),
+                    // TODO opaque IDs
+                    //("osm_link", id.to_string().into()),
                 ]),
             ));
         }
@@ -73,7 +87,7 @@ impl StreetNetwork {
     pub fn to_lane_polygons_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();
 
-        for (id, road) in &self.roads {
+        for road in self.roads.values() {
             for (lane, pl) in road
                 .lane_specs_ltr
                 .iter()
@@ -86,7 +100,8 @@ impl StreetNetwork {
                         ("type", format!("{:?}", lane.lt).into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
-                        ("osm_link", id.osm_way_id.to_string().into()),
+                        // TODO opaque IDs
+                        //("osm_link", id.osm_way_id.to_string().into()),
                     ]),
                 ));
             }

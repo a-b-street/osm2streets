@@ -4,7 +4,7 @@ use geom::{Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    osm, ConflictType, ControlType, IntersectionComplexity, IntersectionID, Movement, OriginalRoad,
+    osm, ConflictType, ControlType, IntersectionComplexity, IntersectionID, Movement, RoadID,
     StreetNetwork,
 };
 
@@ -28,11 +28,12 @@ pub struct Intersection {
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
     /// intersection. They're ordered clockwise aroundd the intersection.
-    pub roads: Vec<OriginalRoad>,
+    pub roads: Vec<RoadID>,
     pub movements: Vec<Movement>,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
-    pub trim_roads_for_merging: BTreeMap<(osm::WayID, bool), Pt2D>,
+    // TODO Store start/end trim distance on _every_ road
+    pub trim_roads_for_merging: BTreeMap<(RoadID, bool), Pt2D>,
 }
 
 impl StreetNetwork {

@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use abstutil::Timer;
 use osm2streets::{
-    IntersectionID, LaneSpec, LaneType, OriginalRoad, Road, StreetNetwork, Transformation,
+    IntersectionID, LaneSpec, LaneType, Road, RoadID, StreetNetwork, Transformation,
 };
 
 use crate::network::RoadNetwork;
@@ -45,7 +45,7 @@ impl From<StreetNetwork> for RoadNetwork {
             .iter()
             .map(|(node_id, int)| (node_id, net.add_intersection(Intersection::from(int))))
             .collect();
-        let _road_ways: HashMap<&OriginalRoad, _> = streets
+        let _road_ways: HashMap<&RoadID, _> = streets
             .roads
             .iter()
             .map(|(rid, road)| {

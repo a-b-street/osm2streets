@@ -1,11 +1,11 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::Distance;
 
-use crate::{osm, OriginalRoad};
+use crate::{osm, OriginalRoad, RoadID};
 
 /// None corresponds to the native name
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -76,7 +76,7 @@ pub struct MapConfig {
     /// Enable experimental dog-leg intersection merging
     pub find_dog_legs_experiment: bool,
     /// Experimentally merge these OSM ways
-    pub merge_osm_ways: Vec<OriginalRoad>,
+    pub merge_osm_ways: BTreeSet<OriginalRoad>,
 }
 
 impl MapConfig {
@@ -90,7 +90,7 @@ impl MapConfig {
             turn_on_red: true,
             osm2lanes: false,
             find_dog_legs_experiment: false,
-            merge_osm_ways: Vec::new(),
+            merge_osm_ways: BTreeSet::new(),
         }
     }
 }
@@ -179,4 +179,4 @@ pub enum ControlType {
 }
 
 /// The path that some group of adjacent lanes of traffic can take through an intersection.
-pub type Movement = (OriginalRoad, OriginalRoad);
+pub type Movement = (RoadID, RoadID);

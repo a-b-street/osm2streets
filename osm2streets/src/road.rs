@@ -6,12 +6,17 @@ use geom::{Angle, Distance, PolyLine, Pt2D};
 
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, CrossingType, Direction, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadWithEndpoints,
+    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints,
+    StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
-    pub id: OriginalRoad,
+    pub id: RoadID,
+    /// The original segments of OSM ways making up this road. One road may consist of multiple
+    /// segments (when an intersection is collapsed).
+    pub osm_ids: Vec<OriginalRoad>,
+
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
@@ -21,9 +26,9 @@ pub struct Road {
     /// `Transformation::GenerateIntersectionGeometry` runs.
     pub trimmed_center_line: PolyLine,
     pub osm_tags: Tags,
-    pub turn_restrictions: Vec<(RestrictionType, OriginalRoad)>,
+    pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
-    pub complicated_turn_restrictions: Vec<(OriginalRoad, OriginalRoad)>,
+    pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
     pub percent_incline: f64,
     /// Is there a tagged crosswalk near each end of the road?
     pub crosswalk_forward: bool,
@@ -42,7 +47,8 @@ pub struct Road {
 
 impl Road {
     pub fn new(
-        id: OriginalRoad,
+        id: RoadID,
+        osm_id: OriginalRoad,
         src_i: IntersectionID,
         dst_i: IntersectionID,
         untrimmed_center_line: PolyLine,
@@ -52,6 +58,7 @@ impl Road {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
         Self {
             id,
+            osm_ids: vec![osm_id],
             src_i,
             dst_i,
             untrimmed_center_line,
@@ -137,7 +144,7 @@ impl Road {
                 // Just drop .5 for now
                 Ok(l) => l as isize,
                 Err(_) => {
-                    warn!("Weird layer={} on {}", layer, self.osm_url());
+                    warn!("Weird layer={layer}");
                     0
                 }
             }
@@ -177,15 +184,6 @@ impl Road {
         }
 
         (true_center, total_width)
-    }
-
-    pub fn osm_url(&self) -> String {
-        // Since we don't store an OriginalRoad (since we may need to update it during
-        // transformations), this may be convenient
-        format!(
-            "http://openstreetmap.org/way/{}",
-            self.osm_tags.get(osm::OSM_WAY_ID).unwrap()
-        )
     }
 
     pub fn total_width(&self) -> Distance {
@@ -242,5 +240,13 @@ impl Road {
 
     pub fn common_endpoint(&self, other: &Road) -> CommonEndpoint {
         CommonEndpoint::new((self.src_i, self.dst_i), (other.src_i, other.dst_i))
+    }
+}
+
+impl StreetNetwork {
+    pub fn next_road_id(&mut self) -> RoadID {
+        let id = RoadID(self.road_id_counter);
+        self.road_id_counter += 1;
+        id
     }
 }

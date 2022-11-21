@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, VecDeque};
 
 use anyhow::Result;
 
-use crate::{ControlType, IntersectionID, OriginalRoad, StreetNetwork};
+use crate::{ControlType, IntersectionID, RestrictionType, RoadID, StreetNetwork};
 
 // TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
@@ -16,7 +16,7 @@ impl StreetNetwork {
     /// surviving intersection.
     pub fn collapse_short_road(
         &mut self,
-        short: OriginalRoad,
+        short: RoadID,
     ) -> Result<(IntersectionID, IntersectionID)> {
         // Arbitrarily keep src_i and destroy dst_i.
         let (keep_i, destroy_i) = {
@@ -54,6 +54,13 @@ impl StreetNetwork {
         if keep_i == destroy_i {
             bail!("Can't collapse {short} -- it's a loop on {keep_i}");
         }
+
+        // Remember the original roads attached to each intersection before we merge.
+        let mut connected_to_keep_i = self.intersections[&keep_i].roads.clone();
+        let mut connected_to_destroy_i = self.intersections[&destroy_i].roads.clone();
+        connected_to_keep_i.retain(|x| *x != short);
+        connected_to_destroy_i.retain(|x| *x != short);
+
         // Retain some geometry...
         {
             let mut trim_roads_for_merging = BTreeMap::new();
@@ -71,21 +78,21 @@ impl StreetNetwork {
 
                     let pl = self.estimate_trimmed_geometry(road.id).unwrap();
                     if road.src_i == i {
-                        if trim_roads_for_merging.contains_key(&(road.id.osm_way_id, true)) {
+                        if trim_roads_for_merging.contains_key(&(road.id, true)) {
                             panic!(
                                 "trim_roads_for_merging has a src_i duplicate for {}",
                                 road.id
                             );
                         }
-                        trim_roads_for_merging.insert((road.id.osm_way_id, true), pl.first_pt());
+                        trim_roads_for_merging.insert((road.id, true), pl.first_pt());
                     } else {
-                        if trim_roads_for_merging.contains_key(&(road.id.osm_way_id, false)) {
+                        if trim_roads_for_merging.contains_key(&(road.id, false)) {
                             panic!(
                                 "trim_roads_for_merging has a dst_i duplicate for {}",
                                 road.id
                             );
                         }
-                        trim_roads_for_merging.insert((road.id.osm_way_id, false), pl.last_pt());
+                        trim_roads_for_merging.insert((road.id, false), pl.last_pt());
                     }
                 }
             }
@@ -130,26 +137,19 @@ impl StreetNetwork {
         self.recalculate_movements(keep_i);
 
         // If we're deleting the target of a simple restriction somewhere, update it.
-        /*for (from_id, road) in &mut self.roads {
-            let from_endpt = new_to_old
-                .get(from_id)
-                .cloned()
-                .unwrap_or(RoadWithEndpoints::new(road));
-
+        for road in self.roads.values_mut() {
             let mut fix_trs = Vec::new();
             for (rt, to) in road.turn_restrictions.drain(..) {
                 if to == short && rt == RestrictionType::BanTurns {
-                    // Remove this restriction, replace it with a new one to each of the successors
-                    // of the deleted road. Depending if the intersection we kept is the one
-                    // connecting these two roads, the successors differ.
-                    if from_endpt.common_endpoint(&short_endpts) == CommonEndpoint::One(keep_i) {
-                        for x in &created {
+                    // Remove this restriction, and replace it with a new one to each of the
+                    // successors of the deleted road. Depending if the intersection we kept is the
+                    // one connecting these two roads, the successors differ.
+                    if connected_to_keep_i.contains(&road.id) {
+                        for x in &connected_to_destroy_i {
                             fix_trs.push((rt, *x));
                         }
                     } else {
-                        // It cant be CommonEndpoint::Both, because we bail out on loop roads
-                        // earlier
-                        for x in &connected_to_src_i {
+                        for x in &connected_to_keep_i {
                             fix_trs.push((rt, *x));
                         }
                     }
@@ -166,16 +166,14 @@ impl StreetNetwork {
             let mut add = Vec::new();
             road.complicated_turn_restrictions.retain(|(via, to)| {
                 if *via == short {
-                    // Depending which intersection we're deleting, the ID of 'to' might change
-                    let to_id = old_to_new.get(to).cloned().unwrap_or(*to);
-                    add.push((RestrictionType::BanTurns, to_id));
+                    add.push((RestrictionType::BanTurns, *to));
                     false
                 } else {
                     true
                 }
             });
             road.turn_restrictions.extend(add);
-        }*/
+        }
 
         Ok((keep_i, destroy_i.id))
     }
@@ -183,7 +181,7 @@ impl StreetNetwork {
 
 /// Collapse all roads marked with `junction=intersection`
 pub fn collapse_all_junction_roads(streets: &mut StreetNetwork) {
-    let mut queue: VecDeque<OriginalRoad> = VecDeque::new();
+    let mut queue: VecDeque<RoadID> = VecDeque::new();
     for (id, road) in &streets.roads {
         if road.osm_tags.is("junction", "intersection") {
             queue.push_back(*id);

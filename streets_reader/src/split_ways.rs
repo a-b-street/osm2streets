@@ -4,7 +4,7 @@ use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
     osm, ConflictType, ControlType, CrossingType, Direction, IntersectionComplexity,
-    IntersectionID, OriginalRoad, Road, StreetNetwork,
+    IntersectionID, OriginalRoad, Road, RoadID, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -14,7 +14,7 @@ pub struct Output {
     pub barrier_nodes: HashSet<HashablePt2D>,
     /// A mapping of all points to the split road. Some internal points on roads get removed in
     /// `split_up_roads`, so this mapping isn't redundant.
-    pub pt_to_road: HashMap<HashablePt2D, OriginalRoad>,
+    pub pt_to_road: HashMap<HashablePt2D, RoadID>,
 }
 
 pub fn split_up_roads(
@@ -102,7 +102,7 @@ pub fn split_up_roads(
         }
     }
 
-    let mut pt_to_road: HashMap<HashablePt2D, OriginalRoad> = HashMap::new();
+    let mut pt_to_road: HashMap<HashablePt2D, RoadID> = HashMap::new();
 
     // Now actually split up the roads based on the intersections
     timer.start_iter("split roads", input.roads.len());
@@ -126,11 +126,9 @@ pub fn split_up_roads(
                 if *i2 == endpt2 {
                     tags.insert(osm::ENDPT_FWD.to_string(), "true".to_string());
                 }
-                let id = OriginalRoad {
-                    osm_way_id: *osm_way_id,
-                    i1,
-                    i2: *i2,
-                };
+
+                let id = streets.next_road_id();
+
                 // Note we populate this before simplify_linestring, so even if some points are
                 // removed, we can still associate them to the road.
                 for (idx, pt) in pts.iter().enumerate() {
@@ -144,8 +142,13 @@ pub fn split_up_roads(
                     Ok(pl) => {
                         streets.insert_road(Road::new(
                             id,
-                            osm_id_to_id[&id.i1],
-                            osm_id_to_id[&id.i2],
+                            OriginalRoad {
+                                osm_way_id: *osm_way_id,
+                                i1,
+                                i2: *i2,
+                            },
+                            osm_id_to_id[&i1],
+                            osm_id_to_id[i2],
                             pl,
                             tags,
                             &streets.config,
@@ -174,14 +177,14 @@ pub fn split_up_roads(
         if !streets.intersections.contains_key(&via_id) {
             continue;
         }
-        let roads = &streets.intersections[&via_id].roads;
+        let roads = streets.roads_per_intersection(via_id);
         // If some of the roads are missing, they were likely filtered out -- usually service
         // roads.
         if let (Some(from), Some(to)) = (
-            roads.iter().find(|r| r.osm_way_id == from_osm),
-            roads.iter().find(|r| r.osm_way_id == to_osm),
+            roads.iter().find(|r| r.osm_ids[0].osm_way_id == from_osm),
+            roads.iter().find(|r| r.osm_ids[0].osm_way_id == to_osm),
         ) {
-            restrictions.push((*from, restriction, *to));
+            restrictions.push((from.id, restriction, to.id));
         }
     }
     for (from, rt, to) in restrictions {
@@ -200,7 +203,7 @@ pub fn split_up_roads(
         let via_candidates: Vec<&Road> = streets
             .roads
             .values()
-            .filter(|r| r.id.osm_way_id == via_osm)
+            .filter(|r| r.osm_ids[0].osm_way_id == via_osm)
             .collect();
         if via_candidates.len() != 1 {
             warn!(
@@ -212,19 +215,19 @@ pub fn split_up_roads(
         }
         let via = via_candidates[0];
 
-        let maybe_from = streets.intersections[&via.src_i]
-            .roads
-            .iter()
-            .chain(&streets.intersections[&via.dst_i].roads)
-            .find(|r| r.osm_way_id == from_osm);
-        let maybe_to = streets.intersections[&via.src_i]
-            .roads
-            .iter()
-            .chain(&streets.intersections[&via.dst_i].roads)
-            .find(|r| r.osm_way_id == to_osm);
+        let maybe_from = streets
+            .roads_per_intersection(via.src_i)
+            .into_iter()
+            .chain(streets.roads_per_intersection(via.dst_i).into_iter())
+            .find(|r| r.osm_ids[0].osm_way_id == from_osm);
+        let maybe_to = streets
+            .roads_per_intersection(via.src_i)
+            .into_iter()
+            .chain(streets.roads_per_intersection(via.dst_i).into_iter())
+            .find(|r| r.osm_ids[0].osm_way_id == to_osm);
         match (maybe_from, maybe_to) {
             (Some(from), Some(to)) => {
-                complicated_restrictions.push((from, via.id, *to));
+                complicated_restrictions.push((from.id, via.id, to.id));
             }
             _ => {
                 warn!(

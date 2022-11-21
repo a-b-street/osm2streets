@@ -1,22 +1,22 @@
 use std::collections::BTreeSet;
 
-use crate::{OriginalRoad, StreetNetwork};
+use crate::{RoadID, StreetNetwork};
 
 /// Some roads might be totally disconnected from the largest clump because of how the map's
 /// bounding polygon was drawn, or bad map data, or which roads are filtered from OSM. Remove them.
 pub fn remove_disconnected_roads(streets: &mut StreetNetwork) {
     // This is a simple floodfill, not Tarjan's. Assumes all roads bidirectional.
 
-    let mut partitions: Vec<Vec<OriginalRoad>> = Vec::new();
-    let mut unvisited_roads: BTreeSet<OriginalRoad> = streets
+    let mut partitions: Vec<Vec<RoadID>> = Vec::new();
+    let mut unvisited_roads: BTreeSet<RoadID> = streets
         .roads
         .iter()
         .filter_map(|(id, r)| if r.is_light_rail() { None } else { Some(*id) })
         .collect();
 
     while !unvisited_roads.is_empty() {
-        let mut queue_roads: Vec<OriginalRoad> = vec![*unvisited_roads.iter().next().unwrap()];
-        let mut current_partition: Vec<OriginalRoad> = Vec::new();
+        let mut queue_roads: Vec<RoadID> = vec![*unvisited_roads.iter().next().unwrap()];
+        let mut current_partition: Vec<RoadID> = Vec::new();
         while !queue_roads.is_empty() {
             let current = queue_roads.pop().unwrap();
             if !unvisited_roads.contains(&current) {
