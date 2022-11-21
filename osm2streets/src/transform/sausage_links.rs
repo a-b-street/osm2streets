@@ -2,9 +2,7 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
-use crate::{
-    osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, OriginalRoad, StreetNetwork,
-};
+use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
 /// Collapse them into one road with a barrier in the middle.
@@ -14,8 +12,8 @@ pub fn collapse_sausage_links(streets: &mut StreetNetwork) {
     }
 }
 
-fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, OriginalRoad)> {
-    let mut pairs: BTreeSet<(OriginalRoad, OriginalRoad)> = BTreeSet::new();
+fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
+    let mut pairs: BTreeSet<(RoadID, RoadID)> = BTreeSet::new();
 
     for road1 in streets.roads.values() {
         // TODO People often forget to fix the lanes when splitting a dual carriageway, but don't
@@ -24,7 +22,7 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
             continue;
         }
         // Find roads that lead between the two endpoints
-        let mut common_roads: BTreeSet<OriginalRoad> =
+        let mut common_roads: BTreeSet<RoadID> =
             into_set(streets.intersections[&road1.src_i].roads.clone())
                 .intersection(&into_set(streets.intersections[&road1.dst_i].roads.clone()))
                 .cloned()
@@ -71,7 +69,7 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(OriginalRoad, Origin
     pairs
 }
 
-fn fix(streets: &mut StreetNetwork, id1: OriginalRoad, id2: OriginalRoad) {
+fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
     // We're never modifying intersections, so even if sausage links are clustered together, both
     // roads should always continue to exist as we fix things.
     assert!(streets.roads.contains_key(&id1));

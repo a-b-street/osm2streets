@@ -9,7 +9,7 @@ use abstutil::Timer;
 use anyhow::Result;
 use geom::{GPSBounds, HashablePt2D, LonLat, Ring};
 
-use osm2streets::{CrossingType, DrivingSide, MapConfig, OriginalRoad, StreetNetwork};
+use osm2streets::{CrossingType, DrivingSide, MapConfig, RoadID, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -189,7 +189,7 @@ fn extract_osm(
 pub fn use_barrier_nodes(
     streets: &mut StreetNetwork,
     barrier_nodes: HashSet<HashablePt2D>,
-    pt_to_road: &HashMap<HashablePt2D, OriginalRoad>,
+    pt_to_road: &HashMap<HashablePt2D, RoadID>,
 ) {
     let mut pt_to_intersection = HashMap::new();
     for (id, i) in &streets.intersections {
@@ -229,7 +229,7 @@ pub fn use_barrier_nodes(
 pub fn use_crossing_nodes(
     streets: &mut StreetNetwork,
     crossing_nodes: &HashSet<(HashablePt2D, CrossingType)>,
-    pt_to_road: &HashMap<HashablePt2D, OriginalRoad>,
+    pt_to_road: &HashMap<HashablePt2D, RoadID>,
 ) {
     for (pt, kind) in crossing_nodes {
         // Some crossings are on footpaths or roads that we don't retain
@@ -242,7 +242,7 @@ pub fn use_crossing_nodes(
 pub fn filter_crosswalks(
     streets: &mut StreetNetwork,
     crosswalks: HashSet<(HashablePt2D, CrossingType)>,
-    pt_to_road: HashMap<HashablePt2D, OriginalRoad>,
+    pt_to_road: HashMap<HashablePt2D, RoadID>,
     timer: &mut Timer,
 ) {
     // Normally we assume every road has a crosswalk, but since this map is configured to use OSM

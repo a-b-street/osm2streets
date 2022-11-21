@@ -1,3 +1,5 @@
+use std::collections::BTreeSet;
+
 use abstutil::Tags;
 use geom::Distance;
 
@@ -188,7 +190,7 @@ fn test_osm_to_specs() {
             // Flip this temporarily to work on the new integration
             osm2lanes: false,
             find_dog_legs_experiment: false,
-            merge_osm_ways: Vec::new(),
+            merge_osm_ways: BTreeSet::new(),
         };
         input.push("highway=residential");
         let actual = get_lane_specs_ltr(&tags(input.clone()), &cfg);

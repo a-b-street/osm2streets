@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 use abstutil::Tags;
 use geom::{Distance, PolyLine, Polygon};
 
-use crate::{IntersectionID, OriginalRoad};
+use crate::{IntersectionID, RoadID};
 pub use algorithm::intersection_polygon;
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
@@ -23,7 +23,7 @@ pub use algorithm::intersection_polygon;
 // redundant.
 #[derive(Clone)]
 pub struct InputRoad {
-    pub id: OriginalRoad,
+    pub id: RoadID,
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
     /// The true center of the road, including sidewalks. The input is untrimmed when called on the
@@ -40,7 +40,7 @@ pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
     /// Road -> (trimmed center line, half width)
-    pub trimmed_center_pts: BTreeMap<OriginalRoad, (PolyLine, Distance)>,
+    pub trimmed_center_pts: BTreeMap<RoadID, (PolyLine, Distance)>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
 }

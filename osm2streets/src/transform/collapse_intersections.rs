@@ -4,7 +4,7 @@ use anyhow::Result;
 
 use geom::{Distance, PolyLine, Pt2D};
 
-use crate::{osm, ControlType, IntersectionID, OriginalRoad, Road, StreetNetwork};
+use crate::{osm, ControlType, IntersectionID, Road, RoadID, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -132,21 +132,16 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
 pub fn collapse_intersection(streets: &mut StreetNetwork, i: IntersectionID) {
     let roads = streets.intersections[&i].roads.clone();
     assert_eq!(roads.len(), 2);
-    let mut r1 = roads[0];
-    let mut r2 = roads[1];
-    assert_ne!(r1, r2);
-
-    // We'll keep r1's way ID, so it's a little more convenient for debugging to guarantee r1 is
-    // the longer piece.
-    if streets.roads[&r1].untrimmed_length() < streets.roads[&r2].untrimmed_length() {
-        std::mem::swap(&mut r1, &mut r2);
-    }
+    // Arbitrarily keep the first and delete the second
+    let keep_r = roads[0];
+    let destroy_r = roads[1];
+    assert_ne!(keep_r, destroy_r);
 
     // Skip loops; they break. Easiest way to detect is see how many total vertices we've got.
     {
         let mut endpts = BTreeSet::new();
-        endpts.extend(streets.roads[&r1].endpoints());
-        endpts.extend(streets.roads[&r2].endpoints());
+        endpts.extend(streets.roads[&keep_r].endpoints());
+        endpts.extend(streets.roads[&destroy_r].endpoints());
         if endpts.len() != 3 {
             info!("Not collapsing degenerate {i}, because it's a loop");
             return;
@@ -155,63 +150,62 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: IntersectionID) {
 
     // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
     // matter for the short segments we're merging.
-    let mut new_road = streets.remove_road(r1);
-    let road2 = streets.remove_road(r2);
+    let mut keep_road = streets.remove_road(keep_r);
+    let destroy_road = streets.remove_road(destroy_r);
     streets.intersections.remove(&i).unwrap();
 
-    // There are 4 cases, easy to understand on paper. Preserve the original direction of r1
+    // Remember the merge
+    keep_road.osm_ids.extend(destroy_road.osm_ids);
+
+    // There are 4 cases, easy to understand on paper. Preserve the original direction of keep_r.
     // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
     let mut new_pts;
-    let (new_i1, new_i2) = if new_road.dst_i == road2.src_i {
-        new_pts = new_road.untrimmed_center_line.clone().into_points();
-        new_pts.extend(road2.untrimmed_center_line.into_points());
-        (new_road.src_i, road2.dst_i)
-    } else if new_road.dst_i == road2.dst_i {
-        new_pts = new_road.untrimmed_center_line.clone().into_points();
-        new_pts.extend(road2.untrimmed_center_line.reversed().into_points());
-        (new_road.src_i, road2.src_i)
-    } else if new_road.src_i == road2.src_i {
-        new_pts = road2.untrimmed_center_line.into_points();
+    let (new_src_i, new_dst_i) = if keep_road.dst_i == destroy_road.src_i {
+        new_pts = keep_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(destroy_road.untrimmed_center_line.into_points());
+        (keep_road.src_i, destroy_road.dst_i)
+    } else if keep_road.dst_i == destroy_road.dst_i {
+        new_pts = keep_road.untrimmed_center_line.clone().into_points();
+        new_pts.extend(destroy_road.untrimmed_center_line.reversed().into_points());
+        (keep_road.src_i, destroy_road.src_i)
+    } else if keep_road.src_i == destroy_road.src_i {
+        new_pts = destroy_road.untrimmed_center_line.into_points();
         new_pts.reverse();
-        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
-        (road2.dst_i, new_road.dst_i)
-    } else if new_road.src_i == road2.dst_i {
-        new_pts = road2.untrimmed_center_line.into_points();
-        new_pts.extend(new_road.untrimmed_center_line.clone().into_points());
-        (road2.src_i, new_road.dst_i)
+        new_pts.extend(keep_road.untrimmed_center_line.clone().into_points());
+        (destroy_road.dst_i, keep_road.dst_i)
+    } else if keep_road.src_i == destroy_road.dst_i {
+        new_pts = destroy_road.untrimmed_center_line.into_points();
+        new_pts.extend(keep_road.untrimmed_center_line.clone().into_points());
+        (destroy_road.src_i, keep_road.dst_i)
     } else {
         unreachable!()
     };
     // Sanity check
-    assert!(i != new_i1 && i != new_i2);
+    assert!(i != new_src_i && i != new_dst_i);
     // Simplify curves and dedupe points. The epsilon was tuned for only one location that was
     // breaking
     let epsilon = 1.0;
-    new_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
+    keep_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
-    // TODO This will change soon
-    let new_r1 = r1;
-    new_road.id = new_r1;
-    new_road.src_i = new_i1;
-    new_road.dst_i = new_i2;
-    streets.insert_road(new_road);
+    // Keep the same ID, but fix the endpoints
+    keep_road.src_i = new_src_i;
+    keep_road.dst_i = new_dst_i;
+    streets.insert_road(keep_road);
 
-    // We may need to fix up turn restrictions. r1 and r2 both become new_r1.
-    let rewrite = |x: &OriginalRoad| *x == r1 || *x == r2;
+    // We may need to fix up turn restrictions. destroy_r becomes keep_r.
+    let rewrite = |x: &mut RoadID| {
+        if *x == destroy_r {
+            *x = keep_r;
+        }
+    };
     for road in streets.roads.values_mut() {
         for (_, id) in &mut road.turn_restrictions {
-            if rewrite(id) {
-                *id = new_r1;
-            }
+            rewrite(id);
         }
 
         for (id1, id2) in &mut road.complicated_turn_restrictions {
-            if rewrite(id1) {
-                *id1 = new_r1;
-            }
-            if rewrite(id2) {
-                *id2 = new_r1;
-            }
+            rewrite(id1);
+            rewrite(id2);
         }
     }
 }

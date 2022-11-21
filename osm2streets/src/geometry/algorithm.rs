@@ -6,7 +6,7 @@ use abstutil::wraparound_get;
 use geom::{Circle, Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
 use super::Results;
-use crate::{osm, InputRoad, IntersectionID, OriginalRoad};
+use crate::{osm, InputRoad, IntersectionID, RoadID};
 
 const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
 
@@ -14,11 +14,11 @@ pub fn intersection_polygon(
     intersection_id: IntersectionID,
     // These must be sorted clockwise already
     input_roads: Vec<InputRoad>,
-    trim_roads_for_merging: &BTreeMap<(osm::WayID, bool), Pt2D>,
+    trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
 ) -> Result<Results> {
     // TODO Possibly take this as input in the first place
-    let mut roads: BTreeMap<OriginalRoad, InputRoad> = BTreeMap::new();
-    let mut sorted_roads: Vec<OriginalRoad> = Vec::new();
+    let mut roads: BTreeMap<RoadID, InputRoad> = BTreeMap::new();
+    let mut sorted_roads: Vec<RoadID> = Vec::new();
     for r in input_roads {
         sorted_roads.push(r.id);
         roads.insert(r.id, r);
@@ -30,9 +30,7 @@ pub fn intersection_polygon(
 
     // First pre-trim roads if it's a consolidated intersection.
     for road in roads.values_mut() {
-        if let Some(endpt) =
-            trim_roads_for_merging.get(&(road.id.osm_way_id, road.src_i == intersection_id))
-        {
+        if let Some(endpt) = trim_roads_for_merging.get(&(road.id, road.src_i == intersection_id)) {
             if road.src_i == intersection_id {
                 match road.center_pts.safe_get_slice_starting_at(*endpt) {
                     Some(pl) => {
@@ -99,7 +97,7 @@ pub fn intersection_polygon(
 // TODO Dedupe with Piece!
 #[derive(Clone)]
 struct RoadLine {
-    id: OriginalRoad,
+    id: RoadID,
     // Both are oriented to be incoming to the intersection (ending at it).
     // TODO Maybe express as the "right" and "left"
     fwd_pl: PolyLine,
@@ -108,23 +106,23 @@ struct RoadLine {
 
 fn generalized_trim_back(
     mut results: Results,
-    mut roads: BTreeMap<OriginalRoad, InputRoad>,
+    mut roads: BTreeMap<RoadID, InputRoad>,
     input_road_lines: &[RoadLine],
 ) -> Result<Results> {
     let i = results.intersection_id;
 
-    let mut road_lines: Vec<(OriginalRoad, PolyLine)> = Vec::new();
+    let mut road_lines: Vec<(RoadID, PolyLine)> = Vec::new();
     for r in input_road_lines {
         road_lines.push((r.id, r.fwd_pl.clone()));
         road_lines.push((r.id, r.back_pl.clone()));
 
         if false {
             results.debug.push((
-                format!("{} fwd", r.id.osm_way_id),
+                format!("{} fwd", r.id),
                 r.fwd_pl.make_polygons(Distance::meters(1.0)),
             ));
             results.debug.push((
-                format!("{} back", r.id.osm_way_id),
+                format!("{} back", r.id),
                 r.back_pl.make_polygons(Distance::meters(1.0)),
             ));
         }
@@ -132,7 +130,7 @@ fn generalized_trim_back(
 
     // Intersect every road's boundary lines with all the other lines. Only side effect here is to
     // populate new_road_centers.
-    let mut new_road_centers: BTreeMap<OriginalRoad, PolyLine> = BTreeMap::new();
+    let mut new_road_centers: BTreeMap<RoadID, PolyLine> = BTreeMap::new();
     // TODO If Results has a BTreeMap too, we could just fill this out as we go
     for (r1, pl1) in &road_lines {
         // road_center ends at the intersection.
@@ -330,7 +328,7 @@ fn generalized_trim_back(
 
 fn pretrimmed_geometry(
     mut results: Results,
-    roads: BTreeMap<OriginalRoad, InputRoad>,
+    roads: BTreeMap<RoadID, InputRoad>,
     road_lines: &[RoadLine],
 ) -> Result<Results> {
     let mut endpoints: Vec<Pt2D> = Vec::new();
@@ -362,7 +360,7 @@ fn pretrimmed_geometry(
 
 fn deadend(
     mut results: Results,
-    mut roads: BTreeMap<OriginalRoad, InputRoad>,
+    mut roads: BTreeMap<RoadID, InputRoad>,
     road_lines: &[RoadLine],
 ) -> Result<Results> {
     let len = DEGENERATE_INTERSECTION_HALF_LENGTH * 4.0;
@@ -429,7 +427,7 @@ fn close_off_polygon(mut pts: Vec<Pt2D>) -> Vec<Pt2D> {
 
 // The lines all end at the intersection
 struct Piece {
-    id: OriginalRoad,
+    id: RoadID,
     dst_i: IntersectionID,
     left: PolyLine,
     center: PolyLine,
@@ -441,7 +439,7 @@ struct Piece {
 // lieu of proper docs, see https://twitter.com/CarlinoDustin/status/1290799086036111360.
 fn on_off_ramp(
     mut results: Results,
-    mut roads: BTreeMap<OriginalRoad, InputRoad>,
+    mut roads: BTreeMap<RoadID, InputRoad>,
     road_lines: Vec<RoadLine>,
 ) -> Option<Results> {
     if road_lines.len() != 3 {
@@ -498,7 +496,7 @@ fn on_off_ramp(
 
     // Find where the thin hits the thick farthest along.
     // (trimmed thin center, trimmed thick center, the thick road we hit)
-    let mut best_hit: Option<(PolyLine, PolyLine, OriginalRoad)> = None;
+    let mut best_hit: Option<(PolyLine, PolyLine, RoadID)> = None;
     for thin_pl in [&thin.left, &thin.right] {
         for thick in [&thick1, &thick2] {
             for thick_pl in [&thick.left, &thick.right] {

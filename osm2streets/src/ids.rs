@@ -75,7 +75,7 @@ impl OriginalRoad {
 /// It's sometimes useful to track both a road's ID and endpoints together. Use this sparingly.
 #[derive(Clone)]
 pub struct RoadWithEndpoints {
-    pub road: OriginalRoad,
+    pub road: RoadID,
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
 }

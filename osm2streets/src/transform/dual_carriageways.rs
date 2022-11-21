@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{osm, IntersectionID, OriginalRoad, Road, RoadWithEndpoints, StreetNetwork};
+use crate::{osm, IntersectionID, Road, RoadID, RoadWithEndpoints, StreetNetwork};
 
 pub fn merge(streets: &mut StreetNetwork) {
     for i in streets.intersections.keys() {
@@ -29,8 +29,8 @@ pub fn merge(streets: &mut StreetNetwork) {
 // Step 1: just find where dual carriageways start or end
 struct MultiConnection {
     i: IntersectionID,
-    side1: OriginalRoad,
-    side2: OriginalRoad,
+    side1: RoadID,
+    side2: RoadID,
     road_name: String,
 }
 
@@ -165,7 +165,7 @@ impl DualCarriagewayPt1 {
     // found, where the one-ways end.
     fn trace_side(
         streets: &StreetNetwork,
-        start: OriginalRoad,
+        start: RoadID,
         join: IntersectionID,
         road_name: &str,
     ) -> Option<(Vec<RoadWithEndpoints>, IntersectionID)> {
@@ -225,11 +225,11 @@ struct DualCarriagewayPt2 {
     side2: Vec<RoadWithEndpoints>,
 
     // The branches also track the linear untrimmed distance from the beginning of the side
-    side1_branches: Vec<(OriginalRoad, Distance)>,
-    side2_branches: Vec<(OriginalRoad, Distance)>,
+    side1_branches: Vec<(RoadID, Distance)>,
+    side2_branches: Vec<(RoadID, Distance)>,
     // The linear untrimmed distance is relative to side1 (src_i -> dst_i). Only bridges consisting of a
-    // single OriginalRoad are detected; no multi-step ones yet.
-    bridges: Vec<(OriginalRoad, Distance)>,
+    // single RoadID are detected; no multi-step ones yet.
+    bridges: Vec<(RoadID, Distance)>,
 
     side1_length: Distance,
     side2_length: Distance,
@@ -287,7 +287,7 @@ impl DualCarriagewayPt2 {
         streets: &StreetNetwork,
         side: &Vec<RoadWithEndpoints>,
         other_side_intersections: BTreeSet<IntersectionID>,
-    ) -> (Vec<(OriginalRoad, Distance)>, Vec<(OriginalRoad, Distance)>) {
+    ) -> (Vec<(RoadID, Distance)>, Vec<(RoadID, Distance)>) {
         let mut branches = Vec::new();
         let mut bridges = Vec::new();
         let mut dist = Distance::ZERO;

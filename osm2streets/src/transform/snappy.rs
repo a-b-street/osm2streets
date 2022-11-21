@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use abstutil::MultiMap;
 use geom::{Distance, FindClosest, Line, PolyLine};
 
-use crate::{Direction, OriginalRoad, StreetNetwork};
+use crate::{Direction, RoadID, StreetNetwork};
 
 const DEBUG_OUTPUT: bool = true;
 
@@ -28,7 +28,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
         }
     }
 
-    let mut road_edges: HashMap<(OriginalRoad, Direction), PolyLine> = HashMap::new();
+    let mut road_edges: HashMap<(RoadID, Direction), PolyLine> = HashMap::new();
     for (id, r) in &streets.roads {
         if r.is_light_rail() || r.is_footway() || r.is_service() || r.is_cycleway() {
             continue;
@@ -84,7 +84,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
             if DEBUG_OUTPUT {
                 tags.insert(
                     format!("abst:cycleway_snap:{}", dir),
-                    cycleway_id.osm_way_id.0.to_string(),
+                    deleted_cycleway.osm_ids[0].osm_way_id.0.to_string(),
                 );
             }
         }
@@ -105,7 +105,7 @@ pub fn snap_cycleways(streets: &mut StreetNetwork) {
 }
 
 struct Cycleway {
-    id: OriginalRoad,
+    id: RoadID,
     center: PolyLine,
     total_width: Distance,
     layer: Option<String>,
@@ -120,11 +120,11 @@ struct Cycleway {
 fn v1(
     streets: &StreetNetwork,
     cycleways: &[Cycleway],
-    road_edges: &HashMap<(OriginalRoad, Direction), PolyLine>,
-) -> MultiMap<OriginalRoad, (OriginalRoad, Direction)> {
+    road_edges: &HashMap<(RoadID, Direction), PolyLine>,
+) -> MultiMap<RoadID, (RoadID, Direction)> {
     let mut matches = MultiMap::new();
 
-    let mut closest: FindClosest<(OriginalRoad, Direction)> =
+    let mut closest: FindClosest<(RoadID, Direction)> =
         FindClosest::new(&streets.gps_bounds.to_bounds());
     for (id, pl) in road_edges {
         closest.add(*id, pl.points());
@@ -174,7 +174,11 @@ fn v1(
             if let Some(road_pair) = matched {
                 attributes.insert(
                     "hit".to_string(),
-                    format!("way {}, {}", road_pair.0.osm_way_id, road_pair.1).into(),
+                    format!(
+                        "way {}, {}",
+                        streets.roads[&road_pair.0].osm_ids[0].osm_way_id, road_pair.1
+                    )
+                    .into(),
                 );
                 matches_here.push(road_pair);
             }

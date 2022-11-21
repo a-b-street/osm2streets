@@ -1,7 +1,7 @@
 use geom::Distance;
 use petgraph::graphmap::DiGraphMap;
 
-use crate::{Direction, IntersectionID, LaneType, OriginalRoad, StreetNetwork};
+use crate::{Direction, IntersectionID, LaneType, RoadID, StreetNetwork};
 
 // A/B Street's map_model has lots of pathfinding support at both a road segment and lane level.
 // This is a delibrately simple subset of functionality for now.
@@ -31,7 +31,7 @@ impl StreetNetwork {
         from: IntersectionID,
         to: IntersectionID,
         lane_types: &[LaneType],
-    ) -> Option<Vec<(OriginalRoad, Direction)>> {
+    ) -> Option<Vec<(RoadID, Direction)>> {
         let mut graph = DiGraphMap::new();
         for r in self.roads.values() {
             let mut fwd = false;
@@ -59,7 +59,7 @@ impl StreetNetwork {
             |(_, _, (r, _))| self.roads[r].untrimmed_length(),
             |_| Distance::ZERO,
         )?;
-        let roads: Vec<(OriginalRoad, Direction)> = path
+        let roads: Vec<(RoadID, Direction)> = path
             .windows(2)
             .map(|pair| *graph.edge_weight(pair[0], pair[1]).unwrap())
             .collect();
