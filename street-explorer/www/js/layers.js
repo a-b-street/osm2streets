@@ -38,11 +38,14 @@ export const makePlainGeoJsonLayer = (text) => {
         },
       });
 
-      const osmUrl = feature.properties.osm_link;
-      delete feature.properties.osm_link;
-      const jsonDump = JSON.stringify(feature.properties, null, "<br/>");
-      const popup =
-        jsonDump + `<br/><a href="${osmUrl}" target="_blank">Open in OSM</a>`;
+      const nodes = feature.properties.osm_node_ids;
+      delete feature.properties.osm_node_ids;
+      var popup = JSON.stringify(feature.properties, null, "<br/>");
+      popup += `<br/>OSM nodes: `;
+      for (const id of nodes) {
+        popup += `<a href="https://www.openstreetmap.org/node/${id}" target="_blank">${id}</a>, `;
+      }
+      popup = popup.slice(0, -2);
       layer.bindPopup(popup);
     },
   });
@@ -107,11 +110,14 @@ export const makeLanePolygonLayer = (text) => {
         },
       });
 
-      const osmUrl = feature.properties.osm_link;
-      delete feature.properties.osm_link;
-      const jsonDump = JSON.stringify(feature.properties, null, "<br/>");
-      const popup =
-        jsonDump + `<br/><a href="${osmUrl}" target="_blank">Open in OSM</a>`;
+      const ways = feature.properties.osm_way_ids;
+      delete feature.properties.osm_way_ids;
+      var popup = JSON.stringify(feature.properties, null, "<br/>");
+      popup += `<br/>OSM ways: `;
+      for (const id of ways) {
+        popup += `<a href="https://www.openstreetmap.org/way/${id}" target="_blank">${id}</a>, `;
+      }
+      popup = popup.slice(0, -2);
       layer.bindPopup(popup);
     },
   });
@@ -171,9 +177,9 @@ export const makeDotLayer = async (text, { bounds }) => {
 export const makeDebugLayer = (text) => {
   return new L.geoJSON(JSON.parse(text), {
     onEachFeature: function (feature, layer) {
-        if (feature.properties.label) {
-          layer.bindTooltip(feature.properties.label, { permanent: true });
-        }
+      if (feature.properties.label) {
+        layer.bindTooltip(feature.properties.label, { permanent: true });
+      }
     },
   });
 };
