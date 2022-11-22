@@ -104,7 +104,7 @@ This calls the collapse operation on anything marked by `FindShortRoads`. Comple
 
 ### CollapseDegenerateIntersections
 
-A "degenerate" intersection (`IntersectionType::Connection`) has only two roads connected. Sometimes that intersection can be collapsed and the two roads joined. Currently this happens:
+A "degenerate" intersection has only two roads connected. Sometimes that intersection can be collapsed and the two roads joined. Currently this happens:
 
 - between two cycleways
 - when the lanes match and only "unimportant" OSM tags differ
