@@ -16,11 +16,11 @@ impl StreetNetwork {
     /// surviving intersection.
     pub fn collapse_short_road(
         &mut self,
-        short: RoadID,
+        short_r: RoadID,
     ) -> Result<(IntersectionID, IntersectionID)> {
         // Arbitrarily keep src_i and destroy dst_i.
         let (keep_i, destroy_i) = {
-            let r = &self.roads[&short];
+            let r = &self.roads[&short_r];
             (r.src_i, r.dst_i)
         };
 
@@ -31,15 +31,15 @@ impl StreetNetwork {
         // TODO Revisit after opaque IDs. How does this happen?
         if !self.intersections.contains_key(&keep_i) || !self.intersections.contains_key(&destroy_i)
         {
-            self.remove_road(short);
-            bail!("One endpoint of {short} has already been deleted, skipping",);
+            self.remove_road(short_r);
+            bail!("One endpoint of {short_r} has already been deleted, skipping",);
         }
 
         // First a sanity check.
         if self.intersections[&keep_i].control == ControlType::Border
             || self.intersections[&destroy_i].control == ControlType::Border
         {
-            bail!("{} touches a border", short);
+            bail!("{short_r} touches a border");
         }
 
         // TODO Fix up turn restrictions. Many cases:
@@ -52,14 +52,15 @@ impl StreetNetwork {
         // [ ] road we're deleting has turn lanes that wind up orphaning something
 
         if keep_i == destroy_i {
-            bail!("Can't collapse {short} -- it's a loop on {keep_i}");
+            // TODO Maybe just remove the road and stop. Find a test case first.
+            bail!("Can't collapse {short_r} -- it's a loop on {keep_i}");
         }
 
         // Remember the original roads attached to each intersection before we merge.
         let mut connected_to_keep_i = self.intersections[&keep_i].roads.clone();
         let mut connected_to_destroy_i = self.intersections[&destroy_i].roads.clone();
-        connected_to_keep_i.retain(|x| *x != short);
-        connected_to_destroy_i.retain(|x| *x != short);
+        connected_to_keep_i.retain(|x| *x != short_r);
+        connected_to_destroy_i.retain(|x| *x != short_r);
 
         // Retain some geometry...
         {
@@ -68,7 +69,7 @@ impl StreetNetwork {
                 for road in self.roads_per_intersection(i) {
                     // If we keep this in there, it might accidentally overwrite the
                     // trim_roads_for_merging key for a surviving road!
-                    if road.id == short {
+                    if road.id == short_r {
                         continue;
                     }
                     // If we're going to delete this later, don't bother!
@@ -103,7 +104,7 @@ impl StreetNetwork {
                 .extend(trim_roads_for_merging);
         }
 
-        self.remove_road(short);
+        self.remove_road(short_r);
 
         let destroy_i = self.intersections.remove(&destroy_i).unwrap();
 
@@ -130,6 +131,9 @@ impl StreetNetwork {
                 assert_eq!(road.dst_i, destroy_i.id);
                 road.dst_i = keep_i;
             }
+            // Consider when two dual carriageways intersect. After collapsing 3 of the short
+            // roads, the last short road will wind up with src_i == dst_i. We could consider
+            // removing the road here, or revisiting the special case above of collapsing a loop.
         }
 
         // We just connected a bunch of things to keep_i. Fix ordering and movements.
@@ -140,7 +144,7 @@ impl StreetNetwork {
         for road in self.roads.values_mut() {
             let mut fix_trs = Vec::new();
             for (rt, to) in road.turn_restrictions.drain(..) {
-                if to == short && rt == RestrictionType::BanTurns {
+                if to == short_r && rt == RestrictionType::BanTurns {
                     // Remove this restriction, and replace it with a new one to each of the
                     // successors of the deleted road. Depending if the intersection we kept is the
                     // one connecting these two roads, the successors differ.
@@ -165,7 +169,7 @@ impl StreetNetwork {
         for road in self.roads.values_mut() {
             let mut add = Vec::new();
             road.complicated_turn_restrictions.retain(|(via, to)| {
-                if *via == short {
+                if *via == short_r {
                     add.push((RestrictionType::BanTurns, *to));
                     false
                 } else {
