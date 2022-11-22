@@ -24,6 +24,7 @@ export function loadTests() {
     "tempe_light_rail",
     "tempe_split",
     "tiny_loop",
+    "tiny_roundabout",
   ];
 
   // Add all the test cases to the list.
