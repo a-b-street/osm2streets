@@ -3,8 +3,8 @@ use std::collections::{btree_map::Entry, BTreeMap, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, ConflictType, ControlType, CrossingType, Direction, IntersectionComplexity,
-    IntersectionID, OriginalRoad, Road, RoadID, StreetNetwork,
+    osm, ControlType, CrossingType, Direction, IntersectionID, IntersectionType, OriginalRoad,
+    Road, RoadID, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -76,8 +76,7 @@ pub fn split_up_roads(
             vec![*osm_id],
             pt.to_pt2d(),
             // Assume a complicated intersection, until we determine otherwise.
-            IntersectionComplexity::Crossing,
-            ConflictType::Cross,
+            IntersectionType::Intersection,
             if input.traffic_signals.remove(pt).is_some() {
                 ControlType::TrafficSignal
             } else {
@@ -93,8 +92,7 @@ pub fn split_up_roads(
         let id = streets.insert_intersection(
             osm_ids.clone(),
             pt,
-            IntersectionComplexity::Crossing,
-            ConflictType::Cross,
+            IntersectionType::Intersection,
             ControlType::StopSign,
         );
         for osm_id in osm_ids {

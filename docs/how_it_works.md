@@ -6,7 +6,7 @@ As of November 2022, and probably incomplete. This describes how the codebase cu
 
 At its heart, a graph of roads and intersections. (Roads lead between exactly two intersections -- "road segments" might be more precise.) Roads have their lanes listed from left-to-right, with a type, width, and direction. Note osm2streets doesn't model bidirectional lanes yet -- sidewalks and shared center turn lanes are either forwards or backwards right now, and something downstream interprets them in a special way. (osm2lanes has more nuance, but isn't used in osm2streets yet.)
 
-Intersections have a `ControlType` -- stop signs, traffic signals, uncontrolled, etc. This is orthogonal to `IntersectionComplexity` and `ConflictType`... TODO, narrow down valid combinations and give examples. MultiConnection vs Merge, please!
+Intersections have a `ControlType` -- stop signs, traffic signals, uncontrolled, etc. This is orthogonal to `IntersectionType` and `ConflictType`... TODO, narrow down valid combinations and give examples. MultiConnection vs Merge, please!
 
 ### IDs
 
@@ -106,7 +106,7 @@ This calls the collapse operation on anything marked by `FindShortRoads`. Comple
 
 ### CollapseDegenerateIntersections
 
-A "degenerate" intersection (`IntersectionComplexity::Connection`) has only two roads connected. Sometimes that intersection can be collapsed and the two roads joined. Currently this happens:
+A "degenerate" intersection (`IntersectionType::Connection`) has only two roads connected. Sometimes that intersection can be collapsed and the two roads joined. Currently this happens:
 
 - between two cycleways
 - when the lanes match and only "unimportant" OSM tags differ

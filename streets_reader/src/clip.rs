@@ -1,7 +1,7 @@
 use abstutil::Timer;
 use anyhow::Result;
 
-use osm2streets::{ControlType, IntersectionComplexity, IntersectionID, StreetNetwork};
+use osm2streets::{ControlType, IntersectionID, IntersectionType, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
@@ -44,7 +44,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
-        old_intersection.complexity = IntersectionComplexity::MapEdge;
+        old_intersection.t = IntersectionType::MapEdge;
         old_intersection.control = ControlType::Border;
 
         if old_intersection.roads.len() <= 1 {
