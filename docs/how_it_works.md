@@ -4,9 +4,7 @@ As of November 2022, and probably incomplete. This describes how the codebase cu
 
 ## The model
 
-At its heart, a graph of roads and intersections. (Roads lead between exactly two intersections -- "road segments" might be more precise.) Roads have their lanes listed from left-to-right, with a type, width, and direction. Note osm2streets doesn't model bidirectional lanes yet -- sidewalks and shared center turn lanes are either forwards or backwards right now, and something downstream interprets them in a special way. (osm2lanes has more nuance, but isn't used in osm2streets yet.)
-
-Intersections have a `ControlType` -- stop signs, traffic signals, uncontrolled, etc. This is orthogonal to `IntersectionType` and `ConflictType`... TODO, narrow down valid combinations and give examples. MultiConnection vs Merge, please!
+At its heart, a graph of roads and intersections. A `Road` is a segment of road that leads between exactly two `Intersection`s. An `Intersection`'s type tells you if it represents a real-life intersection or some other kind of node in the graph. Roads have their lanes listed from left-to-right, each with a type, width, and direction. Note osm2streets doesn't model bidirectional lanes yet -- sidewalks and shared center turn lanes are either forwards or backwards right now, and something downstream interprets them in a special way. (osm2lanes has more nuance, but isn't used in osm2streets yet.)
 
 ### IDs
 
