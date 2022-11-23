@@ -17,6 +17,7 @@ pub fn get_lane_specs_ltr_experimental(orig_tags: &Tags, cfg: &MapConfig) -> Vec
             lt: LaneType::LightRail,
             dir: Direction::Fwd,
             width: LaneSpec::typical_lane_width(LaneType::LightRail),
+            turn_restrictions: Vec::new(),
         }];
     }
 
@@ -32,6 +33,7 @@ pub fn get_lane_specs_ltr_experimental(orig_tags: &Tags, cfg: &MapConfig) -> Vec
                 lt: LaneType::Driving,
                 dir: Direction::Fwd,
                 width: Distance::meters(1.0),
+                turn_restrictions: Vec::new(),
             }]
         }
     }
@@ -199,7 +201,12 @@ fn transform_lane(
 
     let single_lane = |lt, dir| {
         let width = Distance::meters(lane.width(locale, highway_type).val());
-        Ok(vec![LaneSpec { lt, dir, width }])
+        Ok(vec![LaneSpec {
+            lt,
+            dir,
+            width,
+            turn_restrictions: Vec::new(),
+        }])
     };
 
     match lane {
@@ -276,11 +283,13 @@ fn bidirectional_lane(lt: LaneType, total_width: Distance, cfg: &MapConfig) -> V
             lt,
             dir: dir1,
             width: total_width / 2.0,
+            turn_restrictions: Vec::new(),
         },
         LaneSpec {
             lt,
             dir: dir2,
             width: total_width / 2.0,
+            turn_restrictions: Vec::new(),
         },
     ]
 }

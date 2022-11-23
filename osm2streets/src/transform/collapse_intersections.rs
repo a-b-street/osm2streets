@@ -55,8 +55,6 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     if road1.lane_specs_ltr != road2.lane_specs_ltr {
         bail!("lane specs don't match");
     }
-    // TODO Right now LaneSpec doesn't capture per-lane turn restrictions. So we may incorrectly
-    // merge roads with differing turn lanes. That's fine for now.
 
     if road1.name != road2.name {
         bail!("names don't match");
