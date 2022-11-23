@@ -4,8 +4,7 @@ use geom::{Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    osm, ConflictType, ControlType, IntersectionComplexity, IntersectionID, Movement, RoadID,
-    StreetNetwork,
+    osm, IntersectionControl, IntersectionID, IntersectionKind, Movement, RoadID, StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,9 +20,8 @@ pub struct Intersection {
     pub point: Pt2D,
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
     pub polygon: Polygon,
-    pub complexity: IntersectionComplexity,
-    pub conflict_level: ConflictType,
-    pub control: ControlType,
+    pub kind: IntersectionKind,
+    pub control: IntersectionControl,
     pub elevation: Distance,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
@@ -49,9 +47,8 @@ impl StreetNetwork {
         &mut self,
         osm_ids: Vec<osm::NodeID>,
         point: Pt2D,
-        complexity: IntersectionComplexity,
-        conflict_level: ConflictType,
-        control: ControlType,
+        t: IntersectionKind,
+        control: IntersectionControl,
     ) -> IntersectionID {
         let id = self.next_intersection_id();
         self.intersections.insert(
@@ -61,8 +58,7 @@ impl StreetNetwork {
                 osm_ids,
                 point,
                 polygon: Polygon::dummy(),
-                complexity,
-                conflict_level,
+                kind: t,
                 control,
                 // Filled out later
                 roads: Vec::new(),
@@ -77,6 +73,6 @@ impl StreetNetwork {
 
 impl Intersection {
     pub fn is_border(&self) -> bool {
-        self.control == ControlType::Border
+        self.control == IntersectionControl::Border
     }
 }

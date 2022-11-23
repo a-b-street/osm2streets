@@ -1,26 +1,25 @@
 use std::cmp::{max, min};
 
 use crate::{
-    ConflictType, Direction, DrivingSide, IntersectionComplexity, IntersectionID, Movement,
-    RestrictionType, Road, StreetNetwork,
+    Direction, DrivingSide, IntersectionID, IntersectionKind, Movement, RestrictionType, Road,
+    StreetNetwork, TrafficConflict,
 };
-use ConflictType::*;
-use IntersectionComplexity::*;
+use IntersectionKind::*;
+use TrafficConflict::*;
 
-/// Determines the initial complexity of all intersections. Intersections marked "Crossing" are
-/// considered "unclassified" and will be updated with a guess, others will be left unchanged.
+/// Determines the initial type of all intersections. Intersections not marked "MapEdge" are
+/// considered unclassified and will be updated.
 pub fn classify_intersections(streets: &mut StreetNetwork) {
     let mut changes: Vec<_> = Vec::new();
     for i in streets.intersections.values() {
-        if i.complexity == Crossing {
+        if i.kind != MapEdge {
             changes.push((i.id, guess_complexity(streets, i.id)));
         }
     }
 
-    for (id, (complexity, conflict_level, movements)) in changes {
+    for (id, (t, movements)) in changes {
         let intersection = streets.intersections.get_mut(&id).unwrap();
-        intersection.complexity = complexity;
-        intersection.conflict_level = conflict_level;
+        intersection.kind = t;
         intersection.movements = movements;
     }
 }
@@ -31,7 +30,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 pub fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: IntersectionID,
-) -> (IntersectionComplexity, ConflictType, Vec<Movement>) {
+) -> (IntersectionKind, Vec<Movement>) {
     let roads: Vec<_> = streets
         .roads_per_intersection(intersection_id)
         .into_iter()
@@ -40,7 +39,7 @@ pub fn guess_complexity(
 
     // A terminus is characterised by a single connected road.
     if roads.len() == 1 {
-        return (Terminus, Uncontested, Vec::new());
+        return (Terminus, Vec::new());
     }
 
     // Calculate all the possible movements, (except U-turns, for now).
@@ -91,7 +90,7 @@ pub fn guess_complexity(
             );
 
             // Stop looking if we've already found the worst.
-            if worst_conflict == ConflictType::Cross {
+            if worst_conflict == TrafficConflict::Cross {
                 break;
             }
         }
@@ -101,18 +100,15 @@ pub fn guess_complexity(
         .iter()
         .map(|(s, d)| (roads[*s].id, roads[*d].id))
         .collect();
-    match worst_conflict {
-        Cross => (Crossing, Cross, movements),
-        c => (
-            if roads.len() == 2 {
-                Connection
-            } else {
-                MultiConnection
-            },
-            c,
-            movements,
-        ),
-    }
+    (
+        match worst_conflict {
+            Uncontested => Connection,
+            Diverge => Fork,
+            Merge => Fork, // TODO check for give way signs or count lanes to detect Intersections.
+            Cross => Intersection,
+        },
+        movements,
+    )
 }
 
 fn can_drive_out_of(road: &Road, which_end: IntersectionID) -> bool {
@@ -159,8 +155,8 @@ fn turn_is_allowed(src: &Road, dst: &Road) -> bool {
     !has_exclusive_allows
 }
 
-fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> ConflictType {
-    use ConflictType::*;
+fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> TrafficConflict {
+    use TrafficConflict::*;
 
     // If the traffic starts and ends at the same place in the same direction...
     if a.0 == b.0 && a.1 == b.1 {

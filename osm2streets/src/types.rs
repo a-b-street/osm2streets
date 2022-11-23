@@ -103,7 +103,7 @@ pub enum DrivingSide {
 
 /// How a lane of travel is interrupted, as it meets another or ends.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum InterruptionType {
+pub enum TrafficInterruption {
     Uninterrupted,
     Yield,
     Stop,
@@ -113,68 +113,52 @@ pub enum InterruptionType {
 
 /// How two lanes of travel conflict with each other.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub enum ConflictType {
+pub enum TrafficConflict {
     Uncontested,
     Diverge,
     Merge,
     Cross,
 }
 
-/// What kind of feature an Intersection actually represents. Any connection between roads in the
-/// network graph is represented by an Intersection, but many of them are not "intersections" in
-/// the traditional sense.
-///
-/// This type might be better named IntersectionType and the distinction between MultiConnection,
-/// Merge and Crossing is of dubious value and will probably change in the future.
+/// What kind of feature an `Intersection` actually represents. Any connection between roads in the
+/// network graph is represented by an `Intersection`, but many of them are not traffic
+/// "intersections" in the common sense.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum IntersectionComplexity {
-    /// The edge of the data that we have.
-    ///
-    /// The road may continue past here in reality and do anything, but the current dataset is clipped here.
+pub enum IntersectionKind {
+    /// A `Road` ends because the road crosses the map boundary.
     MapEdge,
 
-    /// Two roads connect, one ending where the other begins, without conflict
+    /// A single `Road` ends because the actual roadway ends; "the end of the line".
     ///
-    /// Like a road way has been sliced in two, because a lane was added.
+    /// E.g. turning circles, road end signs, train terminus thingos, ...
+    Terminus,
+
+    /// Multiple `Road`s connect but no flow of traffic interacts with any other.
+    ///
+    /// Usually one `Road` ends and another begins because the number of lanes has changed or some
+    /// other attribute of the roadway has changed. More than two `Road`s could be involved,
+    /// e.g. when a single carriageway (a bidirectional `Road`) splits into a dual carriageway
+    /// (two oneway `Road`s).
     Connection,
 
-    /// Multiple road ways connect, where the carriageway splits, where a road way joins with or
-    /// diverges from another without conflict.
+    /// One flow of traffic forks into multiple, or multiple merge into one, but all traffic is
+    /// expected to keep flowing.
     ///
-    /// For example, when a single carriageway splits into a dual carriageway,
-    /// or when highway entrances and exits join and leave a highway.
-    ///
-    /// You would expect no lane marking to be interupted, and maybe even a buffer area painted
-    /// where the lanes meet each other.
-    MultiConnection,
+    /// E.g. highway on-ramps and off-ramps.
+    Fork,
 
-    /// One or more "minor" roads merge into (yielding) or out of a "major" road,
-    /// which retains its right of way.
-    ///
-    /// You would expect lane markings for the major road to continue (largely)
-    /// uninterrupted through the intersection, with a yield line ending the minor road.
-    Merge,
-
-    /// An area of the road where traffic crosses and priority is shared over time,
-    /// by lights, negotiation and priority, etc.
-    ///
-    /// You would expect normal lane markings to be missing, sometimes with some helpful
-    /// markings added (lane dividers for multi-lane turns, etc.).
-    Crossing,
-
-    /// The end of the line.
-    ///
-    /// Turning circles, road end signs, train terminus thingos, ...
-    Terminus,
+    /// At least three `Road`s meet at an actual "intersection" where at least one flow of traffic
+    /// gives way to, or conflicts with, another.
+    Intersection,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum ControlType {
+pub enum IntersectionControl {
     Uncontrolled, // Pretty sure this is a term that implies right of way rules somewhere.
     //TODO YieldSign,
     StopSign,      // Signed is a good standard of safety
     TrafficSignal, // Signalled is better.
-    Border,        //TODO move to using IntersectionComplexity::MapEdge
+    Border,        //TODO move to using IntersectionKind::MapEdge
     Construction,  // Are these treated as "closed"?
 }
 

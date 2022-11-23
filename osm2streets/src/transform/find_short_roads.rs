@@ -1,6 +1,6 @@
 use geom::Distance;
 
-use crate::{osm, ControlType, Road, RoadID, StreetNetwork};
+use crate::{osm, IntersectionControl, Road, RoadID, StreetNetwork};
 
 /// Combines a few different sources/methods to decide which roads are short. Marks them for
 /// merging.
@@ -87,8 +87,8 @@ impl StreetNetwork {
             if src_i.is_border() || dst_i.is_border() {
                 continue;
             }
-            if src_i.control != ControlType::TrafficSignal
-                && dst_i.control != ControlType::TrafficSignal
+            if src_i.control != IntersectionControl::TrafficSignal
+                && dst_i.control != IntersectionControl::TrafficSignal
             {
                 continue;
             }

@@ -2,9 +2,7 @@ export const makePlainGeoJsonLayer = (text) => {
   const intersectionColours = {
     undefined: "#666", // for default tarmac
     Connection: "#666",
-    MultiConnection: "#669",
-    Merge: "#969",
-    Crossing: "#966",
+    Intersection: "#966",
     Terminus: "#999",
     MapEdge: "#696",
   };
@@ -13,7 +11,7 @@ export const makePlainGeoJsonLayer = (text) => {
     style: function (feature) {
       if (feature.properties.type == "intersection") {
         return {
-          color: intersectionColours[feature.properties.complexity],
+          color: intersectionColours[feature.properties.intersection_kind],
           weight: 1,
           fillOpacity: 0.7,
         };

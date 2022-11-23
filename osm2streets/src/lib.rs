@@ -23,8 +23,8 @@ pub use self::lanes::{
 pub use self::road::Road;
 pub use self::transform::Transformation;
 pub use self::types::{
-    ConflictType, ControlType, DrivingSide, IntersectionComplexity, MapConfig, Movement,
-    NamePerLanguage,
+    DrivingSide, IntersectionControl, IntersectionKind, MapConfig, Movement, NamePerLanguage,
+    TrafficConflict,
 };
 
 mod edit;
@@ -288,15 +288,13 @@ impl StreetNetwork {
 
     /// Recalculate movements, complexity, and conflict_level of an intersection.
     fn recalculate_movements(&mut self, i: IntersectionID) {
-        let (complexity, conflict_level, movements) =
-            crate::transform::classify_intersections::guess_complexity(self, i);
+        let (t, movements) = crate::transform::classify_intersections::guess_complexity(self, i);
         let int = self.intersections.get_mut(&i).unwrap();
         int.movements = movements;
-        int.conflict_level = conflict_level;
         // The fact that an intersection represents a road leaving the map bounds is stored in the
         // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
-        if int.complexity != IntersectionComplexity::MapEdge {
-            int.complexity = complexity;
+        if int.kind != IntersectionKind::MapEdge {
+            int.kind = t;
         }
     }
 }

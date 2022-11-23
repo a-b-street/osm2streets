@@ -4,7 +4,7 @@ use anyhow::Result;
 
 use geom::{Distance, PolyLine, Pt2D};
 
-use crate::{osm, ControlType, IntersectionID, Road, RoadID, StreetNetwork};
+use crate::{osm, IntersectionControl, IntersectionID, Road, RoadID, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -222,7 +222,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
     let mut remove_intersections = BTreeSet::new();
     for i in streets.intersections.values() {
         let roads = streets.roads_per_intersection(i.id);
-        if roads.len() != 1 || i.control == ControlType::Border {
+        if roads.len() != 1 || i.control == IntersectionControl::Border {
             continue;
         }
         let road = &roads[0];
