@@ -75,7 +75,7 @@ impl StreetNetwork {
                         continue;
                     }
                     // If we're going to delete this later, don't bother!
-                    if road.osm_tags.is("junction", "intersection") {
+                    if road.internal_junction_road {
                         continue;
                     }
 
@@ -189,7 +189,7 @@ impl StreetNetwork {
 pub fn collapse_all_junction_roads(streets: &mut StreetNetwork) {
     let mut queue: VecDeque<RoadID> = VecDeque::new();
     for (id, road) in &streets.roads {
-        if road.osm_tags.is("junction", "intersection") {
+        if road.internal_junction_road {
             queue.push_back(*id);
         }
     }

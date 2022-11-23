@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{osm, IntersectionID, Road, RoadID, RoadWithEndpoints, StreetNetwork};
+use crate::{IntersectionID, Road, RoadID, RoadWithEndpoints, StreetNetwork};
 
 pub fn merge(streets: &mut StreetNetwork) {
     for i in streets.intersections.keys() {
@@ -45,9 +45,9 @@ impl MultiConnection {
         let mut roads_by_name: BTreeMap<String, Vec<&Road>> = BTreeMap::new();
         for road in roads {
             // Skip unnamed roads for now
-            if let Some(name) = road.osm_tags.get(osm::NAME) {
+            if let Some(name) = &road.name {
                 roads_by_name
-                    .entry(name.clone())
+                    .entry(name.to_string())
                     .or_insert_with(Vec::new)
                     .push(road);
             }
@@ -181,7 +181,7 @@ impl DualCarriagewayPt1 {
                 if road.id == current.road {
                     continue;
                 }
-                if road.osm_tags.is(osm::NAME, road_name) {
+                if road.name == Some(road_name.to_string()) {
                     if road.oneway_for_driving().is_some() {
                         current = RoadWithEndpoints::new(road);
                         sequence.push(current.clone());
