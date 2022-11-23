@@ -201,6 +201,10 @@ pub struct LaneSpec {
     pub lt: LaneType,
     pub dir: Direction,
     pub width: Distance,
+    /// Turn indications specific to this lane, from
+    /// <https://wiki.openstreetmap.org/wiki/Key:turn>. Turns for specific vehicle types
+    /// (`turn:bus:lanes` and such) are not yet captured.
+    pub turn_restrictions: Vec<String>,
 }
 
 impl LaneSpec {

@@ -48,7 +48,20 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
 
     add_sidewalks_and_shoulders(&mut fwd_side, &mut back_side, &tags, cfg);
 
-    LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side)
+    if let Some(x) = tags.get("turn:lanes:forward") {
+        apply_turn_restrictions(&mut fwd_side, x);
+    }
+    if let Some(x) = tags.get("turn:lanes:backward") {
+        apply_turn_restrictions(&mut back_side, x);
+    }
+
+    let mut lanes = LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side);
+
+    if let Some(x) = tags.get("turn:lanes") {
+        apply_turn_restrictions(&mut lanes, x);
+    }
+
+    lanes
 }
 
 fn fwd(highway_type: &str, lt: LaneType) -> LaneSpec {
@@ -56,6 +69,8 @@ fn fwd(highway_type: &str, lt: LaneType) -> LaneSpec {
         lt,
         dir: Direction::Fwd,
         width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
+        // Fill out later
+        turn_restrictions: Vec::new(),
     }
 }
 fn back(highway_type: &str, lt: LaneType) -> LaneSpec {
@@ -63,6 +78,7 @@ fn back(highway_type: &str, lt: LaneType) -> LaneSpec {
         lt,
         dir: Direction::Back,
         width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
+        turn_restrictions: Vec::new(),
     }
 }
 
@@ -464,6 +480,32 @@ fn add_sidewalks_and_shoulders(
         if need_back_shoulder {
             back_side.push(back(highway_type, LaneType::Shoulder));
         }
+    }
+}
+
+fn apply_turn_restrictions(list: &mut Vec<LaneSpec>, value: &str) {
+    // Turn lanes only apply to certain lane types
+    fn applicable(spec: &LaneSpec) -> bool {
+        spec.lt == LaneType::Driving || spec.lt == LaneType::Bus
+    }
+
+    let parts: Vec<&str> = value.split('|').collect();
+    // TODO Warn when things don't match up
+    if parts.len() == list.iter().filter(|l| applicable(*l)).count() {
+        // The parts are ordered from inside to out or left-to-right. The caller always passes them
+        // in the matching order already.
+        let mut parts = parts.into_iter();
+        for spec in list {
+            if applicable(spec) {
+                spec.turn_restrictions = parts
+                    .next()
+                    .unwrap()
+                    .split(";")
+                    .map(|x| x.to_string())
+                    .collect();
+            }
+        }
+        assert!(parts.next().is_none());
     }
 }
 

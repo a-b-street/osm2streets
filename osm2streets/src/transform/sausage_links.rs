@@ -117,6 +117,7 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
                 lt: LaneType::Buffer(BufferType::Curb),
                 dir: Direction::Fwd,
                 width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Curb)),
+                turn_restrictions: Vec::new(),
             },
         );
 
@@ -137,6 +138,7 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
             lt: LaneType::Buffer(BufferType::Curb),
             dir: Direction::Fwd,
             width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Curb)),
+            turn_restrictions: Vec::new(),
         });
 
         for mut lane in road2.lane_specs_ltr {
