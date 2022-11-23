@@ -1,5 +1,3 @@
-use abstutil::Tags;
-
 use crate::{Direction, DrivingSide, LaneSpec, LaneType};
 
 impl LaneSpec {
@@ -7,7 +5,7 @@ impl LaneSpec {
     pub fn add_new_lane(
         lanes_ltr: &mut Vec<LaneSpec>,
         lt: LaneType,
-        osm_tags: &Tags,
+        highway_type: &str,
         driving_side: DrivingSide,
     ) -> usize {
         let mut dir = Direction::Fwd;
@@ -102,7 +100,7 @@ impl LaneSpec {
             LaneSpec {
                 lt,
                 dir,
-                width: LaneSpec::typical_lane_widths(lt, osm_tags)[0].0,
+                width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
             },
         );
         idx

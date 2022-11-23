@@ -12,7 +12,6 @@ mod algorithm;
 
 use std::collections::BTreeMap;
 
-use abstutil::Tags;
 use geom::{Distance, PolyLine, Polygon};
 
 use crate::{IntersectionID, RoadID};
@@ -30,9 +29,7 @@ pub struct InputRoad {
     /// first endpoint, then trimmed on that one side when called on th second endpoint.
     pub center_pts: PolyLine,
     pub half_width: Distance,
-    /// These're only used internally to decide to use some special highway on/off ramp handling.
-    /// They should NOT be used for anything else, like parsing lane specs!
-    pub osm_tags: Tags,
+    pub highway_type: String,
 }
 
 #[derive(Clone)]

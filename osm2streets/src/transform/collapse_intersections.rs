@@ -226,9 +226,7 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
             continue;
         }
         let road = &roads[0];
-        if road.untrimmed_length() < SHORT_THRESHOLD
-            && (road.is_cycleway() || road.osm_tags.is(osm::HIGHWAY, "service"))
-        {
+        if road.untrimmed_length() < SHORT_THRESHOLD && (road.is_cycleway() || road.is_service()) {
             remove_roads.insert(roads[0].id);
             remove_intersections.insert(i.id);
         }

@@ -58,6 +58,7 @@ fn inner_get_lane_specs_ltr(orig_tags: &Tags, cfg: &MapConfig) -> Result<Vec<Lan
 
     let output = osm2lanes::transform::tags_to_lanes(&tags, &locale, &config)?;
     let highway_type = output.road.highway.r#type();
+    let highway_type_str = tags.get(osm::HIGHWAY).unwrap();
 
     let mut result = Vec::new();
     for lane in output.road.lanes {
@@ -68,7 +69,7 @@ fn inner_get_lane_specs_ltr(orig_tags: &Tags, cfg: &MapConfig) -> Result<Vec<Lan
 
         // Don't use widths from osm2lanes yet
         for lane in &mut new_lanes {
-            lane.width = LaneSpec::typical_lane_widths(lane.lt, &orig_tags)[0].0;
+            lane.width = LaneSpec::typical_lane_widths(lane.lt, highway_type_str)[0].0;
         }
 
         // If we split a bidirectional lane into two pieces, halve the width of each piece

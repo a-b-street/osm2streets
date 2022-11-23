@@ -6,7 +6,7 @@ use abstutil::wraparound_get;
 use geom::{Circle, Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
 use super::Results;
-use crate::{osm, InputRoad, IntersectionID, RoadID};
+use crate::{InputRoad, IntersectionID, RoadID};
 
 const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
 
@@ -449,24 +449,17 @@ fn on_off_ramp(
     // totally inside the other thick road's polygon), but for the moment, this is an OK filter.
     //
     // Example candidate: https://www.openstreetmap.org/node/32177767
-    let mut ok = false;
-    for r in &road_lines {
-        if roads[&r.id].osm_tags.is_any(
-            osm::HIGHWAY,
-            vec![
-                "motorway",
-                "motorway_link",
-                "primary_link",
-                "secondary_link",
-                "tertiary_link",
-                "trunk_link",
-            ],
-        ) {
-            ok = true;
-            break;
-        }
-    }
-    if !ok {
+    if !road_lines.iter().any(|r| {
+        [
+            "motorway",
+            "motorway_link",
+            "primary_link",
+            "secondary_link",
+            "tertiary_link",
+            "trunk_link",
+        ]
+        .contains(&roads[&r.id].highway_type.as_str())
+    }) {
         return None;
     }
 
