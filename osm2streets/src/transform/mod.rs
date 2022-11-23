@@ -11,8 +11,6 @@ mod remove_disconnected;
 mod sausage_links;
 mod separate_cycletracks;
 mod shrink_roads;
-#[allow(unused)]
-mod snappy;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
