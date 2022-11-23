@@ -57,7 +57,10 @@ impl StreetNetwork {
                             intersection.osm_ids.iter().map(|id| id.0.into()).collect(),
                         ),
                     ),
-                    ("intersection_type", format!("{:?}", intersection.t).into()),
+                    (
+                        "intersection_type",
+                        format!("{:?}", intersection.kind).into(),
+                    ),
                     ("control", format!("{:?}", intersection.control).into()),
                 ]),
             ));

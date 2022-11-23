@@ -293,8 +293,8 @@ impl StreetNetwork {
         int.movements = movements;
         // The fact that an intersection represents a road leaving the map bounds is stored in the
         // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
-        if int.t != IntersectionKind::MapEdge {
-            int.t = t;
+        if int.kind != IntersectionKind::MapEdge {
+            int.kind = t;
         }
     }
 }

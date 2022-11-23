@@ -44,7 +44,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
-        old_intersection.t = IntersectionKind::MapEdge;
+        old_intersection.kind = IntersectionKind::MapEdge;
         old_intersection.control = IntersectionControl::Border;
 
         if old_intersection.roads.len() <= 1 {

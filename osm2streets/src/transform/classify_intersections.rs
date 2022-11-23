@@ -12,14 +12,14 @@ use TrafficConflict::*;
 pub fn classify_intersections(streets: &mut StreetNetwork) {
     let mut changes: Vec<_> = Vec::new();
     for i in streets.intersections.values() {
-        if i.t != MapEdge {
+        if i.kind != MapEdge {
             changes.push((i.id, guess_complexity(streets, i.id)));
         }
     }
 
     for (id, (t, movements)) in changes {
         let intersection = streets.intersections.get_mut(&id).unwrap();
-        intersection.t = t;
+        intersection.kind = t;
         intersection.movements = movements;
     }
 }

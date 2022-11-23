@@ -20,7 +20,7 @@ pub struct Intersection {
     pub point: Pt2D,
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
     pub polygon: Polygon,
-    pub t: IntersectionKind,
+    pub kind: IntersectionKind,
     pub control: IntersectionControl,
     pub elevation: Distance,
 
@@ -58,7 +58,7 @@ impl StreetNetwork {
                 osm_ids,
                 point,
                 polygon: Polygon::dummy(),
-                t,
+                kind: t,
                 control,
                 // Filled out later
                 roads: Vec::new(),
