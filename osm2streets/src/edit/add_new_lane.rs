@@ -217,12 +217,7 @@ mod tests {
         ] {
             let input = LaneSpec::create_for_test(input_lt, input_dir);
             let mut actual_output = input.clone();
-            LaneSpec::add_new_lane(
-                &mut actual_output,
-                new_lt,
-                &Tags::empty(),
-                DrivingSide::Right,
-            );
+            LaneSpec::add_new_lane(&mut actual_output, new_lt, "road", DrivingSide::Right);
             LaneSpec::check_lanes_ltr(
                 &actual_output,
                 description.to_string(),
