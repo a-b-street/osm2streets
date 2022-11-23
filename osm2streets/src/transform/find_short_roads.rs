@@ -87,8 +87,8 @@ impl StreetNetwork {
             if src_i.is_border() || dst_i.is_border() {
                 continue;
             }
-            if src_i.control != IntersectionControl::TrafficSignal
-                && dst_i.control != IntersectionControl::TrafficSignal
+            if src_i.control != IntersectionControl::Signalled
+                && dst_i.control != IntersectionControl::Signalled
             {
                 continue;
             }

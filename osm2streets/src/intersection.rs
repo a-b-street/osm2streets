@@ -73,6 +73,6 @@ impl StreetNetwork {
 
 impl Intersection {
     pub fn is_border(&self) -> bool {
-        self.control == IntersectionControl::Border
+        self.kind == IntersectionKind::MapEdge
     }
 }

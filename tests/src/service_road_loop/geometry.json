@@ -1226,7 +1226,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           3606095831
@@ -1264,7 +1264,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           30984483
@@ -1302,7 +1302,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           3710247249
@@ -1352,7 +1352,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247247
@@ -1402,7 +1402,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247242
@@ -1440,7 +1440,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           2933464148
@@ -1490,7 +1490,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247245
@@ -1536,7 +1536,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           5908769456
@@ -1574,7 +1574,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           5908769458
@@ -1624,7 +1624,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           30984582
@@ -1674,7 +1674,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958563
@@ -1728,7 +1728,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958646
@@ -1770,7 +1770,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958564
@@ -1812,7 +1812,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958644
@@ -1878,7 +1878,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958569
@@ -1936,7 +1936,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Fork",
         "osm_node_ids": [
           6036958633
@@ -1990,7 +1990,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958634
@@ -2044,7 +2044,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Fork",
         "osm_node_ids": [
           6036958616
@@ -2106,7 +2106,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958639
@@ -2152,7 +2152,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958615
@@ -2190,7 +2190,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958542
@@ -2228,7 +2228,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           358460198
@@ -2266,7 +2266,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958484
@@ -2304,7 +2304,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958484
@@ -2342,7 +2342,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958604
@@ -2380,7 +2380,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958604

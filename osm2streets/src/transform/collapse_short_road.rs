@@ -2,7 +2,9 @@ use std::collections::{BTreeMap, VecDeque};
 
 use anyhow::Result;
 
-use crate::{IntersectionControl, IntersectionID, RestrictionType, RoadID, StreetNetwork};
+use crate::{
+    IntersectionControl, IntersectionID, IntersectionKind, RestrictionType, RoadID, StreetNetwork,
+};
 
 // TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
 // bet the underlying problem there would help debug automated transformations near merged roads
@@ -36,8 +38,8 @@ impl StreetNetwork {
         }
 
         // First a sanity check.
-        if self.intersections[&keep_i].control == IntersectionControl::Border
-            || self.intersections[&destroy_i].control == IntersectionControl::Border
+        if self.intersections[&keep_i].kind == IntersectionKind::MapEdge
+            || self.intersections[&destroy_i].kind == IntersectionKind::MapEdge
         {
             bail!("{short_r} touches a border");
         }
@@ -109,9 +111,8 @@ impl StreetNetwork {
         let destroy_i = self.intersections.remove(&destroy_i).unwrap();
 
         // If the intersection types differ, upgrade the surviving interesting.
-        if destroy_i.control == IntersectionControl::TrafficSignal {
-            self.intersections.get_mut(&keep_i).unwrap().control =
-                IntersectionControl::TrafficSignal;
+        if destroy_i.control == IntersectionControl::Signalled {
+            self.intersections.get_mut(&keep_i).unwrap().control = IntersectionControl::Signalled;
         }
 
         // Remember the merge

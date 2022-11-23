@@ -465,7 +465,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           53112684
@@ -503,7 +503,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           53112685
@@ -541,7 +541,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           4263867484
@@ -579,7 +579,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           4263867655
@@ -629,7 +629,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           2369815160
@@ -667,7 +667,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           2369815603
@@ -705,7 +705,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           7625151516
@@ -759,7 +759,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           7625151513
@@ -797,7 +797,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           53189876
@@ -835,7 +835,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           53139411
@@ -901,7 +901,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           4263867608,
@@ -973,7 +973,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           4263867488,

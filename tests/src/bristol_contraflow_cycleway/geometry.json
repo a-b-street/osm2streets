@@ -1359,7 +1359,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           7875684771
@@ -1397,7 +1397,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           356289304
@@ -1447,7 +1447,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           2847905816
@@ -1493,7 +1493,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           260742831
@@ -1539,7 +1539,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           282229032
@@ -1593,7 +1593,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "TrafficSignal",
+        "control": "Signalled",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           2847905817
@@ -1631,7 +1631,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           260742834
@@ -1677,7 +1677,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           260742852
@@ -1727,7 +1727,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           1316486883
@@ -1773,7 +1773,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           2847905819
@@ -1815,7 +1815,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Fork",
         "osm_node_ids": [
           1223212928
@@ -1853,7 +1853,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           1223212748
@@ -1891,7 +1891,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           260742931
@@ -1937,7 +1937,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Fork",
         "osm_node_ids": [
           260742833
@@ -1975,7 +1975,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           282231403
@@ -2013,7 +2013,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           8411977307
@@ -2063,7 +2063,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Fork",
         "osm_node_ids": [
           8411977306
@@ -2109,7 +2109,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "TrafficSignal",
+        "control": "Signalled",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           260742941
@@ -2163,7 +2163,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           8411977276
@@ -2213,7 +2213,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Intersection",
         "osm_node_ids": [
           21310516
@@ -2263,7 +2263,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           8411724259
@@ -2313,7 +2313,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Connection",
         "osm_node_ids": [
           8411724268
@@ -2351,7 +2351,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "StopSign",
+        "control": "Signed",
         "intersection_kind": "Terminus",
         "osm_node_ids": [
           2208694229
@@ -2389,7 +2389,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           21310508
@@ -2427,7 +2427,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           2208694226
@@ -2465,7 +2465,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           1316487047
@@ -2503,7 +2503,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           21310530
@@ -2541,7 +2541,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           1223212892
@@ -2579,7 +2579,7 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Border",
+        "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
         "osm_node_ids": [
           1223212892

@@ -5,7 +5,8 @@ use std::collections::HashMap;
 
 use abstutil::Timer;
 use osm2streets::{
-    IntersectionID, LaneSpec, LaneType, Road, RoadID, StreetNetwork, Transformation,
+    IntersectionID, IntersectionKind, LaneSpec, LaneType, Road, RoadID, StreetNetwork,
+    Transformation,
 };
 
 use crate::network::RoadNetwork;
@@ -132,18 +133,16 @@ impl RoadWay {
 impl From<&osm2streets::Intersection> for Intersection {
     fn from(int: &osm2streets::Intersection) -> Self {
         Self {
-            // int.intersection_type has some useful info, bit is often misleading.
-            t: match int.control {
-                osm2streets::IntersectionControl::Border => IntersectionType::MapEdge,
-                osm2streets::IntersectionControl::TrafficSignal
-                | osm2streets::IntersectionControl::Construction => {
-                    IntersectionType::RoadIntersection
-                }
-                _ => IntersectionType::Unknown,
+            t: match int.kind {
+                IntersectionKind::MapEdge => IntersectionType::MapEdge,
+                IntersectionKind::Terminus => IntersectionType::Terminus,
+                IntersectionKind::Connection => IntersectionType::Slice,
+                IntersectionKind::Fork => IntersectionType::Merge,
+                IntersectionKind::Intersection => IntersectionType::RoadIntersection,
             },
             control: match int.control {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
-                osm2streets::IntersectionControl::TrafficSignal => ControlType::Lights,
+                osm2streets::IntersectionControl::Signalled => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
         }

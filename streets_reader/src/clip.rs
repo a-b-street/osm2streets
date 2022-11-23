@@ -45,7 +45,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
         let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
         old_intersection.kind = IntersectionKind::MapEdge;
-        old_intersection.control = IntersectionControl::Border;
+        old_intersection.control = IntersectionControl::Uncontrolled;
 
         if old_intersection.roads.len() <= 1 {
             // We don't need to make copies of the intersection; put it back
@@ -73,10 +73,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
     }
 
-    // Now for all of the border intersections, find the one road they connect to and trim their
-    // points.
+    // For all the border intersections, find the one road they connect to and trim their points.
     for intersection in streets.intersections.values_mut() {
-        if intersection.control != IntersectionControl::Border {
+        if intersection.kind != IntersectionKind::MapEdge {
             continue;
         }
         assert_eq!(intersection.roads.len(), 1);
