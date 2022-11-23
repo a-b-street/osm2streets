@@ -38,7 +38,6 @@ pub struct Road {
     /// The physical center of the road, including sidewalks. This won't actually be trimmed until
     /// `Transformation::GenerateIntersectionGeometry` runs.
     pub trimmed_center_line: PolyLine,
-    pub osm_tags: Tags,
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
@@ -54,7 +53,6 @@ pub struct Road {
     /// Crossing nodes along this road's original center line.
     pub crossing_nodes: Vec<(Pt2D, CrossingType)>,
 
-    /// Derived from osm_tags. Not automatically updated.
     pub lane_specs_ltr: Vec<LaneSpec>,
 }
 
@@ -97,7 +95,6 @@ impl Road {
             layer,
             untrimmed_center_line,
             trimmed_center_line: PolyLine::dummy(),
-            osm_tags,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
             percent_incline: 0.0,
