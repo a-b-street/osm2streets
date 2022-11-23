@@ -7,23 +7,6 @@ use crate::{
 use IntersectionKind::*;
 use TrafficConflict::*;
 
-/// Determines the initial type of all intersections. Intersections not marked "MapEdge" are
-/// considered unclassified and will be updated.
-pub fn classify_intersections(streets: &mut StreetNetwork) {
-    let mut changes: Vec<_> = Vec::new();
-    for i in streets.intersections.values() {
-        if i.kind != MapEdge {
-            changes.push((i.id, guess_complexity(streets, i.id)));
-        }
-    }
-
-    for (id, (t, movements)) in changes {
-        let intersection = streets.intersections.get_mut(&id).unwrap();
-        intersection.kind = t;
-        intersection.movements = movements;
-    }
-}
-
 /// Guesses the complexity of the intersection based on the connecting roads and their lanes.
 ///
 /// The existing complexity field is ignored, so be careful how you use the guessed value.

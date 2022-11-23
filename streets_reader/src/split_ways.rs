@@ -138,19 +138,34 @@ pub fn split_up_roads(
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
-                        streets.insert_road(Road::new(
+                        streets.roads.insert(
                             id,
-                            OriginalRoad {
-                                osm_way_id: *osm_way_id,
-                                i1,
-                                i2: *i2,
-                            },
-                            osm_id_to_id[&i1],
-                            osm_id_to_id[i2],
-                            pl,
-                            tags,
-                            &streets.config,
-                        ));
+                            Road::new(
+                                id,
+                                OriginalRoad {
+                                    osm_way_id: *osm_way_id,
+                                    i1,
+                                    i2: *i2,
+                                },
+                                osm_id_to_id[&i1],
+                                osm_id_to_id[i2],
+                                pl,
+                                tags,
+                                &streets.config,
+                            ),
+                        );
+                        streets
+                            .intersections
+                            .get_mut(&osm_id_to_id[&i1])
+                            .unwrap()
+                            .roads
+                            .push(id);
+                        streets
+                            .intersections
+                            .get_mut(&osm_id_to_id[i2])
+                            .unwrap()
+                            .roads
+                            .push(id);
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");
@@ -265,6 +280,14 @@ pub fn split_up_roads(
         }
     }
     timer.stop("match traffic signals to intersections");
+
+    timer.start("calculate intersection movements");
+    let intersection_ids = osm_id_to_id.values();
+    for &i in intersection_ids {
+        streets.sort_roads(i);
+        streets.recalculate_movements(i);
+    }
+    timer.stop("calculate intersection movements");
 
     timer.stop("splitting up roads");
     Output {
