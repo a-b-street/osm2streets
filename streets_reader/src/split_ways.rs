@@ -285,7 +285,7 @@ pub fn split_up_roads(
     let intersection_ids = osm_id_to_id.values();
     for &i in intersection_ids {
         streets.sort_roads(i);
-        streets.recalculate_movements(i);
+        streets.update_movements(i);
     }
     timer.stop("calculate intersection movements");
 

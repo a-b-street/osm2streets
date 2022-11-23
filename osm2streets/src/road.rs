@@ -126,6 +126,50 @@ impl Road {
         LaneSpec::oneway_for_driving(&self.lane_specs_ltr)
     }
 
+    pub fn can_drive_out_of_end(&self, which_end: IntersectionID) -> bool {
+        if let Some(driving_dir) = self.oneway_for_driving() {
+            let required_dir = if self.dst_i == which_end {
+                Direction::Fwd
+            } else {
+                Direction::Back
+            };
+            return driving_dir == required_dir;
+        }
+        return true;
+    }
+
+    pub(crate) fn can_drive_into_end(&self, which_end: IntersectionID) -> bool {
+        if let Some(driving_dir) = self.oneway_for_driving() {
+            let required_dir = if self.src_i == which_end {
+                Direction::Fwd
+            } else {
+                Direction::Back
+            };
+            return driving_dir == required_dir;
+        }
+        return true;
+    }
+
+    pub fn allowed_to_turn_to(&self, dest: RoadID) -> bool {
+        let mut has_exclusive_allows = false;
+        for (t, other) in self.turn_restrictions.iter() {
+            match t {
+                RestrictionType::BanTurns => {
+                    if *other == dest {
+                        return false;
+                    }
+                }
+                RestrictionType::OnlyAllowTurns => {
+                    if *other == dest {
+                        return true;
+                    }
+                    has_exclusive_allows = true;
+                }
+            }
+        }
+        !has_exclusive_allows
+    }
+
     /// Points from first to last point. Undefined for loops.
     pub fn angle(&self) -> Angle {
         self.untrimmed_center_line
