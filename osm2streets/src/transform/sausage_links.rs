@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
-use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
+use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
 /// Collapse them into one road with a barrier in the middle.
@@ -42,9 +42,7 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
         }
 
         let road2 = &streets.roads[&id2];
-        if road2.oneway_for_driving().is_none()
-            || road1.osm_tags.get(osm::NAME) != road2.osm_tags.get(osm::NAME)
-        {
+        if road2.oneway_for_driving().is_none() || road1.name != road2.name {
             continue;
         }
 

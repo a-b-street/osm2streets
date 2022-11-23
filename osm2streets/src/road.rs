@@ -23,6 +23,14 @@ pub struct Road {
     /// The OSM `highway` tag indicating the type of this road. See
     /// <https://wiki.openstreetmap.org/wiki/Key:highway>.
     pub highway_type: String,
+    /// The name of the road in the default OSM-specified language
+    pub name: Option<String>,
+    /// This road exists only for graph connectivity. It's physically part of a complex
+    /// intersection. A transformation will likely collapse it.
+    pub internal_junction_road: bool,
+    /// The vertical layer of the road, with 0 the default and negative values lower down. See
+    /// <https://wiki.openstreetmap.org/wiki/Key:layer>.
+    pub layer: isize,
 
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
     /// smoothing the polyline.
@@ -61,6 +69,20 @@ impl Road {
         config: &MapConfig,
     ) -> Self {
         let lane_specs_ltr = get_lane_specs_ltr(&osm_tags, config);
+
+        let layer = if let Some(layer) = osm_tags.get("layer") {
+            match layer.parse::<f64>() {
+                // Just drop .5 for now
+                Ok(l) => l as isize,
+                Err(_) => {
+                    warn!("Weird layer={layer}");
+                    0
+                }
+            }
+        } else {
+            0
+        };
+
         Self {
             id,
             osm_ids: vec![osm_id],
@@ -70,6 +92,9 @@ impl Road {
                 .get(osm::HIGHWAY)
                 .cloned()
                 .expect("Can't create a Road without the highway tag"),
+            name: osm_tags.get(osm::NAME).cloned(),
+            internal_junction_road: osm_tags.is("junction", "intersection"),
+            layer,
             untrimmed_center_line,
             trimmed_center_line: PolyLine::dummy(),
             osm_tags,
@@ -87,9 +112,10 @@ impl Road {
         }
     }
 
-    // TODO For the moment, treating all rail things as light rail
     pub fn is_light_rail(&self) -> bool {
-        self.osm_tags.is_any("railway", vec!["light_rail", "rail"])
+        self.lane_specs_ltr
+            .iter()
+            .all(|spec| spec.lt == LaneType::LightRail)
     }
 
     pub fn is_service(&self) -> bool {
@@ -97,7 +123,6 @@ impl Road {
     }
 
     pub fn is_cycleway(&self) -> bool {
-        // Don't repeat the logic looking at the tags, just see what lanes we'll create
         let mut bike = false;
         for spec in &self.lane_specs_ltr {
             if spec.lt == LaneType::Biking {
@@ -173,21 +198,6 @@ impl Road {
     /// The length of the original OSM center line, before any trimming away from intersections
     pub fn untrimmed_length(&self) -> Distance {
         self.untrimmed_center_line.length()
-    }
-
-    pub fn get_zorder(&self) -> isize {
-        if let Some(layer) = self.osm_tags.get("layer") {
-            match layer.parse::<f64>() {
-                // Just drop .5 for now
-                Ok(l) => l as isize,
-                Err(_) => {
-                    warn!("Weird layer={layer}");
-                    0
-                }
-            }
-        } else {
-            0
-        }
     }
 
     /// Returns the corrected (but untrimmed) center and total width for a road

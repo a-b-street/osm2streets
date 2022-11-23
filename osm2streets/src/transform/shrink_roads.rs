@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use aabb_quadtree::QuadTree;
 use abstutil::Timer;
 
-use crate::{osm, CommonEndpoint, StreetNetwork};
+use crate::{CommonEndpoint, StreetNetwork};
 
 /// Look for roads that physically overlap, but aren't connected by an intersection. Shrink their
 /// width.
@@ -30,7 +30,7 @@ pub fn shrink(streets: &mut StreetNetwork, timer: &mut Timer) {
         for (other_id, _, _) in quadtree.query(polygon.get_bounds().as_bbox()) {
             let other_road = &streets.roads[other_id];
             // Only dual carriageways
-            if road.osm_tags.get(osm::NAME) != other_road.osm_tags.get(osm::NAME) {
+            if road.name != other_road.name {
                 continue;
             }
             if road.common_endpoint(other_road) == CommonEndpoint::None

@@ -56,8 +56,8 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
         bail!("lane specs don't match");
     }
 
-    if road1.get_zorder() != road2.get_zorder() {
-        bail!("zorders don't match");
+    if road1.layer != road2.layer {
+        bail!("layers don't match");
     }
 
     if road1.is_cycleway() && road2.is_cycleway() {

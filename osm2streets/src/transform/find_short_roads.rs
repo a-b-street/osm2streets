@@ -1,6 +1,6 @@
 use geom::Distance;
 
-use crate::{osm, IntersectionControl, Road, RoadID, StreetNetwork};
+use crate::{IntersectionControl, Road, RoadID, StreetNetwork};
 
 /// Combines a few different sources/methods to decide which roads are short. Marks them for
 /// merging.
@@ -11,7 +11,7 @@ use crate::{osm, IntersectionControl, Road, RoadID, StreetNetwork};
 pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> Vec<RoadID> {
     let mut roads = Vec::new();
     for (id, road) in &streets.roads {
-        if road.osm_tags.is("junction", "intersection") {
+        if road.internal_junction_road {
             roads.push(*id);
             continue;
         }
@@ -57,11 +57,7 @@ fn distance_heuristic(id: RoadID, streets: &StreetNetwork) -> bool {
 impl StreetNetwork {
     fn mark_short_roads(&mut self, list: Vec<RoadID>) -> Vec<RoadID> {
         for id in &list {
-            self.roads
-                .get_mut(id)
-                .unwrap()
-                .osm_tags
-                .insert("junction", "intersection");
+            self.roads.get_mut(id).unwrap().internal_junction_road = true;
         }
         list
     }
@@ -79,7 +75,7 @@ impl StreetNetwork {
         // traffic signals, find all the segments between them, and merge those.
         let mut results = Vec::new();
         for road in self.roads.values() {
-            if road.osm_tags.is("junction", "intersection") {
+            if road.internal_junction_road {
                 continue;
             }
             let src_i = &self.intersections[&road.src_i];
@@ -169,7 +165,7 @@ fn dual_carriageway_split(roads: Vec<&Road>) -> bool {
     ] {
         if road1.oneway_for_driving().is_some()
             && road2.oneway_for_driving().is_some()
-            && road1.osm_tags.get(osm::NAME) == road2.osm_tags.get(osm::NAME)
+            && road1.name == road2.name
         {
             // If they're about the same angle, it's probably not a join/split
             let within_degrees = 30.0;
