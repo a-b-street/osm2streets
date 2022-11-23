@@ -1227,7 +1227,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           3606095831
         ],
@@ -1265,7 +1265,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           30984483
         ],
@@ -1303,7 +1303,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           3710247249
         ],
@@ -1353,7 +1353,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247247
         ],
@@ -1403,7 +1403,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247242
         ],
@@ -1441,7 +1441,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           2933464148
         ],
@@ -1491,7 +1491,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           3710247245
         ],
@@ -1537,7 +1537,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Intersection",
+        "intersection_kind": "Intersection",
         "osm_node_ids": [
           5908769456
         ],
@@ -1575,7 +1575,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Terminus",
+        "intersection_kind": "Terminus",
         "osm_node_ids": [
           5908769458
         ],
@@ -1625,7 +1625,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           30984582
         ],
@@ -1675,7 +1675,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Intersection",
+        "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958563
         ],
@@ -1729,7 +1729,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Intersection",
+        "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958646
         ],
@@ -1771,7 +1771,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958564
         ],
@@ -1813,7 +1813,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958644
         ],
@@ -1879,7 +1879,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958569
         ],
@@ -1937,7 +1937,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Fork",
+        "intersection_kind": "Fork",
         "osm_node_ids": [
           6036958633
         ],
@@ -1991,7 +1991,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Intersection",
+        "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958634
         ],
@@ -2045,7 +2045,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Fork",
+        "intersection_kind": "Fork",
         "osm_node_ids": [
           6036958616
         ],
@@ -2107,7 +2107,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Connection",
+        "intersection_kind": "Connection",
         "osm_node_ids": [
           6036958639
         ],
@@ -2153,7 +2153,7 @@
       },
       "properties": {
         "control": "StopSign",
-        "intersection_type": "Intersection",
+        "intersection_kind": "Intersection",
         "osm_node_ids": [
           6036958615
         ],
@@ -2191,7 +2191,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958542
         ],
@@ -2229,7 +2229,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           358460198
         ],
@@ -2267,7 +2267,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958484
         ],
@@ -2305,7 +2305,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958484
         ],
@@ -2343,7 +2343,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958604
         ],
@@ -2381,7 +2381,7 @@
       },
       "properties": {
         "control": "Border",
-        "intersection_type": "MapEdge",
+        "intersection_kind": "MapEdge",
         "osm_node_ids": [
           6036958604
         ],

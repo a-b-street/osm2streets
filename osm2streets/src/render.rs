@@ -58,7 +58,7 @@ impl StreetNetwork {
                         ),
                     ),
                     (
-                        "intersection_type",
+                        "intersection_kind",
                         format!("{:?}", intersection.kind).into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
