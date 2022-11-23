@@ -2,7 +2,6 @@ use abstutil::Timer;
 
 use crate::StreetNetwork;
 
-pub mod classify_intersections;
 mod collapse_intersections;
 mod collapse_short_road;
 mod dual_carriageways;

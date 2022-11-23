@@ -100,7 +100,7 @@ impl StreetNetwork {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
             // Recalculate movements and complexity.
-            self.recalculate_movements(i);
+            self.update_movements(i);
         }
     }
 
@@ -112,7 +112,7 @@ impl StreetNetwork {
                 .roads
                 .retain(|r| *r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
-            self.recalculate_movements(i);
+            self.update_movements(i);
         }
         self.roads.remove(&id).unwrap()
     }
@@ -229,75 +229,6 @@ impl StreetNetwork {
         if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
             step.polylines
                 .push((self.roads[&r].untrimmed_road_geometry().0, label.into()));
-        }
-    }
-
-    // Restore the invariant that an intersection's roads are ordered clockwise
-    //
-    // TODO This doesn't handle trim_roads_for_merging
-    pub fn sort_roads(&mut self, i: IntersectionID) {
-        let intersection = self.intersections.get_mut(&i).unwrap();
-        if intersection.roads.len() < 2 {
-            return; // Already sorted.
-        }
-
-        // (ID, polyline pointing to the intersection, sorting point that's filled out later)
-        let mut road_centers = Vec::new();
-        let mut endpoints_for_center = Vec::new();
-        for r in &intersection.roads {
-            let road = &self.roads[r];
-            // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
-            // shouldn't matter for sorting.
-            let center_pl = if road.src_i == i {
-                road.untrimmed_center_line.reversed()
-            } else if road.dst_i == i {
-                road.untrimmed_center_line.clone()
-            } else {
-                panic!("Incident road {r} doesn't have an endpoint at {i}");
-            };
-            endpoints_for_center.push(center_pl.last_pt());
-
-            road_centers.push((*r, center_pl, Pt2D::zero()));
-        }
-        // In most cases, this will just be the same point repeated a few times, so Pt2D::center is a
-        // no-op. But when we have pretrimmed roads, this is much closer to the real "center" of the
-        // polygon we're attempting to create.
-        let intersection_center = Pt2D::center(&endpoints_for_center);
-
-        // Sort the road polylines in clockwise order around the center. This is subtle --
-        // https://a-b-street.github.io/docs/tech/map/geometry/index.html#sorting-revisited. When we
-        // get this wrong, the resulting polygon looks like a "bowtie," because the order of the
-        // intersection polygon's points follows this clockwise ordering of roads.
-        //
-        // We could use the point on each road center line farthest from the intersection center. But
-        // when some of the roads bend around, this produces incorrect ordering. Try walking along that
-        // center line a distance equal to the _shortest_ road.
-        let shortest_center = road_centers
-            .iter()
-            .map(|(_, pl, _)| pl.length())
-            .min()
-            .unwrap();
-        for (_, pl, sorting_pt) in &mut road_centers {
-            *sorting_pt = pl.must_dist_along(pl.length() - shortest_center).0;
-        }
-        road_centers.sort_by_key(|(_, _, sorting_pt)| {
-            sorting_pt
-                .angle_to(intersection_center)
-                .normalized_degrees() as i64
-        });
-
-        intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
-    }
-
-    /// Recalculate movements, complexity, and conflict_level of an intersection.
-    pub fn recalculate_movements(&mut self, i: IntersectionID) {
-        let (t, movements) = crate::transform::classify_intersections::guess_complexity(self, i);
-        let int = self.intersections.get_mut(&i).unwrap();
-        int.movements = movements;
-        // The fact that an intersection represents a road leaving the map bounds is stored in the
-        // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
-        if int.kind != IntersectionKind::MapEdge {
-            int.kind = t;
         }
     }
 }
