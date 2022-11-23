@@ -8,7 +8,7 @@ use crate::{osm, IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
-/// - when the lane specs match and only "unimportant" OSM tags differ
+/// - when the lane specs, name, and layer match
 pub fn collapse(streets: &mut StreetNetwork) {
     let mut merge: Vec<IntersectionID> = Vec::new();
     for id in streets.intersections.keys() {
@@ -92,8 +92,8 @@ pub fn collapse_intersection(streets: &mut StreetNetwork, i: IntersectionID) {
         }
     }
 
-    // We could be more careful merging percent_incline and osm_tags, but in practice, it doesn't
-    // matter for the short segments we're merging.
+    // We could be more careful merging percent_incline and other attributes, but in practice, it
+    // doesn't matter for the short segments we're merging.
     let mut keep_road = streets.remove_road(keep_r);
     let destroy_road = streets.remove_road(destroy_r);
     streets.intersections.remove(&i).unwrap();

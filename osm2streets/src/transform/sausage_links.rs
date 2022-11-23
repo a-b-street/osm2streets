@@ -78,6 +78,8 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
     // And modify the 1st
     let road1 = streets.roads.get_mut(&id1).unwrap();
 
+    road1.osm_ids.extend(road2.osm_ids);
+
     // Geometry
     //
     // Just make a straight line between the intersections. In OSM, usually the two pieces
@@ -148,17 +150,6 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
     for i in intersections {
         streets.update_movements(i);
     }
-
-    // Tags
-    // TODO We shouldn't need to modify road1's tags; lanes_ltr are the source of truth. But...
-    // other pieces of code still treat tags as an "original" source of truth. In A/B Street,
-    // reverting the road to its original state in the lane editor, for example, will get confused
-    // here and only see the original road1.
-
-    // IDs
-    // TODO The IDs in StreetNetwork are based on original OSM IDs, but they diverge as we make
-    // transformations like this. We could consider some combination of assigning new IDs all the
-    // time and associating one Road with multiple OSM IDs.
 }
 
 fn into_set<T: Ord>(list: Vec<T>) -> BTreeSet<T> {

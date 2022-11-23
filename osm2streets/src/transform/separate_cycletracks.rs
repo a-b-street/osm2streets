@@ -103,6 +103,8 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
     // Remove the cycleway, but remember the lanes it contained
     let mut cycleway_lanes = streets.remove_road(input.cycleway).lane_specs_ltr;
 
+    // TODO Preserve osm_ids
+
     // The cycleway likely had shoulder lanes assigned to it by get_lane_specs_ltr, because we have
     // many partially competing strategies for representing shared walking/cycling roads. Remove
     // those.
