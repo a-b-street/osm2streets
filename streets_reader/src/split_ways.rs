@@ -109,7 +109,6 @@ pub fn split_up_roads(
         let mut tags = orig_tags.clone();
         let mut pts = Vec::new();
         let endpt1 = pt_to_intersection[&orig_pts[0].to_hashable()];
-        let endpt2 = pt_to_intersection[&orig_pts.last().unwrap().to_hashable()];
         let mut i1 = endpt1;
 
         for pt in orig_pts {
@@ -118,13 +117,6 @@ pub fn split_up_roads(
                 continue;
             }
             if let Some(i2) = pt_to_intersection.get(&pt.to_hashable()) {
-                if i1 == endpt1 {
-                    tags.insert(osm::ENDPT_BACK.to_string(), "true".to_string());
-                }
-                if *i2 == endpt2 {
-                    tags.insert(osm::ENDPT_FWD.to_string(), "true".to_string());
-                }
-
                 let id = streets.next_road_id();
 
                 // Note we populate this before simplify_linestring, so even if some points are

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::Distance;
 
-use crate::{osm, OriginalRoad, RoadID};
+use crate::{OriginalRoad, RoadID};
 
 /// None corresponds to the native name
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -28,7 +28,7 @@ impl NamePerLanguage {
     }
 
     pub fn new(tags: &Tags) -> Option<NamePerLanguage> {
-        let native_name = tags.get(osm::NAME)?;
+        let native_name = tags.get("name")?;
         let mut map = BTreeMap::new();
         map.insert(None, native_name.to_string());
         for (k, v) in tags.inner() {

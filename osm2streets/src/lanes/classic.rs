@@ -366,10 +366,10 @@ fn add_parking_lanes(fwd_side: &mut Vec<LaneSpec>, back_side: &mut Vec<LaneSpec>
     let highway_type = tags.get(osm::HIGHWAY).unwrap();
 
     let has_parking = vec!["parallel", "diagonal", "perpendicular"];
-    let parking_lane_fwd = tags.is_any(osm::PARKING_RIGHT, has_parking.clone())
-        || tags.is_any(osm::PARKING_BOTH, has_parking.clone());
-    let parking_lane_back = tags.is_any(osm::PARKING_LEFT, has_parking.clone())
-        || tags.is_any(osm::PARKING_BOTH, has_parking);
+    let parking_lane_fwd = tags.is_any("parking:lane:right", has_parking.clone())
+        || tags.is_any("parking:lane:both", has_parking.clone());
+    let parking_lane_back = tags.is_any("parking:lane:left", has_parking.clone())
+        || tags.is_any("parking:lane:both", has_parking);
     if parking_lane_fwd {
         fwd_side.push(fwd(highway_type, LaneType::Parking));
     }
@@ -386,22 +386,22 @@ fn add_sidewalks_and_shoulders(
 ) {
     let highway_type = tags.get(osm::HIGHWAY).unwrap();
 
-    if tags.is(osm::SIDEWALK, "both") {
+    if tags.is("sidewalk", "both") {
         fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         back_side.push(back(highway_type, LaneType::Sidewalk));
-    } else if tags.is(osm::SIDEWALK, "separate") && cfg.inferred_sidewalks {
+    } else if tags.is("sidewalk", "separate") && cfg.inferred_sidewalks {
         // TODO Need to snap separate sidewalks to ways. Until then, just do this.
         fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         if !back_side.is_empty() {
             back_side.push(back(highway_type, LaneType::Sidewalk));
         }
-    } else if tags.is(osm::SIDEWALK, "right") {
+    } else if tags.is("sidewalk", "right") {
         if cfg.driving_side == DrivingSide::Right {
             fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         } else {
             back_side.push(back(highway_type, LaneType::Sidewalk));
         }
-    } else if tags.is(osm::SIDEWALK, "left") {
+    } else if tags.is("sidewalk", "left") {
         if cfg.driving_side == DrivingSide::Right {
             back_side.push(back(highway_type, LaneType::Sidewalk));
         } else {
@@ -487,7 +487,7 @@ fn osm_separation_type(x: &String) -> Option<BufferType> {
 // If sidewalks aren't explicitly tagged on a road, fill them in. This only happens when the map is
 // configured to have this inference.
 pub(crate) fn infer_sidewalk_tags(tags: &mut Tags, cfg: &MapConfig) {
-    if tags.contains_key(osm::SIDEWALK) || !cfg.inferred_sidewalks {
+    if tags.contains_key("sidewalk") || !cfg.inferred_sidewalks {
         return;
     }
 
@@ -503,26 +503,26 @@ pub(crate) fn infer_sidewalk_tags(tags: &mut Tags, cfg: &MapConfig) {
             (false, true) => "left",
             (false, false) => "none",
         };
-        tags.insert(osm::SIDEWALK, value);
+        tags.insert("sidewalk", value);
     } else if tags.is_any(osm::HIGHWAY, vec!["motorway", "motorway_link"])
         || tags.is_any("junction", vec!["intersection", "roundabout"])
         || tags.is("foot", "no")
         || tags.is(osm::HIGHWAY, "service")
         || tags.is_any(osm::HIGHWAY, vec!["cycleway", "pedestrian", "track"])
     {
-        tags.insert(osm::SIDEWALK, "none");
+        tags.insert("sidewalk", "none");
     } else if tags.is("oneway", "yes") {
         if cfg.driving_side == DrivingSide::Right {
-            tags.insert(osm::SIDEWALK, "right");
+            tags.insert("sidewalk", "right");
         } else {
-            tags.insert(osm::SIDEWALK, "left");
+            tags.insert("sidewalk", "left");
         }
         if tags.is_any(osm::HIGHWAY, vec!["residential", "living_street"])
             && !tags.is("dual_carriageway", "yes")
         {
-            tags.insert(osm::SIDEWALK, "both");
+            tags.insert("sidewalk", "both");
         }
     } else {
-        tags.insert(osm::SIDEWALK, "both");
+        tags.insert("sidewalk", "both");
     }
 }

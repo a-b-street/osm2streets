@@ -92,7 +92,7 @@ impl Road {
                 .get(osm::HIGHWAY)
                 .cloned()
                 .expect("Can't create a Road without the highway tag"),
-            name: osm_tags.get(osm::NAME).cloned(),
+            name: osm_tags.get("name").cloned(),
             internal_junction_road: osm_tags.is("junction", "intersection"),
             layer,
             untrimmed_center_line,

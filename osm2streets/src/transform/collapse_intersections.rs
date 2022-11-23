@@ -55,6 +55,12 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     if road1.lane_specs_ltr != road2.lane_specs_ltr {
         bail!("lane specs don't match");
     }
+    // TODO Right now LaneSpec doesn't capture per-lane turn restrictions. So we may incorrectly
+    // merge roads with differing turn lanes. That's fine for now.
+
+    if road1.name != road2.name {
+        bail!("names don't match");
+    }
 
     if road1.layer != road2.layer {
         bail!("layers don't match");
@@ -62,68 +68,6 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
 
     if road1.is_cycleway() && road2.is_cycleway() {
         return Ok(());
-    }
-
-    // Check what OSM tags differ. Explicitly allow some keys. Note that lanes tagging doesn't
-    // actually matter, because we check that LaneSpecs match. Nor do things indicating a zorder
-    // indirectly, like bridge/tunnel.
-    // TODO I get the feeling I'll end up swapping this to explicitly list tags that SHOULD block
-    // merging.
-    for (k, v1, v2) in road1.osm_tags.diff(&road2.osm_tags) {
-        if [
-            osm::OSM_WAY_ID,
-            osm::PARKING_BOTH,
-            osm::PARKING_LEFT,
-            osm::PARKING_RIGHT,
-            "bicycle",
-            "bridge",
-            "covered",
-            "cycleway",
-            "cycleway:both",
-            "destination",
-            "lanes",
-            "lanes:backward",
-            "lanes:forward",
-            "lit",
-            "maxheight",
-            "maxspeed:advisory",
-            "maxweight",
-            "note",
-            "old_name",
-            "short_name",
-            "shoulder",
-            "sidewalk",
-            "surface",
-            "tunnel",
-            "wikidata",
-            "wikimedia_commons",
-            "wikipedia",
-        ]
-        .contains(&k.as_ref())
-        {
-            continue;
-        }
-
-        // Don't worry about ENDPT_FWD and ENDPT_BACK not matching if there are no turn lanes
-        // tagged.
-        // TODO We could get fancier and copy values over. We'd have to sometimes flip the
-        // direction.
-        if k == osm::ENDPT_FWD
-            && !road1.osm_tags.contains_key("turn:lanes")
-            && !road1.osm_tags.contains_key("turn:lanes:forward")
-            && !road2.osm_tags.contains_key("turn:lanes")
-            && !road2.osm_tags.contains_key("turn:lanes:forward")
-        {
-            continue;
-        }
-        if k == osm::ENDPT_BACK
-            && !road1.osm_tags.contains_key("turn:lanes:backward")
-            && !road2.osm_tags.contains_key("turn:lanes:backward")
-        {
-            continue;
-        }
-
-        bail!("{} = \"{}\" vs \"{}\"", k, v1, v2);
     }
 
     Ok(())
