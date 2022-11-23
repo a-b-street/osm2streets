@@ -7,10 +7,9 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
-use abstutil::Tags;
 use geom::Distance;
 
-use crate::{osm, DrivingSide};
+use crate::DrivingSide;
 pub use classic::get_lane_specs_ltr;
 
 pub const NORMAL_LANE_THICKNESS: Distance = Distance::const_meters(2.5);
@@ -205,9 +204,9 @@ pub struct LaneSpec {
 }
 
 impl LaneSpec {
-    /// For a given lane type, returns some likely widths. This may depend on the type of the road,
-    /// so the OSM tags are also passed in. The first value returned will be used as a default.
-    pub fn typical_lane_widths(lt: LaneType, tags: &Tags) -> Vec<(Distance, &'static str)> {
+    /// For a given lane type, returns some likely widths. This may depend on the OSM highway type
+    /// of the road. The first value returned will be used as a default.
+    pub fn typical_lane_widths(lt: LaneType, highway_type: &str) -> Vec<(Distance, &'static str)> {
         // These're cobbled together from various sources
         match lt {
             // https://en.wikipedia.org/wiki/Lane#Lane_width
@@ -218,7 +217,7 @@ impl LaneSpec {
                     (Distance::feet(10.0), "typical"),
                     (Distance::feet(12.0), "highway"),
                 ];
-                if tags.is(osm::HIGHWAY, "service") || tags.is("narrow", "yes") {
+                if highway_type == "service" {
                     choices.swap(1, 0);
                 }
                 choices
@@ -242,7 +241,7 @@ impl LaneSpec {
                     (Distance::feet(9.0), "wide"),
                     (Distance::feet(15.0), "loading zone"),
                 ];
-                if tags.is(osm::HIGHWAY, "service") || tags.is("narrow", "yes") {
+                if highway_type == "service" {
                     choices.swap(1, 0);
                 }
                 choices
@@ -278,7 +277,7 @@ impl LaneSpec {
 
     /// Pick a reasonable default for a lane width, without any context on locale or tags.
     pub fn typical_lane_width(lt: LaneType) -> Distance {
-        Self::typical_lane_widths(lt, &Tags::empty())[0].0
+        Self::typical_lane_widths(lt, "road")[0].0
     }
 
     /// Put a list of forward and backward lanes into left-to-right order, depending on the driving

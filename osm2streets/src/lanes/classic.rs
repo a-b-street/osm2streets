@@ -19,9 +19,11 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     // checker problems.
     infer_sidewalk_tags(&mut tags, cfg);
 
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     // Easy special cases first.
     if tags.is_any("railway", vec!["light_rail", "rail"]) {
-        return vec![fwd(&tags, LaneType::LightRail)];
+        return vec![fwd(highway_type, LaneType::LightRail)];
     }
 
     if let Some(lanes) = non_motorized_road(&tags, cfg) {
@@ -49,39 +51,41 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side)
 }
 
-fn fwd(tags: &Tags, lt: LaneType) -> LaneSpec {
+fn fwd(highway_type: &str, lt: LaneType) -> LaneSpec {
     LaneSpec {
         lt,
         dir: Direction::Fwd,
-        width: LaneSpec::typical_lane_widths(lt, &tags)[0].0,
+        width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
     }
 }
-fn back(tags: &Tags, lt: LaneType) -> LaneSpec {
+fn back(highway_type: &str, lt: LaneType) -> LaneSpec {
     LaneSpec {
         lt,
         dir: Direction::Back,
-        width: LaneSpec::typical_lane_widths(lt, &tags)[0].0,
+        width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
     }
 }
 
 fn non_motorized_road(tags: &Tags, cfg: &MapConfig) -> Option<Vec<LaneSpec>> {
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     // If it's a primarily cycleway, have directional bike lanes and add a shoulder for walking
     // TODO Consider variations of SharedUse that specify the priority is cyclists over pedestrians
     // in this case?
     if tags.is(osm::HIGHWAY, "cycleway") {
-        let mut fwd_side = vec![fwd(tags, LaneType::Biking)];
+        let mut fwd_side = vec![fwd(highway_type, LaneType::Biking)];
         let mut back_side = if tags.is("oneway", "yes") {
             vec![]
         } else {
-            vec![back(tags, LaneType::Biking)]
+            vec![back(highway_type, LaneType::Biking)]
         };
 
         // TODO If this cycleway is parallel to a main road, we might end up with double sidewalks.
         // Once snapping works well, this problem will improve
         if !tags.is("foot", "no") {
-            fwd_side.push(fwd(tags, LaneType::Shoulder));
+            fwd_side.push(fwd(highway_type, LaneType::Shoulder));
             if !back_side.is_empty() {
-                back_side.push(back(tags, LaneType::Shoulder));
+                back_side.push(back(highway_type, LaneType::Shoulder));
             }
         }
         return Some(LaneSpec::assemble_ltr(
@@ -95,7 +99,7 @@ fn non_motorized_road(tags: &Tags, cfg: &MapConfig) -> Option<Vec<LaneSpec>> {
     if tags.is(osm::HIGHWAY, "footway") && tags.is_any("footway", vec!["crossing", "sidewalk"]) {
         // Treating a crossing as a sidewalk for now. Eventually crossings need to be dealt with
         // completely differently.
-        return Some(vec![fwd(tags, LaneType::Sidewalk)]);
+        return Some(vec![fwd(highway_type, LaneType::Sidewalk)]);
     }
 
     // Handle pedestrian-oriented spaces
@@ -105,16 +109,18 @@ fn non_motorized_road(tags: &Tags, cfg: &MapConfig) -> Option<Vec<LaneSpec>> {
     ) {
         // Assume no bikes unless they're explicitly allowed
         if tags.is_any("bicycle", vec!["designated", "yes", "dismount"]) {
-            return Some(vec![fwd(tags, LaneType::SharedUse)]);
+            return Some(vec![fwd(highway_type, LaneType::SharedUse)]);
         }
 
-        return Some(vec![fwd(tags, LaneType::Footway)]);
+        return Some(vec![fwd(highway_type, LaneType::Footway)]);
     }
 
     None
 }
 
 fn create_driving_lanes(tags: &Tags) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, LaneType) {
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     // TODO Reversible roads should be handled differently?
     let oneway =
         tags.is_any("oneway", vec!["yes", "reversible"]) || tags.is("junction", "roundabout");
@@ -182,14 +188,14 @@ fn create_driving_lanes(tags: &Tags) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, Lan
 
     // These are ordered from the road center, going outwards. Most of the members of fwd_side will
     // have Direction::Fwd, but there can be exceptions with two-way cycletracks.
-    let mut fwd_side: Vec<LaneSpec> = iter::repeat_with(|| fwd(&tags, driving_lane))
+    let mut fwd_side: Vec<LaneSpec> = iter::repeat_with(|| fwd(highway_type, driving_lane))
         .take(num_driving_fwd)
         .collect();
-    let back_side: Vec<LaneSpec> = iter::repeat_with(|| back(&tags, driving_lane))
+    let back_side: Vec<LaneSpec> = iter::repeat_with(|| back(highway_type, driving_lane))
         .take(num_driving_back)
         .collect();
     if tags.is("lanes:both_ways", "1") || tags.is("centre_turn_lane", "yes") {
-        fwd_side.insert(0, fwd(&tags, LaneType::SharedLeftTurn));
+        fwd_side.insert(0, fwd(highway_type, LaneType::SharedLeftTurn));
     }
 
     (fwd_side, back_side, oneway, driving_lane)
@@ -266,14 +272,16 @@ fn add_bike_lanes(
     tags: &Tags,
     cfg: &MapConfig,
 ) {
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     if tags.is_any("cycleway", vec!["lane", "track"]) {
-        fwd_side.push(fwd(&tags, LaneType::Biking));
+        fwd_side.push(fwd(highway_type, LaneType::Biking));
         if !back_side.is_empty() {
-            back_side.push(back(&tags, LaneType::Biking));
+            back_side.push(back(highway_type, LaneType::Biking));
         }
     } else if tags.is_any("cycleway:both", vec!["lane", "track"]) {
-        fwd_side.push(fwd(&tags, LaneType::Biking));
-        back_side.push(back(&tags, LaneType::Biking));
+        fwd_side.push(fwd(highway_type, LaneType::Biking));
+        back_side.push(back(highway_type, LaneType::Biking));
     } else {
         // Note here that we look at driving_side frequently, to match up left/right with fwd/back.
         // If we're driving on the right, then right=fwd. Driving on the left, then right=back.
@@ -282,40 +290,40 @@ fn add_bike_lanes(
         if tags.is_any("cycleway:right", vec!["lane", "track"]) {
             if cfg.driving_side == DrivingSide::Right {
                 if tags.is("cycleway:right:oneway", "no") || tags.is("oneway:bicycle", "no") {
-                    fwd_side.push(back(&tags, LaneType::Biking));
+                    fwd_side.push(back(highway_type, LaneType::Biking));
                 }
-                fwd_side.push(fwd(&tags, LaneType::Biking));
+                fwd_side.push(fwd(highway_type, LaneType::Biking));
             } else {
                 if tags.is("cycleway:right:oneway", "no") || tags.is("oneway:bicycle", "no") {
-                    back_side.push(fwd(&tags, LaneType::Biking));
+                    back_side.push(fwd(highway_type, LaneType::Biking));
                 }
-                back_side.push(back(&tags, LaneType::Biking));
+                back_side.push(back(highway_type, LaneType::Biking));
             }
         }
         if tags.is("cycleway:left", "opposite_lane") || tags.is("cycleway", "opposite_lane") {
             if cfg.driving_side == DrivingSide::Right {
-                back_side.push(back(&tags, LaneType::Biking));
+                back_side.push(back(highway_type, LaneType::Biking));
             } else {
-                fwd_side.push(fwd(&tags, LaneType::Biking));
+                fwd_side.push(fwd(highway_type, LaneType::Biking));
             }
         }
         if tags.is_any("cycleway:left", vec!["lane", "opposite_track", "track"]) {
             if cfg.driving_side == DrivingSide::Right {
                 if tags.is("cycleway:left:oneway", "no") || tags.is("oneway:bicycle", "no") {
-                    back_side.push(fwd(&tags, LaneType::Biking));
-                    back_side.push(back(&tags, LaneType::Biking));
+                    back_side.push(fwd(highway_type, LaneType::Biking));
+                    back_side.push(back(highway_type, LaneType::Biking));
                 } else if oneway {
-                    fwd_side.insert(0, fwd(&tags, LaneType::Biking));
+                    fwd_side.insert(0, fwd(highway_type, LaneType::Biking));
                 } else {
-                    back_side.push(back(&tags, LaneType::Biking));
+                    back_side.push(back(highway_type, LaneType::Biking));
                 }
             } else {
                 // TODO This should mimic the logic for right-handed driving, but I need test cases
                 // first to do this sanely
                 if tags.is("cycleway:left:oneway", "no") || tags.is("oneway:bicycle", "no") {
-                    fwd_side.push(back(&tags, LaneType::Biking));
+                    fwd_side.push(back(highway_type, LaneType::Biking));
                 }
-                fwd_side.push(fwd(&tags, LaneType::Biking));
+                fwd_side.push(fwd(highway_type, LaneType::Biking));
             }
         }
     }
@@ -332,7 +340,7 @@ fn add_bike_lanes(
         // TODO These shouldn't fail, but snapping is imperfect... like around
         // https://www.openstreetmap.org/way/486283205
         if let Some(idx) = fwd_side.iter().position(|x| x.lt == LaneType::Biking) {
-            fwd_side.insert(idx, fwd(&tags, LaneType::Buffer(buffer)));
+            fwd_side.insert(idx, fwd(highway_type, LaneType::Buffer(buffer)));
         }
     }
     if let Some(buffer) = tags
@@ -340,7 +348,7 @@ fn add_bike_lanes(
         .and_then(osm_separation_type)
     {
         if let Some(idx) = back_side.iter().position(|x| x.lt == LaneType::Biking) {
-            back_side.insert(idx, back(&tags, LaneType::Buffer(buffer)));
+            back_side.insert(idx, back(highway_type, LaneType::Buffer(buffer)));
         }
     }
     if let Some(buffer) = tags
@@ -349,22 +357,24 @@ fn add_bike_lanes(
     {
         // This is assuming a one-way road. That's why we're not looking at back_side.
         if let Some(idx) = fwd_side.iter().position(|x| x.lt == LaneType::Biking) {
-            fwd_side.insert(idx + 1, fwd(&tags, LaneType::Buffer(buffer)));
+            fwd_side.insert(idx + 1, fwd(highway_type, LaneType::Buffer(buffer)));
         }
     }
 }
 
 fn add_parking_lanes(fwd_side: &mut Vec<LaneSpec>, back_side: &mut Vec<LaneSpec>, tags: &Tags) {
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     let has_parking = vec!["parallel", "diagonal", "perpendicular"];
     let parking_lane_fwd = tags.is_any(osm::PARKING_RIGHT, has_parking.clone())
         || tags.is_any(osm::PARKING_BOTH, has_parking.clone());
     let parking_lane_back = tags.is_any(osm::PARKING_LEFT, has_parking.clone())
         || tags.is_any(osm::PARKING_BOTH, has_parking);
     if parking_lane_fwd {
-        fwd_side.push(fwd(&tags, LaneType::Parking));
+        fwd_side.push(fwd(highway_type, LaneType::Parking));
     }
     if parking_lane_back {
-        back_side.push(back(&tags, LaneType::Parking));
+        back_side.push(back(highway_type, LaneType::Parking));
     }
 }
 
@@ -374,26 +384,28 @@ fn add_sidewalks_and_shoulders(
     tags: &Tags,
     cfg: &MapConfig,
 ) {
+    let highway_type = tags.get(osm::HIGHWAY).unwrap();
+
     if tags.is(osm::SIDEWALK, "both") {
-        fwd_side.push(fwd(&tags, LaneType::Sidewalk));
-        back_side.push(back(&tags, LaneType::Sidewalk));
+        fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
+        back_side.push(back(highway_type, LaneType::Sidewalk));
     } else if tags.is(osm::SIDEWALK, "separate") && cfg.inferred_sidewalks {
         // TODO Need to snap separate sidewalks to ways. Until then, just do this.
-        fwd_side.push(fwd(&tags, LaneType::Sidewalk));
+        fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         if !back_side.is_empty() {
-            back_side.push(back(&tags, LaneType::Sidewalk));
+            back_side.push(back(highway_type, LaneType::Sidewalk));
         }
     } else if tags.is(osm::SIDEWALK, "right") {
         if cfg.driving_side == DrivingSide::Right {
-            fwd_side.push(fwd(&tags, LaneType::Sidewalk));
+            fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         } else {
-            back_side.push(back(&tags, LaneType::Sidewalk));
+            back_side.push(back(highway_type, LaneType::Sidewalk));
         }
     } else if tags.is(osm::SIDEWALK, "left") {
         if cfg.driving_side == DrivingSide::Right {
-            back_side.push(back(&tags, LaneType::Sidewalk));
+            back_side.push(back(highway_type, LaneType::Sidewalk));
         } else {
-            fwd_side.push(fwd(&tags, LaneType::Sidewalk));
+            fwd_side.push(fwd(highway_type, LaneType::Sidewalk));
         }
     }
 
@@ -447,10 +459,10 @@ fn add_sidewalks_and_shoulders(
     // For now, model that by putting shoulders.
     if cfg.inferred_sidewalks || tags.is(osm::HIGHWAY, "living_street") {
         if need_fwd_shoulder {
-            fwd_side.push(fwd(&tags, LaneType::Shoulder));
+            fwd_side.push(fwd(highway_type, LaneType::Shoulder));
         }
         if need_back_shoulder {
-            back_side.push(back(&tags, LaneType::Shoulder));
+            back_side.push(back(highway_type, LaneType::Shoulder));
         }
     }
 }

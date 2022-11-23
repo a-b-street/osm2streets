@@ -19,6 +19,11 @@ pub struct Road {
 
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
+
+    /// The OSM `highway` tag indicating the type of this road. See
+    /// <https://wiki.openstreetmap.org/wiki/Key:highway>.
+    pub highway_type: String,
+
     /// This represents the original OSM geometry. No transformation has happened, besides slightly
     /// smoothing the polyline.
     pub untrimmed_center_line: PolyLine,
@@ -61,6 +66,10 @@ impl Road {
             osm_ids: vec![osm_id],
             src_i,
             dst_i,
+            highway_type: osm_tags
+                .get(osm::HIGHWAY)
+                .cloned()
+                .expect("Can't create a Road without the highway tag"),
             untrimmed_center_line,
             trimmed_center_line: PolyLine::dummy(),
             osm_tags,
@@ -83,24 +92,8 @@ impl Road {
         self.osm_tags.is_any("railway", vec!["light_rail", "rail"])
     }
 
-    pub fn is_footway(&self) -> bool {
-        self.osm_tags.is_any(
-            osm::HIGHWAY,
-            vec![
-                // TODO cycleway in here is weird, reconsider. is_footway is only used in one
-                // disabled transformation right now.
-                "cycleway",
-                "footway",
-                "path",
-                "pedestrian",
-                "steps",
-                "track",
-            ],
-        )
-    }
-
     pub fn is_service(&self) -> bool {
-        self.osm_tags.is(osm::HIGHWAY, "service")
+        self.highway_type == "service"
     }
 
     pub fn is_cycleway(&self) -> bool {
@@ -274,7 +267,7 @@ impl Road {
             dst_i: self.dst_i,
             center_pts: self.trimmed_center_line.clone(),
             half_width: self.total_width() / 2.0,
-            osm_tags: self.osm_tags.clone(),
+            highway_type: self.highway_type.clone(),
         }
     }
 

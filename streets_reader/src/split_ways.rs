@@ -267,7 +267,7 @@ pub fn split_up_roads(
             // The road might've crossed the boundary and been clipped
             if let Some(road) = streets.roads.get(r) {
                 // Example: https://www.openstreetmap.org/node/26734224
-                if !road.osm_tags.is(osm::HIGHWAY, "construction") {
+                if road.highway_type != "construction" {
                     let i = if dir == Direction::Fwd {
                         road.dst_i
                     } else {
