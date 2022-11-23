@@ -103,7 +103,7 @@ pub enum DrivingSide {
 
 /// How a lane of travel is interrupted, as it meets another or ends.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum InterruptionType {
+pub enum TrafficInterruption {
     Uninterrupted,
     Yield,
     Stop,
@@ -113,7 +113,7 @@ pub enum InterruptionType {
 
 /// How two lanes of travel conflict with each other.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub enum ConflictType {
+pub enum TrafficConflict {
     Uncontested,
     Diverge,
     Merge,
@@ -124,7 +124,7 @@ pub enum ConflictType {
 /// network graph is represented by an `Intersection`, but many of them are not traffic
 /// "intersections" in the common sense.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum IntersectionType {
+pub enum IntersectionKind {
     /// A `Road` ends because the road crosses the map boundary.
     MapEdge,
 
@@ -153,12 +153,12 @@ pub enum IntersectionType {
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum ControlType {
+pub enum IntersectionControl {
     Uncontrolled, // Pretty sure this is a term that implies right of way rules somewhere.
     //TODO YieldSign,
     StopSign,      // Signed is a good standard of safety
     TrafficSignal, // Signalled is better.
-    Border,        //TODO move to using IntersectionType::MapEdge
+    Border,        //TODO move to using IntersectionKind::MapEdge
     Construction,  // Are these treated as "closed"?
 }
 

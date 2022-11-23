@@ -1,11 +1,11 @@
 use std::cmp::{max, min};
 
 use crate::{
-    ConflictType, Direction, DrivingSide, IntersectionID, IntersectionType, Movement,
-    RestrictionType, Road, StreetNetwork,
+    Direction, DrivingSide, IntersectionID, IntersectionKind, Movement, RestrictionType, Road,
+    StreetNetwork, TrafficConflict,
 };
-use ConflictType::*;
-use IntersectionType::*;
+use IntersectionKind::*;
+use TrafficConflict::*;
 
 /// Determines the initial type of all intersections. Intersections not marked "MapEdge" are
 /// considered unclassified and will be updated.
@@ -30,7 +30,7 @@ pub fn classify_intersections(streets: &mut StreetNetwork) {
 pub fn guess_complexity(
     streets: &StreetNetwork,
     intersection_id: IntersectionID,
-) -> (IntersectionType, Vec<Movement>) {
+) -> (IntersectionKind, Vec<Movement>) {
     let roads: Vec<_> = streets
         .roads_per_intersection(intersection_id)
         .into_iter()
@@ -90,7 +90,7 @@ pub fn guess_complexity(
             );
 
             // Stop looking if we've already found the worst.
-            if worst_conflict == ConflictType::Cross {
+            if worst_conflict == TrafficConflict::Cross {
                 break;
             }
         }
@@ -155,8 +155,8 @@ fn turn_is_allowed(src: &Road, dst: &Road) -> bool {
     !has_exclusive_allows
 }
 
-fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> ConflictType {
-    use ConflictType::*;
+fn calc_conflict(a: &(usize, usize), b: &(usize, usize), side: DrivingSide) -> TrafficConflict {
+    use TrafficConflict::*;
 
     // If the traffic starts and ends at the same place in the same direction...
     if a.0 == b.0 && a.1 == b.1 {

@@ -134,14 +134,16 @@ impl From<&osm2streets::Intersection> for Intersection {
         Self {
             // int.intersection_type has some useful info, bit is often misleading.
             t: match int.control {
-                osm2streets::ControlType::Border => IntersectionType::MapEdge,
-                osm2streets::ControlType::TrafficSignal
-                | osm2streets::ControlType::Construction => IntersectionType::RoadIntersection,
+                osm2streets::IntersectionControl::Border => IntersectionType::MapEdge,
+                osm2streets::IntersectionControl::TrafficSignal
+                | osm2streets::IntersectionControl::Construction => {
+                    IntersectionType::RoadIntersection
+                }
                 _ => IntersectionType::Unknown,
             },
             control: match int.control {
                 // IntersectionType::StopSign => ControlType::Signed, // wrong when it should be uncontrolled
-                osm2streets::ControlType::TrafficSignal => ControlType::Lights,
+                osm2streets::IntersectionControl::TrafficSignal => ControlType::Lights,
                 _ => ControlType::Uncontrolled,
             },
         }

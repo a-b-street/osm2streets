@@ -23,7 +23,8 @@ pub use self::lanes::{
 pub use self::road::Road;
 pub use self::transform::Transformation;
 pub use self::types::{
-    ConflictType, ControlType, DrivingSide, IntersectionType, MapConfig, Movement, NamePerLanguage,
+    DrivingSide, IntersectionControl, IntersectionKind, MapConfig, Movement, NamePerLanguage,
+    TrafficConflict,
 };
 
 mod edit;
@@ -292,7 +293,7 @@ impl StreetNetwork {
         int.movements = movements;
         // The fact that an intersection represents a road leaving the map bounds is stored in the
         // complexity field but guess_complexity ignores that. Make sure we don't overwrite it.
-        if int.t != IntersectionType::MapEdge {
+        if int.t != IntersectionKind::MapEdge {
             int.t = t;
         }
     }

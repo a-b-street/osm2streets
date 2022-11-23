@@ -3,8 +3,8 @@ use std::collections::{btree_map::Entry, BTreeMap, HashMap, HashSet};
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, ControlType, CrossingType, Direction, IntersectionID, IntersectionType, OriginalRoad,
-    Road, RoadID, StreetNetwork,
+    osm, CrossingType, Direction, IntersectionControl, IntersectionID, IntersectionKind,
+    OriginalRoad, Road, RoadID, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -76,12 +76,12 @@ pub fn split_up_roads(
             vec![*osm_id],
             pt.to_pt2d(),
             // Assume a complicated intersection, until we determine otherwise.
-            IntersectionType::Intersection,
+            IntersectionKind::Intersection,
             if input.traffic_signals.remove(pt).is_some() {
-                ControlType::TrafficSignal
+                IntersectionControl::TrafficSignal
             } else {
                 // TODO default to uncontrolled, guess StopSign as a transform
-                ControlType::StopSign
+                IntersectionControl::StopSign
             },
         );
         osm_id_to_id.insert(*osm_id, id);
@@ -92,8 +92,8 @@ pub fn split_up_roads(
         let id = streets.insert_intersection(
             osm_ids.clone(),
             pt,
-            IntersectionType::Intersection,
-            ControlType::StopSign,
+            IntersectionKind::Intersection,
+            IntersectionControl::StopSign,
         );
         for osm_id in osm_ids {
             osm_id_to_id.insert(osm_id, id);
@@ -258,7 +258,8 @@ pub fn split_up_roads(
                     } else {
                         road.src_i
                     };
-                    streets.intersections.get_mut(&i).unwrap().control = ControlType::TrafficSignal;
+                    streets.intersections.get_mut(&i).unwrap().control =
+                        IntersectionControl::TrafficSignal;
                 }
             }
         }

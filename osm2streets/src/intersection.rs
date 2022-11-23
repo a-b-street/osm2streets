@@ -3,7 +3,9 @@ use std::collections::BTreeMap;
 use geom::{Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
-use crate::{osm, ControlType, IntersectionID, IntersectionType, Movement, RoadID, StreetNetwork};
+use crate::{
+    osm, IntersectionControl, IntersectionID, IntersectionKind, Movement, RoadID, StreetNetwork,
+};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Intersection {
@@ -18,8 +20,8 @@ pub struct Intersection {
     pub point: Pt2D,
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
     pub polygon: Polygon,
-    pub t: IntersectionType,
-    pub control: ControlType,
+    pub t: IntersectionKind,
+    pub control: IntersectionControl,
     pub elevation: Distance,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
@@ -45,8 +47,8 @@ impl StreetNetwork {
         &mut self,
         osm_ids: Vec<osm::NodeID>,
         point: Pt2D,
-        t: IntersectionType,
-        control: ControlType,
+        t: IntersectionKind,
+        control: IntersectionControl,
     ) -> IntersectionID {
         let id = self.next_intersection_id();
         self.intersections.insert(
@@ -71,6 +73,6 @@ impl StreetNetwork {
 
 impl Intersection {
     pub fn is_border(&self) -> bool {
-        self.control == ControlType::Border
+        self.control == IntersectionControl::Border
     }
 }

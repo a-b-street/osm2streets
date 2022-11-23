@@ -1,7 +1,7 @@
 use abstutil::Timer;
 use anyhow::Result;
 
-use osm2streets::{ControlType, IntersectionID, IntersectionType, StreetNetwork};
+use osm2streets::{IntersectionControl, IntersectionID, IntersectionKind, StreetNetwork};
 
 // TODO This needs to update turn restrictions too
 pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
@@ -44,8 +44,8 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
-        old_intersection.t = IntersectionType::MapEdge;
-        old_intersection.control = ControlType::Border;
+        old_intersection.t = IntersectionKind::MapEdge;
+        old_intersection.control = IntersectionControl::Border;
 
         if old_intersection.roads.len() <= 1 {
             // We don't need to make copies of the intersection; put it back
@@ -76,7 +76,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
     // Now for all of the border intersections, find the one road they connect to and trim their
     // points.
     for intersection in streets.intersections.values_mut() {
-        if intersection.control != ControlType::Border {
+        if intersection.control != IntersectionControl::Border {
             continue;
         }
         assert_eq!(intersection.roads.len(), 1);
