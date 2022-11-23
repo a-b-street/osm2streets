@@ -235,8 +235,11 @@ impl StreetNetwork {
     // Restore the invariant that an intersection's roads are ordered clockwise
     //
     // TODO This doesn't handle trim_roads_for_merging
-    fn sort_roads(&mut self, i: IntersectionID) {
+    pub fn sort_roads(&mut self, i: IntersectionID) {
         let intersection = self.intersections.get_mut(&i).unwrap();
+        if intersection.roads.len() < 2 {
+            return; // Already sorted.
+        }
 
         // (ID, polyline pointing to the intersection, sorting point that's filled out later)
         let mut road_centers = Vec::new();
@@ -287,7 +290,7 @@ impl StreetNetwork {
     }
 
     /// Recalculate movements, complexity, and conflict_level of an intersection.
-    fn recalculate_movements(&mut self, i: IntersectionID) {
+    pub fn recalculate_movements(&mut self, i: IntersectionID) {
         let (t, movements) = crate::transform::classify_intersections::guess_complexity(self, i);
         let int = self.intersections.get_mut(&i).unwrap();
         int.movements = movements;
