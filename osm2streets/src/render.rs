@@ -62,6 +62,16 @@ impl StreetNetwork {
                         format!("{:?}", intersection.kind).into(),
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
+                    (
+                        "movements",
+                        serde_json::Value::Array(
+                            intersection
+                                .movements
+                                .iter()
+                                .map(|(a, b)| format!("{a} -> {b}").into())
+                                .collect(),
+                        ),
+                    ),
                 ]),
             ));
         }

@@ -31982,6 +31982,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           3193482754
         ],
@@ -32020,6 +32021,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1305300599
         ],
@@ -32058,6 +32060,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8450268992
         ],
@@ -32096,6 +32099,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           2142487689
         ],
@@ -32134,6 +32138,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5071469704
         ],
@@ -32172,6 +32177,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5924236782
         ],
@@ -32210,6 +32216,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6001482087
         ],
@@ -32248,6 +32255,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5071469694
         ],
@@ -32286,6 +32294,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6001482135
         ],
@@ -32324,6 +32333,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           30822588
         ],
@@ -32362,6 +32372,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5071469695
         ],
@@ -32400,6 +32411,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           250093012
         ],
@@ -32438,6 +32450,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           9194660290
         ],
@@ -32476,6 +32489,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1743296708
         ],
@@ -32514,6 +32528,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1675168086
         ],
@@ -32552,6 +32567,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           26299406
         ],
@@ -32602,6 +32618,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9356627340
         ],
@@ -32648,6 +32665,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #2 -> Road #3"
+        ],
         "osm_node_ids": [
           26109193
         ],
@@ -32702,6 +32722,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #17 -> Road #595"
+        ],
         "osm_node_ids": [
           342605804
         ],
@@ -32748,6 +32771,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5924236780
         ],
@@ -32798,6 +32822,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5924236779
         ],
@@ -32840,6 +32865,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342605802
         ],
@@ -32890,6 +32916,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482131
         ],
@@ -32948,6 +32975,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482132
         ],
@@ -33006,6 +33034,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #122 -> Road #396"
+        ],
         "osm_node_ids": [
           26298428
         ],
@@ -33044,6 +33075,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6022850280
         ],
@@ -33090,6 +33122,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6022850276
         ],
@@ -33128,6 +33161,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           21133749
         ],
@@ -33186,6 +33220,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #121 -> Road #122"
+        ],
         "osm_node_ids": [
           8481692879
         ],
@@ -33236,6 +33273,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #104 -> Road #125",
+          "Road #104 -> Road #121",
+          "Road #125 -> Road #104",
+          "Road #125 -> Road #121"
+        ],
         "osm_node_ids": [
           342579616
         ],
@@ -33298,6 +33341,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #120 -> Road #64",
+          "Road #120 -> Road #125",
+          "Road #64 -> Road #125",
+          "Road #125 -> Road #64"
+        ],
         "osm_node_ids": [
           26298426
         ],
@@ -33336,6 +33385,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419244
         ],
@@ -33374,6 +33424,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           6665254444
         ],
@@ -33412,6 +33463,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           320959866
         ],
@@ -33458,6 +33510,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9356627345
         ],
@@ -33512,6 +33565,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #36 -> Road #37"
+        ],
         "osm_node_ids": [
           320959868
         ],
@@ -33566,6 +33622,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           320959869
         ],
@@ -33604,6 +33661,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469689
         ],
@@ -33650,6 +33708,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5931863421
         ],
@@ -33688,6 +33747,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3219472273
         ],
@@ -33734,6 +33794,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469697
         ],
@@ -33780,6 +33841,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5931863420
         ],
@@ -33834,6 +33896,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5924236781
         ],
@@ -33892,6 +33955,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #264 -> Road #265"
+        ],
         "osm_node_ids": [
           26109190
         ],
@@ -33946,6 +34012,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5981573959
         ],
@@ -33984,6 +34051,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419245
         ],
@@ -34050,6 +34118,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482091
         ],
@@ -34116,6 +34185,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482136
         ],
@@ -34178,6 +34248,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5931863419
         ],
@@ -34236,6 +34307,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457095876
         ],
@@ -34290,6 +34362,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482101
         ],
@@ -34328,6 +34401,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3219472259
         ],
@@ -34374,6 +34448,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #265 -> Road #266"
+        ],
         "osm_node_ids": [
           5071469690
         ],
@@ -34428,6 +34505,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457095875
         ],
@@ -34466,6 +34544,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           317087692
         ],
@@ -34504,6 +34583,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457095874
         ],
@@ -34558,6 +34638,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6022850279
         ],
@@ -34612,6 +34693,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6022850278
         ],
@@ -34658,6 +34740,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           10440056
         ],
@@ -34696,6 +34779,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           320951154
         ],
@@ -34746,6 +34830,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #1 -> Road #2"
+        ],
         "osm_node_ids": [
           342529365
         ],
@@ -34792,6 +34879,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #595 -> Road #596"
+        ],
         "osm_node_ids": [
           342529363
         ],
@@ -34850,6 +34940,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #406 -> Road #838",
+          "Road #406 -> Road #407",
+          "Road #838 -> Road #407"
+        ],
         "osm_node_ids": [
           5728993687
         ],
@@ -34904,6 +34999,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457095868
         ],
@@ -34958,6 +35054,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5931863422
         ],
@@ -35012,6 +35109,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457095867
         ],
@@ -35070,6 +35168,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482098
         ],
@@ -35132,6 +35231,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482090
         ],
@@ -35194,6 +35294,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482128
         ],
@@ -35264,6 +35365,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5931863423
         ],
@@ -35310,6 +35412,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #84 -> Road #406",
+          "Road #405 -> Road #84",
+          "Road #405 -> Road #406"
+        ],
         "osm_node_ids": [
           320959867
         ],
@@ -35356,6 +35463,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8892765835
         ],
@@ -35410,6 +35518,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482100
         ],
@@ -35460,6 +35569,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #0 -> Road #1"
+        ],
         "osm_node_ids": [
           4457095870
         ],
@@ -35518,6 +35630,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #266 -> Road #267"
+        ],
         "osm_node_ids": [
           5071469692
         ],
@@ -35556,6 +35671,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           6146456169
         ],
@@ -35602,6 +35718,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8892765836
         ],
@@ -35648,6 +35765,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469702
         ],
@@ -35690,6 +35808,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #403 -> Road #405"
+        ],
         "osm_node_ids": [
           5728993720
         ],
@@ -35736,6 +35857,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482089
         ],
@@ -35782,6 +35904,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482093
         ],
@@ -35828,6 +35951,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #37 -> Road #150"
+        ],
         "osm_node_ids": [
           9319419230
         ],
@@ -35870,6 +35996,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469698
         ],
@@ -35908,6 +36035,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #325 -> Road #402"
+        ],
         "osm_node_ids": [
           4364076651
         ],
@@ -35962,6 +36092,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #323 -> Road #325"
+        ],
         "osm_node_ids": [
           301689294
         ],
@@ -36004,6 +36137,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           4457813299
         ],
@@ -36054,6 +36188,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469703
         ],
@@ -36112,6 +36247,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419240
         ],
@@ -36166,6 +36302,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6979945558
         ],
@@ -36212,6 +36349,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482097
         ],
@@ -36262,6 +36400,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482092
         ],
@@ -36316,6 +36455,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640864
         ],
@@ -36366,6 +36506,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6001482094
         ],
@@ -36428,6 +36569,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5071469699
         ],
@@ -36474,6 +36616,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #402 -> Road #151",
+          "Road #150 -> Road #151"
+        ],
         "osm_node_ids": [
           5728993691
         ],
@@ -36532,6 +36678,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640857
         ],
@@ -36570,6 +36717,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3219472271
         ],
@@ -36616,6 +36764,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #267 -> Road #268"
+        ],
         "osm_node_ids": [
           301689323
         ],
@@ -36666,6 +36817,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #396 -> Road #20",
+          "Road #396 -> Road #398"
+        ],
         "osm_node_ids": [
           26298429
         ],
@@ -36716,6 +36871,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #859 -> Road #81"
+        ],
         "osm_node_ids": [
           320951161
         ],
@@ -36754,6 +36912,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3219472282
         ],
@@ -36812,6 +36971,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #20 -> Road #21"
+        ],
         "osm_node_ids": [
           9258530380
         ],
@@ -36866,6 +37028,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640866
         ],
@@ -36928,6 +37091,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640867
         ],
@@ -36990,6 +37154,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640868
         ],
@@ -37044,6 +37209,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640869
         ],
@@ -37086,6 +37252,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #459 -> Road #403",
+          "Road #151 -> Road #459",
+          "Road #151 -> Road #403"
+        ],
         "osm_node_ids": [
           9319419235
         ],
@@ -37144,6 +37315,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #64 -> Road #62",
+          "Road #62 -> Road #64",
+          "Road #21 -> Road #64",
+          "Road #21 -> Road #62"
+        ],
         "osm_node_ids": [
           26298424
         ],
@@ -37202,6 +37379,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #31 -> Road #32"
+        ],
         "osm_node_ids": [
           6047091983
         ],
@@ -37248,6 +37428,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #857 -> Road #859",
+          "Road #857 -> Road #31"
+        ],
         "osm_node_ids": [
           342579502
         ],
@@ -37306,6 +37490,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640881
         ],
@@ -37376,6 +37561,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640883
         ],
@@ -37446,6 +37632,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640882
         ],
@@ -37504,6 +37691,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640880
         ],
@@ -37554,6 +37742,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #32 -> Road #33"
+        ],
         "osm_node_ids": [
           8892765838
         ],
@@ -37592,6 +37783,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4457813310
         ],
@@ -37650,6 +37842,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640863
         ],
@@ -37716,6 +37909,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640862
         ],
@@ -37786,6 +37980,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640861
         ],
@@ -37844,6 +38039,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640860
         ],
@@ -37882,6 +38078,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           9316506539
         ],
@@ -37940,6 +38137,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #826 -> Road #269",
+          "Road #268 -> Road #826",
+          "Road #268 -> Road #269"
+        ],
         "osm_node_ids": [
           9316506541
         ],
@@ -37994,6 +38196,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #89 -> Road #34",
+          "Road #33 -> Road #34",
+          "Road #33 -> Road #89"
+        ],
         "osm_node_ids": [
           320998072
         ],
@@ -38044,6 +38251,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #398 -> Road #18",
+          "Road #398 -> Road #410"
+        ],
         "osm_node_ids": [
           26298430
         ],
@@ -38090,6 +38301,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #105 -> Road #857",
+          "Road #856 -> Road #857",
+          "Road #856 -> Road #105"
+        ],
         "osm_node_ids": [
           342579620
         ],
@@ -38152,6 +38368,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #106 -> Road #105",
+          "Road #105 -> Road #106"
+        ],
         "osm_node_ids": [
           6047609624
         ],
@@ -38198,6 +38418,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #18 -> Road #19",
+          "Road #18 -> Road #99"
+        ],
         "osm_node_ids": [
           342579576
         ],
@@ -38252,6 +38476,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640871
         ],
@@ -38322,6 +38547,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640873
         ],
@@ -38392,6 +38618,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640872
         ],
@@ -38450,6 +38677,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640870
         ],
@@ -38500,6 +38728,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #855 -> Road #856"
+        ],
         "osm_node_ids": [
           8450014339
         ],
@@ -38538,6 +38769,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9258530382
         ],
@@ -38592,6 +38824,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #62 -> Road #61",
+          "Road #61 -> Road #62",
+          "Road #19 -> Road #62",
+          "Road #19 -> Road #61"
+        ],
         "osm_node_ids": [
           26298425
         ],
@@ -38654,6 +38892,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264671922
         ],
@@ -38696,6 +38935,11 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #459 -> Road #867",
+          "Road #867 -> Road #459",
+          "Road #34 -> Road #867"
+        ],
         "osm_node_ids": [
           9319419234
         ],
@@ -38734,6 +38978,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #569 -> Road #460"
+        ],
         "osm_node_ids": [
           6101189538
         ],
@@ -38792,6 +39039,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640874
         ],
@@ -38834,6 +39082,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #400 -> Road #855"
+        ],
         "osm_node_ids": [
           26660405
         ],
@@ -38880,6 +39131,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640858
         ],
@@ -38942,6 +39194,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640875
         ],
@@ -39004,6 +39257,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640884
         ],
@@ -39042,6 +39296,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419252
         ],
@@ -39088,6 +39343,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #41 -> Road #42"
+        ],
         "osm_node_ids": [
           7924241274
         ],
@@ -39122,6 +39380,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942276
         ],
@@ -39172,6 +39431,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #460 -> Road #107",
+          "Road #269 -> Road #107"
+        ],
         "osm_node_ids": [
           26109191
         ],
@@ -39218,6 +39481,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #410 -> Road #247",
+          "Road #410 -> Road #411"
+        ],
         "osm_node_ids": [
           2014304918
         ],
@@ -39256,6 +39523,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4500478004
         ],
@@ -39294,6 +39562,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942277
         ],
@@ -39340,6 +39609,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264671921
         ],
@@ -39386,6 +39656,12 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #867 -> Road #333",
+          "Road #867 -> Road #868",
+          "Road #868 -> Road #867",
+          "Road #868 -> Road #333"
+        ],
         "osm_node_ids": [
           9319419229
         ],
@@ -39424,6 +39700,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           7592482435
         ],
@@ -39462,6 +39739,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #333 -> Road #335"
+        ],
         "osm_node_ids": [
           4457813307
         ],
@@ -39516,6 +39796,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640877
         ],
@@ -39554,6 +39835,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           4457813308
         ],
@@ -39612,6 +39894,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640876
         ],
@@ -39682,6 +39965,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640879
         ],
@@ -39752,6 +40036,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640878
         ],
@@ -39802,6 +40087,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #561 -> Road #569",
+          "Road #560 -> Road #569"
+        ],
         "osm_node_ids": [
           6584937084
         ],
@@ -39840,6 +40129,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #415 -> Road #227"
+        ],
         "osm_node_ids": [
           1152092776
         ],
@@ -39894,6 +40186,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #40 -> Road #400",
+          "Road #40 -> Road #41"
+        ],
         "osm_node_ids": [
           320943570
         ],
@@ -39948,6 +40244,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5518536456
         ],
@@ -39998,6 +40295,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8450014342
         ],
@@ -40056,6 +40354,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640865
         ],
@@ -40114,6 +40413,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8481640859
         ],
@@ -40172,6 +40472,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6979945559
         ],
@@ -40222,6 +40523,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #107 -> Road #108"
+        ],
         "osm_node_ids": [
           342579512
         ],
@@ -40272,6 +40576,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #247 -> Road #248"
+        ],
         "osm_node_ids": [
           2014304923
         ],
@@ -40322,6 +40629,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942269
         ],
@@ -40368,6 +40676,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #868 -> Road #869",
+          "Road #869 -> Road #868"
+        ],
         "osm_node_ids": [
           6979945557
         ],
@@ -40418,6 +40730,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #411 -> Road #412"
+        ],
         "osm_node_ids": [
           2014304915
         ],
@@ -40472,6 +40787,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5518536453
         ],
@@ -40518,6 +40834,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304919
         ],
@@ -40572,6 +40889,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #114 -> Road #115",
+          "Road #248 -> Road #115"
+        ],
         "osm_node_ids": [
           9791699
         ],
@@ -40626,6 +40947,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #99 -> Road #116",
+          "Road #115 -> Road #116"
+        ],
         "osm_node_ids": [
           342579578
         ],
@@ -40676,6 +41001,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942271
         ],
@@ -40722,6 +41048,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #690 -> Road #117",
+          "Road #116 -> Road #117",
+          "Road #116 -> Road #690"
+        ],
         "osm_node_ids": [
           800488938
         ],
@@ -40776,6 +41107,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #113 -> Road #114"
+        ],
         "osm_node_ids": [
           2014304920
         ],
@@ -40822,6 +41156,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #226 -> Road #415"
+        ],
         "osm_node_ids": [
           1743212076
         ],
@@ -40876,6 +41213,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #412 -> Road #113",
+          "Road #412 -> Road #413",
+          "Road #112 -> Road #113",
+          "Road #112 -> Road #413"
+        ],
         "osm_node_ids": [
           1675168064
         ],
@@ -40914,6 +41257,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           320998081
         ],
@@ -40964,6 +41308,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #111 -> Road #112"
+        ],
         "osm_node_ids": [
           2014304911
         ],
@@ -41006,6 +41353,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #135 -> Road #702"
+        ],
         "osm_node_ids": [
           358163080
         ],
@@ -41048,6 +41398,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #844 -> Road #118",
+          "Road #117 -> Road #118",
+          "Road #117 -> Road #844"
+        ],
         "osm_node_ids": [
           9319419287
         ],
@@ -41114,6 +41469,10 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #461 -> Road #561",
+          "Road #461 -> Road #560"
+        ],
         "osm_node_ids": [
           6584937015
         ],
@@ -41152,6 +41511,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #690 -> Road #691",
+          "Road #691 -> Road #690"
+        ],
         "osm_node_ids": [
           7261942264
         ],
@@ -41194,6 +41557,10 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #715 -> Road #712",
+          "Road #596 -> Road #712"
+        ],
         "osm_node_ids": [
           4540786888
         ],
@@ -41236,6 +41603,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #108 -> Road #605"
+        ],
         "osm_node_ids": [
           342579538
         ],
@@ -41278,6 +41648,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #712 -> Road #111",
+          "Road #712 -> Road #713"
+        ],
         "osm_node_ids": [
           643946
         ],
@@ -41316,6 +41690,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           7261942280
         ],
@@ -41362,6 +41737,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #100 -> Road #119",
+          "Road #118 -> Road #119",
+          "Road #118 -> Road #100"
+        ],
         "osm_node_ids": [
           342579580
         ],
@@ -41416,6 +41796,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4365671270
         ],
@@ -41470,6 +41851,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304912
         ],
@@ -41520,6 +41902,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942266
         ],
@@ -41558,6 +41941,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #703 -> Road #137"
+        ],
         "osm_node_ids": [
           358163085
         ],
@@ -41600,6 +41986,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #61 -> Road #336",
+          "Road #336 -> Road #61",
+          "Road #119 -> Road #61",
+          "Road #119 -> Road #336"
+        ],
         "osm_node_ids": [
           9791722
         ],
@@ -41654,6 +42046,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #413 -> Road #414"
+        ],
         "osm_node_ids": [
           2014304914
         ],
@@ -41692,6 +42087,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           7924269285
         ],
@@ -41738,6 +42134,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #337 -> Road #336",
+          "Road #336 -> Road #337"
+        ],
         "osm_node_ids": [
           370191923
         ],
@@ -41784,6 +42184,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #717 -> Road #0",
+          "Road #717 -> Road #715"
+        ],
         "osm_node_ids": [
           26298423
         ],
@@ -41834,6 +42238,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942265
         ],
@@ -41888,6 +42293,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #713 -> Road #714"
+        ],
         "osm_node_ids": [
           2014304908
         ],
@@ -41926,6 +42334,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           342579626
         ],
@@ -41964,6 +42373,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309394782
         ],
@@ -42002,6 +42412,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6584937053
         ],
@@ -42060,6 +42471,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342579554
         ],
@@ -42114,6 +42526,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304895
         ],
@@ -42160,6 +42573,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #414 -> Road #744",
+          "Road #714 -> Road #744"
+        ],
         "osm_node_ids": [
           8273166694
         ],
@@ -42198,6 +42615,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6428423986
         ],
@@ -42244,6 +42662,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6584827765
         ],
@@ -42298,6 +42717,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9258530387
         ],
@@ -42340,6 +42760,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #744 -> Road #4",
+          "Road #744 -> Road #526"
+        ],
         "osm_node_ids": [
           643945
         ],
@@ -42382,6 +42806,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #716 -> Road #461",
+          "Road #716 -> Road #717"
+        ],
         "osm_node_ids": [
           6111971409
         ],
@@ -42420,6 +42848,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           369772541
         ],
@@ -42470,6 +42899,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6500031458
         ],
@@ -42512,6 +42942,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #710 -> Road #716",
+          "Road #144 -> Road #716"
+        ],
         "osm_node_ids": [
           643907
         ],
@@ -42566,6 +43000,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4365671268
         ],
@@ -42608,6 +43043,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #153 -> Road #226"
+        ],
         "osm_node_ids": [
           1152092921
         ],
@@ -42650,6 +43088,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #605 -> Road #603"
+        ],
         "osm_node_ids": [
           342579667
         ],
@@ -42692,6 +43133,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #278 -> Road #135"
+        ],
         "osm_node_ids": [
           50021952
         ],
@@ -42738,6 +43182,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939967
         ],
@@ -42788,6 +43233,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304855
         ],
@@ -42830,6 +43276,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #137 -> Road #455"
+        ],
         "osm_node_ids": [
           21099344
         ],
@@ -42888,6 +43337,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9258530385
         ],
@@ -42934,6 +43384,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939950
         ],
@@ -42992,6 +43443,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #869 -> Road #524",
+          "Road #524 -> Road #869"
+        ],
         "osm_node_ids": [
           342579666
         ],
@@ -43046,6 +43501,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6500031459
         ],
@@ -43084,6 +43540,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           9319419289
         ],
@@ -43122,6 +43579,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1743212077
         ],
@@ -43172,6 +43630,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304864
         ],
@@ -43214,6 +43673,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939977
         ],
@@ -43268,6 +43728,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #143 -> Road #144"
+        ],
         "osm_node_ids": [
           2014304856
         ],
@@ -43318,6 +43781,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #39 -> Road #40"
+        ],
         "osm_node_ids": [
           26660637
         ],
@@ -43376,6 +43842,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264671916
         ],
@@ -43426,6 +43893,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           320943573
         ],
@@ -43480,6 +43948,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #709 -> Road #710"
+        ],
         "osm_node_ids": [
           2014304862
         ],
@@ -43538,6 +44009,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4365671272
         ],
@@ -43588,6 +44060,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437041
         ],
@@ -43650,6 +44123,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #603 -> Road #145"
+        ],
         "osm_node_ids": [
           8174077587
         ],
@@ -43700,6 +44176,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2014304901
         ],
@@ -43738,6 +44215,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7261942252
         ],
@@ -43788,6 +44266,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #102 -> Road #101",
+          "Road #102 -> Road #100",
+          "Road #101 -> Road #102",
+          "Road #101 -> Road #100",
+          "Road #100 -> Road #102",
+          "Road #100 -> Road #101"
+        ],
         "osm_node_ids": [
           342579586
         ],
@@ -43842,6 +44328,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939971
         ],
@@ -43884,6 +44371,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939969
         ],
@@ -43934,6 +44422,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #4 -> Road #5"
+        ],
         "osm_node_ids": [
           7237437075
         ],
@@ -43988,6 +44479,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8174077588
         ],
@@ -44042,6 +44534,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8740550411
         ],
@@ -44092,6 +44585,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #524 -> Road #525",
+          "Road #525 -> Road #524"
+        ],
         "osm_node_ids": [
           301689309
         ],
@@ -44146,6 +44643,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #526 -> Road #527"
+        ],
         "osm_node_ids": [
           250348721
         ],
@@ -44192,6 +44692,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #5 -> Road #350"
+        ],
         "osm_node_ids": [
           4833244388
         ],
@@ -44234,6 +44737,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #142 -> Road #143",
+          "Road #145 -> Road #143"
+        ],
         "osm_node_ids": [
           26300437
         ],
@@ -44284,6 +44791,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452444915
         ],
@@ -44322,6 +44830,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437077
         ],
@@ -44368,6 +44877,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1601683577
         ],
@@ -44406,6 +44916,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6665254427
         ],
@@ -44456,6 +44967,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437048
         ],
@@ -44514,6 +45026,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           320943575
         ],
@@ -44560,6 +45073,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #38 -> Road #39"
+        ],
         "osm_node_ids": [
           320943572
         ],
@@ -44606,6 +45122,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6665254428
         ],
@@ -44652,6 +45169,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #527 -> Road #711",
+          "Road #490 -> Road #711"
+        ],
         "osm_node_ids": [
           6211583013
         ],
@@ -44706,6 +45227,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #489 -> Road #490"
+        ],
         "osm_node_ids": [
           6211583020
         ],
@@ -44752,6 +45276,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #711 -> Road #8",
+          "Road #711 -> Road #709"
+        ],
         "osm_node_ids": [
           26298420
         ],
@@ -44802,6 +45330,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #103 -> Road #102",
+          "Road #102 -> Road #103"
+        ],
         "osm_node_ids": [
           342579601
         ],
@@ -44856,6 +45388,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #488 -> Road #489"
+        ],
         "osm_node_ids": [
           6211583022
         ],
@@ -44910,6 +45445,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #8 -> Road #483",
+          "Road #349 -> Road #483"
+        ],
         "osm_node_ids": [
           1022749752
         ],
@@ -44948,6 +45487,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939975
         ],
@@ -44990,6 +45530,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           60197213
         ],
@@ -45032,6 +45573,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3193487666
         ],
@@ -45082,6 +45624,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #348 -> Road #349"
+        ],
         "osm_node_ids": [
           5452444914
         ],
@@ -45124,6 +45669,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #487 -> Road #348"
+        ],
         "osm_node_ids": [
           682218116
         ],
@@ -45182,6 +45730,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #141 -> Road #142"
+        ],
         "osm_node_ids": [
           2014304851
         ],
@@ -45220,6 +45771,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           342579609
         ],
@@ -45262,6 +45814,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437116
         ],
@@ -45320,6 +45873,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           9319419267
         ],
@@ -45358,6 +45912,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237435070
         ],
@@ -45404,6 +45959,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #483 -> Road #484"
+        ],
         "osm_node_ids": [
           5452456321
         ],
@@ -45438,6 +45996,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437070
         ],
@@ -45484,6 +46043,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #845 -> Road #351",
+          "Road #350 -> Road #845",
+          "Road #350 -> Road #351"
+        ],
         "osm_node_ids": [
           9319419293
         ],
@@ -45530,6 +46094,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452444913
         ],
@@ -45572,6 +46137,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #491 -> Road #487"
+        ],
         "osm_node_ids": [
           26298432
         ],
@@ -45626,6 +46194,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           2275824794
         ],
@@ -45676,6 +46245,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452444908
         ],
@@ -45726,6 +46296,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1606819535
         ],
@@ -45776,6 +46347,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452444895
         ],
@@ -45838,6 +46410,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309354662
         ],
@@ -45888,6 +46461,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #704 -> Road #141"
+        ],
         "osm_node_ids": [
           26660391
         ],
@@ -45946,6 +46522,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #484 -> Road #485"
+        ],
         "osm_node_ids": [
           8174077586
         ],
@@ -45996,6 +46575,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452456322
         ],
@@ -46042,6 +46622,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1675168026
         ],
@@ -46104,6 +46685,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #149 -> Road #704",
+          "Road #149 -> Road #554"
+        ],
         "osm_node_ids": [
           5452444896
         ],
@@ -46154,6 +46739,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437002
         ],
@@ -46192,6 +46778,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237436999
         ],
@@ -46246,6 +46833,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309407701
         ],
@@ -46300,6 +46888,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #525 -> Road #401"
+        ],
         "osm_node_ids": [
           320943571
         ],
@@ -46354,6 +46945,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8740550412
         ],
@@ -46412,6 +47004,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437001
         ],
@@ -46450,6 +47043,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309394776
         ],
@@ -46496,6 +47090,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378763
         ],
@@ -46534,6 +47129,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           342579596
         ],
@@ -46588,6 +47184,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237436998
         ],
@@ -46626,6 +47223,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309407702
         ],
@@ -46680,6 +47278,10 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #485 -> Road #68",
+          "Road #554 -> Road #68"
+        ],
         "osm_node_ids": [
           5452444899
         ],
@@ -46726,6 +47328,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237435065
         ],
@@ -46780,6 +47383,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237436997
         ],
@@ -46826,6 +47430,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378764
         ],
@@ -46872,6 +47477,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342579521
         ],
@@ -46918,6 +47524,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237435066
         ],
@@ -46964,6 +47571,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378765
         ],
@@ -47010,6 +47618,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #401 -> Road #49",
+          "Road #401 -> Road #408"
+        ],
         "osm_node_ids": [
           643911
         ],
@@ -47056,6 +47668,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           320943615
         ],
@@ -47102,6 +47715,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5452444904
         ],
@@ -47156,6 +47770,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237436996
         ],
@@ -47202,6 +47817,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #157 -> Road #491",
+          "Road #157 -> Road #488"
+        ],
         "osm_node_ids": [
           659971029
         ],
@@ -47252,6 +47871,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342579517
         ],
@@ -47298,6 +47918,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #148 -> Road #149"
+        ],
         "osm_node_ids": [
           319558919
         ],
@@ -47348,6 +47971,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #68 -> Road #69"
+        ],
         "osm_node_ids": [
           5452444905
         ],
@@ -47390,6 +48016,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #140 -> Road #153",
+          "Road #140 -> Road #278"
+        ],
         "osm_node_ids": [
           370191920
         ],
@@ -47428,6 +48058,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378766
         ],
@@ -47466,6 +48097,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309354657
         ],
@@ -47728,6 +48360,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6216919223
         ],
@@ -47778,6 +48411,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237435071
         ],
@@ -47832,6 +48466,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4029217614
         ],
@@ -47870,6 +48505,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237435069
         ],
@@ -47920,6 +48556,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #221 -> Road #222"
+        ],
         "osm_node_ids": [
           8312439326
         ],
@@ -47958,6 +48597,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8740550413
         ],
@@ -47996,6 +48636,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419273
         ],
@@ -48050,6 +48691,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9319419274
         ],
@@ -48092,6 +48734,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264671914
         ],
@@ -48142,6 +48785,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #49 -> Road #50"
+        ],
         "osm_node_ids": [
           301689312
         ],
@@ -48404,6 +49050,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6596024418
         ],
@@ -48458,6 +49105,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           320943606
         ],
@@ -48504,6 +49152,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8312439329
         ],
@@ -48542,6 +49191,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939939
         ],
@@ -48604,6 +49254,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5728993838
         ],
@@ -48646,6 +49297,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #351 -> Road #352"
+        ],
         "osm_node_ids": [
           4833244389
         ],
@@ -48696,6 +49350,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9316506598
         ],
@@ -48750,6 +49405,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #408 -> Road #409"
+        ],
         "osm_node_ids": [
           1877939942
         ],
@@ -48788,6 +49446,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378768
         ],
@@ -48842,6 +49501,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1877939944
         ],
@@ -48892,6 +49552,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583005
         ],
@@ -48934,6 +49595,11 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #200 -> Road #706",
+          "Road #200 -> Road #157",
+          "Road #706 -> Road #157"
+        ],
         "osm_node_ids": [
           643951
         ],
@@ -48988,6 +49654,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #7 -> Road #148",
+          "Road #50 -> Road #148"
+        ],
         "osm_node_ids": [
           301689321
         ],
@@ -49026,6 +49696,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1675168038
         ],
@@ -49068,6 +49739,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           60197210
         ],
@@ -49110,6 +49782,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3193487669
         ],
@@ -49148,6 +49821,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6665254450
         ],
@@ -49194,6 +49868,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #69 -> Road #211",
+          "Road #694 -> Road #211"
+        ],
         "osm_node_ids": [
           26661432
         ],
@@ -49256,6 +49934,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #352 -> Road #353"
+        ],
         "osm_node_ids": [
           643950
         ],
@@ -49306,6 +49987,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9316506597
         ],
@@ -49356,6 +50038,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6665254454
         ],
@@ -49410,6 +50093,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #6 -> Road #7"
+        ],
         "osm_node_ids": [
           643906
         ],
@@ -49456,6 +50142,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264670253
         ],
@@ -49494,6 +50181,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           1606959655
         ],
@@ -49540,6 +50228,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #222 -> Road #202",
+          "Road #222 -> Road #223"
+        ],
         "osm_node_ids": [
           1591373171
         ],
@@ -49598,6 +50290,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #693 -> Road #694"
+        ],
         "osm_node_ids": [
           6264670255
         ],
@@ -49652,6 +50347,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #164 -> Road #165"
+        ],
         "osm_node_ids": [
           320943617
         ],
@@ -49714,6 +50412,11 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #465 -> Road #6",
+          "Road #409 -> Road #6",
+          "Road #409 -> Road #669"
+        ],
         "osm_node_ids": [
           643914
         ],
@@ -49756,6 +50459,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           7105816299
         ],
@@ -49794,6 +50498,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8312439373
         ],
@@ -49856,6 +50561,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #163 -> Road #465"
+        ],
         "osm_node_ids": [
           5728993833
         ],
@@ -49898,6 +50606,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #277 -> Road #140"
+        ],
         "osm_node_ids": [
           9823112
         ],
@@ -49956,6 +50667,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #199 -> Road #200"
+        ],
         "osm_node_ids": [
           1152092781
         ],
@@ -49998,6 +50712,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #697 -> Road #693"
+        ],
         "osm_node_ids": [
           26661455
         ],
@@ -50052,6 +50769,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437091
         ],
@@ -50090,6 +50808,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8990249596
         ],
@@ -50140,6 +50859,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #211 -> Road #212"
+        ],
         "osm_node_ids": [
           643852
         ],
@@ -50190,6 +50912,10 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #705 -> Road #706",
+          "Road #706 -> Road #705"
+        ],
         "osm_node_ids": [
           1152092841
         ],
@@ -50240,6 +50966,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437093
         ],
@@ -50286,6 +51013,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1591373154
         ],
@@ -50332,6 +51060,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #671 -> Road #164",
+          "Road #87 -> Road #161",
+          "Road #87 -> Road #164"
+        ],
         "osm_node_ids": [
           682264890
         ],
@@ -50378,6 +51111,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #161 -> Road #162"
+        ],
         "osm_node_ids": [
           26661443
         ],
@@ -50416,6 +51152,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583011
         ],
@@ -50466,6 +51203,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #676 -> Road #87"
+        ],
         "osm_node_ids": [
           320943620
         ],
@@ -50520,6 +51260,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #212 -> Road #213"
+        ],
         "osm_node_ids": [
           6905278501
         ],
@@ -50562,6 +51305,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #162 -> Road #163"
+        ],
         "osm_node_ids": [
           26661442
         ],
@@ -50616,6 +51362,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #134 -> Road #670",
+          "Road #615 -> Road #670"
+        ],
         "osm_node_ids": [
           5728993836
         ],
@@ -50674,6 +51424,13 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #213 -> Road #404",
+          "Road #213 -> Road #134",
+          "Road #669 -> Road #417",
+          "Road #669 -> Road #404",
+          "Road #669 -> Road #134"
+        ],
         "osm_node_ids": [
           342628235
         ],
@@ -50736,6 +51493,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #455 -> Road #456"
+        ],
         "osm_node_ids": [
           6740104094
         ],
@@ -50798,6 +51558,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #576 -> Road #216",
+          "Road #216 -> Road #576"
+        ],
         "osm_node_ids": [
           1606959629
         ],
@@ -50864,6 +51628,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #202 -> Road #203"
+        ],
         "osm_node_ids": [
           1591373175
         ],
@@ -50906,6 +51673,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3672602007
         ],
@@ -50952,6 +51720,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9258530363
         ],
@@ -50990,6 +51759,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6740071784
         ],
@@ -51028,6 +51798,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437092
         ],
@@ -51074,6 +51845,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6905278494
         ],
@@ -51136,6 +51908,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #223 -> Road #224"
+        ],
         "osm_node_ids": [
           6935272506
         ],
@@ -51174,6 +51949,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6905278499
         ],
@@ -51228,6 +52004,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #670 -> Road #671"
+        ],
         "osm_node_ids": [
           26661426
         ],
@@ -51266,6 +52045,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6905278500
         ],
@@ -51304,6 +52084,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           7237437098
         ],
@@ -51342,6 +52123,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437094
         ],
@@ -51400,6 +52182,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8990249594
         ],
@@ -51454,6 +52237,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #696 -> Road #860",
+          "Road #696 -> Road #697",
+          "Road #860 -> Road #697"
+        ],
         "osm_node_ids": [
           9740274255
         ],
@@ -51508,6 +52296,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #216 -> Road #215",
+          "Road #215 -> Road #216"
+        ],
         "osm_node_ids": [
           6596024419
         ],
@@ -51566,6 +52358,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #404 -> Road #528",
+          "Road #404 -> Road #614"
+        ],
         "osm_node_ids": [
           5728993707
         ],
@@ -51632,6 +52428,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #215 -> Road #214",
+          "Road #214 -> Road #215"
+        ],
         "osm_node_ids": [
           6596024424
         ],
@@ -51694,6 +52494,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6935272510
         ],
@@ -51732,6 +52533,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7241259893
         ],
@@ -51770,6 +52572,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7237437096
         ],
@@ -51824,6 +52627,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #299 -> Road #198",
+          "Road #299 -> Road #705",
+          "Road #198 -> Road #705",
+          "Road #705 -> Road #198"
+        ],
         "osm_node_ids": [
           1569783677
         ],
@@ -51862,6 +52671,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           9316506599
         ],
@@ -51916,6 +52726,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #417 -> Road #418"
+        ],
         "osm_node_ids": [
           6905278495
         ],
@@ -51962,6 +52775,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #214 -> Road #696",
+          "Road #695 -> Road #214",
+          "Road #695 -> Road #696"
+        ],
         "osm_node_ids": [
           26661454
         ],
@@ -52012,6 +52830,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #224 -> Road #354",
+          "Road #224 -> Road #225",
+          "Road #353 -> Road #354",
+          "Road #353 -> Road #225"
+        ],
         "osm_node_ids": [
           9823132
         ],
@@ -52062,6 +52886,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #203 -> Road #204"
+        ],
         "osm_node_ids": [
           6935272509
         ],
@@ -52120,6 +52947,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #577 -> Road #576",
+          "Road #576 -> Road #577"
+        ],
         "osm_node_ids": [
           8990249593
         ],
@@ -52178,6 +53009,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #354 -> Road #355"
+        ],
         "osm_node_ids": [
           1284137007
         ],
@@ -52228,6 +53062,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5728993834
         ],
@@ -52282,6 +53117,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378781
         ],
@@ -52332,6 +53168,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583009
         ],
@@ -52382,6 +53219,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #860 -> Road #861",
+          "Road #860 -> Road #862",
+          "Road #861 -> Road #860",
+          "Road #861 -> Road #862",
+          "Road #862 -> Road #860",
+          "Road #862 -> Road #861"
+        ],
         "osm_node_ids": [
           9740274258
         ],
@@ -52428,6 +53273,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #355 -> Road #356",
+          "Road #204 -> Road #356"
+        ],
         "osm_node_ids": [
           1591373192
         ],
@@ -52466,6 +53315,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           7241259894
         ],
@@ -52508,6 +53358,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #456 -> Road #298"
+        ],
         "osm_node_ids": [
           358204009
         ],
@@ -52558,6 +53411,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583008
         ],
@@ -52608,6 +53462,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264670275
         ],
@@ -52646,6 +53501,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           9740274265
         ],
@@ -52708,6 +53564,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #225 -> Road #199",
+          "Road #346 -> Road #199"
+        ],
         "osm_node_ids": [
           3381506666
         ],
@@ -52766,6 +53626,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #345 -> Road #346"
+        ],
         "osm_node_ids": [
           1284137095
         ],
@@ -52832,6 +53695,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211582994
         ],
@@ -52886,6 +53750,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583002
         ],
@@ -52932,6 +53797,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #193 -> Road #194",
+          "Road #193 -> Road #181",
+          "Road #194 -> Road #193",
+          "Road #194 -> Road #181",
+          "Road #181 -> Road #193",
+          "Road #181 -> Road #194"
+        ],
         "osm_node_ids": [
           1296601330
         ],
@@ -52986,6 +53859,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #198 -> Road #193",
+          "Road #193 -> Road #198"
+        ],
         "osm_node_ids": [
           1569761300
         ],
@@ -53024,6 +53901,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264670280
         ],
@@ -53086,6 +53964,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #399 -> Road #299"
+        ],
         "osm_node_ids": [
           615978081
         ],
@@ -53132,6 +54013,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #528 -> Road #529"
+        ],
         "osm_node_ids": [
           6309354601
         ],
@@ -53186,6 +54070,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378757
         ],
@@ -53224,6 +54109,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1606959376
         ],
@@ -53270,6 +54156,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #160 -> Road #345"
+        ],
         "osm_node_ids": [
           1591373207
         ],
@@ -53316,6 +54205,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583003
         ],
@@ -53362,6 +54252,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378782
         ],
@@ -53400,6 +54291,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6596024422
         ],
@@ -53470,6 +54362,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1591373161
         ],
@@ -53508,6 +54401,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           7105816301
         ],
@@ -53562,6 +54456,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3672604268
         ],
@@ -53600,6 +54495,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           26298445
         ],
@@ -53654,6 +54550,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           4833244387
         ],
@@ -53700,6 +54597,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583004
         ],
@@ -53746,6 +54644,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1675168033
         ],
@@ -53784,6 +54683,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           26661419
         ],
@@ -53838,6 +54738,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3381506667
         ],
@@ -53876,6 +54777,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8674724110
         ],
@@ -53914,6 +54816,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           342579557
         ],
@@ -53952,6 +54855,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1606819521
         ],
@@ -54002,6 +54906,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3371780106
         ],
@@ -54040,6 +54945,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #529 -> Road #530"
+        ],
         "osm_node_ids": [
           1020737673
         ],
@@ -54098,6 +55006,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211582997
         ],
@@ -54136,6 +55045,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           5506378774
         ],
@@ -54186,6 +55096,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1591373158
         ],
@@ -54228,6 +55139,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1606959650
         ],
@@ -54286,6 +55198,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6596024421
         ],
@@ -54324,6 +55237,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           9740274263
         ],
@@ -54370,6 +55284,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #701 -> Road #277"
+        ],
         "osm_node_ids": [
           2165840661
         ],
@@ -54420,6 +55337,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342626328
         ],
@@ -54466,6 +55384,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378777
         ],
@@ -54508,6 +55427,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #614 -> Road #513"
+        ],
         "osm_node_ids": [
           6264670261
         ],
@@ -54554,6 +55476,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #155 -> Road #399"
+        ],
         "osm_node_ids": [
           1152092910
         ],
@@ -54616,6 +55541,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211582998
         ],
@@ -54662,6 +55588,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #129 -> Road #197",
+          "Road #129 -> Road #128",
+          "Road #197 -> Road #129",
+          "Road #197 -> Road #128",
+          "Road #128 -> Road #129",
+          "Road #128 -> Road #197"
+        ],
         "osm_node_ids": [
           342579559
         ],
@@ -54704,6 +55638,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378778
         ],
@@ -54746,6 +55681,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #15 -> Road #695"
+        ],
         "osm_node_ids": [
           5506378793
         ],
@@ -54784,6 +55722,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           26298442
         ],
@@ -54822,6 +55761,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           1591164975
         ],
@@ -54872,6 +55812,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378779
         ],
@@ -54934,6 +55875,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           26661446
         ],
@@ -54980,6 +55922,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1675168031
         ],
@@ -55026,6 +55969,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6309354609
         ],
@@ -55068,6 +56012,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #23 -> Road #22",
+          "Road #22 -> Road #23"
+        ],
         "osm_node_ids": [
           3381506663
         ],
@@ -55110,6 +56058,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #530 -> Road #865"
+        ],
         "osm_node_ids": [
           1020737641
         ],
@@ -55156,6 +56107,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           5506378761
         ],
@@ -55198,6 +56150,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6211583000
         ],
@@ -55236,6 +56189,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3381506664
         ],
@@ -55298,6 +56252,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #513 -> Road #514"
+        ],
         "osm_node_ids": [
           320943623
         ],
@@ -55348,6 +56305,11 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #514 -> Road #158",
+          "Road #166 -> Road #167",
+          "Road #166 -> Road #158"
+        ],
         "osm_node_ids": [
           659985459
         ],
@@ -55394,6 +56356,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #865 -> Road #597",
+          "Road #865 -> Road #44"
+        ],
         "osm_node_ids": [
           6905250281
         ],
@@ -55436,6 +56402,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           358204012
         ],
@@ -55494,6 +56461,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           342529324
         ],
@@ -55532,6 +56500,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5851965030
         ],
@@ -55574,6 +56543,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6665254462
         ],
@@ -55628,6 +56598,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #14 -> Road #92",
+          "Road #14 -> Road #15",
+          "Road #92 -> Road #15"
+        ],
         "osm_node_ids": [
           26661452
         ],
@@ -55666,6 +56641,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264559102
         ],
@@ -55704,6 +56680,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           342529328
         ],
@@ -55754,6 +56731,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #24 -> Road #23",
+          "Road #23 -> Road #24"
+        ],
         "osm_node_ids": [
           1591373193
         ],
@@ -55800,6 +56781,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #167 -> Road #168"
+        ],
         "osm_node_ids": [
           1020737603
         ],
@@ -55854,6 +56838,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #284 -> Road #374",
+          "Road #284 -> Road #283",
+          "Road #374 -> Road #284",
+          "Road #374 -> Road #283",
+          "Road #283 -> Road #284",
+          "Road #283 -> Road #374"
+        ],
         "osm_node_ids": [
           5506378752
         ],
@@ -55908,6 +56900,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           3371780107
         ],
@@ -55958,6 +56951,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #44 -> Road #45"
+        ],
         "osm_node_ids": [
           320943624
         ],
@@ -56012,6 +57008,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #303 -> Road #302",
+          "Road #303 -> Road #374",
+          "Road #302 -> Road #303",
+          "Road #302 -> Road #374",
+          "Road #374 -> Road #303",
+          "Road #374 -> Road #302"
+        ],
         "osm_node_ids": [
           5506378754
         ],
@@ -56058,6 +57062,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #418 -> Road #419"
+        ],
         "osm_node_ids": [
           8733041518
         ],
@@ -56104,6 +57111,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #858 -> Road #24",
+          "Road #24 -> Road #858"
+        ],
         "osm_node_ids": [
           7692244824
         ],
@@ -56150,6 +57161,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6665254467
         ],
@@ -56200,6 +57212,7 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8733041519
         ],
@@ -56250,6 +57263,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #302 -> Road #301",
+          "Road #301 -> Road #302"
+        ],
         "osm_node_ids": [
           5506378775
         ],
@@ -56304,6 +57321,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6264559092
         ],
@@ -56342,6 +57360,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           7241259895
         ],
@@ -56400,6 +57419,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           475070619
         ],
@@ -56450,6 +57470,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           475070618
         ],
@@ -56500,6 +57521,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #597 -> Road #598"
+        ],
         "osm_node_ids": [
           1020737577
         ],
@@ -56550,6 +57574,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #45 -> Road #171",
+          "Road #45 -> Road #46",
+          "Road #168 -> Road #171",
+          "Road #168 -> Road #46"
+        ],
         "osm_node_ids": [
           643851
         ],
@@ -56592,6 +57622,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #852 -> Road #25",
+          "Road #852 -> Road #858",
+          "Road #858 -> Road #25"
+        ],
         "osm_node_ids": [
           26298441
         ],
@@ -56630,6 +57665,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           1675168030
         ],
@@ -56692,6 +57728,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #16 -> Road #853",
+          "Road #16 -> Road #854",
+          "Road #419 -> Road #853",
+          "Road #419 -> Road #854"
+        ],
         "osm_node_ids": [
           5728993689
         ],
@@ -56746,6 +57788,17 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #98 -> Road #130",
+          "Road #98 -> Road #129",
+          "Road #130 -> Road #98",
+          "Road #130 -> Road #129",
+          "Road #293 -> Road #98",
+          "Road #293 -> Road #130",
+          "Road #293 -> Road #129",
+          "Road #129 -> Road #98",
+          "Road #129 -> Road #130"
+        ],
         "osm_node_ids": [
           342579565
         ],
@@ -56804,6 +57857,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #171 -> Road #172",
+          "Road #171 -> Road #866"
+        ],
         "osm_node_ids": [
           1020737601
         ],
@@ -56846,6 +57903,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8312439358
         ],
@@ -56888,6 +57946,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #280 -> Road #279",
+          "Road #853 -> Road #280",
+          "Road #853 -> Road #279"
+        ],
         "osm_node_ids": [
           3181227677
         ],
@@ -56926,6 +57989,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8660924478
         ],
@@ -56976,6 +58040,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #172 -> Road #173",
+          "Road #172 -> Road #599",
+          "Road #598 -> Road #173",
+          "Road #598 -> Road #599"
+        ],
         "osm_node_ids": [
           1606819527
         ],
@@ -57026,6 +58096,12 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #282 -> Road #14",
+          "Road #282 -> Road #280",
+          "Road #280 -> Road #14",
+          "Road #280 -> Road #282"
+        ],
         "osm_node_ids": [
           26661450
         ],
@@ -57084,6 +58160,9 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #173 -> Road #293"
+        ],
         "osm_node_ids": [
           478743247
         ],
@@ -57122,6 +58201,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           4361246658
         ],
@@ -57168,6 +58248,9 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #154 -> Road #16"
+        ],
         "osm_node_ids": [
           5728993713
         ],
@@ -57210,6 +58293,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #283 -> Road #179",
+          "Road #283 -> Road #282",
+          "Road #179 -> Road #283",
+          "Road #179 -> Road #282",
+          "Road #282 -> Road #283",
+          "Road #282 -> Road #179"
+        ],
         "osm_node_ids": [
           26661448
         ],
@@ -57272,6 +58363,20 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #301 -> Road #180",
+          "Road #301 -> Road #300",
+          "Road #301 -> Road #179",
+          "Road #180 -> Road #301",
+          "Road #180 -> Road #300",
+          "Road #180 -> Road #179",
+          "Road #300 -> Road #301",
+          "Road #300 -> Road #180",
+          "Road #300 -> Road #179",
+          "Road #179 -> Road #301",
+          "Road #179 -> Road #180",
+          "Road #179 -> Road #300"
+        ],
         "osm_node_ids": [
           4361246652
         ],
@@ -57322,6 +58427,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #187 -> Road #186",
+          "Road #187 -> Road #180",
+          "Road #186 -> Road #187",
+          "Road #186 -> Road #180",
+          "Road #180 -> Road #187",
+          "Road #180 -> Road #186"
+        ],
         "osm_node_ids": [
           394143337
         ],
@@ -57360,6 +58473,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8312439359
         ],
@@ -57398,6 +58512,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           4361246660
         ],
@@ -57436,6 +58551,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6584937059
         ],
@@ -57478,6 +58594,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #866 -> Road #228",
+          "Road #599 -> Road #228"
+        ],
         "osm_node_ids": [
           2377604550
         ],
@@ -57524,6 +58644,10 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #279 -> Road #416",
+          "Road #854 -> Road #416"
+        ],
         "osm_node_ids": [
           3181227681
         ],
@@ -57562,6 +58686,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           6584937067
         ],
@@ -57612,6 +58737,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8312439361
         ],
@@ -57658,6 +58784,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #196 -> Road #373",
+          "Road #196 -> Road #372",
+          "Road #373 -> Road #196",
+          "Road #373 -> Road #372",
+          "Road #372 -> Road #196",
+          "Road #372 -> Road #373"
+        ],
         "osm_node_ids": [
           394143340
         ],
@@ -57708,6 +58842,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #195 -> Road #304",
+          "Road #195 -> Road #196",
+          "Road #304 -> Road #195",
+          "Road #304 -> Road #196",
+          "Road #196 -> Road #195",
+          "Road #196 -> Road #304"
+        ],
         "osm_node_ids": [
           4361248196
         ],
@@ -57750,6 +58892,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #194 -> Road #188",
+          "Road #194 -> Road #195",
+          "Road #188 -> Road #194",
+          "Road #188 -> Road #195",
+          "Road #195 -> Road #194",
+          "Road #195 -> Road #188"
+        ],
         "osm_node_ids": [
           1296601030
         ],
@@ -57800,6 +58950,10 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [
+          "Road #185 -> Road #186",
+          "Road #186 -> Road #185"
+        ],
         "osm_node_ids": [
           4361246654
         ],
@@ -57838,6 +58992,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6665254468
         ],
@@ -57896,6 +59051,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Connection",
+        "movements": [],
         "osm_node_ids": [
           8312439368
         ],
@@ -57934,6 +59090,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           5506378742
         ],
@@ -57972,6 +59129,7 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Terminus",
+        "movements": [],
         "osm_node_ids": [
           5506378741
         ],
@@ -58018,6 +59176,14 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #304 -> Road #369",
+          "Road #304 -> Road #305",
+          "Road #369 -> Road #304",
+          "Road #369 -> Road #305",
+          "Road #305 -> Road #304",
+          "Road #305 -> Road #369"
+        ],
         "osm_node_ids": [
           5506378693
         ],
@@ -58056,6 +59222,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5335915830
         ],
@@ -58094,6 +59261,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           9892308679
         ],
@@ -58132,6 +59300,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6584937066
         ],
@@ -58170,6 +59339,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           762669698
         ],
@@ -58208,6 +59378,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           4361246653
         ],
@@ -58246,6 +59417,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1591373213
         ],
@@ -58284,6 +59456,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           342620651
         ],
@@ -58322,6 +59495,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           475070635
         ],
@@ -58360,6 +59534,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           9823073
         ],
@@ -58398,6 +59573,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1675168080
         ],
@@ -58436,6 +59612,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           7692244823
         ],
@@ -58474,6 +59651,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           358204014
         ],
@@ -58512,6 +59690,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           7261160050
         ],
@@ -58550,6 +59729,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           474665273
         ],
@@ -58588,6 +59768,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           9823004
         ],
@@ -58626,6 +59807,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           3174228063
         ],
@@ -58664,6 +59846,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           3193487681
         ],
@@ -58702,6 +59885,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           3193487683
         ],
@@ -58740,6 +59924,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #3 -> Road #17"
+        ],
         "osm_node_ids": [
           7275677007
         ],
@@ -58778,6 +59965,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #3 -> Road #17"
+        ],
         "osm_node_ids": [
           7275677007
         ],
@@ -58816,6 +60006,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           301688528
         ],
@@ -58854,6 +60045,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           301688528
         ],
@@ -58892,6 +60084,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           26109188
         ],
@@ -58930,6 +60123,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           26109188
         ],
@@ -58968,6 +60162,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           4457095865
         ],
@@ -59006,6 +60201,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           4457095865
         ],
@@ -59044,6 +60240,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #81 -> Road #83"
+        ],
         "osm_node_ids": [
           320951155
         ],
@@ -59082,6 +60281,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #165 -> Road #38"
+        ],
         "osm_node_ids": [
           26661423
         ],
@@ -59120,6 +60322,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #165 -> Road #38"
+        ],
         "osm_node_ids": [
           26661423
         ],
@@ -59158,6 +60363,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1277537020
         ],
@@ -59196,6 +60402,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1277537020
         ],
@@ -59234,6 +60441,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6264670282
         ],
@@ -59272,6 +60480,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6264670282
         ],
@@ -59310,6 +60519,9 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #25 -> Road #270"
+        ],
         "osm_node_ids": [
           26298440
         ],
@@ -59348,6 +60560,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8312439365
         ],
@@ -59386,6 +60599,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           8312439365
         ],
@@ -59424,6 +60638,10 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #305 -> Road #369",
+          "Road #369 -> Road #305"
+        ],
         "osm_node_ids": [
           5506378690
         ],
@@ -59462,6 +60680,10 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [
+          "Road #305 -> Road #369",
+          "Road #369 -> Road #305"
+        ],
         "osm_node_ids": [
           5506378690
         ],
@@ -59500,6 +60722,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5506378735
         ],
@@ -59538,6 +60761,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           5506378735
         ],
@@ -59576,6 +60800,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1020737635
         ],
@@ -59614,6 +60839,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           1020737635
         ],
