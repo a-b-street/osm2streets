@@ -299,7 +299,7 @@ impl StreetNetwork {
                     };
                     // Offset the arrow start/end points if it is bidirectional.
                     (
-                        *r,
+                        r,
                         if road.oneway_for_driving().is_some() {
                             (first_road_segment.pt1(), first_road_segment.pt1())
                         } else {
@@ -317,20 +317,13 @@ impl StreetNetwork {
                 .collect();
             for (a, b) in &intersection.movements {
                 if a != b {
-                    if let (Some(pts_a), Some(pts_b)) = (road_points.get(a), road_points.get(b)) {
-                        if let Ok(line) = Line::new(pts_a.0, pts_b.1) {
-                            pairs.push((
-                                line.to_polyline()
-                                    .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)
-                                    .to_geojson(Some(&self.gps_bounds)),
-                                make_props(&[]),
-                            ))
-                        }
-                    } else {
-                        warn!(
-                            "{} has movement ({}, {}) referring to road that is not connected",
-                            &intersection.id, a, b
-                        )
+                    if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
+                        pairs.push((
+                            line.to_polyline()
+                                .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)
+                                .to_geojson(Some(&self.gps_bounds)),
+                            make_props(&[]),
+                        ))
                     }
                 }
             }
