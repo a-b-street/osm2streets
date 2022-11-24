@@ -38,7 +38,7 @@ export const makePlainGeoJsonLayer = (text) => {
 
       const nodes = feature.properties.osm_node_ids;
       delete feature.properties.osm_node_ids;
-      var popup = JSON.stringify(feature.properties, null, "<br/>");
+      var popup = `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`;
       popup += `<br/>OSM nodes: `;
       for (const id of nodes) {
         popup += `<a href="https://www.openstreetmap.org/node/${id}" target="_blank">${id}</a>, `;
@@ -110,7 +110,7 @@ export const makeLanePolygonLayer = (text) => {
 
       const ways = feature.properties.osm_way_ids;
       delete feature.properties.osm_way_ids;
-      var popup = JSON.stringify(feature.properties, null, "<br/>");
+      var popup = `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`;
       popup += `<br/>OSM ways: `;
       for (const id of ways) {
         popup += `<a href="https://www.openstreetmap.org/way/${id}" target="_blank">${id}</a>, `;
