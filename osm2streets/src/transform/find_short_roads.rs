@@ -84,7 +84,7 @@ impl StreetNetwork {
             }
             let src_i = &self.intersections[&road.src_i];
             let dst_i = &self.intersections[&road.dst_i];
-            if src_i.is_border() || dst_i.is_border() {
+            if src_i.is_map_edge() || dst_i.is_map_edge() {
                 continue;
             }
             if src_i.control != IntersectionControl::Signalled
@@ -137,9 +137,9 @@ impl StreetNetwork {
                     if !connection.is_driveable() {
                         continue 'ROAD;
                     }
-                    // Don't do anything near border intersections
-                    if self.intersections[&connection.src_i].is_border()
-                        || self.intersections[&connection.dst_i].is_border()
+                    // Don't do anything near map edge intersections
+                    if self.intersections[&connection.src_i].is_map_edge()
+                        || self.intersections[&connection.dst_i].is_map_edge()
                     {
                         continue 'ROAD;
                     }
