@@ -78,10 +78,10 @@ pub fn split_up_roads(
             // Assume a complicated intersection, until we determine otherwise.
             IntersectionKind::Intersection,
             if input.traffic_signals.remove(pt).is_some() {
-                IntersectionControl::TrafficSignal
+                IntersectionControl::Signalled
             } else {
                 // TODO default to uncontrolled, guess StopSign as a transform
-                IntersectionControl::StopSign
+                IntersectionControl::Signed
             },
         );
         osm_id_to_id.insert(*osm_id, id);
@@ -93,7 +93,7 @@ pub fn split_up_roads(
             osm_ids.clone(),
             pt,
             IntersectionKind::Intersection,
-            IntersectionControl::StopSign,
+            IntersectionControl::Signed,
         );
         for osm_id in osm_ids {
             osm_id_to_id.insert(osm_id, id);
@@ -259,7 +259,7 @@ pub fn split_up_roads(
                         road.src_i
                     };
                     streets.intersections.get_mut(&i).unwrap().control =
-                        IntersectionControl::TrafficSignal;
+                        IntersectionControl::Signalled;
                 }
             }
         }

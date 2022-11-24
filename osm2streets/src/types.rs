@@ -152,14 +152,13 @@ pub enum IntersectionKind {
     Intersection,
 }
 
+/// The kind of traffic control present at an intersection.
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub enum IntersectionControl {
-    Uncontrolled, // Pretty sure this is a term that implies right of way rules somewhere.
-    //TODO YieldSign,
-    StopSign,      // Signed is a good standard of safety
-    TrafficSignal, // Signalled is better.
-    Border,        //TODO move to using IntersectionKind::MapEdge
-    Construction,  // Are these treated as "closed"?
+    Uncontrolled,
+    Signed,
+    Signalled,
+    Construction,
 }
 
 /// The path that some group of adjacent lanes of traffic can take through an intersection.

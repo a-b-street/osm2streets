@@ -1,7 +1,7 @@
 use abstutil::Timer;
 use geom::{Circle, Distance};
 
-use crate::{IntersectionControl, StreetNetwork};
+use crate::{IntersectionControl, IntersectionKind, StreetNetwork};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // Initialize trimmed_center_line to the corrected center
@@ -58,7 +58,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         streets.intersections.get_mut(&i).unwrap().polygon = polygon;
     }
     for i in make_stop_signs {
-        streets.intersections.get_mut(&i).unwrap().control = IntersectionControl::StopSign;
+        streets.intersections.get_mut(&i).unwrap().control = IntersectionControl::Signed;
     }
     for i in remove_dangling_nodes {
         streets.intersections.remove(&i).unwrap();
@@ -74,7 +74,7 @@ fn fix_borders(streets: &mut StreetNetwork) {
     let min_len = Distance::meters(5.0);
     let mut set_polygons = Vec::new();
     for i in streets.intersections.values() {
-        if i.control != IntersectionControl::Border {
+        if i.kind != IntersectionKind::MapEdge {
             continue;
         }
         let r = i.roads.iter().next().unwrap();
