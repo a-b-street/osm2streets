@@ -457,6 +457,10 @@ async function load(module, imports) {
 function getImports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbg_jsdebugstreets_new = function(arg0) {
+        const ret = JsDebugStreets.__wrap(arg0);
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_json_serialize = function(arg0, arg1) {
         const obj = getObject(arg1);
         const ret = JSON.stringify(obj === undefined ? null : obj);
@@ -467,10 +471,6 @@ function getImports() {
     };
     imports.wbg.__wbg_jsstreetnetwork_new = function(arg0) {
         const ret = JsStreetNetwork.__wrap(arg0);
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_jsdebugstreets_new = function(arg0) {
-        const ret = JsDebugStreets.__wrap(arg0);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {

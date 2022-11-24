@@ -1057,7 +1057,8 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #7 -> Road #11"
+          "Road #7 -> Road #11",
+          "Road #11 -> Road #7"
         ],
         "osm_node_ids": [
           4740760680
@@ -1145,7 +1146,8 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #9 -> Road #7"
+          "Road #9 -> Road #7",
+          "Road #7 -> Road #9"
         ],
         "osm_node_ids": [
           4740760678
@@ -1304,6 +1306,7 @@
         "movements": [
           "Road #18 -> Road #12",
           "Road #18 -> Road #14",
+          "Road #12 -> Road #14",
           "Road #14 -> Road #12"
         ],
         "osm_node_ids": [
@@ -1400,7 +1403,8 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #12 -> Road #19"
+          "Road #12 -> Road #19",
+          "Road #19 -> Road #12"
         ],
         "osm_node_ids": [
           1316486886
