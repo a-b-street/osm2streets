@@ -359,6 +359,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           6207587996
         ],
@@ -397,6 +398,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           367715249
         ],
@@ -443,6 +445,11 @@
       "properties": {
         "control": "Signed",
         "intersection_kind": "Fork",
+        "movements": [
+          "Road #1 -> Road #2",
+          "Road #1 -> Road #0",
+          "Road #0 -> Road #2"
+        ],
         "osm_node_ids": [
           367715264
         ],
@@ -489,6 +496,13 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #3 -> Road #7",
+          "Road #3 -> Road #4",
+          "Road #7 -> Road #4",
+          "Road #4 -> Road #3",
+          "Road #4 -> Road #7"
+        ],
         "osm_node_ids": [
           33397360
         ],
@@ -535,6 +549,12 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #4 -> Road #5",
+          "Road #5 -> Road #4",
+          "Road #2 -> Road #4",
+          "Road #2 -> Road #5"
+        ],
         "osm_node_ids": [
           6257659836
         ],
@@ -577,6 +597,12 @@
       "properties": {
         "control": "Signalled",
         "intersection_kind": "Intersection",
+        "movements": [
+          "Road #5 -> Road #6",
+          "Road #5 -> Road #1",
+          "Road #6 -> Road #5",
+          "Road #6 -> Road #1"
+        ],
         "osm_node_ids": [
           6257659835
         ],
@@ -615,6 +641,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           367715398
         ],
@@ -653,6 +680,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
+        "movements": [],
         "osm_node_ids": [
           367715375
         ],
