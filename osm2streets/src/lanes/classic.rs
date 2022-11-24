@@ -55,9 +55,13 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
 
     let mut lanes = LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side);
 
+    // Some tags are easier to apply once the lanes have been put in left-to-right order
+
     if let Some(x) = tags.get("turn:lanes") {
         apply_turn_restrictions(&mut lanes, x);
     }
+
+    apply_busway_lanes(&mut lanes, &tags, oneway, cfg);
 
     lanes
 }
@@ -274,6 +278,48 @@ fn add_bus_lanes(
                 if part == "designated" {
                     back_side[idx].lt = LaneType::Bus;
                 }
+            }
+        }
+    }
+}
+
+fn apply_busway_lanes(list: &mut Vec<LaneSpec>, tags: &Tags, oneway: bool, cfg: &MapConfig) {
+    let mut left = tags.is("busway:left", "lane");
+    let mut right = tags.is("busway:right", "lane");
+    if tags.is("busway:both", "lane") {
+        left = true;
+        right = true;
+    }
+    if tags.is("busway", "lane") {
+        if oneway {
+            // Which side is forwards?
+            if cfg.driving_side == DrivingSide::Right {
+                right = true;
+            } else {
+                left = true;
+            }
+        } else {
+            left = true;
+            right = true;
+        }
+    }
+
+    if left {
+        // Convert the first driving lane
+        for spec in list.iter_mut() {
+            if spec.lt == LaneType::Driving {
+                spec.lt = LaneType::Bus;
+                break;
+            }
+        }
+    }
+
+    if right {
+        // Convert the last driving lane
+        for spec in list.iter_mut().rev() {
+            if spec.lt == LaneType::Driving {
+                spec.lt = LaneType::Bus;
+                break;
             }
         }
     }

@@ -1535,10 +1535,9 @@
       },
       "properties": {
         "control": "Signed",
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Fork",
         "movements": [
           "Road #19 -> Road #20",
-          "Road #20 -> Road #19",
           "Road #2 -> Road #19",
           "Road #2 -> Road #20"
         ],
