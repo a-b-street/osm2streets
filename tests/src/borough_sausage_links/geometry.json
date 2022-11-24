@@ -3113,7 +3113,8 @@
         "control": "Signed",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #21 -> Road #31"
+          "Road #21 -> Road #31",
+          "Road #31 -> Road #21"
         ],
         "osm_node_ids": [
           352928523
@@ -3193,6 +3194,7 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
+          "Road #25 -> Road #64",
           "Road #64 -> Road #25"
         ],
         "osm_node_ids": [
@@ -3273,7 +3275,8 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #31 -> Road #70"
+          "Road #31 -> Road #70",
+          "Road #70 -> Road #31"
         ],
         "osm_node_ids": [
           5220776402
@@ -3314,6 +3317,7 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
+          "Road #37 -> Road #25",
           "Road #25 -> Road #37"
         ],
         "osm_node_ids": [
@@ -3419,7 +3423,8 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #26 -> Road #65"
+          "Road #26 -> Road #65",
+          "Road #65 -> Road #26"
         ],
         "osm_node_ids": [
           5220776401
@@ -3584,7 +3589,8 @@
         "control": "Signed",
         "intersection_kind": "Connection",
         "movements": [
-          "Road #42 -> Road #26"
+          "Road #42 -> Road #26",
+          "Road #26 -> Road #42"
         ],
         "osm_node_ids": [
           25497966
@@ -3934,6 +3940,7 @@
         "control": "Signalled",
         "intersection_kind": "Connection",
         "movements": [
+          "Road #59 -> Road #27",
           "Road #27 -> Road #59"
         ],
         "osm_node_ids": [
@@ -3975,6 +3982,7 @@
         "control": "Signed",
         "intersection_kind": "Connection",
         "movements": [
+          "Road #27 -> Road #43",
           "Road #43 -> Road #27"
         ],
         "osm_node_ids": [

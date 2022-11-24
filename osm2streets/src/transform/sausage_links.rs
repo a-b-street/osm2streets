@@ -145,6 +145,12 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
         }
     }
 
+    // Because we have modified the lanes of road1 we need to update the intersection derived data.
+    let intersections = road1.endpoints();
+    for i in intersections {
+        streets.update_movements(i);
+    }
+
     // Tags
     // TODO We shouldn't need to modify road1's tags; lanes_ltr are the source of truth. But...
     // other pieces of code still treat tags as an "original" source of truth. In A/B Street,
