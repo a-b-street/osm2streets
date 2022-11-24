@@ -44,8 +44,10 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
 
         let mut old_intersection = streets.intersections.remove(&old_id).unwrap();
+        // Derived data is handled independantly for MapEdge intersections, so set it here.
         old_intersection.kind = IntersectionKind::MapEdge;
         old_intersection.control = IntersectionControl::Uncontrolled;
+        old_intersection.movements = Vec::new();
 
         if old_intersection.roads.len() <= 1 {
             // We don't need to make copies of the intersection; put it back
@@ -67,9 +69,6 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             }
 
             streets.intersections.insert(copy.id, copy);
-
-            // classify_intersections hasn't happened yet, so we don't need to update the copied
-            // intersection
         }
     }
 

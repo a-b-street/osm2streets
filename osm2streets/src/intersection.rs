@@ -138,17 +138,17 @@ impl StreetNetwork {
     }
 
     /// Updates the derived properties of an intersection.
-    /// A `MapEdge` has no movements by definition, so we simply clear out the movements vec.
-    /// Otherwise, we calculate movements and determine the new kind.
+    ///
+    /// The kind and movements of a `MapEdge` are handled independently, so this method skips them.
     pub fn update_movements(&mut self, i: IntersectionID) {
         if self.intersections[&i].kind == IntersectionKind::MapEdge {
-            self.intersections.get_mut(&i).unwrap().movements = Vec::new();
-        } else {
-            let (movements, kind) = self.calculate_movements_and_kind(i);
-            let intersection = self.intersections.get_mut(&i).unwrap();
-            intersection.movements = movements;
-            intersection.kind = kind;
+            return;
         }
+
+        let (movements, kind) = self.calculate_movements_and_kind(i);
+        let intersection = self.intersections.get_mut(&i).unwrap();
+        intersection.movements = movements;
+        intersection.kind = kind;
     }
 
     pub fn calculate_movements_and_kind(

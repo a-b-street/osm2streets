@@ -2631,10 +2631,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
-        "movements": [
-          "Road #12 -> Road #14",
-          "Road #14 -> Road #12"
-        ],
+        "movements": [],
         "osm_node_ids": [
           1223212892
         ],
@@ -2673,10 +2670,7 @@
       "properties": {
         "control": "Uncontrolled",
         "intersection_kind": "MapEdge",
-        "movements": [
-          "Road #12 -> Road #14",
-          "Road #14 -> Road #12"
-        ],
+        "movements": [],
         "osm_node_ids": [
           1223212892
         ],
