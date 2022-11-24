@@ -4,7 +4,7 @@ digraph {
     2 [ label = "MapEdge" ]
     3 [ label = "MapEdge" ]
     4 [ label = "MapEdge" ]
-    5 [ label = "Unknown" ]
+    5 [ label = "Uncontrolled RoadIntersection" ]
     0 -> 5 [ label = "2 lanes" ]
     5 -> 0 [ label = "2 lanes" ]
     1 -> 5 [ label = "2 lanes" ]
