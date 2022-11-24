@@ -22,6 +22,8 @@ pub struct Road {
 
     /// The OSM `highway` tag indicating the type of this road. See
     /// <https://wiki.openstreetmap.org/wiki/Key:highway>.
+    ///
+    /// Note for railways, this is actually the `railway` tag instead.
     pub highway_type: String,
     /// The name of the road in the default OSM-specified language
     pub name: Option<String>,
@@ -88,8 +90,9 @@ impl Road {
             dst_i,
             highway_type: osm_tags
                 .get(osm::HIGHWAY)
+                .or_else(|| osm_tags.get("railway"))
                 .cloned()
-                .expect("Can't create a Road without the highway tag"),
+                .expect("Can't create a Road without the highway or railway tag"),
             name: osm_tags.get("name").cloned(),
             internal_junction_road: osm_tags.is("junction", "intersection"),
             layer,
