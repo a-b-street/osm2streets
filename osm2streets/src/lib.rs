@@ -15,17 +15,16 @@ use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::ids::{CommonEndpoint, IntersectionID, OriginalRoad, RoadID};
-pub use self::intersection::Intersection;
+pub use self::intersection::{
+    Intersection, IntersectionControl, IntersectionKind, Movement, TrafficConflict,
+};
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, NORMAL_LANE_THICKNESS,
     SIDEWALK_THICKNESS,
 };
 pub use self::road::Road;
 pub use self::transform::Transformation;
-pub use self::types::{
-    DrivingSide, IntersectionControl, IntersectionKind, MapConfig, Movement, NamePerLanguage,
-    TrafficConflict,
-};
+pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
 
 mod edit;
 mod geometry;

@@ -3,10 +3,7 @@ use std::collections::BTreeMap;
 use geom::{Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    osm, DrivingSide, IntersectionControl, IntersectionID, IntersectionKind, Movement, RoadID,
-    StreetNetwork, TrafficConflict,
-};
+use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
 use TrafficConflict::*;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -34,6 +31,65 @@ pub struct Intersection {
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     // TODO Store start/end trim distance on _every_ road
     pub trim_roads_for_merging: BTreeMap<(RoadID, bool), Pt2D>,
+}
+
+/// How two lanes of travel conflict with each other.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum TrafficConflict {
+    Uncontested,
+    Diverge,
+    Merge,
+    Cross,
+}
+
+/// What kind of feature an `Intersection` actually represents. Any connection between roads in the
+/// network graph is represented by an `Intersection`, but many of them are not traffic
+/// "intersections" in the common sense.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum IntersectionKind {
+    /// A `Road` ends because the road crosses the map boundary.
+    MapEdge,
+
+    /// A single `Road` ends because the actual roadway ends; "the end of the line".
+    ///
+    /// E.g. turning circles, road end signs, train terminus thingos, ...
+    Terminus,
+
+    /// Multiple `Road`s connect but no flow of traffic interacts with any other.
+    ///
+    /// Usually one `Road` ends and another begins because the number of lanes has changed or some
+    /// other attribute of the roadway has changed. More than two `Road`s could be involved,
+    /// e.g. when a single carriageway (a bidirectional `Road`) splits into a dual carriageway
+    /// (two oneway `Road`s).
+    Connection,
+
+    /// One flow of traffic forks into multiple, or multiple merge into one, but all traffic is
+    /// expected to keep flowing.
+    ///
+    /// E.g. highway on-ramps and off-ramps.
+    Fork,
+
+    /// At least three `Road`s meet at an actual "intersection" where at least one flow of traffic
+    /// gives way to, or conflicts with, another.
+    Intersection,
+}
+
+/// The kind of traffic control present at an intersection.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum IntersectionControl {
+    Uncontrolled,
+    Signed,
+    Signalled,
+    Construction,
+}
+
+/// The path that some group of adjacent lanes of traffic can take through an intersection.
+pub type Movement = (RoadID, RoadID);
+
+impl Intersection {
+    pub fn is_map_edge(&self) -> bool {
+        self.kind == IntersectionKind::MapEdge
+    }
 }
 
 impl StreetNetwork {
@@ -71,15 +127,7 @@ impl StreetNetwork {
         );
         id
     }
-}
 
-impl Intersection {
-    pub fn is_map_edge(&self) -> bool {
-        self.kind == IntersectionKind::MapEdge
-    }
-}
-
-impl StreetNetwork {
     // Restore the invariant that an intersection's roads are ordered clockwise
     //
     // TODO This doesn't handle trim_roads_for_merging
