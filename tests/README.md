@@ -27,12 +27,7 @@ cargo test --release
 You can also omit `--release` for faster compilation, but slower running. Each
 test case is expensive enough to justify release mode.
 
-View `geometry.json` files with <https://geojson.io>, QGIS, or similar.
-
-View `road_network.dot` files with <https://doctorbud.com/graphviz-viewer/>, or
-`dot -Tpng -Kneato -Goverlap=scale -O road_network.dot` or similar.
-
-TODO [osm2streets#22 make a slippy map](https://github.com/a-b-street/osm2streets/issues/22)
+Use the `street-explorer` web app to view and inspect the test output. If you've made changes locally and want to compare to the current output in the `main` branch, use <http://osm2streets.org>.
 
 ## Working on osm2streets code and preventing regressions
 
@@ -43,7 +38,7 @@ there's a difference, you can generate the new GeoJSON file, manually view the
 old and new version, and decide if the changes are acceptable or not.
 
 1.  Run `cargo test --release` to test your current changes
-2.  Manually verify any diffs. Commit the ones that are intentional.
+2.  Manually verify any diffs using `street-explorer`. Commit the ones that are intentional.
 3.  Push your changes
 
 ## Adding new test cases
@@ -56,14 +51,14 @@ existing test case, please add it!
 3.  Press `Download osm.xml`
 4.  Create a new directory in `src`. The naming scheme is not very organized yet.
 5.  Put your OSM XML file in that directory as `input.osm`
-6.  Copy a `test.json` file from another directory and modify accordingly. `driving_side` is, of course, important to get correct. The `notes` are free-form, but please at least include a useful link to OSM to view the area there.
-7.  Run `cargo test --release`. It will fail with something like `src/montlake_roundabout/geometry.json has changed. Manually view the diff with geojson.io. If it's OK, commit the new output to git, and this test will pass.`
-8.  Add the new `geometry.json` file to git after viewing it.
+6.  Copy a `test.json` file from another directory and modify accordingly. The `notes` are free-form, but please at least include a useful link to OSM to view the area there.
+7.  Run `cargo test --release`. It will fail with something like `src/montlake_roundabout/geometry.json has changed.`
+8.  Add the new `geometry.json` file to git after viewing it with `street-explorer`
 9.  You can re-run `cargo test --release` to verify things now pass.
 10. Push!
 
 How large should the input OSM area be? Enough to cover whatever you want to
 test, but otherwise minimal to not bloat the size of this repository. See
 existing test cases for examples. Note that `osm2streets` will clip roads that
-extend out of the bounding box and generate special "border" intersections
+extend out of the bounding box and generate special "map edge" intersections
 along the edges.

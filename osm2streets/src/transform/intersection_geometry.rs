@@ -64,11 +64,11 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         streets.intersections.remove(&i).unwrap();
     }
 
-    fix_borders(streets);
+    fix_map_edges(streets);
 }
 
-fn fix_borders(streets: &mut StreetNetwork) {
-    // Some roads near borders get completely squished. Stretch them out here. Attempting to do
+fn fix_map_edges(streets: &mut StreetNetwork) {
+    // Some roads near map edges get completely squished. Stretch them out here. Attempting to do
     // this in the streets_reader layer doesn't work, because predicting how much roads will be
     // trimmed is impossible.
     let min_len = Distance::meters(5.0);
@@ -109,7 +109,7 @@ fn fix_borders(streets: &mut StreetNetwork) {
             streets.roads.get_mut(&r).unwrap().trimmed_center_line = pl;
         }
         info!(
-            "Shifted border {} out a bit to make the road a reasonable length",
+            "Shifted map edge {} out a bit to make the road a reasonable length",
             i.id
         );
     }

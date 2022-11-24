@@ -41,7 +41,7 @@ impl StreetNetwork {
         if self.intersections[&keep_i].kind == IntersectionKind::MapEdge
             || self.intersections[&destroy_i].kind == IntersectionKind::MapEdge
         {
-            bail!("{short_r} touches a border");
+            bail!("{short_r} touches a mp edge");
         }
 
         // TODO Fix up turn restrictions. Many cases:

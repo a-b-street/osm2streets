@@ -368,7 +368,7 @@ fn deadend(
     let id = road_lines[0].id;
     let mut pl_a = road_lines[0].fwd_pl.clone();
     let mut pl_b = road_lines[0].back_pl.clone();
-    // If the lines are too short (usually due to the boundary polygon cutting off border roads too
+    // If the lines are too short (usually due to the boundary polygon clipping roads too
     // much), just extend them.
     // TODO Not sure why we need +1.5x more, but this looks better. Some math is definitely off
     // somewhere.

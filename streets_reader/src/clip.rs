@@ -72,7 +72,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         }
     }
 
-    // For all the border intersections, find the one road they connect to and trim their points.
+    // For all the map edge intersections, find the one road they connect to and trim their points.
     for intersection in streets.intersections.values_mut() {
         if intersection.kind != IntersectionKind::MapEdge {
             continue;
@@ -81,34 +81,37 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         let r = intersection.roads[0];
 
         let road = streets.roads.get_mut(&r).unwrap();
-        let border_pts = boundary_ring.all_intersections(&road.untrimmed_center_line);
-        if border_pts.is_empty() {
+        let boundary_pts = boundary_ring.all_intersections(&road.untrimmed_center_line);
+        if boundary_pts.is_empty() {
             // The intersection is out-of-bounds, but a road leading to it doesn't cross the
             // boundary?
-            warn!("{} interacts with border strangely", r);
+            warn!("{} interacts with boundary strangely", r);
             continue;
         }
 
         if road.src_i == intersection.id {
             // Starting out-of-bounds
-            let border_pt = border_pts[0];
-            if let Some(pl) = road.untrimmed_center_line.get_slice_starting_at(border_pt) {
+            let boundary_pt = boundary_pts[0];
+            if let Some(pl) = road
+                .untrimmed_center_line
+                .get_slice_starting_at(boundary_pt)
+            {
                 road.untrimmed_center_line = pl;
                 intersection.point = road.untrimmed_center_line.first_pt();
             } else {
-                warn!("{} interacts with border strangely", r);
+                warn!("{} interacts with boundary strangely", r);
                 continue;
             }
         } else {
             // Ending out-of-bounds
             // For light rail, the center-line might cross the boundary twice. When we're looking
             // at the outbound end, take the last time we hit the boundary
-            let border_pt = *border_pts.last().unwrap();
-            if let Some(pl) = road.untrimmed_center_line.get_slice_ending_at(border_pt) {
+            let boundary_pt = *boundary_pts.last().unwrap();
+            if let Some(pl) = road.untrimmed_center_line.get_slice_ending_at(boundary_pt) {
                 road.untrimmed_center_line = pl;
                 intersection.point = road.untrimmed_center_line.last_pt();
             } else {
-                warn!("{} interacts with border strangely", r);
+                warn!("{} interacts with boundary strangely", r);
                 continue;
             }
         }

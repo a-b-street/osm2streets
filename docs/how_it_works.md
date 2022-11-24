@@ -12,9 +12,7 @@ Roads have their lanes listed from left-to-right, each with a type, width, and d
 
 Roads and intersections have opaque (meaningless) IDs. At the very beginning, they map over to exactly one object in OSM, but as the library performs transformations, this mapping becomes more complex. Thus, roads and intersections track a list of OSM objects that they represent.
 
-## Import walkthrough
-
-### streets_reader
+## Import walkthrough (streets_reader)
 
 `osm_to_street_network` is the main function, taking raw input OSM XML, an optional boundary clipping polygon, and some options, and returning a `StreetNetwork`. Some callers (A/B Street) repeat the logic of this method and add in extra bits (for adding in other sources of parking and elevation data).
 
@@ -27,11 +25,32 @@ Extraction is straightforward. Since OSM ways often cross many intersections, th
 
 But from this point, roads do have their lanes filled out, parsed from OSM tags. That currently uses `osm2streets/src/lanes/classic.rs`, but will use a separate project `osm2lanes` in the future.
 
-Clipping takes the boundary polygon (which should be passed in explicitly, but can also just be the bounding box around the input XML) and removes roads totally out of bounds. Roads crossing the boundary will get clipped to the boundary, and that intersection will be marked as a border.
+Clipping takes the boundary polygon (which should be passed in explicitly, but can also just be the bounding box around the input XML) and removes roads totally out of bounds. Roads crossing the boundary will get clipped to the boundary, and that intersection will be marked as a map edge.
 
 The final step here takes raw crossing and barrier nodes and matches them to roads. This representation of those features is very early stages and will definitely evolve more.
 
-### Transformations
+See the transformation section below on the rest of the processing.
+
+## Operations on a StreetNetwork
+
+Some complex operations are described here. Some of the code currently lives in `transform/`, but should be moved.
+
+### calculate_movements_and_kind
+
+For each intersection, this calculates vehicle movements (at the granularity of roads, not individual lanes). Then based on those movements, which ones conflict, and the number of connecting roads, we classify the intersection. This classification is only used as debug rendering right now, but will likely help later transformations by filtering when some heuristics should apply.
+
+### Collapsing an intersection
+
+`collapse_intersection` removes an intersection that has only two roads connected to it. Transformations below describe when this is called. The operation itself mostly just stitches together the geometry of the two roads in a straightforward way. It fixes turn restrictions referring to the deleted road. The caller is responsible for fixing up lanes between the two roads -- or rather, making sure they match up compatibly in the first place.
+
+### Collapsing a short road
+
+`collapse_short_road` removes a road, then combines the two intersections into one.
+
+It first calculates trimmed intersection geometry for the two intersections. On each connected road (besides the short one being collapsed, of course), we store the trimming distance in `trim_roads_for_merging`, so that later the intersection geometry algorithm can follow a special case for the single merged intersection.
+
+
+## Transformations
 
 The `StreetNetwork` is techncially usable at this point, but it's still very close to OSM -- which is both under-specified (lane width is almost never tagged, but we need to render something) and imprecise. The rest of the magic happens by calling `apply_transformations`. This performs the specified steps in order. `apply_transformations_stepwise_debugging` can be used by UIs to preserve the intermediate `StreetNetwork` after each step, for debugging and understanding the transformations.
 
@@ -44,31 +63,9 @@ The caller explicitly lists the transformations they want, in order. `standard_f
 But it's also confusing in a few ways:
 
 - Roads and intersections both contain derived state. When we modify something, we may need to re-run some transformations. For example, after collapsing sausage links, a road's trimmed road geometry changes, so we may need to detect and collapse short roads again. Effects from one transformation may need to propagate to adjacent roads and intersections. The dataflow is implicit; the caller must deal with it manually.
-- Some transformations fill out state that's pretty fundamental, like intersection complexity and movements. This maybe shouldn't be expressed as a transformation and should happen more upfront, like how `Road::new` immediately determines lanes from OSM tags.
+- Some transformations fill out state that's pretty fundamental, like road trim distances and intersection geometry. This maybe shouldn't be expressed as a transformation and should happen more upfront, like how `Road::new` immediately determines lanes from OSM tags.
 
-## Operations on a StreetNetwork
-
-Some of the below transformations do something complicated worth calling out. Likely this code shouldn't be in `transform/`.
-
-### Collapsing an intersection
-
-`collapse_intersection` removes an intersection that has only two roads connected to it. Transformations below describe when this is called. The operation itself mostly just stitches together the geometry of the two roads in a straightforward way. It fixes turn restrictions referring to the deleted road. The caller is responsible for fixing up lanes between the two roads -- or rather, making sure they match up compatibly in the first place.
-
-### Collapsing a short road
-
-`collapse_short_road` removes a road, then combines the two intersections into one.
-
-It first calculates trimmed intersection geometry for the two intersections. On each connected road (besides the short one being collapsed, of course), we store the trimming distance in `trim_roads_for_merging`, so that later the intersection geometry algorithm can follow a special case for the single merged intersection.
-
-## The transformations
-
-TODO: before/after pictures
-
-These're in no particular order. (But that's confusing; they should be)
-
-### ClassifyIntersections
-
-For each intersection, this calculates vehicle movements (at the granularity of roads, not individual lanes). Then based on those movements, which ones conflict, and the number of connecting roads, we classify the intersection. This classification is only used as debug rendering right now, but will likely help later transformations by filtering when some heuristics should apply.
+Specific transformations are described below in no particular order. (But that's confusing; they should be)
 
 ### TrimDeadendCycleways
 
