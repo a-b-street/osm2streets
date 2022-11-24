@@ -19,11 +19,9 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     // checker problems.
     infer_sidewalk_tags(&mut tags, cfg);
 
-    let highway_type = tags.get(osm::HIGHWAY).unwrap();
-
     // Easy special cases first.
     if tags.is_any("railway", vec!["light_rail", "rail"]) {
-        return vec![fwd(highway_type, LaneType::LightRail)];
+        return vec![fwd("railway", LaneType::LightRail)];
     }
 
     if let Some(lanes) = non_motorized_road(&tags, cfg) {

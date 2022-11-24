@@ -4,7 +4,7 @@ use anyhow::Result;
 
 use geom::{Distance, PolyLine, Pt2D};
 
-use crate::{osm, IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork};
+use crate::{IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -58,6 +58,10 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
 
     if road1.name != road2.name {
         bail!("names don't match");
+    }
+
+    if road1.highway_type != road2.highway_type {
+        bail!("highway_type don't match");
     }
 
     if road1.layer != road2.layer {
