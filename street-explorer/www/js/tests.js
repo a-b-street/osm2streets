@@ -45,5 +45,10 @@ export function loadTests() {
       q.delete("test");
     }
     location.search = q.toString();
+    // If we import a dynamic area and then reset to "No test case", we need to
+    // explicitly refresh to let the user import a new area
+    if (location.search == "") {
+      location.reload();
+    }
   };
 }
