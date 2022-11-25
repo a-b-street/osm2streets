@@ -23,7 +23,7 @@ pub struct Intersection {
     pub control: IntersectionControl,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
-    /// intersection. They're ordered clockwise aroundd the intersection.
+    /// intersection. They're ordered clockwise around the intersection.
     pub roads: Vec<RoadID>,
     pub movements: Vec<Movement>,
 
