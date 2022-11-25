@@ -134,11 +134,11 @@ pub fn split_up_roads(
                             id,
                             Road::new(
                                 id,
-                                OriginalRoad {
+                                vec![OriginalRoad {
                                     osm_way_id: *osm_way_id,
                                     i1,
                                     i2: *i2,
-                                },
+                                }],
                                 osm_id_to_id[&i1],
                                 osm_id_to_id[i2],
                                 pl,
@@ -178,7 +178,12 @@ pub fn split_up_roads(
     // Resolve simple turn restrictions (via a node)
     let mut restrictions = Vec::new();
     for (restriction, from_osm, via_osm, to_osm) in input.simple_turn_restrictions {
-        let via_id = osm_id_to_id[&via_osm];
+        // A via node might not be an intersection
+        let via_id = if let Some(x) = osm_id_to_id.get(&via_osm) {
+            *x
+        } else {
+            continue;
+        };
         if !streets.intersections.contains_key(&via_id) {
             continue;
         }

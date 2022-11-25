@@ -63,12 +63,6 @@ pub enum OnstreetParking {
     /// If OSM data is missing, then try to match data from
     /// <http://data-seattlecitygis.opendata.arcgis.com/datasets/blockface>. This is Seattle specific.
     Blockface(String),
-    /// If OSM data is missing, then infer parking lanes on some percentage of
-    /// "highway=residential" roads.
-    SomeAdditionalWhereNoData {
-        /// [0, 100]
-        pct: usize,
-    },
 }
 
 /// How many spots are available in public parking garages?

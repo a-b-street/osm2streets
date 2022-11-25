@@ -61,7 +61,7 @@ pub struct Road {
 impl Road {
     pub fn new(
         id: RoadID,
-        osm_id: OriginalRoad,
+        osm_ids: Vec<OriginalRoad>,
         src_i: IntersectionID,
         dst_i: IntersectionID,
         untrimmed_center_line: PolyLine,
@@ -85,7 +85,7 @@ impl Road {
 
         Self {
             id,
-            osm_ids: vec![osm_id],
+            osm_ids,
             src_i,
             dst_i,
             highway_type: osm_tags
