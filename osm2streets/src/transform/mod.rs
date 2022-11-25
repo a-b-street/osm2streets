@@ -28,36 +28,7 @@ pub enum Transformation {
 }
 
 impl Transformation {
-    /// A full suite of transformations for A/B Street.
-    ///
-    /// A/B Street doesn't handle separately mapped footways and sidewalks yet, so things to deal
-    /// with that are here.
-    pub fn abstreet() -> Vec<Self> {
-        vec![
-            Transformation::TrimDeadendCycleways,
-            // Not working yet
-            //Transformation::SnapCycleways,
-            // More dead-ends can be created after snapping cycleways. But also, snapping can be
-            // easier to do after trimming some dead-ends. So... just run it twice.
-            Transformation::TrimDeadendCycleways,
-            Transformation::RemoveDisconnectedRoads,
-            // TODO Run this before looking for and merging dog-leg intersections. There's a bug
-            // with that detection near https://www.openstreetmap.org/node/4904868836 that should
-            // be fixed separately. It may still be safer to do this before merging anything,
-            // though.
-            Transformation::CollapseSausageLinks,
-            Transformation::FindShortRoads {
-                consolidate_all_intersections: false,
-            },
-            Transformation::CollapseShortRoads,
-            Transformation::CollapseDegenerateIntersections,
-            Transformation::ShrinkOverlappingRoads,
-            Transformation::GenerateIntersectionGeometry,
-        ]
-    }
-
-    /// Like `abstreet`, but doesn't remove disconnected roads. Useful for test cases and small
-    /// clipped areas.
+    /// Useful for test cases and small clipped areas. Doesn't remove disconnected roads.
     pub fn standard_for_clipped_areas() -> Vec<Self> {
         vec![
             Transformation::TrimDeadendCycleways,
@@ -70,6 +41,31 @@ impl Transformation {
             Transformation::ShrinkOverlappingRoads,
             Transformation::GenerateIntersectionGeometry,
         ]
+    }
+
+    /// A full suite of transformations for A/B Street.
+    ///
+    /// A/B Street doesn't handle separately mapped footways and sidewalks yet, so things to deal
+    /// with that are here.
+    pub fn abstreet() -> Vec<Self> {
+        let mut list = Self::standard_for_clipped_areas();
+
+        // Not working yet
+        if false {
+            let mut prepend = vec![
+                Transformation::SnapCycleways,
+                // More dead-ends can be created after snapping cycleways. But also, snapping can be
+                // easier to do after trimming some dead-ends. So... just run it twice.
+                Transformation::TrimDeadendCycleways,
+                Transformation::RemoveDisconnectedRoads,
+            ];
+            prepend.extend(list);
+            list = prepend;
+        } else {
+            list.insert(0, Transformation::RemoveDisconnectedRoads);
+        }
+
+        list
     }
 
     fn name(&self) -> &'static str {
