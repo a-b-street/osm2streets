@@ -73,8 +73,6 @@ pub struct MapConfig {
     /// classic algorithm.
     pub osm2lanes: bool,
 
-    /// Enable experimental dog-leg intersection merging
-    pub find_dog_legs_experiment: bool,
     /// Experimentally merge these OSM ways
     pub merge_osm_ways: BTreeSet<OriginalRoad>,
 }
@@ -89,7 +87,6 @@ impl MapConfig {
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
             osm2lanes: false,
-            find_dog_legs_experiment: false,
             merge_osm_ways: BTreeSet::new(),
         }
     }

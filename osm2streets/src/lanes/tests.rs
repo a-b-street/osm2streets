@@ -189,7 +189,6 @@ fn test_osm_to_specs() {
             turn_on_red: true,
             // Flip this temporarily to work on the new integration
             osm2lanes: false,
-            find_dog_legs_experiment: false,
             merge_osm_ways: BTreeSet::new(),
         };
         input.push("highway=residential");
