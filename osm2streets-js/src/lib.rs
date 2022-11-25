@@ -89,6 +89,11 @@ impl JsStreetNetwork {
         self.inner.to_lane_markings_geojson().unwrap()
     }
 
+    #[wasm_bindgen(js_name = toIntersectionMarkingsGeojson)]
+    pub fn to_intersection_markings_geojson(&self) -> String {
+        self.inner.to_intersection_markings_geojson().unwrap()
+    }
+
     #[wasm_bindgen(js_name = toGraphviz)]
     pub fn to_graphviz(&self) -> String {
         // TODO Should we make the caller do the clone? Is that weird from JS?

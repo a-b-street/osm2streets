@@ -4,9 +4,11 @@ use std::io::Write;
 use std::path::Path;
 
 use anyhow::Result;
-use geom::{ArrowCap, Distance, Line, PolyLine};
+use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 
-use crate::{DebugStreets, Direction, DrivingSide, LaneType, StreetNetwork};
+use crate::{
+    DebugStreets, Direction, DrivingSide, Intersection, LaneSpec, LaneType, RoadID, StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -26,7 +28,7 @@ impl StreetNetwork {
         for road in self.roads.values() {
             pairs.push((
                 road.trimmed_center_line
-                    .make_polygons(2.0 * road.total_width() / 2.0)
+                    .make_polygons(road.total_width())
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
                     ("type", "road".into()),
@@ -343,6 +345,22 @@ impl StreetNetwork {
         let output = serde_json::to_string_pretty(&obj)?;
         Ok(output)
     }
+
+    pub fn to_intersection_markings_geojson(&self) -> Result<String> {
+        let mut pairs = Vec::new();
+
+        for intersection in self.intersections.values() {
+            for polygon in make_sidewalk_corners(self, intersection) {
+                pairs.push((
+                    polygon.to_geojson(Some(&self.gps_bounds)),
+                    make_props(&[("type", "sidewalk corner".into())]),
+                ));
+            }
+        }
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
 }
 
 impl DebugStreets {
@@ -375,4 +393,122 @@ fn make_props(list: &[(&str, serde_json::Value)]) -> serde_json::Map<String, ser
         props.insert(x.to_string(), y.clone());
     }
     props
+}
+
+// TODO Where should this live?
+/// For an intersection, show all corners where sidewalks meet.
+fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -> Vec<Polygon> {
+    #[derive(Clone)]
+    struct Edge {
+        road: RoadID,
+        // Pointed into the intersection
+        pl: PolyLine,
+        lane: LaneSpec,
+    }
+
+    // Get the left and right edge of each road, pointed into the intersection. All sorted
+    // clockwise
+    // TODO Use the road view idea instead. Or just refactor this.
+    let mut edges = Vec::new();
+    for road in streets.roads_per_intersection(intersection.id) {
+        let mut left = Edge {
+            road: road.id,
+            pl: road
+                .trimmed_center_line
+                .must_shift_left(road.total_width() / 2.0),
+            lane: road.lane_specs_ltr[0].clone(),
+        };
+        let mut right = Edge {
+            road: road.id,
+            pl: road
+                .trimmed_center_line
+                .must_shift_right(road.total_width() / 2.0),
+            lane: road.lane_specs_ltr.last().unwrap().clone(),
+        };
+        if road.dst_i == intersection.id {
+            edges.push(right);
+            edges.push(left);
+        } else {
+            left.pl = left.pl.reversed();
+            right.pl = right.pl.reversed();
+            edges.push(left);
+            edges.push(right);
+        }
+    }
+
+    // Look at every adjacent pair
+    let mut results = Vec::new();
+    edges.push(edges[0].clone());
+    for pair in edges.windows(2) {
+        let one = &pair[0];
+        let two = &pair[1];
+
+        // Only want corners between two roads
+        if one.road == two.road {
+            continue;
+        }
+
+        // Only want two sidewalks or shoulders
+        if !(one.lane.lt == LaneType::Sidewalk || one.lane.lt == LaneType::Shoulder) {
+            continue;
+        }
+        if !(two.lane.lt == LaneType::Sidewalk || two.lane.lt == LaneType::Shoulder) {
+            continue;
+        }
+
+        // These points should be right on the intersection polygon
+        let outer_corner1 = one.pl.last_pt();
+        let outer_corner2 = two.pl.last_pt();
+
+        let mut pts_along_intersection = Vec::new();
+        if outer_corner1 == outer_corner2 {
+            pts_along_intersection.push(outer_corner1);
+        } else {
+            if let Some(pl) = intersection
+                .polygon
+                .get_outer_ring()
+                .get_shorter_slice_btwn(outer_corner1, outer_corner2)
+            {
+                pts_along_intersection = pl.into_points();
+            } else {
+                // Something went wrong; bail out
+                continue;
+            }
+        }
+
+        // Now find the inner sides of each sidewalk.
+        let inner_pl1 = one.pl.must_shift_right(one.lane.width);
+        let inner_pl2 = two.pl.must_shift_left(two.lane.width);
+
+        // Imagine the inner lines extended into the intersection. If the point where they meet is
+        // still inside the intersection, let's use it.
+        let mut meet_pt = None;
+        if let Some(pt) = inner_pl1
+            .last_line()
+            .infinite()
+            .intersection(&inner_pl2.last_line().infinite())
+        {
+            if intersection.polygon.contains_pt(pt) {
+                meet_pt = Some(pt);
+            }
+        }
+
+        // Assemble everything into a ring.
+
+        // This points from one to two, tracing along the intersection.
+        let mut pts = pts_along_intersection;
+        // Now add two's inner corner
+        pts.push(inner_pl2.last_pt());
+        // If we have a point where the two infinite lines meet, use it
+        pts.extend(meet_pt);
+        // one's inner corner
+        pts.push(inner_pl1.last_pt());
+        // Close the ring
+        pts.push(pts[0]);
+
+        if let Ok(ring) = Ring::deduping_new(pts) {
+            results.push(ring.into_polygon());
+        }
+    }
+    results
 }

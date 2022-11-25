@@ -143,6 +143,24 @@ export const makeLaneMarkingsLayer = (text) => {
   });
 };
 
+export const makeIntersectionMarkingsLayer = (text) => {
+  // These could change per locale
+  const colors = {
+    "sidewalk corner": "#CCCCCC",
+  };
+
+  return new L.geoJSON(JSON.parse(text), {
+    style: function (feature) {
+      return {
+        fill: true,
+        fillColor: colors[feature.properties.type],
+        fillOpacity: 0.9,
+        stroke: false,
+      };
+    },
+  });
+};
+
 export const makeOsmLayer = (text) => {
   return new L.OSM.DataLayer(
     new DOMParser().parseFromString(text, "application/xml"),
