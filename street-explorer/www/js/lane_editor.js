@@ -14,6 +14,7 @@ export class LaneEditor {
     this.map = setupLeafletMap(mapContainer);
     this.network = null;
     this.layers = [];
+    this.currentWay = null;
 
     // Wire up the import button
     const importButton = document.getElementById("import-view");
@@ -98,7 +99,7 @@ export class LaneEditor {
                   "This road doesn't match up with one OSM way; you can't edit it"
                 );
               } else {
-                this.editWay(feature.properties.osm_way_ids[0]);
+                this.editWay(BigInt(feature.properties.osm_way_ids[0]));
               }
             },
           });
@@ -115,9 +116,11 @@ export class LaneEditor {
   }
 
   editWay(id) {
-    var html = "<table>";
+    this.currentWay = id;
 
-    const tags = JSON.parse(this.network.getOsmTagsForWay(BigInt(id)));
+    var html = `<table id="tags-table">`;
+
+    const tags = JSON.parse(this.network.getOsmTagsForWay(id));
     for (let key in tags) {
       const value = tags[key];
       html += `<tr>`;
@@ -129,7 +132,34 @@ export class LaneEditor {
     html += `</table>`;
     // TODO Add new tag
 
+    html += `<button type="button" id="recalculate">Recalculate</button>`;
+
     const div = document.getElementById("tags");
     div.innerHTML = html;
+
+    document.getElementById("recalculate").onclick = () => {
+      this.recalculateWay();
+    };
+  }
+
+  recalculateWay() {
+    const tags = {};
+    const table = document.getElementById("tags-table");
+    for (var i = 0, row; (row = table.rows[i]); i++) {
+      console.log(`heres a row`);
+      var key = null;
+      for (var j = 0, cell; (cell = row.cells[j]); j++) {
+        if (cell.firstChild instanceof HTMLInputElement) {
+          if (key) {
+            tags[key] = cell.firstChild.value;
+          } else {
+            key = cell.firstChild.value;
+          }
+        }
+      }
+    }
+
+    this.network.overwriteOsmTagsForWay(this.currentWay, JSON.stringify(tags));
+    this.rerenderAll();
   }
 }

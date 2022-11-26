@@ -137,6 +137,25 @@ impl JsStreetNetwork {
     pub fn get_osm_tags_for_way(&self, id: i64) -> String {
         abstutil::to_json(&self.tags_per_way[&osm::WayID(id)])
     }
+
+    /// Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`
+    #[wasm_bindgen(js_name = overwriteOsmTagsForWay)]
+    pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: String) {
+        let id = osm::WayID(id);
+        let tags: Tags = abstutil::from_json(tags.as_bytes()).unwrap();
+
+        for road in self.inner.roads.values_mut() {
+            if road.osm_ids.iter().any(|x| x.osm_way_id == id) {
+                road.lane_specs_ltr = osm2streets::get_lane_specs_ltr(&tags, &self.inner.config);
+            }
+        }
+        self.inner.apply_transformations(
+            vec![Transformation::GenerateIntersectionGeometry],
+            &mut Timer::throwaway(),
+        );
+
+        self.tags_per_way.insert(id, tags);
+    }
 }
 
 #[wasm_bindgen]
