@@ -20,6 +20,7 @@ import {
   makeLayerControl,
   SequentialLayerGroup,
 } from "./controls.js";
+import { setupLeafletMap } from "./leaflet.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
 
 await init();
@@ -258,49 +259,6 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
   } catch (err) {
     window.alert(`Import failed: ${err}`);
   }
-}
-
-function setupLeafletMap(mapContainer) {
-  const osm = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxNativeZoom: 18,
-      maxZoom: 21,
-      attribution: "© OpenStreetMap",
-    }
-  );
-  const arcgis = L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      attribution: "© ArcGIS",
-      maxNativeZoom: 18,
-      maxZoom: 21,
-    }
-  );
-
-  const map = L.map(mapContainer, {
-    layers: [osm],
-    maxZoom: 21,
-    zoomSnap: 0,
-    zoomDelta: 0.5,
-    scrollWheelZoom: false,
-    smoothWheelZoom: true,
-    smoothSensitivity: 1,
-  }).setView([40.0, 10.0], 4);
-
-  new GeoSearch.GeoSearchControl({
-    provider: new GeoSearch.OpenStreetMapProvider(),
-    showMarker: false,
-    autoClose: true,
-  }).addTo(map);
-
-  new L.hash(map);
-
-  L.control
-    .layers({ OpenStreetMap: osm, ArcGIS: arcgis }, {}, { collapsed: false })
-    .addTo(map);
-
-  return map;
 }
 
 // TODO Unused. Preserve logic for dragging individual files as layers.
