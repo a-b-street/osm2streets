@@ -72,6 +72,10 @@ pub struct MapConfig {
     /// If true, use experimental osm2lanes for figuring out lanes per road. If false, use the
     /// classic algorithm.
     pub osm2lanes: bool,
+    /// OSM railway=rail will be included as light rail if so. Cosmetic only.
+    pub include_railroads: bool,
+    /// Only include crosswalks that match a `highway=crossing` OSM node.
+    pub filter_crosswalks: bool,
 
     /// Enable experimental dog-leg intersection merging
     pub find_dog_legs_experiment: bool,
@@ -89,6 +93,8 @@ impl MapConfig {
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
             osm2lanes: false,
+            include_railroads: true,
+            filter_crosswalks: false,
             find_dog_legs_experiment: false,
             merge_osm_ways: BTreeSet::new(),
         }

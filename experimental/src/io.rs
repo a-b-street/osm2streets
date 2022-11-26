@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use abstutil::Timer;
 use osm2streets::{
-    IntersectionID, IntersectionKind, LaneSpec, LaneType, Road, RoadID, StreetNetwork,
+    IntersectionID, IntersectionKind, LaneSpec, LaneType, MapConfig, Road, RoadID, StreetNetwork,
     Transformation,
 };
 
@@ -29,7 +29,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetw
     let mut street_network = streets_reader::osm_to_street_network(
         &std::fs::read_to_string(osm_path).unwrap(),
         clip_pts,
-        streets_reader::Options::default(),
+        MapConfig::default(),
         timer,
     )?;
 

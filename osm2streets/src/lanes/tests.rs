@@ -1,7 +1,4 @@
-use std::collections::BTreeSet;
-
 use abstutil::Tags;
-use geom::Distance;
 
 use crate::{get_lane_specs_ltr, Direction, DrivingSide, MapConfig};
 
@@ -202,17 +199,8 @@ fn test_osm_to_specs() {
             "^^^vvv",
         ),
     ] {
-        let cfg = MapConfig {
-            driving_side,
-            bikes_can_use_bus_lanes: true,
-            inferred_sidewalks: true,
-            street_parking_spot_length: Distance::meters(8.0),
-            turn_on_red: true,
-            // Flip this temporarily to work on the new integration
-            osm2lanes: false,
-            find_dog_legs_experiment: false,
-            merge_osm_ways: BTreeSet::new(),
-        };
+        let mut cfg = MapConfig::default();
+        cfg.driving_side = driving_side;
         input.push("highway=residential");
         let actual = get_lane_specs_ltr(&tags(input.clone()), &cfg);
         let actual_lt: String = actual.iter().map(|s| s.lt.to_char()).collect();

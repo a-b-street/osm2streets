@@ -7,7 +7,7 @@ use geom::{HashablePt2D, Pt2D};
 use osm2streets::{osm, CrossingType, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};
-use crate::Options;
+use crate::MapConfig;
 
 pub struct OsmExtract {
     /// Unsplit roads. These aren't Roads yet, because they may not obey those invariants.
@@ -67,7 +67,7 @@ impl OsmExtract {
     }
 
     // Returns true if the way was added as a road
-    pub fn handle_way(&mut self, id: WayID, way: &Way, opts: &Options) -> bool {
+    pub fn handle_way(&mut self, id: WayID, way: &Way, cfg: &MapConfig) -> bool {
         let tags = &way.tags;
 
         if tags.is("area", "yes") {
@@ -79,7 +79,7 @@ impl OsmExtract {
             self.roads.push((id, way.pts.clone(), tags.clone()));
             return true;
         }
-        if tags.is("railway", "rail") && opts.include_railroads {
+        if tags.is("railway", "rail") && cfg.include_railroads {
             self.roads.push((id, way.pts.clone(), tags.clone()));
             return true;
         }
@@ -129,7 +129,7 @@ impl OsmExtract {
         // If we're only handling sidewalks tagged on roads, skip crossings and separate sidewalks
         // Note we have to do this here -- get_lane_specs_ltr doesn't support decisions like
         // "actually, let's pretend this road doesn't exist at all"
-        if opts.map_config.inferred_sidewalks {
+        if cfg.inferred_sidewalks {
             if tags.is(osm::HIGHWAY, "footway")
                 && tags.is_any("footway", vec!["crossing", "sidewalk"])
             {

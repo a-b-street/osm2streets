@@ -19,68 +19,6 @@ pub mod extract;
 pub mod osm_reader;
 pub mod split_ways;
 
-/// Configures the creation of a `RawMap` from OSM and other input data.
-/// TODO Layering is now strange. Some of these are options are needed just for StreetNetwork, but
-/// many are the next level up and just for A/B Street's convert_osm.
-pub struct Options {
-    pub map_config: MapConfig,
-
-    pub onstreet_parking: OnstreetParking,
-    pub public_offstreet_parking: PublicOffstreetParking,
-    pub private_offstreet_parking: PrivateOffstreetParking,
-    /// OSM railway=rail will be included as light rail if so. Cosmetic only.
-    pub include_railroads: bool,
-    /// If provided, read polygons from this GeoJSON file and add them to the RawMap as buildings.
-    pub extra_buildings: Option<String>,
-    /// Only include crosswalks that match a `highway=crossing` OSM node.
-    pub filter_crosswalks: bool,
-    /// Configure public transit using this URL to a static GTFS feed in .zip format.
-    pub gtfs_url: Option<String>,
-    pub elevation: bool,
-}
-
-impl Options {
-    pub fn default() -> Self {
-        Self {
-            map_config: MapConfig::default(),
-            onstreet_parking: OnstreetParking::JustOSM,
-            public_offstreet_parking: PublicOffstreetParking::None,
-            private_offstreet_parking: PrivateOffstreetParking::FixedPerBldg(1),
-            include_railroads: true,
-            extra_buildings: None,
-            filter_crosswalks: false,
-            gtfs_url: None,
-            elevation: false,
-        }
-    }
-}
-
-/// What roads will have on-street parking lanes? Data from
-/// <https://wiki.openstreetmap.org/wiki/Key:parking:lane> is always used if available.
-pub enum OnstreetParking {
-    /// If not tagged, there won't be parking.
-    JustOSM,
-    /// If OSM data is missing, then try to match data from
-    /// <http://data-seattlecitygis.opendata.arcgis.com/datasets/blockface>. This is Seattle specific.
-    Blockface(String),
-}
-
-/// How many spots are available in public parking garages?
-pub enum PublicOffstreetParking {
-    None,
-    /// Pull data from
-    /// <https://data-seattlecitygis.opendata.arcgis.com/datasets/public-garages-or-parking-lots>, a
-    /// Seattle-specific data source.
-    Gis(String),
-}
-
-/// If a building doesn't have anything from public_offstreet_parking and isn't tagged as a garage
-/// in OSM, how many private spots should it have?
-pub enum PrivateOffstreetParking {
-    FixedPerBldg(usize),
-    // TODO Based on the number of residents?
-}
-
 /// Create a `StreetNetwork` from the contents of an `.osm.xml` file. If `clip_pts` is specified,
 /// use theese as a boundary polygon. (Use `LonLat::read_osmosis_polygon` or similar to produce
 /// these.)
@@ -90,13 +28,13 @@ pub enum PrivateOffstreetParking {
 pub fn osm_to_street_network(
     osm_xml_input: &str,
     clip_pts: Option<Vec<LonLat>>,
-    opts: Options,
+    cfg: MapConfig,
     timer: &mut Timer,
 ) -> Result<StreetNetwork> {
     let mut streets = StreetNetwork::blank();
     // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
     // happens in split_ways.
-    streets.config = opts.map_config.clone();
+    streets.config = cfg;
 
     if let Some(ref pts) = clip_pts {
         let gps_bounds = GPSBounds::from(pts.clone());
@@ -104,7 +42,7 @@ pub fn osm_to_street_network(
         streets.gps_bounds = gps_bounds;
     }
 
-    let extract = extract_osm(&mut streets, osm_xml_input, clip_pts, &opts, timer)?;
+    let extract = extract_osm(&mut streets, osm_xml_input, clip_pts, timer)?;
     let split_output = split_ways::split_up_roads(&mut streets, extract, timer);
     clip::clip_map(&mut streets, timer)?;
 
@@ -123,7 +61,7 @@ pub fn osm_to_street_network(
         &split_output.pt_to_road,
     );
 
-    if opts.filter_crosswalks {
+    if streets.config.filter_crosswalks {
         filter_crosswalks(
             &mut streets,
             split_output.crossing_nodes,
@@ -139,7 +77,6 @@ fn extract_osm(
     streets: &mut StreetNetwork,
     osm_xml_input: &str,
     clip_pts: Option<Vec<LonLat>>,
-    opts: &Options,
     timer: &mut Timer,
 ) -> Result<OsmExtract> {
     let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer)?;
@@ -168,7 +105,7 @@ fn extract_osm(
     timer.start_iter("processing OSM ways", doc.ways.len());
     for (id, way) in doc.ways {
         timer.next();
-        out.handle_way(id, &way, opts);
+        out.handle_way(id, &way, &streets.config);
     }
 
     timer.start_iter("processing OSM relations", doc.relations.len());

@@ -2,7 +2,7 @@ use abstutil::Timer;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use osm2streets::{DebugStreets, StreetNetwork, Transformation};
+use osm2streets::{DebugStreets, MapConfig, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -29,14 +29,14 @@ impl JsStreetNetwork {
             .into_serde()
             .map_err(|err| JsValue::from_str(&err.to_string()))?;
 
-        let mut options = streets_reader::Options::default();
-        options.map_config.inferred_sidewalks = input.inferred_sidewalks;
-        options.map_config.osm2lanes = input.osm2lanes;
+        let mut cfg = MapConfig::default();
+        cfg.inferred_sidewalks = input.inferred_sidewalks;
+        cfg.osm2lanes = input.osm2lanes;
 
         let clip_pts = None;
         let mut timer = Timer::throwaway();
         let mut street_network =
-            streets_reader::osm_to_street_network(osm_xml_input, clip_pts, options, &mut timer)
+            streets_reader::osm_to_street_network(osm_xml_input, clip_pts, cfg, &mut timer)
                 .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
