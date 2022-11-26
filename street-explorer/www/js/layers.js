@@ -49,7 +49,7 @@ export const makePlainGeoJsonLayer = (text) => {
   });
 };
 
-export const makeLanePolygonLayer = (text) => {
+export const lanePolygonStyle = (feature) => {
   // These could change per locale
   const colors = {
     Driving: "black",
@@ -65,34 +65,36 @@ export const makeLanePolygonLayer = (text) => {
     "Buffer(Planters)": "#555555",
   };
 
-  return new L.geoJSON(JSON.parse(text), {
-    style: function (feature) {
-      if (feature.properties.type == "Footway") {
-        return {
-          fill: true,
-          fillColor: "#DDDDE8",
-          stroke: true,
-          color: "black",
-          dashArray: "5,10",
-        };
-      }
-      if (feature.properties.type == "SharedUse") {
-        return {
-          fill: true,
-          fillColor: "#E5E1BB",
-          stroke: true,
-          color: "black",
-          dashArray: "5,10",
-        };
-      }
+  if (feature.properties.type == "Footway") {
+    return {
+      fill: true,
+      fillColor: "#DDDDE8",
+      stroke: true,
+      color: "black",
+      dashArray: "5,10",
+    };
+  }
+  if (feature.properties.type == "SharedUse") {
+    return {
+      fill: true,
+      fillColor: "#E5E1BB",
+      stroke: true,
+      color: "black",
+      dashArray: "5,10",
+    };
+  }
 
-      return {
-        fill: true,
-        fillColor: colors[feature.properties.type] || "red",
-        fillOpacity: 0.9,
-        stroke: false,
-      };
-    },
+  return {
+    fill: true,
+    fillColor: colors[feature.properties.type] || "red",
+    fillOpacity: 0.9,
+    stroke: false,
+  };
+};
+
+export const makeLanePolygonLayer = (text) => {
+  return new L.geoJSON(JSON.parse(text), {
+    style: lanePolygonStyle,
     onEachFeature: function (feature, layer) {
       layer.on({
         mouseover: function (ev) {
