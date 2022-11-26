@@ -26,7 +26,7 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetwork> {
     let clip_pts = None;
 
-    let mut street_network = streets_reader::osm_to_street_network(
+    let (mut street_network, _) = streets_reader::osm_to_street_network(
         &std::fs::read_to_string(osm_path).unwrap(),
         clip_pts,
         MapConfig::default(),
