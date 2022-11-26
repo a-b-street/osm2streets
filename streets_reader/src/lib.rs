@@ -28,7 +28,7 @@ pub fn osm_to_street_network(
     clip_pts: Option<Vec<LonLat>>,
     cfg: MapConfig,
     timer: &mut Timer,
-) -> Result<StreetNetwork> {
+) -> Result<(StreetNetwork, osm_reader::Document)> {
     let mut streets = StreetNetwork::blank();
     // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
     // happens in split_ways.
@@ -40,14 +40,14 @@ pub fn osm_to_street_network(
         streets.gps_bounds = gps_bounds;
     }
 
-    let extract = extract_osm(&mut streets, osm_xml_input, clip_pts, timer)?;
+    let (extract, doc) = extract_osm(&mut streets, osm_xml_input, clip_pts, timer)?;
     split_ways::split_up_roads(&mut streets, extract, timer);
     clip::clip_map(&mut streets, timer)?;
 
     // Cul-de-sacs aren't supported yet.
     streets.retain_roads(|r| r.src_i != r.dst_i);
 
-    Ok(streets)
+    Ok((streets, doc))
 }
 
 fn extract_osm(
@@ -55,7 +55,7 @@ fn extract_osm(
     osm_xml_input: &str,
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
-) -> Result<OsmExtract> {
+) -> Result<(OsmExtract, osm_reader::Document)> {
     let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer)?;
 
     if clip_pts.is_none() {
@@ -74,22 +74,22 @@ fn extract_osm(
     let mut out = OsmExtract::new();
 
     timer.start_iter("processing OSM nodes", doc.nodes.len());
-    for (id, node) in doc.nodes {
+    for (id, node) in &doc.nodes {
         timer.next();
-        out.handle_node(id, &node);
+        out.handle_node(*id, node);
     }
 
     timer.start_iter("processing OSM ways", doc.ways.len());
-    for (id, way) in doc.ways {
+    for (id, way) in &doc.ways {
         timer.next();
-        out.handle_way(id, &way, &streets.config);
+        out.handle_way(*id, way, &streets.config);
     }
 
     timer.start_iter("processing OSM relations", doc.relations.len());
-    for (id, rel) in doc.relations {
+    for (id, rel) in &doc.relations {
         timer.next();
-        out.handle_relation(id, &rel);
+        out.handle_relation(*id, rel);
     }
 
-    Ok(out)
+    Ok((out, doc))
 }

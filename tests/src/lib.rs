@@ -21,7 +21,7 @@ mod tests {
             .unwrap_or_else(|_| String::new());
 
         let clip_pts = None;
-        let mut street_network = streets_reader::osm_to_street_network(
+        let (mut street_network, _) = streets_reader::osm_to_street_network(
             &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_pts,
             MapConfig::default(),

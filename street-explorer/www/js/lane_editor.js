@@ -72,10 +72,10 @@ export class LaneEditor {
     }
     this.layers = [];
 
-    // Just show intersections from the plain layer
     this.layers.push(
       L.geoJSON(JSON.parse(this.network.toGeojsonPlain()), {
-        style: function (feature) {
+        // Just show intersections from the plain layer
+        style: (feature) => {
           if (feature.properties.type == "intersection") {
             return {
               color: "black",
@@ -89,6 +89,20 @@ export class LaneEditor {
     this.layers.push(
       L.geoJSON(JSON.parse(this.network.toLanePolygonsGeojson()), {
         style: lanePolygonStyle,
+        // Make lanes clickable
+        onEachFeature: (feature, layer) => {
+          layer.on({
+            click: (ev) => {
+              if (feature.properties.osm_way_ids.length != 1) {
+                window.alert(
+                  "This road doesn't match up with one OSM way; you can't edit it"
+                );
+              } else {
+                this.editWay(feature.properties.osm_way_ids[0]);
+              }
+            },
+          });
+        },
       })
     );
     this.layers.push(
@@ -98,5 +112,24 @@ export class LaneEditor {
     for (const layer of this.layers) {
       layer.addTo(this.map);
     }
+  }
+
+  editWay(id) {
+    var html = "<table>";
+
+    const tags = JSON.parse(this.network.getOsmTagsForWay(BigInt(id)));
+    for (let key in tags) {
+      const value = tags[key];
+      html += `<tr>`;
+      html += `<td><input type="text" value="${key}"></td>`;
+      html += `<td><input type="text" value="${value}"></td>`;
+      html += `<td><button type="button">Delete</button></td>`;
+      html += `</tr>`;
+    }
+    html += `</table>`;
+    // TODO Add new tag
+
+    const div = document.getElementById("tags");
+    div.innerHTML = html;
   }
 }

@@ -1,8 +1,10 @@
-use abstutil::Timer;
+use std::collections::HashMap;
+
+use abstutil::{Tags, Timer};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use osm2streets::{DebugStreets, MapConfig, StreetNetwork, Transformation};
+use osm2streets::{osm, DebugStreets, MapConfig, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -16,6 +18,7 @@ pub struct ImportOptions {
 #[wasm_bindgen]
 pub struct JsStreetNetwork {
     inner: StreetNetwork,
+    tags_per_way: HashMap<osm::WayID, Tags>,
 }
 
 #[wasm_bindgen]
@@ -35,7 +38,7 @@ impl JsStreetNetwork {
 
         let clip_pts = None;
         let mut timer = Timer::throwaway();
-        let mut street_network =
+        let (mut street_network, doc) =
             streets_reader::osm_to_street_network(osm_xml_input, clip_pts, cfg, &mut timer)
                 .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
@@ -70,8 +73,14 @@ impl JsStreetNetwork {
             street_network.apply_transformations(transformations, &mut timer);
         }
 
+        let mut tags_per_way = HashMap::new();
+        for (id, way) in doc.ways {
+            tags_per_way.insert(id, way.tags);
+        }
+
         Ok(Self {
             inner: street_network,
+            tags_per_way,
         })
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
@@ -121,6 +130,13 @@ impl JsStreetNetwork {
     pub fn debug_movements_geojson(&self) -> String {
         self.inner.debug_movements_geojson().unwrap()
     }
+
+    // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a
+    // HashMap
+    #[wasm_bindgen(js_name = getOsmTagsForWay)]
+    pub fn get_osm_tags_for_way(&self, id: i64) -> String {
+        abstutil::to_json(&self.tags_per_way[&osm::WayID(id)])
+    }
 }
 
 #[wasm_bindgen]
@@ -140,6 +156,7 @@ impl JsDebugStreets {
     pub fn get_network(&self) -> JsValue {
         JsValue::from(JsStreetNetwork {
             inner: self.inner.streets.clone(),
+            tags_per_way: HashMap::new(),
         })
     }
 
