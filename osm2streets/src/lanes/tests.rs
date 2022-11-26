@@ -180,6 +180,27 @@ fn test_osm_to_specs() {
             "sddBs",
             "^^vvv",
         ),
+        (
+            "https://www.openstreetmap.org/way/4013378",
+            vec!["busway:left=lane", "cycleway:left=lane", "oneway=yes"],
+            DrivingSide::Left,
+            "sbBds",
+            "^^^^v",
+        ),
+        (
+            "https://www.openstreetmap.org/way/312855494",
+            vec!["busway:right=lane"],
+            DrivingSide::Left,
+            "sddBs",
+            "^^vvv",
+        ),
+        (
+            "https://www.openstreetmap.org/way/228767989",
+            vec!["busway:both=lane", "sidewalk=both"],
+            DrivingSide::Left,
+            "sBddBs",
+            "^^^vvv",
+        ),
     ] {
         let cfg = MapConfig {
             driving_side,

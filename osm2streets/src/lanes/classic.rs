@@ -30,7 +30,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
 
     // Most cases are below -- it's a "normal road"
 
-    let (mut fwd_side, mut back_side, oneway, driving_lane) = create_driving_lanes(&tags);
+    let (mut fwd_side, mut back_side, oneway, driving_lane) = create_driving_lanes(&tags, cfg);
 
     if driving_lane == LaneType::Construction {
         return apply_width(
@@ -150,7 +150,10 @@ fn non_motorized_road(tags: &Tags, cfg: &MapConfig) -> Option<Vec<LaneSpec>> {
     None
 }
 
-fn create_driving_lanes(tags: &Tags) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, LaneType) {
+fn create_driving_lanes(
+    tags: &Tags,
+    cfg: &MapConfig,
+) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, LaneType) {
     // TODO Reversible roads should be handled differently?
     let oneway =
         tags.is_any("oneway", vec!["yes", "reversible"]) || tags.is("junction", "roundabout");
@@ -171,7 +174,21 @@ fn create_driving_lanes(tags: &Tags) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, Lan
             (n / 2) + 1
         }
     } else {
-        1
+        // If lanes aren't specified, generally assume 1. But if there are bus lanes and the road
+        // doesn't look like restricted to general traffic, assume more.
+        //
+        // TODO Not all cases are handled here.
+        let mut n = 1;
+        if !tags.is("access", "no") {
+            if (cfg.driving_side == DrivingSide::Left && tags.is("busway:left", "lane"))
+                || (cfg.driving_side == DrivingSide::Right && tags.is("busway:right", "lane"))
+                || tags.is("busway:both", "lane")
+                || tags.is("busway", "lane")
+            {
+                n = 2;
+            }
+        }
+        n
     };
     let num_driving_back = if let Some(n) = tags
         .get("lanes:backward")
@@ -194,7 +211,18 @@ fn create_driving_lanes(tags: &Tags) -> (Vec<LaneSpec>, Vec<LaneSpec>, bool, Lan
     } else if oneway {
         0
     } else {
-        1
+        // Same busway hack
+        let mut n = 1;
+        if !tags.is("access", "no") {
+            if (cfg.driving_side == DrivingSide::Left && tags.is("busway:right", "lane"))
+                || (cfg.driving_side == DrivingSide::Right && tags.is("busway:left", "lane"))
+                || tags.is("busway:both", "lane")
+                || tags.is("busway", "lane")
+            {
+                n = 2;
+            }
+        }
+        n
     };
 
     #[allow(clippy::if_same_then_else)] // better readability
