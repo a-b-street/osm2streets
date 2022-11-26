@@ -3,7 +3,7 @@ mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
     use experimental::RoadNetwork;
-    use osm2streets::Transformation;
+    use osm2streets::{MapConfig, Transformation};
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
@@ -24,7 +24,7 @@ mod tests {
         let mut street_network = streets_reader::osm_to_street_network(
             &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_pts,
-            streets_reader::Options::default(),
+            MapConfig::default(),
             &mut timer,
         )?;
         street_network
