@@ -15,6 +15,7 @@ export class LaneEditor {
     this.network = null;
     this.layers = [];
     this.currentWay = null;
+    this.currentWaysLayer = null;
 
     // Wire up the import button
     const importButton = document.getElementById("import-view");
@@ -117,6 +118,17 @@ export class LaneEditor {
 
   editWay(id) {
     this.currentWay = id;
+    if (this.currentWaysLayer) {
+      this.currentWaysLayer.remove();
+    }
+    this.currentWaysLayer = L.geoJSON(
+      JSON.parse(this.network.getGeometryForWay(id)),
+      {
+        style: (feature) => {
+          return { stroke: false, fill: true, color: "red", opacity: 0.5 };
+        },
+      }
+    ).addTo(this.map);
 
     var html = `<table><tbody id="tags-table">`;
 
