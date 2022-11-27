@@ -118,19 +118,22 @@ export class LaneEditor {
   editWay(id) {
     this.currentWay = id;
 
-    var html = `<table id="tags-table">`;
+    var html = `<table><tbody id="tags-table">`;
 
     const tags = JSON.parse(this.network.getOsmTagsForWay(id));
+    // Note IDs initially use indices, but as the user adds and deletes rows, the indices get out of sync. That's not important; as long as the IDs are unique, it's fine.
+    var idx = 0;
     for (let key in tags) {
       const value = tags[key];
-      html += `<tr>`;
+      html += `<tr id="row-${idx}">`;
       html += `<td><input type="text" value="${key}"></td>`;
       html += `<td><input type="text" value="${value}"></td>`;
-      html += `<td><button type="button">Delete</button></td>`;
+      html += `<td><button type="button" id="del-${idx}">Delete</button></td>`;
       html += `</tr>`;
+      idx++;
     }
-    html += `</table>`;
-    // TODO Add new tag
+    html += `</tbody></table>`;
+    html += `<button type="button" id="add-row">Add new row</button>`;
 
     html += `<button type="button" id="recalculate">Recalculate</button>`;
 
@@ -140,18 +143,42 @@ export class LaneEditor {
     document.getElementById("recalculate").onclick = () => {
       this.recalculateWay();
     };
+
+    document.getElementById("add-row").onclick = () => {
+      idx++;
+
+      const row = document.createElement("tr");
+      row.id = `row-${idx}`;
+      row.innerHTML = `<td><input type="text"></td><td><input type="text"></td><td><button type="button" id="del-${idx}">Delete</button></td>`;
+      document.getElementById("tags-table").appendChild(row);
+
+      document.getElementById(`del-${idx}`).onclick = () => {
+        document.getElementById(`row-${idx}`).remove();
+      };
+    };
+
+    for (var i = 0; i < idx; i++) {
+      // Ahh Javascript...
+      const ii = i;
+      document.getElementById(`del-${ii}`).onclick = () => {
+        console.log(`lets remove row-${ii}`);
+        document.getElementById(`row-${ii}`).remove();
+      };
+    }
   }
 
   recalculateWay() {
     const tags = {};
     const table = document.getElementById("tags-table");
     for (var i = 0, row; (row = table.rows[i]); i++) {
-      console.log(`heres a row`);
       var key = null;
       for (var j = 0, cell; (cell = row.cells[j]); j++) {
         if (cell.firstChild instanceof HTMLInputElement) {
           if (key) {
-            tags[key] = cell.firstChild.value;
+            // Skip empty keys or values
+            if (key && cell.firstChild.value) {
+              tags[key] = cell.firstChild.value;
+            }
           } else {
             key = cell.firstChild.value;
           }
@@ -159,6 +186,7 @@ export class LaneEditor {
       }
     }
 
+    console.log(`Recalculate with ${JSON.stringify(tags)}`);
     this.network.overwriteOsmTagsForWay(this.currentWay, JSON.stringify(tags));
     this.rerenderAll();
   }
