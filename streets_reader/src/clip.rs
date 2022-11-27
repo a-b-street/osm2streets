@@ -13,11 +13,11 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
 
     // First, just remove roads that both start and end outside the boundary polygon.
     streets.retain_roads(|r| {
-        let first_in = boundary_polygon.contains_pt(r.untrimmed_center_line.first_pt());
-        let last_in = boundary_polygon.contains_pt(r.untrimmed_center_line.last_pt());
+        let first_in = boundary_polygon.contains_pt(r.reference_line.first_pt());
+        let last_in = boundary_polygon.contains_pt(r.reference_line.last_pt());
         let light_rail_ok = if r.is_light_rail() {
             // Make sure it's in the boundary somewhere
-            r.untrimmed_center_line
+            r.reference_line
                 .points()
                 .iter()
                 .any(|pt| boundary_polygon.contains_pt(*pt))
@@ -81,7 +81,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         let r = intersection.roads[0];
 
         let road = streets.roads.get_mut(&r).unwrap();
-        let boundary_pts = boundary_ring.all_intersections(&road.untrimmed_center_line);
+        let boundary_pts = boundary_ring.all_intersections(&road.reference_line);
         if boundary_pts.is_empty() {
             // The intersection is out-of-bounds, but a road leading to it doesn't cross the
             // boundary?
@@ -92,12 +92,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
         if road.src_i == intersection.id {
             // Starting out-of-bounds
             let boundary_pt = boundary_pts[0];
-            if let Some(pl) = road
-                .untrimmed_center_line
-                .get_slice_starting_at(boundary_pt)
-            {
-                road.untrimmed_center_line = pl;
-                intersection.point = road.untrimmed_center_line.first_pt();
+            if let Some(pl) = road.reference_line.get_slice_starting_at(boundary_pt) {
+                road.reference_line = pl;
+                intersection.point = road.reference_line.first_pt();
             } else {
                 warn!("{} interacts with boundary strangely", r);
                 continue;
@@ -107,9 +104,9 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             // For light rail, the center-line might cross the boundary twice. When we're looking
             // at the outbound end, take the last time we hit the boundary
             let boundary_pt = *boundary_pts.last().unwrap();
-            if let Some(pl) = road.untrimmed_center_line.get_slice_ending_at(boundary_pt) {
-                road.untrimmed_center_line = pl;
-                intersection.point = road.untrimmed_center_line.last_pt();
+            if let Some(pl) = road.reference_line.get_slice_ending_at(boundary_pt) {
+                road.reference_line = pl;
+                intersection.point = road.reference_line.last_pt();
             } else {
                 warn!("{} interacts with boundary strangely", r);
                 continue;

@@ -7,7 +7,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // Initialize trimmed_center_line to the corrected center
     for road in streets.roads.values_mut() {
         let pl = road.untrimmed_road_geometry().0;
-        road.trimmed_center_line = pl;
+        road.center_line = pl;
     }
 
     let mut remove_dangling_nodes = Vec::new();
@@ -29,7 +29,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
                 for (r, (pl, _)) in results.trimmed_center_pts {
-                    streets.roads.get_mut(&r).unwrap().trimmed_center_line = pl;
+                    streets.roads.get_mut(&r).unwrap().center_line = pl;
                 }
             }
             Err(err) => {
@@ -40,9 +40,9 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                     // Don't trim lines back at all
                     let road = &streets.roads[r];
                     let pt = if road.src_i == i.id {
-                        road.trimmed_center_line.first_pt()
+                        road.center_line.first_pt()
                     } else {
-                        road.trimmed_center_line.last_pt()
+                        road.center_line.last_pt()
                     };
                     set_polygons.push((i.id, Circle::new(pt, Distance::meters(3.0)).to_polygon()));
 
@@ -79,14 +79,14 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         }
         let r = i.roads.iter().next().unwrap();
         let road = streets.roads.get_mut(r).unwrap();
-        if road.trimmed_center_line.length() >= min_len {
+        if road.center_line.length() >= min_len {
             continue;
         }
         if road.dst_i == i.id {
-            road.trimmed_center_line = road.trimmed_center_line.extend_to_length(min_len);
+            road.center_line = road.center_line.extend_to_length(min_len);
         } else {
-            road.trimmed_center_line = road
-                .trimmed_center_line
+            road.center_line = road
+                .center_line
                 .reversed()
                 .extend_to_length(min_len)
                 .reversed();
@@ -106,7 +106,7 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         .unwrap();
         set_polygons.push((i.id, results.intersection_polygon));
         for (r, (pl, _)) in results.trimmed_center_pts {
-            streets.roads.get_mut(&r).unwrap().trimmed_center_line = pl;
+            streets.roads.get_mut(&r).unwrap().center_line = pl;
         }
         info!(
             "Shifted map edge {} out a bit to make the road a reasonable length",
