@@ -143,9 +143,9 @@ impl StreetNetwork {
             // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
             // shouldn't matter for sorting.
             let center_pl = if road.src_i == i {
-                road.untrimmed_center_line.reversed()
+                road.reference_line.reversed()
             } else if road.dst_i == i {
-                road.untrimmed_center_line.clone()
+                road.reference_line.clone()
             } else {
                 panic!("Incident road {r} doesn't have an endpoint at {i}");
             };

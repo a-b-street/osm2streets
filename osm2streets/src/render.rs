@@ -27,7 +27,7 @@ impl StreetNetwork {
         // Add a polygon per road
         for road in self.roads.values() {
             pairs.push((
-                road.trimmed_center_line
+                road.center_line
                     .make_polygons(road.total_width())
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
@@ -265,9 +265,9 @@ impl StreetNetwork {
             for (idx, r) in intersection.roads.iter().enumerate() {
                 let road = &self.roads[r];
                 let pt = if road.src_i == *i {
-                    road.trimmed_center_line.first_pt()
+                    road.center_line.first_pt()
                 } else {
-                    road.trimmed_center_line.last_pt()
+                    road.center_line.last_pt()
                 };
                 pairs.push((
                     pt.to_geojson(Some(&self.gps_bounds)),
@@ -305,9 +305,9 @@ impl StreetNetwork {
                 .map(|r| {
                     let road = &self.roads[r];
                     let first_road_segment = if road.src_i == *i {
-                        road.trimmed_center_line.first_line()
+                        road.center_line.first_line()
                     } else {
-                        road.trimmed_center_line.last_line().reversed()
+                        road.center_line.last_line().reversed()
                     };
                     // Offset the arrow start/end points if it is bidirectional.
                     (

@@ -33,12 +33,14 @@ pub struct Road {
     /// <https://wiki.openstreetmap.org/wiki/Key:layer>.
     pub layer: isize,
 
-    /// This represents the original OSM geometry. No transformation has happened, besides slightly
-    /// smoothing the polyline.
-    pub untrimmed_center_line: PolyLine,
-    /// The physical center of the road, including sidewalks. This won't actually be trimmed until
-    /// `Transformation::GenerateIntersectionGeometry` runs.
-    pub trimmed_center_line: PolyLine,
+    /// The original OSM geometry (slightly smoothed). This will extend beyond the extent of the
+    /// resulting trimmed road, be positioned somewhere within the road according to the placement
+    /// tag and might be nonsense for the first/last segment.
+    pub reference_line: PolyLine,
+    /// The physical center of the road, including sidewalks. This will differ from reference_line
+    /// and modified by transformations, notably it will be trimmed by
+    /// `Transformation::GenerateIntersectionGeometry`.
+    pub center_line: PolyLine,
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
@@ -84,8 +86,8 @@ impl Road {
             name: osm_tags.get("name").cloned(),
             internal_junction_road: osm_tags.is("junction", "intersection"),
             layer,
-            untrimmed_center_line,
-            trimmed_center_line: PolyLine::dummy(),
+            reference_line: untrimmed_center_line,
+            center_line: PolyLine::dummy(),
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
 
@@ -171,14 +173,14 @@ impl Road {
 
     /// Points from first to last point. Undefined for loops.
     pub fn angle(&self) -> Angle {
-        self.untrimmed_center_line
+        self.reference_line
             .first_pt()
-            .angle_to(self.untrimmed_center_line.last_pt())
+            .angle_to(self.reference_line.last_pt())
     }
 
     /// The length of the original OSM center line, before any trimming away from intersections
     pub fn untrimmed_length(&self) -> Distance {
-        self.untrimmed_center_line.length()
+        self.reference_line.length()
     }
 
     /// Returns the corrected (but untrimmed) center and total width for a road
@@ -200,7 +202,7 @@ impl Road {
         // If there's a sidewalk on only one side, adjust the true center of the road.
         // TODO I don't remember the rationale for doing this in the first place. What if there's a
         // shoulder and a sidewalk of different widths? We don't do anything then
-        let mut true_center = self.untrimmed_center_line.clone();
+        let mut true_center = self.reference_line.clone();
         match (sidewalk_right, sidewalk_left) {
             (Some(w), None) => {
                 true_center = true_center.must_shift_right(w / 2.0);
@@ -229,9 +231,9 @@ impl Road {
         for lane in &self.lane_specs_ltr {
             width_so_far += lane.width / 2.0;
             output.push(
-                self.trimmed_center_line
+                self.center_line
                     .shift_from_center(total_width, width_so_far)
-                    .unwrap_or_else(|_| self.trimmed_center_line.clone()),
+                    .unwrap_or_else(|_| self.center_line.clone()),
             );
             width_so_far += lane.width / 2.0;
         }
@@ -256,7 +258,7 @@ impl Road {
             id: self.id,
             src_i: self.src_i,
             dst_i: self.dst_i,
-            center_pts: self.trimmed_center_line.clone(),
+            center_pts: self.center_line.clone(),
             half_width: self.total_width() / 2.0,
             highway_type: self.highway_type.clone(),
         }

@@ -86,9 +86,9 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
     // bend away from the median in some unrealistic way.
     //
     // Alternate idea: Try to average the two PolyLines somehow
-    road1.untrimmed_center_line = PolyLine::must_new(vec![
-        road1.untrimmed_center_line.first_pt(),
-        road1.untrimmed_center_line.last_pt(),
+    road1.reference_line = PolyLine::must_new(vec![
+        road1.reference_line.first_pt(),
+        road1.reference_line.last_pt(),
     ]);
 
     // Lanes

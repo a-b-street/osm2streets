@@ -27,8 +27,8 @@ impl StreetNetwork {
             }
         }
 
-        // We could be more careful merging highway_type, layer, name, and other attributes, but in
-        // practice, it doesn't matter for the short segments we're merging.
+        // We could be more careful merging percent_incline and other attributes, but in practice, it
+        // doesn't matter for the short segments we're merging.
         let mut keep_road = self.remove_road(keep_r);
         let destroy_road = self.remove_road(destroy_r);
         self.intersections.remove(&i).unwrap();
@@ -36,26 +36,25 @@ impl StreetNetwork {
         // Remember the merge
         keep_road.osm_ids.extend(destroy_road.osm_ids);
 
-        // There are 4 cases, easy to understand on paper. Preserve the original direction of
-        // keep_r. Work with points, not PolyLine::extend. We want to RDP simplify before
-        // finalizing.
+        // There are 4 cases, easy to understand on paper. Preserve the original direction of keep_r.
+        // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
         let mut new_pts;
         let (new_src_i, new_dst_i) = if keep_road.dst_i == destroy_road.src_i {
-            new_pts = keep_road.untrimmed_center_line.clone().into_points();
-            new_pts.extend(destroy_road.untrimmed_center_line.into_points());
+            new_pts = keep_road.reference_line.clone().into_points();
+            new_pts.extend(destroy_road.reference_line.into_points());
             (keep_road.src_i, destroy_road.dst_i)
         } else if keep_road.dst_i == destroy_road.dst_i {
-            new_pts = keep_road.untrimmed_center_line.clone().into_points();
-            new_pts.extend(destroy_road.untrimmed_center_line.reversed().into_points());
+            new_pts = keep_road.reference_line.clone().into_points();
+            new_pts.extend(destroy_road.reference_line.reversed().into_points());
             (keep_road.src_i, destroy_road.src_i)
         } else if keep_road.src_i == destroy_road.src_i {
-            new_pts = destroy_road.untrimmed_center_line.into_points();
+            new_pts = destroy_road.reference_line.into_points();
             new_pts.reverse();
-            new_pts.extend(keep_road.untrimmed_center_line.clone().into_points());
+            new_pts.extend(keep_road.reference_line.clone().into_points());
             (destroy_road.dst_i, keep_road.dst_i)
         } else if keep_road.src_i == destroy_road.dst_i {
-            new_pts = destroy_road.untrimmed_center_line.into_points();
-            new_pts.extend(keep_road.untrimmed_center_line.clone().into_points());
+            new_pts = destroy_road.reference_line.into_points();
+            new_pts.extend(keep_road.reference_line.clone().into_points());
             (destroy_road.src_i, keep_road.dst_i)
         } else {
             unreachable!()
@@ -65,7 +64,7 @@ impl StreetNetwork {
         // Simplify curves and dedupe points. The epsilon was tuned for only one location that was
         // breaking
         let epsilon = 1.0;
-        keep_road.untrimmed_center_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
+        keep_road.reference_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
 
         // Keep the same ID, but fix the endpoints
         keep_road.src_i = new_src_i;
@@ -88,5 +87,5 @@ impl StreetNetwork {
                 rewrite(id2);
             }
         }
-    }
+}
 }
