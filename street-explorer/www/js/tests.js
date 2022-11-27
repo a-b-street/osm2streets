@@ -7,6 +7,7 @@ export function loadTests() {
     "bristol_contraflow_cycleway",
     "bristol_sausage_links",
     "cycleway_rejoin_road",
+    "fremantle_placement",
     "i5_exit_ramp",
     "kingsway_junction",
     "leeds_cycleway",
