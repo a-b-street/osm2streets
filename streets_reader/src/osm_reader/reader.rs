@@ -182,10 +182,6 @@ fn read_tags(reader: &mut Peekable<ElementReader>) -> Tags {
         let obj = reader.next().unwrap();
         let key = obj.attribute("k");
         let value = obj.attribute("v");
-        // Filter out really useless data
-        if key.starts_with("tiger:") || key.starts_with("old_name:") {
-            continue;
-        }
         tags.insert(key, unescape(value).unwrap());
     }
 
