@@ -647,6 +647,7 @@ dependencies = [
  "anyhow",
  "console_error_panic_hook",
  "experimental",
+ "geom",
  "instant",
  "osm2streets",
  "serde",

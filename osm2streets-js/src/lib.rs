@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use abstutil::{Tags, Timer};
+use geom::PolyLine;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -19,6 +20,7 @@ pub struct ImportOptions {
 pub struct JsStreetNetwork {
     inner: StreetNetwork,
     tags_per_way: HashMap<osm::WayID, Tags>,
+    original_geometry_per_way: HashMap<osm::WayID, PolyLine>,
 }
 
 #[wasm_bindgen]
@@ -74,13 +76,16 @@ impl JsStreetNetwork {
         }
 
         let mut tags_per_way = HashMap::new();
+        let mut original_geometry_per_way = HashMap::new();
         for (id, way) in doc.ways {
             tags_per_way.insert(id, way.tags);
+            original_geometry_per_way.insert(id, PolyLine::unchecked_new(way.pts));
         }
 
         Ok(Self {
             inner: street_network,
             tags_per_way,
+            original_geometry_per_way,
         })
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
@@ -138,7 +143,27 @@ impl JsStreetNetwork {
         abstutil::to_json(&self.tags_per_way[&osm::WayID(id)])
     }
 
-    /// Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`
+    /// Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
+    #[wasm_bindgen(js_name = getGeometryForWay)]
+    pub fn get_geometry_for_way(&self, id: i64) -> String {
+        let id = osm::WayID(id);
+
+        // The lanes, and thus width, will be the same for every road belonging to the way
+        let width = self
+            .inner
+            .roads
+            .values()
+            .find(|r| r.osm_ids.iter().any(|x| x.osm_way_id == id))
+            .map(|r| r.total_width())
+            .unwrap();
+
+        // Show a wide buffer around the way
+        let polygon = self.original_geometry_per_way[&id].make_polygons(1.5 * width);
+
+        abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
+    }
+
+    /// Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`.
     #[wasm_bindgen(js_name = overwriteOsmTagsForWay)]
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: String) {
         let id = osm::WayID(id);
@@ -146,6 +171,7 @@ impl JsStreetNetwork {
 
         for road in self.inner.roads.values_mut() {
             if road.osm_ids.iter().any(|x| x.osm_way_id == id) {
+                // TODO This could panic, for example if the user removes the highway tag
                 road.lane_specs_ltr = osm2streets::get_lane_specs_ltr(&tags, &self.inner.config);
             }
         }
@@ -176,6 +202,7 @@ impl JsDebugStreets {
         JsValue::from(JsStreetNetwork {
             inner: self.inner.streets.clone(),
             tags_per_way: HashMap::new(),
+            original_geometry_per_way: HashMap::new(),
         })
     }
 
