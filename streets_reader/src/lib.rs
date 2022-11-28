@@ -3,13 +3,11 @@ extern crate anyhow;
 #[macro_use]
 extern crate log;
 
-use std::collections::{HashMap, HashSet};
-
 use abstutil::Timer;
 use anyhow::Result;
-use geom::{GPSBounds, HashablePt2D, LonLat, Ring};
+use geom::{GPSBounds, LonLat, Ring};
 
-use osm2streets::{CrossingType, DrivingSide, MapConfig, RoadID, StreetNetwork};
+use osm2streets::{DrivingSide, MapConfig, StreetNetwork};
 
 pub use self::extract::OsmExtract;
 
@@ -43,32 +41,11 @@ pub fn osm_to_street_network(
     }
 
     let extract = extract_osm(&mut streets, osm_xml_input, clip_pts, timer)?;
-    let split_output = split_ways::split_up_roads(&mut streets, extract, timer);
+    split_ways::split_up_roads(&mut streets, extract, timer);
     clip::clip_map(&mut streets, timer)?;
 
-    // Need to do a first pass of removing cul-de-sacs here, or we wind up with loop PolyLines when
-    // doing the parking hint matching.
+    // Cul-de-sacs aren't supported yet.
     streets.retain_roads(|r| r.src_i != r.dst_i);
-
-    use_barrier_nodes(
-        &mut streets,
-        split_output.barrier_nodes,
-        &split_output.pt_to_road,
-    );
-    use_crossing_nodes(
-        &mut streets,
-        &split_output.crossing_nodes,
-        &split_output.pt_to_road,
-    );
-
-    if streets.config.filter_crosswalks {
-        filter_crosswalks(
-            &mut streets,
-            split_output.crossing_nodes,
-            split_output.pt_to_road,
-            timer,
-        );
-    }
 
     Ok(streets)
 }
@@ -115,97 +92,4 @@ fn extract_osm(
     }
 
     Ok(out)
-}
-
-pub fn use_barrier_nodes(
-    streets: &mut StreetNetwork,
-    barrier_nodes: HashSet<HashablePt2D>,
-    pt_to_road: &HashMap<HashablePt2D, RoadID>,
-) {
-    let mut pt_to_intersection = HashMap::new();
-    for (id, i) in &streets.intersections {
-        pt_to_intersection.insert(i.point.to_hashable(), *id);
-    }
-
-    for pt in barrier_nodes {
-        // Many barriers are on footpaths or roads that we don't retain
-        if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
-            // Filters on roads that're already car-free are redundant
-            if road.is_driveable() {
-                road.barrier_nodes.push(pt.to_pt2d());
-            }
-        } else if let Some(i) = pt_to_intersection.get(&pt) {
-            let roads = &streets.intersections[i].roads;
-            if roads.len() == 2 {
-                // Arbitrarily put the barrier on one of the roads
-                streets
-                    .roads
-                    .get_mut(&roads[0])
-                    .unwrap()
-                    .barrier_nodes
-                    .push(pt.to_pt2d());
-            } else {
-                // TODO Look for real examples at non-2-way intersections to understand what to do.
-                // If there's a barrier in the middle of a 4-way, does that disconnect all
-                // movements?
-                warn!(
-                    "There's a barrier at {i}, but there are {} roads connected",
-                    roads.len()
-                );
-            }
-        }
-    }
-}
-
-pub fn use_crossing_nodes(
-    streets: &mut StreetNetwork,
-    crossing_nodes: &HashSet<(HashablePt2D, CrossingType)>,
-    pt_to_road: &HashMap<HashablePt2D, RoadID>,
-) {
-    for (pt, kind) in crossing_nodes {
-        // Some crossings are on footpaths or roads that we don't retain
-        if let Some(road) = pt_to_road.get(pt).and_then(|r| streets.roads.get_mut(r)) {
-            road.crossing_nodes.push((pt.to_pt2d(), *kind));
-        }
-    }
-}
-
-pub fn filter_crosswalks(
-    streets: &mut StreetNetwork,
-    crosswalks: HashSet<(HashablePt2D, CrossingType)>,
-    pt_to_road: HashMap<HashablePt2D, RoadID>,
-    timer: &mut Timer,
-) {
-    // Normally we assume every road has a crosswalk, but since this map is configured to use OSM
-    // crossing nodes, let's reverse that assumption.
-    for road in streets.roads.values_mut() {
-        road.crosswalk_forward = false;
-        road.crosswalk_backward = false;
-    }
-
-    // Match each crosswalk node to a road
-    timer.start_iter("filter crosswalks", crosswalks.len());
-    for (pt, _) in crosswalks {
-        timer.next();
-        // Some crossing nodes are outside the map boundary or otherwise not on a road that we
-        // retained
-        if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
-            // Crossings aren't right at an intersection. Where is this point along the center
-            // line?
-            if let Some((dist, _)) = road.untrimmed_center_line.dist_along_of_point(pt.to_pt2d()) {
-                let pct = dist / road.untrimmed_center_line.length();
-                // Don't throw away any crossings. If it occurs in the first half of the road, snap
-                // to the first intersection. If there's a mid-block crossing mapped, that'll
-                // likely not be correctly interpreted, unless an intersection is there anyway.
-                if pct <= 0.5 {
-                    road.crosswalk_backward = true;
-                } else {
-                    road.crosswalk_forward = true;
-                }
-
-                // TODO Some crosswalks incorrectly snap to the intersection near a short service
-                // road, which later gets trimmed. So the crosswalk effectively disappears.
-            }
-        }
-    }
 }

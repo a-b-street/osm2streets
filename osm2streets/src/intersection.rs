@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use geom::{Distance, Polygon, Pt2D};
+use geom::{Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
 use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
@@ -21,7 +21,6 @@ pub struct Intersection {
     pub polygon: Polygon,
     pub kind: IntersectionKind,
     pub control: IntersectionControl,
-    pub elevation: Distance,
 
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
     /// intersection. They're ordered clockwise aroundd the intersection.
@@ -121,7 +120,6 @@ impl StreetNetwork {
                 // Filled out later
                 roads: Vec::new(),
                 movements: Vec::new(),
-                elevation: Distance::ZERO,
                 trim_roads_for_merging: BTreeMap::new(),
             },
         );

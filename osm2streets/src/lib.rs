@@ -233,15 +233,6 @@ impl StreetNetwork {
     }
 }
 
-/// Classifies pedestrian and cyclist crossings. Note lots of detail is missing.
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum CrossingType {
-    /// Part of some traffic signal
-    Signalized,
-    /// Not part of a traffic signal
-    Unsignalized,
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum RestrictionType {
     BanTurns,

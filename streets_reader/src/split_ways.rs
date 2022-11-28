@@ -1,17 +1,15 @@
-use std::collections::{btree_map::Entry, BTreeMap, HashMap, HashSet};
+use std::collections::{btree_map::Entry, BTreeMap, HashMap};
 
 use abstutil::{Counter, Tags, Timer};
 use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, CrossingType, Direction, IntersectionControl, IntersectionID, IntersectionKind,
-    OriginalRoad, Road, RoadID, StreetNetwork,
+    osm, Direction, IntersectionControl, IntersectionID, IntersectionKind, OriginalRoad, Road,
+    RoadID, StreetNetwork,
 };
 
 use super::OsmExtract;
 
 pub struct Output {
-    pub crossing_nodes: HashSet<(HashablePt2D, CrossingType)>,
-    pub barrier_nodes: HashSet<HashablePt2D>,
     /// A mapping of all points to the split road. Some internal points on roads get removed in
     /// `split_up_roads`, so this mapping isn't redundant.
     pub pt_to_road: HashMap<HashablePt2D, RoadID>,
@@ -287,11 +285,7 @@ pub fn split_up_roads(
     timer.stop("calculate intersection movements");
 
     timer.stop("splitting up roads");
-    Output {
-        crossing_nodes: input.crossing_nodes,
-        barrier_nodes: input.barrier_nodes,
-        pt_to_road,
-    }
+    Output { pt_to_road }
 }
 
 // TODO Consider doing this in PolyLine::new always. Also in extend() -- it attempts to dedupe

@@ -2,12 +2,11 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use abstutil::Tags;
-use geom::{Angle, Distance, PolyLine, Pt2D};
+use geom::{Angle, Distance, PolyLine};
 
 use crate::{
-    get_lane_specs_ltr, osm, CommonEndpoint, CrossingType, Direction, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints,
-    StreetNetwork,
+    get_lane_specs_ltr, osm, CommonEndpoint, Direction, InputRoad, IntersectionID, LaneSpec,
+    LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -43,17 +42,6 @@ pub struct Road {
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
-    pub percent_incline: f64,
-    /// Is there a tagged crosswalk near each end of the road?
-    pub crosswalk_forward: bool,
-    pub crosswalk_backward: bool,
-    // TODO Preserving these two across transformations (especially merging dual carriageways!)
-    // could be really hard. It might be better to split the road into two pieces to match the more
-    // often used OSM style.
-    /// Barrier nodes along this road's original center line.
-    pub barrier_nodes: Vec<Pt2D>,
-    /// Crossing nodes along this road's original center line.
-    pub crossing_nodes: Vec<(Pt2D, CrossingType)>,
 
     pub lane_specs_ltr: Vec<LaneSpec>,
 }
@@ -100,13 +88,6 @@ impl Road {
             trimmed_center_line: PolyLine::dummy(),
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
-            percent_incline: 0.0,
-            // Start assuming there's a crosswalk everywhere, and maybe filter it down
-            // later
-            crosswalk_forward: true,
-            crosswalk_backward: true,
-            barrier_nodes: Vec::new(),
-            crossing_nodes: Vec::new(),
 
             lane_specs_ltr,
         }

@@ -1,10 +1,10 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use osm::{NodeID, OsmID, RelationID, WayID};
 
 use abstutil::Tags;
 use geom::{HashablePt2D, Pt2D};
-use osm2streets::{osm, CrossingType, Direction, RestrictionType};
+use osm2streets::{osm, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};
 use crate::MapConfig;
@@ -19,11 +19,6 @@ pub struct OsmExtract {
     pub simple_turn_restrictions: Vec<(RestrictionType, WayID, NodeID, WayID)>,
     /// (relation ID, from way ID, via way ID, to way ID)
     pub complicated_turn_restrictions: Vec<(RelationID, WayID, WayID, WayID)>,
-    /// Crossings located at these points, which should be on a Road's center line
-    pub crossing_nodes: HashSet<(HashablePt2D, CrossingType)>,
-    /// Some kind of barrier nodes at these points. Only the ones on a Road center line are
-    /// relevant.
-    pub barrier_nodes: HashSet<HashablePt2D>,
 }
 
 impl OsmExtract {
@@ -34,8 +29,6 @@ impl OsmExtract {
             osm_node_ids: HashMap::new(),
             simple_turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
-            crossing_nodes: HashSet::new(),
-            barrier_nodes: HashSet::new(),
         }
     }
 
@@ -49,20 +42,6 @@ impl OsmExtract {
                 Direction::Fwd
             };
             self.traffic_signals.insert(node.pt.to_hashable(), dir);
-        }
-        if node.tags.is(osm::HIGHWAY, "crossing") {
-            // TODO Look for crossing:signals:* too.
-            // https://wiki.openstreetmap.org/wiki/Tag:crossing=traffic%20signals?uselang=en
-            let kind = if node.tags.is("crossing", "traffic_signals") {
-                CrossingType::Signalized
-            } else {
-                CrossingType::Unsignalized
-            };
-            self.crossing_nodes.insert((node.pt.to_hashable(), kind));
-        }
-        // TODO Any kind of barrier?
-        if node.tags.is("barrier", "bollard") {
-            self.barrier_nodes.insert(node.pt.to_hashable());
         }
     }
 
