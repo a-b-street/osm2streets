@@ -16,6 +16,7 @@ export class LaneEditor {
     this.layers = [];
     this.currentWay = null;
     this.currentWaysLayer = null;
+    this.editedWays = new Set();
 
     // Wire up the import button
     const importButton = document.getElementById("import-view");
@@ -26,6 +27,10 @@ export class LaneEditor {
       }
 
       await this.importView(importButton);
+    };
+
+    document.getElementById("osc").onclick = () => {
+      this.downloadOsc();
     };
   }
 
@@ -130,7 +135,8 @@ export class LaneEditor {
       }
     ).addTo(this.map);
 
-    var html = `<table><tbody id="tags-table">`;
+    var html = `<a href="http://openstreetmap.org/way/${id}" target="_blank">Way ${id}</a><br/>`;
+    html += `<table><tbody id="tags-table">`;
 
     const tags = JSON.parse(this.network.getOsmTagsForWay(id));
     // Note IDs initially use indices, but as the user adds and deletes rows, the indices get out of sync. That's not important; as long as the IDs are unique, it's fine.
@@ -201,5 +207,24 @@ export class LaneEditor {
     console.log(`Recalculate with ${JSON.stringify(tags)}`);
     this.network.overwriteOsmTagsForWay(this.currentWay, JSON.stringify(tags));
     this.rerenderAll();
+
+    this.editedWays.add(this.currentWay);
+    document.getElementById(
+      "edits-list"
+    ).innerText = `${this.editedWays.size} edits`;
+  }
+
+  downloadOsc() {
+    var contents = `<osmChange version="0.6" generator="osm2streets">\n`;
+    contents += `<create/>\n`;
+    contents += `<modify>\n`;
+    for (const id of this.editedWays) {
+      contents += this.network.wayToXml(id);
+      contents += "\n";
+    }
+    contents += `</modify>\n`;
+    contents += `</osmChange>`;
+
+    downloadGeneratedFile("lane_edits.osc", contents);
   }
 }
