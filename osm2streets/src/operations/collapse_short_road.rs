@@ -14,8 +14,8 @@ use crate::{
 
 impl StreetNetwork {
     /// Collapses a road, merging the two intersections together. Returns (the surviving
-    /// intersection, the deleted intersection). The caller can see all roads connected to the
-    /// surviving intersection.
+    /// intersection, the deleted intersection). (Note these will be the same when the road's a
+    /// loop.)
     pub fn collapse_short_road(
         &mut self,
         short_r: RoadID,
@@ -26,36 +26,18 @@ impl StreetNetwork {
             (r.src_i, r.dst_i)
         };
 
-        // If either intersection attached to this road has been deleted, then we're probably
-        // dealing with a short segment in the middle of a cluster of intersections. Just delete
-        // the segment and move on.
-        //
-        // TODO Revisit after opaque IDs. How does this happen?
-        if !self.intersections.contains_key(&keep_i) || !self.intersections.contains_key(&destroy_i)
-        {
-            self.remove_road(short_r);
-            bail!("One endpoint of {short_r} has already been deleted, skipping",);
-        }
-
         // First a sanity check.
         if self.intersections[&keep_i].kind == IntersectionKind::MapEdge
             || self.intersections[&destroy_i].kind == IntersectionKind::MapEdge
         {
-            bail!("{short_r} touches a mp edge");
+            bail!("{short_r} touches a map edge");
         }
 
-        // TODO Fix up turn restrictions. Many cases:
-        // [ ] road we're deleting has simple restrictions
-        // [ ] road we're deleting has complicated restrictions
-        // [X] road we're deleting is the target of a simple BanTurns restriction
-        // [ ] road we're deleting is the target of a simple OnlyAllowTurns restriction
-        // [ ] road we're deleting is the target of a complicated restriction
-        // [X] road we're deleting is the 'via' of a complicated restriction
-        // [ ] road we're deleting has turn lanes that wind up orphaning something
-
+        // A previous call to this method on nearby roads could produce loop roads. If we later try
+        // to collapse this, all we need to do is remove it.
         if keep_i == destroy_i {
-            // TODO Maybe just remove the road and stop. Find a test case first.
-            bail!("Can't collapse {short_r} -- it's a loop on {keep_i}");
+            self.remove_road(short_r);
+            return Ok((keep_i, keep_i));
         }
 
         // Remember the original roads attached to each intersection before we merge.
@@ -141,6 +123,15 @@ impl StreetNetwork {
         // We just connected a bunch of things to keep_i. Fix ordering and movements.
         self.sort_roads(keep_i);
         self.update_movements(keep_i);
+
+        // TODO Fix up turn restrictions. Many cases:
+        // [ ] road we're deleting has simple restrictions
+        // [ ] road we're deleting has complicated restrictions
+        // [X] road we're deleting is the target of a simple BanTurns restriction
+        // [ ] road we're deleting is the target of a simple OnlyAllowTurns restriction
+        // [ ] road we're deleting is the target of a complicated restriction
+        // [X] road we're deleting is the 'via' of a complicated restriction
+        // [ ] road we're deleting has turn lanes that wind up orphaning something
 
         // If we're deleting the target of a simple restriction somewhere, update it.
         for road in self.roads.values_mut() {
