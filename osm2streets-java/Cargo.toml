@@ -1,0 +1,13 @@
+[package]
+name = "osm2streets-java"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+abstutil = { git = "https://github.com/a-b-street/abstreet" }
+jni = "0.20.0"
+osm2streets = { path = "../osm2streets" }
+streets_reader = { path = "../streets_reader" }
