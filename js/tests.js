@@ -15,6 +15,7 @@ export function loadTests() {
     "oneway_loop",
     "perth_peanut_roundabout",
     "perth_stretched_lights",
+    "quad_intersection",
     "roosevelt_cycletrack",
     "seattle_slip_lane",
     "seattle_triangle",
