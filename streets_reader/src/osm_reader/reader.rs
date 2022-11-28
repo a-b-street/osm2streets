@@ -35,6 +35,7 @@ pub struct Way {
     pub nodes: Vec<NodeID>,
     pub pts: Vec<Pt2D>,
     pub tags: Tags,
+    pub version: Option<usize>,
 }
 
 pub struct Relation {
@@ -101,6 +102,10 @@ pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -
                 if doc.ways.contains_key(&id) {
                     bail!("Duplicate {}, your .osm is corrupt", id);
                 }
+                let version = obj
+                    .attributes
+                    .get("version")
+                    .and_then(|x| x.parse::<usize>().ok());
 
                 let mut nodes = Vec::new();
                 let mut pts = Vec::new();
@@ -118,7 +123,15 @@ pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -
                 let tags = read_tags(&mut reader);
 
                 if !nodes.is_empty() {
-                    doc.ways.insert(id, Way { nodes, pts, tags });
+                    doc.ways.insert(
+                        id,
+                        Way {
+                            nodes,
+                            pts,
+                            tags,
+                            version,
+                        },
+                    );
                 }
             }
             "relation" => {

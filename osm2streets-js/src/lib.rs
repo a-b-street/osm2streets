@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use abstutil::{Tags, Timer};
 use geom::PolyLine;
@@ -19,8 +19,7 @@ pub struct ImportOptions {
 #[wasm_bindgen]
 pub struct JsStreetNetwork {
     inner: StreetNetwork,
-    tags_per_way: HashMap<osm::WayID, Tags>,
-    original_geometry_per_way: HashMap<osm::WayID, PolyLine>,
+    ways: BTreeMap<osm::WayID, streets_reader::osm_reader::Way>,
 }
 
 #[wasm_bindgen]
@@ -75,17 +74,9 @@ impl JsStreetNetwork {
             street_network.apply_transformations(transformations, &mut timer);
         }
 
-        let mut tags_per_way = HashMap::new();
-        let mut original_geometry_per_way = HashMap::new();
-        for (id, way) in doc.ways {
-            tags_per_way.insert(id, way.tags);
-            original_geometry_per_way.insert(id, PolyLine::unchecked_new(way.pts));
-        }
-
         Ok(Self {
             inner: street_network,
-            tags_per_way,
-            original_geometry_per_way,
+            ways: doc.ways,
         })
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
@@ -140,7 +131,7 @@ impl JsStreetNetwork {
     // HashMap
     #[wasm_bindgen(js_name = getOsmTagsForWay)]
     pub fn get_osm_tags_for_way(&self, id: i64) -> String {
-        abstutil::to_json(&self.tags_per_way[&osm::WayID(id)])
+        abstutil::to_json(&self.ways[&osm::WayID(id)].tags)
     }
 
     /// Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
@@ -158,7 +149,8 @@ impl JsStreetNetwork {
             .unwrap();
 
         // Show a wide buffer around the way
-        let polygon = self.original_geometry_per_way[&id].make_polygons(1.5 * width);
+        let polygon =
+            PolyLine::unchecked_new(self.ways[&id].pts.clone()).make_polygons(1.5 * width);
 
         abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
     }
@@ -180,7 +172,29 @@ impl JsStreetNetwork {
             &mut Timer::throwaway(),
         );
 
-        self.tags_per_way.insert(id, tags);
+        self.ways.get_mut(&id).unwrap().tags = tags;
+    }
+
+    /// Returns the XML string representing a way. Any OSM tags changed via
+    /// `overwrite_osm_tags_for_way` are reflected.
+    #[wasm_bindgen(js_name = wayToXml)]
+    pub fn way_to_xml(&mut self, id: i64) -> String {
+        let way = &self.ways[&osm::WayID(id)];
+        let mut out = format!(r#"<way id="{id}""#);
+        if let Some(version) = way.version {
+            out.push_str(&format!(r#" version="{version}""#));
+        }
+        out.push_str(">\n");
+        for node in &way.nodes {
+            out.push_str(&format!(r#"  <nd ref="{}"/>"#, node.0));
+            out.push('\n');
+        }
+        for (k, v) in way.tags.inner() {
+            out.push_str(&format!(r#"  <tag k="{k}" v="{v}"/>"#));
+            out.push('\n');
+        }
+        out.push_str("</way>");
+        out
     }
 }
 
@@ -201,8 +215,7 @@ impl JsDebugStreets {
     pub fn get_network(&self) -> JsValue {
         JsValue::from(JsStreetNetwork {
             inner: self.inner.streets.clone(),
-            tags_per_way: HashMap::new(),
-            original_geometry_per_way: HashMap::new(),
+            ways: BTreeMap::new(),
         })
     }
 
