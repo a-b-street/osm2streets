@@ -31,6 +31,7 @@ mod geometry;
 mod ids;
 mod intersection;
 mod lanes;
+mod operations;
 pub mod osm;
 mod pathfinding;
 mod render;
