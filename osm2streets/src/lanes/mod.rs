@@ -1,5 +1,6 @@
 mod classic;
 mod osm2lanes;
+mod placement;
 #[cfg(test)]
 mod tests;
 
@@ -354,4 +355,74 @@ impl fmt::Display for Direction {
             Direction::Back => write!(f, "backwards"),
         }
     }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum LtrLaneNum {
+    Forward(usize),
+    Backward(usize),
+}
+
+impl LtrLaneNum {
+    pub fn direction(&self) -> Direction {
+        match self {
+            Self::Forward(_) => Direction::Fwd,
+            Self::Backward(_) => Direction::Back,
+        }
+    }
+
+    /// Converts to the same numbered lane in the opposite direction.
+    pub fn reverse(&self) -> Self {
+        use LtrLaneNum::*;
+        match self {
+            Forward(n) => Backward(*n),
+            Backward(n) => Forward(*n),
+        }
+    }
+}
+
+/// Identifies a position within the width of a roadway. Lanes are identified by their left-to-right
+/// position, as per the OSM convention.
+///
+/// Most commonly seen as a value of the placement tag, e.g.
+/// `placement=right_of:1` means that the OSM way is drawn along the right edge of lane 1.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum RoadPosition {
+    /// The center of the carriageway width, ignoring lanes. The default placement of OSM ways.
+    Center,
+    /// The center of the separation between both directions of traffic, i.e. the dividing line or
+    /// median. For a oneway road, this is the "inside" edge of the road, i.e. the right side of LHT
+    /// and the left side of RHT.
+    Separation,
+    /// On the left edge of the named lane (from the direction of the named lane).
+    LeftOf(LtrLaneNum),
+    /// In the middle of the named lane.
+    MiddleOf(LtrLaneNum),
+    /// On the right edge of the named lane (from the direction of the named lane).
+    RightOf(LtrLaneNum),
+}
+
+impl RoadPosition {
+    /// Converts to the same placement interpreted from the other direction. That is, only the
+    /// wrapped LtrLaneNum is reversed.
+    pub fn reverse(self) -> Self {
+        use RoadPosition::*;
+        match self {
+            Center | Separation => self,
+            LeftOf(n) => LeftOf(n.reverse()),
+            MiddleOf(n) => MiddleOf(n.reverse()),
+            RightOf(n) => RightOf(n.reverse()),
+        }
+    }
+}
+
+/// Describes the placement of a line (such as the OSM Way) along a road.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum Placement {
+    /// Along the specified position down the entire length.
+    Consistent(RoadPosition),
+    /// Varying linearly from a specified position at the start, to a different one at the end.
+    Varying(RoadPosition, RoadPosition),
+    /// Varying linearly from some unspecified position at the start, to a different one at the end.
+    Transition,
 }
