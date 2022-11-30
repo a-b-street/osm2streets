@@ -88,6 +88,47 @@ impl LaneType {
         }
     }
 
+    /// Determines if the lane is a travel lane that is represented in OSM `*:lanes` tags.
+    /// Note that the `lanes` tag counts car driving lanes, excluding bike lanes, whereas the
+    /// `:lanes` suffix specifies that each lane, including bike lanes, should have a value between
+    /// `|`s. This function identifies the latter kind.
+    pub fn is_tagged_by_lanes_suffix(&self) -> bool {
+        match self {
+            LaneType::Driving => true,
+            LaneType::Biking => true, // FIXME depends on lane vs track
+            LaneType::Bus => true,
+            LaneType::Parking => false,
+            LaneType::Sidewalk => false,
+            LaneType::Shoulder => false,
+            LaneType::SharedLeftTurn => true,
+            LaneType::Construction => true,
+            LaneType::LightRail => false,
+            LaneType::Buffer(_) => false,
+            LaneType::Footway => false,
+            LaneType::SharedUse => false,
+        }
+    }
+
+    /// Determines if the lane is part of the roadway, the contiguous sealed surface that OSM
+    /// mappers consider the "road".
+    pub fn is_roadway(&self) -> bool {
+        match self {
+            LaneType::Driving => true,
+            LaneType::Biking => true, // FIXME depends on lane vs track
+            LaneType::Bus => true,
+            LaneType::Parking => true, // FIXME depends on on-street vs street-side
+            LaneType::Sidewalk => false,
+            LaneType::Shoulder => true,
+            LaneType::SharedLeftTurn => true,
+            LaneType::Construction => true,
+            LaneType::LightRail => true, // FIXME only for trams
+            LaneType::Buffer(BufferType::Curb) => false,
+            LaneType::Buffer(_) => true,
+            LaneType::Footway => false,
+            LaneType::SharedUse => false,
+        }
+    }
+
     pub fn is_walkable(self) -> bool {
         matches!(
             self,
@@ -371,6 +412,12 @@ impl LtrLaneNum {
         }
     }
 
+    pub fn number(&self) -> usize {
+        match self {
+            Self::Forward(num) | Self::Backward(num) => *num,
+        }
+    }
+
     /// Converts to the same numbered lane in the opposite direction.
     pub fn reverse(&self) -> Self {
         use LtrLaneNum::*;
@@ -390,9 +437,11 @@ impl LtrLaneNum {
 pub enum RoadPosition {
     /// The center of the carriageway width, ignoring lanes. The default placement of OSM ways.
     Center,
-    /// The center of the separation between both directions of traffic, i.e. the dividing line or
-    /// median. For a oneway road, this is the "inside" edge of the road, i.e. the right side of LHT
-    /// and the left side of RHT.
+    /// The center of the full width of a `Road`, including verges and footpaths.
+    FullWidthCenter,
+    /// The center of the separation between both directions of traffic, i.e. the dividing line,
+    /// median, or shared turning lane. For a oneway road, this is the "inside" edge of the road,
+    /// i.e. the right side of LHT and the left side of RHT.
     Separation,
     /// On the left edge of the named lane (from the direction of the named lane).
     LeftOf(LtrLaneNum),
@@ -408,7 +457,7 @@ impl RoadPosition {
     pub fn reverse(self) -> Self {
         use RoadPosition::*;
         match self {
-            Center | Separation => self,
+            Center | FullWidthCenter | Separation => self,
             LeftOf(n) => LeftOf(n.reverse()),
             MiddleOf(n) => MiddleOf(n.reverse()),
             RightOf(n) => RightOf(n.reverse()),

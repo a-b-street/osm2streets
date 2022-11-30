@@ -4,12 +4,6 @@ use geom::{Circle, Distance};
 use crate::{IntersectionControl, IntersectionKind, StreetNetwork};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
-    // Initialize trimmed_center_line to the corrected center
-    for road in streets.roads.values_mut() {
-        let pl = road.untrimmed_road_geometry().0;
-        road.center_line = pl;
-    }
-
     let mut remove_dangling_nodes = Vec::new();
     timer.start_iter(
         "find each intersection polygon",
