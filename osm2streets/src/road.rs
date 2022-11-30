@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine};
 
+use crate::lanes::{Placement, RoadPosition};
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, Direction, InputRoad, IntersectionID, LaneSpec,
     LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
@@ -37,8 +38,10 @@ pub struct Road {
     /// resulting trimmed road, be positioned somewhere within the road according to the placement
     /// tag and might be nonsense for the first/last segment.
     pub reference_line: PolyLine,
-    /// The physical center of the road, including sidewalks. This will differ from reference_line
-    /// and modified by transformations, notably it will be trimmed by
+    pub reference_line_placement: Placement,
+    /// The physical center of all the lanes, including sidewalks (at RoadPosition::FullWidthCenter).
+    /// This will differ from reference_line and modified by transformations, notably it will be
+    /// offset based on reference_line_placement and trimmed by
     /// `Transformation::GenerateIntersectionGeometry`.
     pub center_line: PolyLine,
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
@@ -54,7 +57,7 @@ impl Road {
         osm_ids: Vec<OriginalRoad>,
         src_i: IntersectionID,
         dst_i: IntersectionID,
-        untrimmed_center_line: PolyLine,
+        reference_line: PolyLine,
         osm_tags: Tags,
         config: &MapConfig,
     ) -> Self {
@@ -73,7 +76,11 @@ impl Road {
             0
         };
 
-        Self {
+        // Ignoring errors for now.
+        let placement =
+            Placement::try_from(&osm_tags).unwrap_or(Placement::Consistent(RoadPosition::Center));
+
+        let mut result = Self {
             id,
             osm_ids,
             src_i,
@@ -86,13 +93,44 @@ impl Road {
             name: osm_tags.get("name").cloned(),
             internal_junction_road: osm_tags.is("junction", "intersection"),
             layer,
-            reference_line: untrimmed_center_line,
+            reference_line,
+            reference_line_placement: placement,
             center_line: PolyLine::dummy(),
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
 
             lane_specs_ltr,
-        }
+        };
+
+        result.update_center_line(config.driving_side); // TODO delay this until trim_start and trim_end are calculated
+        result
+    }
+
+    /// Calculates and sets the center_line from reference_line, reference_line_placement
+    /// (and TODO trim_start, trim_end).
+    pub fn update_center_line(&mut self, driving_side: DrivingSide) {
+        let ref_position = match self.reference_line_placement {
+            Placement::Consistent(p) => p,
+            Placement::Varying(p, _) => {
+                warn!("varying placement not yet supported, using placement:start");
+                p
+            }
+            Placement::Transition => {
+                // We haven't calculated the transition yet. At early stages of understanding the
+                // OSM data, we pretend these `Road`s have default placement.
+                RoadPosition::Center
+            }
+        };
+        let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
+        let target_offset = self.left_edge_offset_of(RoadPosition::FullWidthCenter, driving_side);
+
+        self.center_line = self
+            .reference_line
+            .shift_either_direction(target_offset - ref_offset)
+            .unwrap_or_else(|_| {
+                warn!("resulting center_line is degenerate!");
+                self.reference_line.clone()
+            });
     }
 
     pub fn is_light_rail(&self) -> bool {
@@ -202,6 +240,7 @@ impl Road {
         // If there's a sidewalk on only one side, adjust the true center of the road.
         // TODO I don't remember the rationale for doing this in the first place. What if there's a
         // shoulder and a sidewalk of different widths? We don't do anything then
+        //TODO use self.left_edge_offset_of(RoadPosition::Center) or something?
         let mut true_center = self.reference_line.clone();
         match (sidewalk_right, sidewalk_left) {
             (Some(w), None) => {
@@ -218,6 +257,137 @@ impl Road {
 
     pub fn total_width(&self) -> Distance {
         self.lane_specs_ltr.iter().map(|l| l.width).sum()
+    }
+
+    /// Calculates the number of (forward, both_ways, backward) lanes. The order of the lanes
+    /// doesn't matter.
+    pub fn driving_lane_counts(&self) -> (usize, usize, usize) {
+        let mut result = (0, 0, 0);
+        for lane in &self.lane_specs_ltr {
+            if !lane.lt.is_tagged_by_lanes_suffix() {
+                continue;
+            }
+            if lane.lt == LaneType::SharedLeftTurn {
+                result.1 += 1;
+            } else if lane.dir == Direction::Fwd {
+                result.0 += 1;
+            } else {
+                result.2 += 1;
+            }
+        }
+        result
+    }
+
+    /// Calculates the distance from the left edge to the placement.
+    pub fn left_edge_offset_of(
+        &self,
+        position: RoadPosition,
+        driving_side: DrivingSide,
+    ) -> Distance {
+        use RoadPosition::*;
+
+        match position {
+            FullWidthCenter => self.total_width() / 2.0,
+            Center => {
+                // Need to find the midpoint between the first and last occurrence of any roadway.
+                let mut left_buffer = Distance::ZERO;
+                let mut roadway_width = Distance::ZERO;
+                let mut right_buffer = Distance::ZERO;
+                for lane in &self.lane_specs_ltr {
+                    if !lane.lt.is_roadway() {
+                        if roadway_width == Distance::ZERO {
+                            left_buffer += lane.width;
+                        } else {
+                            right_buffer += lane.width;
+                        }
+                    } else {
+                        // It turns out right_buffer was actually a middle buffer.
+                        roadway_width += right_buffer;
+                        right_buffer = Distance::ZERO;
+                        roadway_width += lane.width;
+                    }
+                }
+
+                left_buffer + roadway_width / 2.0
+            }
+            Separation => {
+                // Need to find the separating line. This is a common concept that we haven't standardised yet.
+                // Search for the first occurrence of a right-hand lane.
+                // FIXME contraflow lanes (even bike tracks) will break this.
+
+                let left_dir = if driving_side == DrivingSide::Left {
+                    Direction::Fwd
+                } else {
+                    Direction::Back
+                };
+                let mut found_first_side = false;
+                let mut median_width = Distance::ZERO;
+                let mut dist_so_far = Distance::ZERO;
+                for lane in &self.lane_specs_ltr {
+                    if lane.lt == LaneType::SharedLeftTurn {
+                        // "separation" is the middle of this lane by definition.
+                        return dist_so_far + lane.width / 2.0;
+                    } else if lane.lt.is_tagged_by_lanes_suffix() {
+                        if lane.dir == left_dir {
+                            found_first_side = true;
+                        } else {
+                            // We found the change in direction! dist_so_far already includes the whole median.
+                            return dist_so_far - median_width / 2.0;
+                        }
+
+                        median_width = Distance::ZERO;
+                    } else {
+                        // If it turns out this lane is part of the median, we need to backtrack later.
+                        if found_first_side {
+                            median_width += lane.width;
+                        }
+                    }
+
+                    dist_so_far += lane.width;
+                }
+                // This is oneway. dist_so_far already includes non-road lanes after the road.
+                return dist_so_far - median_width;
+            }
+            LeftOf(target_lane) | MiddleOf(target_lane) | RightOf(target_lane) => {
+                let target_dir = target_lane.direction();
+                let target_num = target_lane.number();
+
+                let mut dist_so_far = Distance::ZERO;
+                let mut lanes_found = 0;
+                // Lanes are counted from the left in the direction of the named lane, so we
+                // iterate from the right when we're looking for a backward lane.
+                let lanes: Box<dyn Iterator<Item = _>> = if target_dir == Direction::Fwd {
+                    Box::new(self.lane_specs_ltr.iter())
+                } else {
+                    Box::new(self.lane_specs_ltr.iter().rev())
+                };
+                for lane in lanes {
+                    if lane.dir == target_dir {
+                        lanes_found += 1;
+                        if lanes_found == target_num {
+                            // The side of the name lane is defined in the direction of the lane
+                            // and we're iterating through the lanes left-to-right in that direction.
+                            if let MiddleOf(_) = position {
+                                dist_so_far += lane.width / 2.0;
+                            } else if let RightOf(_) = position {
+                                dist_so_far += lane.width;
+                            }
+
+                            return if target_dir == Direction::Fwd {
+                                dist_so_far
+                            } else {
+                                self.total_width() - dist_so_far
+                            };
+                        }
+                    }
+
+                    dist_so_far += lane.width;
+                }
+
+                warn!("named lane doesn't exist");
+                self.total_width() / 2.0
+            }
+        }
     }
 
     /// Returns one PolyLine representing the center of each lane in this road. This must be called
