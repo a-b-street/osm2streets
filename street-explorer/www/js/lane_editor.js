@@ -1,8 +1,9 @@
 import { downloadGeneratedFile } from "./files.js";
 import {
+  makeIntersectionMarkingsLayer,
   makeLaneMarkingsLayer,
-  lanePolygonStyle,
   makePlainGeoJsonLayer,
+  lanePolygonStyle,
 } from "./layers.js";
 import { setupLeafletMap } from "./leaflet.js";
 import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
@@ -18,7 +19,6 @@ export class LaneEditor {
     this.currentWaysLayer = null;
     this.editedWays = new Set();
 
-    // Wire up the import button
     const importButton = document.getElementById("import-view");
     importButton.onclick = async () => {
       if (this.map.getZoom() < 15) {
@@ -35,6 +35,16 @@ export class LaneEditor {
   }
 
   async importView(importButton) {
+    // Reset state
+    this.currentWay = null;
+    if (this.currentWaysLayer) {
+      this.currentWaysLayer.remove();
+    }
+    this.currentWaysLayer = null;
+    this.editedWays = new Set();
+    document.getElementById("edits-list").innerText = "0 edits";
+    document.getElementById("tags").innerHTML = "";
+
     // Grab OSM XML from Overpass
     // (Sadly toBBoxString doesn't seem to match the order for Overpass)
     const b = app.map.getBounds();
@@ -114,6 +124,11 @@ export class LaneEditor {
     );
     this.layers.push(
       makeLaneMarkingsLayer(this.network.toLaneMarkingsGeojson())
+    );
+    this.layers.push(
+      makeIntersectionMarkingsLayer(
+        this.network.toIntersectionMarkingsGeojson()
+      )
     );
 
     for (const layer of this.layers) {
