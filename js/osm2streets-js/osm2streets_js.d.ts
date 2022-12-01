@@ -41,6 +41,10 @@ export class JsStreetNetwork {
 /**
 * @returns {string}
 */
+  toIntersectionMarkingsGeojson(): string;
+/**
+* @returns {string}
+*/
   toGraphviz(): string;
 /**
 * @returns {any[]}
@@ -65,6 +69,7 @@ export interface InitOutput {
   readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
   readonly jsstreetnetwork_toLanePolygonsGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_toLaneMarkingsGeojson: (a: number, b: number) => void;
+  readonly jsstreetnetwork_toIntersectionMarkingsGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
   readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
   readonly jsstreetnetwork_debugClockwiseOrderingGeojson: (a: number, b: number) => void;

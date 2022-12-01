@@ -6,6 +6,7 @@ export function jsstreetnetwork_new(a: number, b: number, c: number, d: number):
 export function jsstreetnetwork_toGeojsonPlain(a: number, b: number): void;
 export function jsstreetnetwork_toLanePolygonsGeojson(a: number, b: number): void;
 export function jsstreetnetwork_toLaneMarkingsGeojson(a: number, b: number): void;
+export function jsstreetnetwork_toIntersectionMarkingsGeojson(a: number, b: number): void;
 export function jsstreetnetwork_toGraphviz(a: number, b: number): void;
 export function jsstreetnetwork_getDebugSteps(a: number, b: number): void;
 export function jsstreetnetwork_debugClockwiseOrderingGeojson(a: number, b: number): void;

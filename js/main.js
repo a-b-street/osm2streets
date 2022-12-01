@@ -11,6 +11,7 @@ import {
   makeDotLayer,
   makeLaneMarkingsLayer,
   makeLanePolygonLayer,
+  makeIntersectionMarkingsLayer,
   makeOsmLayer,
   makePlainGeoJsonLayer,
 } from "./layers.js";
@@ -203,6 +204,10 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
     group.addLayer(
       "Lane markings",
       makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
+    );
+    group.addLayer(
+      "Intersection markings",
+      makeIntersectionMarkingsLayer(network.toIntersectionMarkingsGeojson())
     );
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
