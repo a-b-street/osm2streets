@@ -58,6 +58,30 @@ export class JsStreetNetwork {
 * @returns {string}
 */
   debugMovementsGeojson(): string;
+/**
+* @param {bigint} id
+* @returns {string}
+*/
+  getOsmTagsForWay(id: bigint): string;
+/**
+* Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
+* @param {bigint} id
+* @returns {string}
+*/
+  getGeometryForWay(id: bigint): string;
+/**
+* Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`.
+* @param {bigint} id
+* @param {string} tags
+*/
+  overwriteOsmTagsForWay(id: bigint, tags: string): void;
+/**
+* Returns the XML string representing a way. Any OSM tags changed via
+* `overwrite_osm_tags_for_way` are reflected.
+* @param {bigint} id
+* @returns {string}
+*/
+  wayToXml(id: bigint): string;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -74,6 +98,10 @@ export interface InitOutput {
   readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
   readonly jsstreetnetwork_debugClockwiseOrderingGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_debugMovementsGeojson: (a: number, b: number) => void;
+  readonly jsstreetnetwork_getOsmTagsForWay: (a: number, b: number, c: number, d: number) => void;
+  readonly jsstreetnetwork_getGeometryForWay: (a: number, b: number, c: number, d: number) => void;
+  readonly jsstreetnetwork_overwriteOsmTagsForWay: (a: number, b: number, c: number, d: number, e: number) => void;
+  readonly jsstreetnetwork_wayToXml: (a: number, b: number, c: number, d: number) => void;
   readonly __wbg_jsdebugstreets_free: (a: number) => void;
   readonly jsdebugstreets_getLabel: (a: number, b: number) => void;
   readonly jsdebugstreets_getNetwork: (a: number) => number;

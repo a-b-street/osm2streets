@@ -200,6 +200,10 @@ function getArrayJsValueFromWasm0(ptr, len) {
     return result;
 }
 
+const u32CvtShim = new Uint32Array(2);
+
+const int64CvtShim = new BigInt64Array(u32CvtShim.buffer);
+
 function handleError(f, args) {
     try {
         return f.apply(this, args);
@@ -436,6 +440,79 @@ export class JsStreetNetwork {
             wasm.__wbindgen_free(r0, r1);
         }
     }
+    /**
+    * @param {bigint} id
+    * @returns {string}
+    */
+    getOsmTagsForWay(id) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            int64CvtShim[0] = id;
+            const low0 = u32CvtShim[0];
+            const high0 = u32CvtShim[1];
+            wasm.jsstreetnetwork_getOsmTagsForWay(retptr, this.ptr, low0, high0);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
+    /**
+    * Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
+    * @param {bigint} id
+    * @returns {string}
+    */
+    getGeometryForWay(id) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            int64CvtShim[0] = id;
+            const low0 = u32CvtShim[0];
+            const high0 = u32CvtShim[1];
+            wasm.jsstreetnetwork_getGeometryForWay(retptr, this.ptr, low0, high0);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
+    /**
+    * Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`.
+    * @param {bigint} id
+    * @param {string} tags
+    */
+    overwriteOsmTagsForWay(id, tags) {
+        int64CvtShim[0] = id;
+        const low0 = u32CvtShim[0];
+        const high0 = u32CvtShim[1];
+        const ptr1 = passStringToWasm0(tags, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.jsstreetnetwork_overwriteOsmTagsForWay(this.ptr, low0, high0, ptr1, len1);
+    }
+    /**
+    * Returns the XML string representing a way. Any OSM tags changed via
+    * `overwrite_osm_tags_for_way` are reflected.
+    * @param {bigint} id
+    * @returns {string}
+    */
+    wayToXml(id) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            int64CvtShim[0] = id;
+            const low0 = u32CvtShim[0];
+            const high0 = u32CvtShim[1];
+            wasm.jsstreetnetwork_wayToXml(retptr, this.ptr, low0, high0);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
 }
 
 async function load(module, imports) {
@@ -472,6 +549,10 @@ async function load(module, imports) {
 function getImports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbg_jsdebugstreets_new = function(arg0) {
+        const ret = JsDebugStreets.__wrap(arg0);
+        return addHeapObject(ret);
+    };
     imports.wbg.__wbindgen_json_serialize = function(arg0, arg1) {
         const obj = getObject(arg1);
         const ret = JSON.stringify(obj === undefined ? null : obj);
@@ -482,10 +563,6 @@ function getImports() {
     };
     imports.wbg.__wbg_jsstreetnetwork_new = function(arg0) {
         const ret = JsStreetNetwork.__wrap(arg0);
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_jsdebugstreets_new = function(arg0) {
-        const ret = JsDebugStreets.__wrap(arg0);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
