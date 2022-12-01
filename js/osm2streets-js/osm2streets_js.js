@@ -594,6 +594,21 @@ function getImports() {
         const ret = getObject(arg0).now();
         return ret;
     };
+    imports.wbg.__wbg_debug_68178c61250ae699 = function(arg0) {
+        console.debug(getObject(arg0));
+    };
+    imports.wbg.__wbg_error_e2677af4c7f31a14 = function(arg0) {
+        console.error(getObject(arg0));
+    };
+    imports.wbg.__wbg_info_2fe3b57d78190c6d = function(arg0) {
+        console.info(getObject(arg0));
+    };
+    imports.wbg.__wbg_log_7761a8b8a8c1864e = function(arg0) {
+        console.log(getObject(arg0));
+    };
+    imports.wbg.__wbg_warn_8b29c6b80217b0e4 = function(arg0) {
+        console.warn(getObject(arg0));
+    };
     imports.wbg.__wbg_newnoargs_fc5356289219b93b = function(arg0, arg1) {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
