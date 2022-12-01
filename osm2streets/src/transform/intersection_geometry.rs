@@ -20,16 +20,18 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     let mut make_stop_signs = Vec::new();
     for i in streets.intersections.values() {
         timer.next();
+        // Clone the roads passed in
         let input_roads = i
             .roads
             .iter()
-            .map(|r| streets.roads[r].to_input_road())
+            .map(|r| streets.roads[r].clone())
             .collect::<Vec<_>>();
         match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
-                for (r, (pl, _)) in results.trimmed_center_pts {
-                    streets.roads.get_mut(&r).unwrap().trimmed_center_line = pl;
+                for r in results.roads.into_values() {
+                    streets.roads.get_mut(&r.id).unwrap().trimmed_center_line =
+                        r.trimmed_center_line;
                 }
             }
             Err(err) => {
@@ -96,7 +98,7 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         let input_roads = i
             .roads
             .iter()
-            .map(|r| streets.roads[r].to_input_road())
+            .map(|r| streets.roads[r].clone())
             .collect::<Vec<_>>();
         let results = crate::intersection_polygon(
             i.id,
@@ -105,8 +107,8 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         )
         .unwrap();
         set_polygons.push((i.id, results.intersection_polygon));
-        for (r, (pl, _)) in results.trimmed_center_pts {
-            streets.roads.get_mut(&r).unwrap().trimmed_center_line = pl;
+        for r in results.roads.into_values() {
+            streets.roads.get_mut(&r.id).unwrap().trimmed_center_line = r.trimmed_center_line;
         }
         info!(
             "Shifted map edge {} out a bit to make the road a reasonable length",

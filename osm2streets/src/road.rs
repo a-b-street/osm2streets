@@ -5,8 +5,8 @@ use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine};
 
 use crate::{
-    get_lane_specs_ltr, osm, CommonEndpoint, Direction, InputRoad, IntersectionID, LaneSpec,
-    LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
+    get_lane_specs_ltr, osm, CommonEndpoint, Direction, IntersectionID, LaneSpec, LaneType,
+    MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -217,6 +217,9 @@ impl Road {
     pub fn total_width(&self) -> Distance {
         self.lane_specs_ltr.iter().map(|l| l.width).sum()
     }
+    pub fn half_width(&self) -> Distance {
+        self.total_width() / 2.0
+    }
 
     /// Returns one PolyLine representing the center of each lane in this road. This must be called
     /// after `Transformation::GenerateIntersectionGeometry` is run. The result also faces the same
@@ -249,17 +252,6 @@ impl Road {
 
     pub fn endpoints(&self) -> Vec<IntersectionID> {
         vec![self.src_i, self.dst_i]
-    }
-
-    pub(crate) fn to_input_road(&self) -> InputRoad {
-        InputRoad {
-            id: self.id,
-            src_i: self.src_i,
-            dst_i: self.dst_i,
-            center_pts: self.trimmed_center_line.clone(),
-            half_width: self.total_width() / 2.0,
-            highway_type: self.highway_type.clone(),
-        }
     }
 
     pub fn other_side(&self, i: IntersectionID) -> IntersectionID {

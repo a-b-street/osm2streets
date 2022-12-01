@@ -6,35 +6,40 @@ use abstutil::wraparound_get;
 use geom::{Circle, Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
 use super::Results;
-use crate::{InputRoad, IntersectionID, RoadID};
+use crate::{IntersectionID, Road, RoadID};
 
 const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
 
 pub fn intersection_polygon(
     intersection_id: IntersectionID,
     // These must be sorted clockwise already
-    input_roads: Vec<InputRoad>,
+    input_roads: Vec<Road>,
     trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
 ) -> Result<Results> {
-    // TODO Possibly take this as input in the first place
-    let mut roads: BTreeMap<RoadID, InputRoad> = BTreeMap::new();
+    let mut results = Results {
+        intersection_id,
+        intersection_polygon: Polygon::dummy(),
+        debug: Vec::new(),
+        roads: BTreeMap::new(),
+    };
+
     let mut sorted_roads: Vec<RoadID> = Vec::new();
     for r in input_roads {
         sorted_roads.push(r.id);
-        roads.insert(r.id, r);
+        results.roads.insert(r.id, r);
     }
 
-    if roads.is_empty() {
-        bail!("{} has no roads", intersection_id);
+    if results.roads.is_empty() {
+        bail!("{intersection_id} has no roads");
     }
 
     // First pre-trim roads if it's a consolidated intersection.
-    for road in roads.values_mut() {
+    for road in results.roads.values_mut() {
         if let Some(endpt) = trim_roads_for_merging.get(&(road.id, road.src_i == intersection_id)) {
             if road.src_i == intersection_id {
-                match road.center_pts.safe_get_slice_starting_at(*endpt) {
+                match road.trimmed_center_line.safe_get_slice_starting_at(*endpt) {
                     Some(pl) => {
-                        road.center_pts = pl;
+                        road.trimmed_center_line = pl;
                     }
                     None => {
                         error!("{}'s trimmed points start past the endpt {endpt}", road.id);
@@ -44,9 +49,9 @@ pub fn intersection_polygon(
                 }
             } else {
                 assert_eq!(road.dst_i, intersection_id);
-                match road.center_pts.safe_get_slice_ending_at(*endpt) {
+                match road.trimmed_center_line.safe_get_slice_ending_at(*endpt) {
                     Some(pl) => {
-                        road.center_pts = pl;
+                        road.trimmed_center_line = pl;
                     }
                     None => {
                         error!("{}'s trimmed points end before the endpt {endpt}", road.id);
@@ -59,38 +64,31 @@ pub fn intersection_polygon(
     // Sorted clockwise
     let mut road_lines = Vec::new();
     for id in sorted_roads {
-        let road = &roads[&id];
+        let road = &results.roads[&id];
         let center_pl = if road.src_i == intersection_id {
-            road.center_pts.reversed()
+            road.trimmed_center_line.reversed()
         } else if road.dst_i == intersection_id {
-            road.center_pts.clone()
+            road.trimmed_center_line.clone()
         } else {
             panic!("Incident road {id} doesn't have an endpoint at {intersection_id}");
         };
         road_lines.push(RoadLine {
             id,
-            fwd_pl: center_pl.shift_right(road.half_width)?,
-            back_pl: center_pl.shift_left(road.half_width)?,
+            fwd_pl: center_pl.shift_right(road.half_width())?,
+            back_pl: center_pl.shift_left(road.half_width())?,
         });
     }
 
-    let results = Results {
-        intersection_id,
-        intersection_polygon: Polygon::dummy(),
-        debug: Vec::new(),
-        trimmed_center_pts: BTreeMap::new(),
-    };
-
     if road_lines.len() == 1 {
-        return deadend(results, roads, &road_lines);
+        return deadend(results, &road_lines);
     }
 
     if !trim_roads_for_merging.is_empty() {
-        pretrimmed_geometry(results, roads, &road_lines)
-    } else if let Some(result) = on_off_ramp(results.clone(), roads.clone(), road_lines.clone()) {
+        pretrimmed_geometry(results, &road_lines)
+    } else if let Some(result) = on_off_ramp(results.clone(), road_lines.clone()) {
         Ok(result)
     } else {
-        generalized_trim_back(results, roads, &road_lines)
+        generalized_trim_back(results, &road_lines)
     }
 }
 
@@ -104,11 +102,7 @@ struct RoadLine {
     back_pl: PolyLine,
 }
 
-fn generalized_trim_back(
-    mut results: Results,
-    mut roads: BTreeMap<RoadID, InputRoad>,
-    input_road_lines: &[RoadLine],
-) -> Result<Results> {
+fn generalized_trim_back(mut results: Results, input_road_lines: &[RoadLine]) -> Result<Results> {
     let i = results.intersection_id;
 
     let mut road_lines: Vec<(RoadID, PolyLine)> = Vec::new();
@@ -128,28 +122,42 @@ fn generalized_trim_back(
         }
     }
 
-    // Intersect every road's boundary lines with all the other lines. Only side effect here is to
-    // populate new_road_centers.
+    // Intersect every road's boundary lines with all the other lines. Update new_road_centers as
+    // we go. Do NOT modify trimmed_center_line in results yet, because every road gets trimmed
+    // multiple times below (every road has two sides and thus two corners) and we need to use the
+    // original line.
     let mut new_road_centers: BTreeMap<RoadID, PolyLine> = BTreeMap::new();
-    // TODO If Results has a BTreeMap too, we could just fill this out as we go
     for (r1, pl1) in &road_lines {
-        // road_center ends at the intersection.
-        let road_center = if roads[r1].dst_i == i {
-            roads[r1].center_pts.clone()
+        let road1 = &results.roads[r1];
+
+        // Make road_center end at the intersection
+        let road_center = if road1.dst_i == i {
+            road1.trimmed_center_line.clone()
         } else {
-            roads[r1].center_pts.reversed()
+            road1.trimmed_center_line.reversed()
         };
 
         // Always trim back a minimum amount, if possible.
-        let mut shortest_center =
-            if road_center.length() >= DEGENERATE_INTERSECTION_HALF_LENGTH + 3.0 * EPSILON_DIST {
-                road_center.exact_slice(
+        // TODO Should we only do this for 2 roads?
+        let mut shortest_center = road_center.clone();
+
+        if road_center.length() >= DEGENERATE_INTERSECTION_HALF_LENGTH + 3.0 * EPSILON_DIST {
+            // Don't repeatedly apply this. If the untrimmed and trimmed endpoints are the
+            // same, do trim.
+            // TODO This'll be easier to detect with trim_start and trim_end
+            let untrimmed = road1.untrimmed_road_geometry().0;
+            let do_trim = if road1.dst_i == i {
+                road1.trimmed_center_line.last_pt() == untrimmed.last_pt()
+            } else {
+                road1.trimmed_center_line.first_pt() == untrimmed.first_pt()
+            };
+            if do_trim {
+                shortest_center = road_center.exact_slice(
                     Distance::ZERO,
                     road_center.length() - DEGENERATE_INTERSECTION_HALF_LENGTH,
-                )
-            } else {
-                road_center.clone()
-            };
+                );
+            }
+        }
 
         for (r2, pl2) in &road_lines {
             if r1 == r2 {
@@ -161,10 +169,10 @@ fn generalized_trim_back(
             // this in general breaks other cases -- sometimes we want to find the collision
             // farther away from the intersection in question.
             let same_endpoints = {
-                let ii1 = roads[r1].src_i;
-                let ii2 = roads[r1].dst_i;
-                let ii3 = roads[r2].src_i;
-                let ii4 = roads[r2].dst_i;
+                let ii1 = road1.src_i;
+                let ii2 = road1.dst_i;
+                let ii3 = results.roads[r2].src_i;
+                let ii4 = results.roads[r2].dst_i;
                 (ii1 == ii3 && ii2 == ii4) || (ii1 == ii4 && ii2 == ii3)
             };
             let (use_pl1, use_pl2): (PolyLine, PolyLine) = if same_endpoints {
@@ -175,11 +183,8 @@ fn generalized_trim_back(
 
             if use_pl1 == use_pl2 {
                 bail!(
-                    "{} and {} have overlapping segments. You likely need to fix OSM and make the \
-                     two ways meet at exactly one node.",
-                    r1,
-                    r2
-                );
+                    "{r1} and {r2} have overlapping segments. You likely need to fix OSM and make the \
+                     two ways meet at exactly one node.");
             }
 
             // Sometimes two road PLs may hit at multiple points because they're thick and close
@@ -203,32 +208,37 @@ fn generalized_trim_back(
                     }
                 } else {
                     warn!(
-                        "{} and {} hit, but the perpendicular never hit the original center line, \
-                         or the trimmed thing is empty",
-                        r1, r2
-                    );
+                        "{r1} and {r2} hit, but the perpendicular never hit the original center line, \
+                         or the trimmed thing is empty");
                 }
 
                 // We could also do the update for r2, but we'll just get to it later.
             }
         }
 
-        let new_center = if roads[r1].dst_i == i {
+        let new_center = if road1.dst_i == i {
             shortest_center
         } else {
             shortest_center.reversed()
         };
-        if let Some(existing) = new_road_centers.get(r1) {
-            if new_center.length() < existing.length() {
-                new_road_centers.insert(*r1, new_center);
-            }
-        } else {
+
+        // Never lengthen something from a previous pass
+        if new_road_centers
+            .get(r1)
+            .map(|pl| new_center.length() < pl.length())
+            .unwrap_or(true)
+        {
             new_road_centers.insert(*r1, new_center);
         }
     }
+    for (id, pl) in new_road_centers {
+        results.roads.get_mut(&id).unwrap().trimmed_center_line = pl;
+    }
 
-    // After doing all the intersection checks, copy over the new centers. Also fill out the
-    // intersection polygon's points along the way.
+    calculate_polygon(results, input_road_lines)
+}
+
+fn calculate_polygon(mut results: Results, input_road_lines: &[RoadLine]) -> Result<Results> {
     let mut endpoints: Vec<Pt2D> = Vec::new();
     for idx in 0..input_road_lines.len() as isize {
         let (id, fwd_pl, back_pl) = {
@@ -239,8 +249,7 @@ fn generalized_trim_back(
         let adj_back_pl = &wraparound_get(input_road_lines, idx + 1).fwd_pl;
         let adj_fwd_pl = &wraparound_get(input_road_lines, idx - 1).back_pl;
 
-        roads.get_mut(&id).unwrap().center_pts = new_road_centers[&id].clone();
-        let r = &roads[&id];
+        let r = &results.roads[&id];
 
         // Include collisions between polylines of adjacent roads, so the polygon doesn't cover area
         // not originally covered by the thick road bands.
@@ -256,19 +265,22 @@ fn generalized_trim_back(
             }
         } else {
             warn!(
-                "Excluding collision between original polylines of {} and something, because \
-                 stuff's too short",
-                id
+                "Excluding collision between original polylines of {id} and something, because \
+                 stuff's too short"
             );
         }
 
         // Shift those final centers out again to find the main endpoints for the polygon.
-        if r.dst_i == i {
-            endpoints.push(r.center_pts.shift_right(r.half_width)?.last_pt());
-            endpoints.push(r.center_pts.shift_left(r.half_width)?.last_pt());
+        if r.dst_i == results.intersection_id {
+            endpoints.push(r.trimmed_center_line.shift_right(r.half_width())?.last_pt());
+            endpoints.push(r.trimmed_center_line.shift_left(r.half_width())?.last_pt());
         } else {
-            endpoints.push(r.center_pts.shift_left(r.half_width)?.first_pt());
-            endpoints.push(r.center_pts.shift_right(r.half_width)?.first_pt());
+            endpoints.push(r.trimmed_center_line.shift_left(r.half_width())?.first_pt());
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_right(r.half_width())?
+                    .first_pt(),
+            );
         }
 
         if back_pl.length() >= EPSILON_DIST * 3.0 && adj_back_pl.length() >= EPSILON_DIST * 3.0 {
@@ -280,9 +292,8 @@ fn generalized_trim_back(
             }
         } else {
             warn!(
-                "Excluding collision between original polylines of {} and something, because \
-                 stuff's too short",
-                id
+                "Excluding collision between original polylines of {id} and something, because \
+                 stuff's too short"
             );
         }
     }
@@ -305,7 +316,7 @@ fn generalized_trim_back(
     } else {
         warn!(
             "{}'s polygon has weird repeats, forcibly removing points",
-            i
+            results.intersection_id
         );
         Ring::must_new(deduped).into_polygon()
     };
@@ -317,52 +328,37 @@ fn generalized_trim_back(
     endpoints.sort_by_key(|pt| pt.angle_to(center).normalized_degrees() as i64);
     close_off_polygon(endpoints)*/
 
-    // TODO We always do this. Maybe Results has the InputRoad and we just work in-place
-    for (id, r) in roads {
-        results
-            .trimmed_center_pts
-            .insert(id, (r.center_pts, r.half_width));
-    }
     Ok(results)
 }
 
-fn pretrimmed_geometry(
-    mut results: Results,
-    roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: &[RoadLine],
-) -> Result<Results> {
+fn pretrimmed_geometry(mut results: Results, road_lines: &[RoadLine]) -> Result<Results> {
     let mut endpoints: Vec<Pt2D> = Vec::new();
     for r in road_lines {
-        let r = &roads[&r.id];
+        let r = &results.roads[&r.id];
         // Shift those final centers out again to find the main endpoints for the polygon.
         if r.dst_i == results.intersection_id {
-            endpoints.push(r.center_pts.shift_right(r.half_width)?.last_pt());
-            endpoints.push(r.center_pts.shift_left(r.half_width)?.last_pt());
+            endpoints.push(r.trimmed_center_line.shift_right(r.half_width())?.last_pt());
+            endpoints.push(r.trimmed_center_line.shift_left(r.half_width())?.last_pt());
         } else {
-            endpoints.push(r.center_pts.shift_left(r.half_width)?.first_pt());
-            endpoints.push(r.center_pts.shift_right(r.half_width)?.first_pt());
+            endpoints.push(r.trimmed_center_line.shift_left(r.half_width())?.first_pt());
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_right(r.half_width())?
+                    .first_pt(),
+            );
         }
     }
 
-    // TODO Do all of the crazy deduping that generalized_trim_back does?
+    // TODO Do all of the crazy deduping that calculate_polygon does?
     results.intersection_polygon = Ring::new(close_off_polygon(Pt2D::approx_dedupe(
         endpoints,
         Distance::meters(0.1),
     )))?
     .into_polygon();
-    for (id, r) in roads {
-        results
-            .trimmed_center_pts
-            .insert(id, (r.center_pts, r.half_width));
-    }
     Ok(results)
 }
 
-fn deadend(
-    mut results: Results,
-    mut roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: &[RoadLine],
-) -> Result<Results> {
+fn deadend(mut results: Results, road_lines: &[RoadLine]) -> Result<Results> {
     let len = DEGENERATE_INTERSECTION_HALF_LENGTH * 4.0;
 
     let id = road_lines[0].id;
@@ -375,21 +371,23 @@ fn deadend(
     pl_a = pl_a.extend_to_length(len + 1.5 * DEGENERATE_INTERSECTION_HALF_LENGTH);
     pl_b = pl_b.extend_to_length(len + 1.5 * DEGENERATE_INTERSECTION_HALF_LENGTH);
 
-    let r = roads.get_mut(&id).unwrap();
+    let r = results.roads.get_mut(&id).unwrap();
     let len_with_buffer = len + 3.0 * EPSILON_DIST;
-    let trimmed = if r.center_pts.length() >= len_with_buffer {
+    let trimmed = if r.trimmed_center_line.length() >= len_with_buffer {
         if r.src_i == results.intersection_id {
-            r.center_pts = r.center_pts.exact_slice(len, r.center_pts.length());
+            r.trimmed_center_line = r
+                .trimmed_center_line
+                .exact_slice(len, r.trimmed_center_line.length());
         } else {
-            r.center_pts = r
-                .center_pts
-                .exact_slice(Distance::ZERO, r.center_pts.length() - len);
+            r.trimmed_center_line = r
+                .trimmed_center_line
+                .exact_slice(Distance::ZERO, r.trimmed_center_line.length() - len);
         }
-        r.center_pts.clone()
+        r.trimmed_center_line.clone()
     } else if r.src_i == results.intersection_id {
-        r.center_pts.extend_to_length(len_with_buffer)
+        r.trimmed_center_line.extend_to_length(len_with_buffer)
     } else {
-        r.center_pts
+        r.trimmed_center_line
             .reversed()
             .extend_to_length(len_with_buffer)
             .reversed()
@@ -400,20 +398,15 @@ fn deadend(
     // TODO Refactor with generalized_trim_back.
     let mut endpts = vec![pl_b.last_pt(), pl_a.last_pt()];
     if r.dst_i == results.intersection_id {
-        endpts.push(trimmed.shift_right(r.half_width)?.last_pt());
-        endpts.push(trimmed.shift_left(r.half_width)?.last_pt());
+        endpts.push(trimmed.shift_right(r.half_width())?.last_pt());
+        endpts.push(trimmed.shift_left(r.half_width())?.last_pt());
     } else {
-        endpts.push(trimmed.shift_left(r.half_width)?.first_pt());
-        endpts.push(trimmed.shift_right(r.half_width)?.first_pt());
+        endpts.push(trimmed.shift_left(r.half_width())?.first_pt());
+        endpts.push(trimmed.shift_right(r.half_width())?.first_pt());
     }
 
     endpts.dedup();
     results.intersection_polygon = Ring::must_new(close_off_polygon(endpts)).into_polygon();
-    for (id, r) in roads {
-        results
-            .trimmed_center_pts
-            .insert(id, (r.center_pts, r.half_width));
-    }
     Ok(results)
 }
 
@@ -437,11 +430,7 @@ struct Piece {
 // The normal generalized_trim_back approach produces huge intersections when 3 roads meet at
 // certain angles. It usually happens for highway on/off ramps. Try something different here. In
 // lieu of proper docs, see https://twitter.com/CarlinoDustin/status/1290799086036111360.
-fn on_off_ramp(
-    mut results: Results,
-    mut roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: Vec<RoadLine>,
-) -> Option<Results> {
+fn on_off_ramp(mut results: Results, road_lines: Vec<RoadLine>) -> Option<Results> {
     if road_lines.len() != 3 {
         return None;
     }
@@ -458,7 +447,7 @@ fn on_off_ramp(
             "tertiary_link",
             "trunk_link",
         ]
-        .contains(&roads[&r.id].highway_type.as_str())
+        .contains(&results.roads[&r.id].highway_type.as_str())
     }) {
         return None;
     }
@@ -466,11 +455,11 @@ fn on_off_ramp(
     let mut pieces = Vec::new();
     // TODO Use this abstraction for all the code here?
     for r in road_lines {
-        let road = &roads[&r.id];
+        let road = &results.roads[&r.id];
         let center = if road.dst_i == results.intersection_id {
-            road.center_pts.clone()
+            road.trimmed_center_line.clone()
         } else {
-            road.center_pts.reversed()
+            road.trimmed_center_line.reversed()
         };
         pieces.push(Piece {
             id: road.id,
@@ -482,7 +471,12 @@ fn on_off_ramp(
     }
 
     // Break ties by preferring the outbound roads for thin
-    pieces.sort_by_key(|r| (roads[&r.id].half_width, r.dst_i == results.intersection_id));
+    pieces.sort_by_key(|r| {
+        (
+            results.roads[&r.id].half_width(),
+            r.dst_i == results.intersection_id,
+        )
+    });
     let thick1 = pieces.pop().unwrap();
     let thick2 = pieces.pop().unwrap();
     let thin = pieces.pop().unwrap();
@@ -550,21 +544,25 @@ fn on_off_ramp(
         if thin.dst_i != results.intersection_id {
             trimmed_thin = trimmed_thin.reversed();
         }
-        roads.get_mut(&thin.id).unwrap().center_pts = trimmed_thin;
+        results.roads.get_mut(&thin.id).unwrap().trimmed_center_line = trimmed_thin;
 
         // Trim the thick extra ends at the intersection
-        let extra = if roads[&thick_id].dst_i == results.intersection_id {
-            roads[&thick_id]
-                .center_pts
+        let extra = if results.roads[&thick_id].dst_i == results.intersection_id {
+            results.roads[&thick_id]
+                .trimmed_center_line
                 .get_slice_starting_at(trimmed_thick.last_pt())?
         } else {
             trimmed_thick = trimmed_thick.reversed();
-            roads[&thick_id]
-                .center_pts
+            results.roads[&thick_id]
+                .trimmed_center_line
                 .get_slice_ending_at(trimmed_thick.first_pt())?
                 .reversed()
         };
-        roads.get_mut(&thick_id).unwrap().center_pts = trimmed_thick;
+        results
+            .roads
+            .get_mut(&thick_id)
+            .unwrap()
+            .trimmed_center_line = trimmed_thick;
         // Give the merge point some length
         if extra.length() <= 2.0 * DEGENERATE_INTERSECTION_HALF_LENGTH + 3.0 * EPSILON_DIST {
             return None;
@@ -572,7 +570,8 @@ fn on_off_ramp(
         let extra = extra.exact_slice(2.0 * DEGENERATE_INTERSECTION_HALF_LENGTH, extra.length());
 
         // Now the crazy part -- take the other thick, and LENGTHEN it
-        let other = roads
+        let other = results
+            .roads
             .get_mut(if thick1.id == thick_id {
                 &thick2.id
             } else {
@@ -580,23 +579,47 @@ fn on_off_ramp(
             })
             .unwrap();
         if other.dst_i == results.intersection_id {
-            other.center_pts = other.center_pts.clone().extend(extra.reversed()).ok()?;
+            other.trimmed_center_line = other
+                .trimmed_center_line
+                .clone()
+                .extend(extra.reversed())
+                .ok()?;
         } else {
-            other.center_pts = extra.extend(other.center_pts.clone()).ok()?;
+            other.trimmed_center_line = extra.extend(other.trimmed_center_line.clone()).ok()?;
         }
     }
 
     // Now build the actual polygon
     let mut endpoints = Vec::new();
     for id in [thin.id, thick1.id, thick2.id] {
-        let r = &roads[&id];
+        let r = &results.roads[&id];
         // Shift those final centers out again to find the main endpoints for the polygon.
         if r.dst_i == results.intersection_id {
-            endpoints.push(r.center_pts.shift_right(r.half_width).ok()?.last_pt());
-            endpoints.push(r.center_pts.shift_left(r.half_width).ok()?.last_pt());
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_right(r.half_width())
+                    .ok()?
+                    .last_pt(),
+            );
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_left(r.half_width())
+                    .ok()?
+                    .last_pt(),
+            );
         } else {
-            endpoints.push(r.center_pts.shift_left(r.half_width).ok()?.first_pt());
-            endpoints.push(r.center_pts.shift_right(r.half_width).ok()?.first_pt());
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_left(r.half_width())
+                    .ok()?
+                    .first_pt(),
+            );
+            endpoints.push(
+                r.trimmed_center_line
+                    .shift_right(r.half_width())
+                    .ok()?
+                    .first_pt(),
+            );
         }
     }
     /*for (idx, pt) in endpoints.iter().enumerate() {
@@ -609,10 +632,5 @@ fn on_off_ramp(
     endpoints.sort_by_key(|pt| pt.angle_to(center).normalized_degrees() as i64);
     endpoints.dedup();
     results.intersection_polygon = Ring::must_new(close_off_polygon(endpoints)).into_polygon();
-    for (id, r) in roads {
-        results
-            .trimmed_center_pts
-            .insert(id, (r.center_pts, r.half_width));
-    }
     Some(results)
 }

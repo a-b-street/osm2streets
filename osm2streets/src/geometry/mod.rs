@@ -12,32 +12,22 @@ mod algorithm;
 
 use std::collections::BTreeMap;
 
-use geom::{Distance, PolyLine, Polygon};
+use geom::Polygon;
 
-use crate::{IntersectionID, RoadID};
+use crate::{IntersectionID, Road, RoadID};
 pub use algorithm::intersection_polygon;
 
-// For anyone considering removing this indirection in the future: it's used to recalculate one or
-// two intersections at a time in A/B Street's edit mode. Within just this repo, it does seem
-// redundant.
-#[derive(Clone)]
-pub struct InputRoad {
-    pub id: RoadID,
-    pub src_i: IntersectionID,
-    pub dst_i: IntersectionID,
-    /// The true center of the road, including sidewalks. The input is untrimmed when called on the
-    /// first endpoint, then trimmed on that one side when called on th second endpoint.
-    pub center_pts: PolyLine,
-    pub half_width: Distance,
-    pub highway_type: String,
-}
+// Why doesn't intersection_polygon() directly operate on a StreetNetwork? Within this repo, it
+// probably could. But this code is also used to recalculate one or two intersections at a time in
+// A/B Street's edit mode, which currently works off of a different representation than a
+// StreetNetwork. Any future refactors should keep that in mind.
 
 #[derive(Clone)]
 pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
-    /// Road -> (trimmed center line, half width)
-    pub trimmed_center_pts: BTreeMap<RoadID, (PolyLine, Distance)>,
+    /// Echo back all Roads passed in, with `trimmed_center_line` modified
+    pub roads: BTreeMap<RoadID, Road>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
 }

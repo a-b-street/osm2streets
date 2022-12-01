@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
-pub use self::geometry::{intersection_polygon, InputRoad};
+pub use self::geometry::intersection_polygon;
 pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::ids::{CommonEndpoint, IntersectionID, OriginalRoad, RoadID};
 pub use self::intersection::{
@@ -151,12 +151,12 @@ impl StreetNetwork {
         let endpts = self.roads[&road_id].endpoints();
 
         // First trim at one of the endpoints
-        let trimmed_center_pts = {
+        let trimmed_center_line = {
             let mut input_roads = Vec::new();
             for road in self.roads_per_intersection(endpts[0]) {
                 // trimmed_center_line hasn't been initialized yet, so override this
-                let mut input = road.to_input_road();
-                input.center_pts = road.untrimmed_road_geometry().0;
+                let mut input = road.clone();
+                input.trimmed_center_line = road.untrimmed_road_geometry().0;
                 input_roads.push(input);
             }
             let mut results = intersection_polygon(
@@ -165,18 +165,18 @@ impl StreetNetwork {
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
             )?;
-            results.trimmed_center_pts.remove(&road_id).unwrap().0
+            results.roads.remove(&road_id).unwrap().trimmed_center_line
         };
 
         // Now the second
         {
             let mut input_roads = Vec::new();
             for road in self.roads_per_intersection(endpts[1]) {
-                let mut input = road.to_input_road();
+                let mut input = road.clone();
                 if road.id == road_id {
-                    input.center_pts = trimmed_center_pts.clone();
+                    input.trimmed_center_line = trimmed_center_line.clone();
                 } else {
-                    input.center_pts = road.untrimmed_road_geometry().0;
+                    input.trimmed_center_line = road.untrimmed_road_geometry().0;
                 }
                 input_roads.push(input);
             }
@@ -186,7 +186,7 @@ impl StreetNetwork {
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
             )?;
-            Ok(results.trimmed_center_pts.remove(&road_id).unwrap().0)
+            Ok(results.roads.remove(&road_id).unwrap().trimmed_center_line)
         }
     }
 

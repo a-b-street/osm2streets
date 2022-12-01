@@ -140,8 +140,8 @@ impl StreetNetwork {
         let mut endpoints_for_center = Vec::new();
         for r in &intersection.roads {
             let road = &self.roads[r];
-            // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
-            // shouldn't matter for sorting.
+            // road.untrimmed_center_line is unadjusted; it doesn't handle unequal widths yet. But
+            // that shouldn't matter for sorting.
             let center_pl = if road.src_i == i {
                 road.untrimmed_center_line.reversed()
             } else if road.dst_i == i {
