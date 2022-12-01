@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "abstutil"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/abstreet#358ae97f02ff6028255ea5d4f081d2e753d75997"
+source = "git+https://github.com/a-b-street/abstreet#ad99823cc886dfe5ccaea9581bb3e37d0a7ad6cf"
 dependencies = [
  "anyhow",
  "bincode",
@@ -359,10 +359,9 @@ dependencies = [
 [[package]]
 name = "geom"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/abstreet#358ae97f02ff6028255ea5d4f081d2e753d75997"
+source = "git+https://github.com/a-b-street/abstreet#ad99823cc886dfe5ccaea9581bb3e37d0a7ad6cf"
 dependencies = [
  "aabb-quadtree",
- "abstutil",
  "anyhow",
  "earcutr",
  "fs-err",

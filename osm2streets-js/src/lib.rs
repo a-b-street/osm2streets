@@ -26,6 +26,7 @@ pub struct JsStreetNetwork {
 impl JsStreetNetwork {
     #[wasm_bindgen(constructor)]
     pub fn new(osm_xml_input: &str, input: &JsValue) -> Result<JsStreetNetwork, JsValue> {
+        abstutil::logger::setup();
         // Panics shouldn't happen, but if they do, console.log them.
         console_error_panic_hook::set_once();
 

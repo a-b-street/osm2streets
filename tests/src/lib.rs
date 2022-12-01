@@ -8,7 +8,7 @@ mod tests {
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
     fn test(path: &str) -> Result<()> {
-        // TODO We need to call abstutil::logger::setup() once globally to get all logs
+        abstutil::logger::setup();
 
         let mut timer = Timer::new("test osm2streets");
 
