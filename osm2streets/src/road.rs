@@ -270,3 +270,48 @@ impl StreetNetwork {
         id
     }
 }
+
+/// The edge of a road, pointed into some intersection
+#[derive(Clone)]
+pub(crate) struct RoadEdge {
+    pub road: RoadID,
+    /// Pointed into the intersection
+    pub pl: PolyLine,
+    pub lane: LaneSpec,
+}
+
+impl RoadEdge {
+    /// Get the left and right edge of each road, pointed into the intersection. All sorted
+    /// clockwise. No repetitions -- to iterate over all adjacent pairs, the caller must repeat the
+    /// first edge
+    // TODO Maybe returning an iterator over pairs of these is more useful
+    pub fn calculate(sorted_roads: Vec<&Road>, i: IntersectionID) -> Vec<Self> {
+        let mut edges = Vec::new();
+        for road in sorted_roads {
+            let mut left = RoadEdge {
+                road: road.id,
+                pl: road
+                    .trimmed_center_line
+                    .must_shift_left(road.total_width() / 2.0),
+                lane: road.lane_specs_ltr[0].clone(),
+            };
+            let mut right = RoadEdge {
+                road: road.id,
+                pl: road
+                    .trimmed_center_line
+                    .must_shift_right(road.total_width() / 2.0),
+                lane: road.lane_specs_ltr.last().unwrap().clone(),
+            };
+            if road.dst_i == i {
+                edges.push(right);
+                edges.push(left);
+            } else {
+                left.pl = left.pl.reversed();
+                right.pl = right.pl.reversed();
+                edges.push(left);
+                edges.push(right);
+            }
+        }
+        edges
+    }
+}
