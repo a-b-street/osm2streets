@@ -10,34 +10,34 @@ extern "C" {
 /*
  * Class:     StreetNetwork
  * Method:    create
- * Signature: (Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;)LStreetNetwork;
  */
-JNIEXPORT jlong JNICALL Java_StreetNetwork_create
+JNIEXPORT jobject JNICALL Java_StreetNetwork_create
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     StreetNetwork
  * Method:    toGeojsonPlain
- * Signature: (J)Ljava/lang/String;
+ * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_StreetNetwork_toGeojsonPlain
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     StreetNetwork
  * Method:    toLanePolygonsGeojson
- * Signature: (J)Ljava/lang/String;
+ * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_StreetNetwork_toLanePolygonsGeojson
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     StreetNetwork
  * Method:    toLaneMarkingsGeojson
- * Signature: (J)Ljava/lang/String;
+ * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_StreetNetwork_toLaneMarkingsGeojson
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }
