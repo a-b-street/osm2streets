@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use anyhow::Result;
 
 use crate::{
@@ -46,46 +44,23 @@ impl StreetNetwork {
         connected_to_keep_i.retain(|x| *x != short_r);
         connected_to_destroy_i.retain(|x| *x != short_r);
 
-        // Retain some geometry...
-        {
-            let mut trim_roads_for_merging = BTreeMap::new();
-            for i in [keep_i, destroy_i] {
-                for road in self.roads_per_intersection(i) {
-                    // If we keep this in there, it might accidentally overwrite the
-                    // trim_roads_for_merging key for a surviving road!
-                    if road.id == short_r {
-                        continue;
-                    }
-                    // If we're going to delete this later, don't bother!
-                    if road.internal_junction_road {
-                        continue;
-                    }
+        // For all adjacent roads to the intesections, calculate where they're trimmed to.
+        // TODO Once we maintain this all the time, this'll be redundant.
+        for (i, roads) in [(keep_i, &connected_to_keep_i), (destroy_i, &connected_to_destroy_i)] {
+            for r in roads {
+                // If we're going to delete this later, don't bother!
+                if self.roads[r].internal_junction_road {
+                    continue;
+                }
 
-                    let pl = self.estimate_trimmed_geometry(road.id).unwrap();
-                    if road.src_i == i {
-                        if trim_roads_for_merging.contains_key(&(road.id, true)) {
-                            panic!(
-                                "trim_roads_for_merging has a src_i duplicate for {}",
-                                road.id
-                            );
-                        }
-                        trim_roads_for_merging.insert((road.id, true), pl.first_pt());
-                    } else {
-                        if trim_roads_for_merging.contains_key(&(road.id, false)) {
-                            panic!(
-                                "trim_roads_for_merging has a dst_i duplicate for {}",
-                                road.id
-                            );
-                        }
-                        trim_roads_for_merging.insert((road.id, false), pl.last_pt());
-                    }
+                let (_, trim_start, trim_end) = self.estimate_trimmed_geometry(*r).unwrap();
+                let road = self.roads.get_mut(r).unwrap();
+                if road.src_i == i {
+                    road.trim_start = trim_start;
+                } else {
+                    road.trim_end = trim_end;
                 }
             }
-            self.intersections
-                .get_mut(&keep_i)
-                .unwrap()
-                .trim_roads_for_merging
-                .extend(trim_roads_for_merging);
         }
 
         self.remove_road(short_r);

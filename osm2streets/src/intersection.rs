@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use geom::{Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
@@ -26,10 +24,6 @@ pub struct Intersection {
     /// intersection. They're ordered clockwise around the intersection.
     pub roads: Vec<RoadID>,
     pub movements: Vec<Movement>,
-
-    // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
-    // TODO Store start/end trim distance on _every_ road
-    pub trim_roads_for_merging: BTreeMap<(RoadID, bool), Pt2D>,
 }
 
 /// How two lanes of travel conflict with each other.
@@ -120,15 +114,12 @@ impl StreetNetwork {
                 // Filled out later
                 roads: Vec::new(),
                 movements: Vec::new(),
-                trim_roads_for_merging: BTreeMap::new(),
             },
         );
         id
     }
 
     // Restore the invariant that an intersection's roads are ordered clockwise
-    //
-    // TODO This doesn't handle trim_roads_for_merging
     pub fn sort_roads(&mut self, i: IntersectionID) {
         let intersection = self.intersections.get_mut(&i).unwrap();
         if intersection.roads.len() < 2 {
@@ -142,6 +133,8 @@ impl StreetNetwork {
             let road = &self.roads[r];
             // road.untrimmed_center_line is unadjusted; it doesn't handle unequal widths yet. But
             // that shouldn't matter for sorting.
+            //
+            // Note this doesn't use any previously trimmed values.
             let center_pl = if road.src_i == i {
                 road.untrimmed_center_line.reversed()
             } else if road.dst_i == i {

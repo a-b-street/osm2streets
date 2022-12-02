@@ -7,6 +7,9 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // Initialize trimmed_center_line to the corrected center
     for road in streets.roads.values_mut() {
         let pl = road.untrimmed_road_geometry().0;
+
+        // TODO Apply trim here
+
         road.trimmed_center_line = pl;
     }
 
@@ -26,12 +29,14 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
             .iter()
             .map(|r| streets.roads[r].clone())
             .collect::<Vec<_>>();
-        match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
+        match crate::intersection_polygon(i.id, input_roads) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
-                for r in results.roads.into_values() {
-                    streets.roads.get_mut(&r.id).unwrap().trimmed_center_line =
-                        r.trimmed_center_line;
+                for road in results.roads.into_values() {
+                    // Copy over trimmed_center_line, trim_start, trim_end. Everything else should
+                    // be the same.
+                    let r = road.id;
+                    *streets.roads.get_mut(&r).unwrap() = road;
                 }
             }
             Err(err) => {
@@ -84,6 +89,7 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         if road.trimmed_center_line.length() >= min_len {
             continue;
         }
+        // TODO Update trim_start and trim_end
         if road.dst_i == i.id {
             road.trimmed_center_line = road.trimmed_center_line.extend_to_length(min_len);
         } else {
@@ -103,12 +109,12 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         let results = crate::intersection_polygon(
             i.id,
             input_roads,
-            &streets.intersections[&i.id].trim_roads_for_merging,
         )
         .unwrap();
         set_polygons.push((i.id, results.intersection_polygon));
-        for r in results.roads.into_values() {
-            streets.roads.get_mut(&r.id).unwrap().trimmed_center_line = r.trimmed_center_line;
+        for road in results.roads.into_values() {
+            let r = road.id;
+            *streets.roads.get_mut(&r).unwrap() = road;
         }
         info!(
             "Shifted map edge {} out a bit to make the road a reasonable length",

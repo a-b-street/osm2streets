@@ -37,8 +37,15 @@ pub struct Road {
     /// smoothing the polyline.
     pub untrimmed_center_line: PolyLine,
     /// The physical center of the road, including sidewalks. This won't actually be trimmed until
-    /// `Transformation::GenerateIntersectionGeometry` runs.
+    /// `Transformation::GenerateIntersectionGeometry` runs. It's derived from (and keep in sync
+    /// with) the values of `trim_start` and `trim_end`.
     pub trimmed_center_line: PolyLine,
+    /// How much to trim the start of `untrimmed_center_line` to meet `src_i` correctly
+    pub trim_start: Distance,
+    /// How much to trim the end of `untrimmed_center_line` to meet `dst_i` correctly. Measured
+    /// relative to the end; zero means no trimming.
+    pub trim_end: Distance,
+
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
@@ -86,6 +93,8 @@ impl Road {
             layer,
             untrimmed_center_line,
             trimmed_center_line: PolyLine::dummy(),
+            trim_start: Distance::ZERO,
+            trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
 

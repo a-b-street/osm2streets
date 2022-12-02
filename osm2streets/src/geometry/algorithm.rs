@@ -10,11 +10,13 @@ use crate::{IntersectionID, Road, RoadID};
 
 const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
 
+// TODO Every time we update trimmed_center_line here, we need to also update trim_start or
+// trim_end
+
 pub fn intersection_polygon(
     intersection_id: IntersectionID,
     // These must be sorted clockwise already
     input_roads: Vec<Road>,
-    trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
 ) -> Result<Results> {
     let mut results = Results {
         intersection_id,
@@ -31,34 +33,6 @@ pub fn intersection_polygon(
 
     if results.roads.is_empty() {
         bail!("{intersection_id} has no roads");
-    }
-
-    // First pre-trim roads if it's a consolidated intersection.
-    for road in results.roads.values_mut() {
-        if let Some(endpt) = trim_roads_for_merging.get(&(road.id, road.src_i == intersection_id)) {
-            if road.src_i == intersection_id {
-                match road.trimmed_center_line.safe_get_slice_starting_at(*endpt) {
-                    Some(pl) => {
-                        road.trimmed_center_line = pl;
-                    }
-                    None => {
-                        error!("{}'s trimmed points start past the endpt {endpt}", road.id);
-                        // Just skip. See https://github.com/a-b-street/abstreet/issues/654 for a
-                        // start to diagnose. Repro at https://www.openstreetmap.org/node/53211693.
-                    }
-                }
-            } else {
-                assert_eq!(road.dst_i, intersection_id);
-                match road.trimmed_center_line.safe_get_slice_ending_at(*endpt) {
-                    Some(pl) => {
-                        road.trimmed_center_line = pl;
-                    }
-                    None => {
-                        error!("{}'s trimmed points end before the endpt {endpt}", road.id);
-                    }
-                }
-            }
-        }
     }
 
     // Sorted clockwise
@@ -83,7 +57,13 @@ pub fn intersection_polygon(
         return deadend(results, &road_lines);
     }
 
-    if !trim_roads_for_merging.is_empty() {
+    // TODO Do we need this special case? Is this a safe way to detect collapse_short_roads cases
+    // over time as we start to maintain trim distances everywhere?
+    let pretrimmed = results.roads.values().any(|r| {
+        (r.src_i == intersection_id && r.trim_start != Distance::ZERO) || (r.dst_i == intersection_id && r.trim_end != Distance::ZERO)
+    });
+
+    if pretrimmed {
         pretrimmed_geometry(results, &road_lines)
     } else if let Some(result) = on_off_ramp(results.clone(), road_lines.clone()) {
         Ok(result)
@@ -232,7 +212,18 @@ fn generalized_trim_back(mut results: Results, input_road_lines: &[RoadLine]) ->
         }
     }
     for (id, pl) in new_road_centers {
-        results.roads.get_mut(&id).unwrap().trimmed_center_line = pl;
+        let road = results.roads.get_mut(&id).unwrap();
+        // Update trim_start or trim_end based on the change in length. This is positive when we
+        // shorten something
+        let length_change = road.trimmed_center_line.length() - pl.length();
+        if road.src_i == results.intersection_id {
+            road.trim_start += length_change;
+        } else {
+            road.trim_end += length_change;
+        }
+        road.trimmed_center_line = pl;
+        // TODO We need a consistency check to make sure trimmed_center_line ==
+        // untrimmed.slice(trim_start, length - trim_end)
     }
 
     calculate_polygon(results, input_road_lines)
