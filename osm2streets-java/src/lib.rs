@@ -1,6 +1,6 @@
 use abstutil::Timer;
-use jni::objects::{JClass, JString};
-use jni::sys::{jlong, jstring};
+use jni::objects::{JClass, JObject, JString, JValue};
+use jni::sys::{jlong, jobject, jstring};
 use jni::JNIEnv;
 
 use osm2streets::{MapConfig, Transformation};
@@ -30,19 +30,26 @@ pub extern "system" fn Java_StreetNetwork_create(
     env: JNIEnv,
     _: JClass,
     osm_xml_input: JString,
-) -> jlong {
+) -> jobject {
     let osm_xml_input: String = env.get_string(osm_xml_input).unwrap().into();
     let network = StreetNetwork::new(osm_xml_input);
-    Box::into_raw(Box::new(network)) as jlong
+
+    let pointer = Box::into_raw(Box::new(network)) as jlong;
+    let obj_class = env.find_class("StreetNetwork").unwrap();
+    let obj = env
+        .new_object(obj_class, "(J)V", &[JValue::Long(pointer)])
+        .unwrap();
+    obj.into_raw()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_StreetNetwork_toGeojsonPlain(
     env: JNIEnv,
-    _: JClass,
-    pointer: jlong,
+    java_pointer: JObject,
 ) -> jstring {
-    let streets = &mut *(pointer as *mut StreetNetwork);
+    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
+    let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
+
     let result = streets.inner.to_geojson().unwrap();
     let output = env.new_string(result).unwrap();
     output.into_raw()
@@ -51,10 +58,11 @@ pub unsafe extern "system" fn Java_StreetNetwork_toGeojsonPlain(
 #[no_mangle]
 pub unsafe extern "system" fn Java_StreetNetwork_toLanePolygonsGeojson(
     env: JNIEnv,
-    _: JClass,
-    pointer: jlong,
+    java_pointer: JObject,
 ) -> jstring {
-    let streets = &mut *(pointer as *mut StreetNetwork);
+    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
+    let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
+
     let result = streets.inner.to_lane_polygons_geojson().unwrap();
     let output = env.new_string(result).unwrap();
     output.into_raw()
@@ -63,10 +71,11 @@ pub unsafe extern "system" fn Java_StreetNetwork_toLanePolygonsGeojson(
 #[no_mangle]
 pub unsafe extern "system" fn Java_StreetNetwork_toLaneMarkingsGeojson(
     env: JNIEnv,
-    _: JClass,
-    pointer: jlong,
+    java_pointer: JObject,
 ) -> jstring {
-    let streets = &mut *(pointer as *mut StreetNetwork);
+    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
+    let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
+
     let result = streets.inner.to_lane_markings_geojson().unwrap();
     let output = env.new_string(result).unwrap();
     output.into_raw()
