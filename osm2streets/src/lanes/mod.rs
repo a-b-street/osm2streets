@@ -398,7 +398,12 @@ impl fmt::Display for Direction {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+/// Refers to a lane by its left-to-right position among all lanes in that direction. Backward
+/// lanes are counted left-to-right from the backwards direction.
+///
+/// e.g. The left-most forward lane is `LtrLaneNum::Forward(1)` and the backward lane furthest to
+/// the road-right is `LtrLaneNum::Backward(1)`, because of the backward perspective.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum LtrLaneNum {
     Forward(usize),
     Backward(usize),
@@ -433,7 +438,7 @@ impl LtrLaneNum {
 ///
 /// Most commonly seen as a value of the placement tag, e.g.
 /// `placement=right_of:1` means that the OSM way is drawn along the right edge of lane 1.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum RoadPosition {
     /// The center of the carriageway width, ignoring lanes. The default placement of OSM ways.
     Center,
@@ -466,7 +471,7 @@ impl RoadPosition {
 }
 
 /// Describes the placement of a line (such as the OSM Way) along a road.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Placement {
     /// Along the specified position down the entire length.
     Consistent(RoadPosition),
