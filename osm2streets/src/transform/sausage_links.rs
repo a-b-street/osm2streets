@@ -2,6 +2,7 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
+use crate::lanes::{Placement, RoadPosition};
 use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
@@ -90,6 +91,7 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
         road1.reference_line.first_pt(),
         road1.reference_line.last_pt(),
     ]);
+    road1.reference_line_placement = Placement::Consistent(RoadPosition::Center);
 
     // Lanes
     //
@@ -147,7 +149,8 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
         }
     }
 
-    // Because we have modified the lanes of road1 we need to update the intersection derived data.
+    // Because we have modified the lanes of road1 we need to update the derived data.
+    road1.update_center_line(streets.config.driving_side);
     let intersections = road1.endpoints();
     for i in intersections {
         streets.update_movements(i);

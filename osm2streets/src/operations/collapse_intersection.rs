@@ -3,6 +3,7 @@ use std::collections::BTreeSet;
 use geom::{PolyLine, Pt2D};
 
 use crate::{IntersectionID, RoadID, StreetNetwork};
+use crate::lanes::Placement;
 
 impl StreetNetwork {
     /// Delete an intersection with exactly two roads. Turn the two roads into one. It's the
@@ -65,6 +66,7 @@ impl StreetNetwork {
         // breaking
         let epsilon = 1.0;
         keep_road.reference_line = PolyLine::must_new(Pt2D::simplify_rdp(new_pts, epsilon));
+        keep_road.update_center_line(self.config.driving_side);
 
         // Keep the same ID, but fix the endpoints
         keep_road.src_i = new_src_i;
@@ -87,5 +89,5 @@ impl StreetNetwork {
                 rewrite(id2);
             }
         }
-}
+    }
 }

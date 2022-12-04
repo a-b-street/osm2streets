@@ -94,6 +94,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             let boundary_pt = boundary_pts[0];
             if let Some(pl) = road.reference_line.get_slice_starting_at(boundary_pt) {
                 road.reference_line = pl;
+                road.update_center_line(streets.config.driving_side);
                 intersection.point = road.reference_line.first_pt();
             } else {
                 warn!("{} interacts with boundary strangely", r);
@@ -106,6 +107,7 @@ pub fn clip_map(streets: &mut StreetNetwork, timer: &mut Timer) -> Result<()> {
             let boundary_pt = *boundary_pts.last().unwrap();
             if let Some(pl) = road.reference_line.get_slice_ending_at(boundary_pt) {
                 road.reference_line = pl;
+                road.update_center_line(streets.config.driving_side);
                 intersection.point = road.reference_line.last_pt();
             } else {
                 warn!("{} interacts with boundary strangely", r);
