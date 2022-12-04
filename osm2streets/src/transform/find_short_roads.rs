@@ -88,7 +88,12 @@ impl StreetNetwork {
             {
                 continue;
             }
-            if road.untrimmed_road_geometry().0.length() <= threshold {
+            if road
+                .untrimmed_road_geometry(self.config.driving_side)
+                .0
+                .length()
+                <= threshold
+            {
                 results.push(road.id);
             }
         }
