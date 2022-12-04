@@ -77,8 +77,10 @@ impl Road {
         };
 
         // Ignoring errors for now.
-        let placement =
-            Placement::try_from(&osm_tags).unwrap_or(Placement::Consistent(RoadPosition::Center));
+        let placement = Placement::parse(&osm_tags).unwrap_or_else(|e| {
+            warn!("bad placement value (using default): {e}");
+            Placement::Consistent(RoadPosition::Center)
+        });
 
         let mut result = Self {
             id,
