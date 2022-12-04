@@ -6,8 +6,9 @@ use geom::{Angle, Distance, PolyLine};
 
 use crate::lanes::{Placement, RoadPosition};
 use crate::{
-    get_lane_specs_ltr, osm, CommonEndpoint, Direction, InputRoad, IntersectionID, LaneSpec,
-    LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
+    get_lane_specs_ltr, osm, CommonEndpoint, Direction, DrivingSide, InputRoad, IntersectionID,
+    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints,
+    StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

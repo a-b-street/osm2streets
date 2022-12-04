@@ -3,7 +3,6 @@ use std::collections::BTreeSet;
 use geom::{PolyLine, Pt2D};
 
 use crate::{IntersectionID, RoadID, StreetNetwork};
-use crate::lanes::Placement;
 
 impl StreetNetwork {
     /// Delete an intersection with exactly two roads. Turn the two roads into one. It's the

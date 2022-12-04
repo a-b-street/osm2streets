@@ -4,6 +4,7 @@ use anyhow::Result;
 
 use geom::Distance;
 
+use crate::lanes::Placement;
 use crate::{IntersectionID, IntersectionKind, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
