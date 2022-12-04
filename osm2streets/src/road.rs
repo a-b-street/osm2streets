@@ -308,7 +308,11 @@ impl Road {
                     }
                 }
 
-                left_buffer + roadway_width / 2.0
+                if roadway_width == Distance::ZERO {
+                    left_buffer / 2.0
+                } else {
+                    left_buffer + roadway_width / 2.0
+                }
             }
             Separation => {
                 // Need to find the separating line. This is a common concept that we haven't standardised yet.
