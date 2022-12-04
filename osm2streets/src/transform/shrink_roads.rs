@@ -23,7 +23,8 @@ pub fn shrink(streets: &mut StreetNetwork, timer: &mut Timer) {
             continue;
         }
 
-        let (center, total_width) = road.untrimmed_road_geometry();
+        let center = road.center_line.clone();
+        let total_width = road.total_width();
         let polygon = center.make_polygons(total_width);
 
         // Any conflicts with existing?

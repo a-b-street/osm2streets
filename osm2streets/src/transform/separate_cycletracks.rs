@@ -83,7 +83,7 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
                 {
                     cycleways.push(Cycleway {
                         cycleway: cycleway_road.id,
-                        cycleway_center: cycleway_road.untrimmed_road_geometry().0,
+                        cycleway_center: cycleway_road.center_line.clone(),
                         debug_idx: cycleways.len(),
                         main_road_src_i,
                         main_road_dst_i,
@@ -135,7 +135,9 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
     for r in input.main_roads {
         let main_road = &streets.roads[&r];
         // Which side is closer to the cycleway?
-        let (left, right) = main_road.get_untrimmed_sides().unwrap();
+        let (left, right) = main_road
+            .get_untrimmed_sides(streets.config.driving_side)
+            .unwrap();
         // TODO georust has a way to check distance of linestrings. But for now, just check the
         // middles
         let snap_to_left = input.cycleway_center.middle().dist_to(left.middle())

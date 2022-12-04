@@ -221,38 +221,23 @@ impl Road {
         self.reference_line.length()
     }
 
-    /// Returns the corrected (but untrimmed) center and total width for a road
-    pub fn untrimmed_road_geometry(&self) -> (PolyLine, Distance) {
-        let mut total_width = Distance::ZERO;
-        let mut sidewalk_right = None;
-        let mut sidewalk_left = None;
-        for l in &self.lane_specs_ltr {
-            total_width += l.width;
-            if l.lt.is_walkable() {
-                if l.dir == Direction::Back {
-                    sidewalk_left = Some(l.width);
-                } else {
-                    sidewalk_right = Some(l.width);
-                }
-            }
-        }
+    /// Returns a line along `RoadPosition::Center` (but untrimmed) and total width for ALL lanes.
+    pub fn untrimmed_road_geometry(&self, driving_side: DrivingSide) -> (PolyLine, Distance) {
+        let total_width = self.total_width();
+        let ref_position = match self.reference_line_placement {
+            Placement::Consistent(p) => p,
+            Placement::Varying(p, _) => p,
+            Placement::Transition => RoadPosition::Center, // Best we can do for now.
+        };
+        let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
+        let center_offset = self.left_edge_offset_of(RoadPosition::Center, driving_side);
 
-        // If there's a sidewalk on only one side, adjust the true center of the road.
-        // TODO I don't remember the rationale for doing this in the first place. What if there's a
-        // shoulder and a sidewalk of different widths? We don't do anything then
-        //TODO use self.left_edge_offset_of(RoadPosition::Center) or something?
-        let mut true_center = self.reference_line.clone();
-        match (sidewalk_right, sidewalk_left) {
-            (Some(w), None) => {
-                true_center = true_center.must_shift_right(w / 2.0);
-            }
-            (None, Some(w)) => {
-                true_center = true_center.must_shift_right(w / 2.0);
-            }
-            _ => {}
-        }
-
-        (true_center, total_width)
+        (
+            self.reference_line
+                .shift_either_direction(center_offset - ref_offset)
+                .unwrap(),
+            total_width,
+        )
     }
 
     pub fn total_width(&self) -> Distance {
@@ -416,10 +401,21 @@ impl Road {
 
     /// Returns the untrimmed left and right side of the road, oriented in the same direction of
     /// the road
-    pub fn get_untrimmed_sides(&self) -> Result<(PolyLine, PolyLine)> {
-        let (center, total_width) = self.untrimmed_road_geometry();
-        let left = center.shift_from_center(total_width, -total_width / 2.0)?;
-        let right = center.shift_from_center(total_width, total_width / 2.0)?;
+    pub fn get_untrimmed_sides(&self, driving_side: DrivingSide) -> Result<(PolyLine, PolyLine)> {
+        let total_width = self.total_width();
+        let ref_position = match self.reference_line_placement {
+            Placement::Consistent(p) => p,
+            Placement::Varying(p, _) => p,
+            Placement::Transition => RoadPosition::Center, // Best we can do for now.
+        };
+        let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
+
+        let left = self
+            .reference_line
+            .shift_from_center(total_width, ref_offset - total_width)?;
+        let right = self
+            .reference_line
+            .shift_from_center(total_width, total_width - ref_offset)?;
         Ok((left, right))
     }
 
