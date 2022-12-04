@@ -246,7 +246,7 @@ impl Road {
 
     /// Calculates the number of (forward, both_ways, backward) lanes. The order of the lanes
     /// doesn't matter.
-    pub fn driving_lane_counts(&self) -> (usize, usize, usize) {
+    pub fn _travel_lane_counts(&self) -> (usize, usize, usize) {
         let mut result = (0, 0, 0);
         for lane in &self.lane_specs_ltr {
             if !lane.lt.is_tagged_by_lanes_suffix() {
