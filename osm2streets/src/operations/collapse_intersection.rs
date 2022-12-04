@@ -27,8 +27,8 @@ impl StreetNetwork {
             }
         }
 
-        // We could be more careful merging percent_incline and other attributes, but in practice, it
-        // doesn't matter for the short segments we're merging.
+        // We could be more careful merging highway_type, layer, name, and other attributes, but in
+        // practice, it doesn't matter for the short segments we're merging.
         let mut keep_road = self.remove_road(keep_r);
         let destroy_road = self.remove_road(destroy_r);
         self.intersections.remove(&i).unwrap();
@@ -36,8 +36,9 @@ impl StreetNetwork {
         // Remember the merge
         keep_road.osm_ids.extend(destroy_road.osm_ids);
 
-        // There are 4 cases, easy to understand on paper. Preserve the original direction of keep_r.
-        // Work with points, not PolyLine::extend. We want to RDP simplify before finalizing.
+        // There are 4 cases, easy to understand on paper. Preserve the original direction of
+        // keep_r. Work with points, not PolyLine::extend. We want to RDP simplify before
+        // finalizing.
         let mut new_pts;
         let (new_src_i, new_dst_i) = if keep_road.dst_i == destroy_road.src_i {
             new_pts = keep_road.reference_line.clone().into_points();
