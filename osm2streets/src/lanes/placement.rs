@@ -22,13 +22,13 @@ impl RoadPosition {
                             "left_of" => Ok(LeftOf(LtrLaneNum::Forward(lane))),
                             "middle_of" => Ok(MiddleOf(LtrLaneNum::Forward(lane))),
                             "right_of" => Ok(RightOf(LtrLaneNum::Forward(lane))),
-                            _ => Err(anyhow!("unknown lane position specifier: {kind}")),
+                            _ => bail!("unknown lane position specifier: {kind}"),
                         }
                     } else {
-                        Err(anyhow!("bad lane number: {lane_str}"))
+                        bail!("bad lane number: {lane_str}")
                     }
                 } else {
-                    Err(anyhow!("unknown placement value: {value}"))
+                    bail!("unknown placement value: {value}")
                 }
             }
         }
