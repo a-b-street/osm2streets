@@ -15,7 +15,7 @@ impl StreetNetwork {
 
         let clip_pts = None;
         let mut timer = Timer::throwaway();
-        let mut network =
+        let (mut network, _) =
             streets_reader::osm_to_street_network(&osm_xml_input, clip_pts, cfg, &mut timer)
                 .unwrap();
         let transformations = Transformation::standard_for_clipped_areas();

@@ -413,16 +413,12 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
     for road in streets.roads_per_intersection(intersection.id) {
         let mut left = Edge {
             road: road.id,
-            pl: road
-                .trimmed_center_line
-                .must_shift_left(road.total_width() / 2.0),
+            pl: road.center_line.must_shift_left(road.total_width() / 2.0),
             lane: road.lane_specs_ltr[0].clone(),
         };
         let mut right = Edge {
             road: road.id,
-            pl: road
-                .trimmed_center_line
-                .must_shift_right(road.total_width() / 2.0),
+            pl: road.center_line.must_shift_right(road.total_width() / 2.0),
             lane: road.lane_specs_ltr.last().unwrap().clone(),
         };
         if road.dst_i == intersection.id {
