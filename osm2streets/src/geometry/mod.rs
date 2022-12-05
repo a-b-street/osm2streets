@@ -10,7 +10,7 @@
 
 mod algorithm;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeSet, BTreeMap};
 
 use geom::{Distance, PolyLine, Polygon};
 
@@ -43,6 +43,8 @@ pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
     pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
+    /// Did we extend, not shorten, a road?
+    pub extended_roads: BTreeSet<RoadID>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
 }

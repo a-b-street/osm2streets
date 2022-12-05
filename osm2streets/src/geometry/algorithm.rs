@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeSet, BTreeMap};
 
 use anyhow::Result;
 
@@ -79,6 +79,7 @@ pub fn intersection_polygon(
         intersection_polygon: Polygon::dummy(),
         debug: Vec::new(),
         trimmed_center_pts: BTreeMap::new(),
+        extended_roads: BTreeSet::new(),
     };
 
     if road_lines.len() == 1 {
@@ -383,8 +384,10 @@ fn deadend(
         }
         r.center_line.clone()
     } else if r.src_i == results.intersection_id {
+        results.extended_roads.insert(id);
         r.center_line.extend_to_length(len_with_buffer)
     } else {
+        results.extended_roads.insert(id);
         r.center_line
             .reversed()
             .extend_to_length(len_with_buffer)
@@ -578,6 +581,7 @@ fn on_off_ramp(
                 &thick1.id
             })
             .unwrap();
+        results.extended_roads.insert(other.id);
         if other.dst_i == results.intersection_id {
             other.center_line = other.center_line.clone().extend(extra.reversed()).ok()?;
         } else {

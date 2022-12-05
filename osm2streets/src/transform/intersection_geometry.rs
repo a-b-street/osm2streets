@@ -1,7 +1,9 @@
+use std::collections::BTreeSet;
+
 use abstutil::Timer;
 use geom::{Circle, Distance};
 
-use crate::{IntersectionControl, IntersectionKind, StreetNetwork};
+use crate::{IntersectionControl, IntersectionKind, StreetNetwork, RoadID, IntersectionID};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     let mut remove_dangling_nodes = Vec::new();
@@ -18,6 +20,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // at each end. When calculating the opposite end, we want to use the full untrimmed line for
     // all roads.
     let mut trimmed_center_lines = Vec::new();
+    let mut extended_roads: BTreeSet<(RoadID, IntersectionID)> = BTreeSet::new();
 
     for i in streets.intersections.values() {
         timer.next();
@@ -31,6 +34,10 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                 set_polygons.push((i.id, results.intersection_polygon));
                 for (r, pl) in results.trimmed_center_pts {
                     trimmed_center_lines.push((r, i.id, pl));
+                }
+                for r in results.extended_roads {
+                    error!("{r} extended");
+                    extended_roads.insert((r, i.id));
                 }
             }
             Err(err) => {
@@ -75,6 +82,19 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         };
         if let Some(slice) = maybe_slice {
             road.center_line = slice;
+        } else if extended_roads.contains(&(r, i)) || true {
+            // TODO Maybe we should always do this
+            let maybe_slice = if i == road.src_i {
+                pl.safe_get_slice_ending_at(road.center_line.last_pt())
+            } else {
+                pl.safe_get_slice_starting_at(road.center_line.first_pt())
+            };
+            if let Some(slice) = maybe_slice {
+                road.center_line = slice;
+            } else {
+                error!("Can't extend {r} on the {i} end");
+                //road.center_line = pl;
+            }
         } else {
             // This happens when trimming on the other side actually "eats away" past this side.
             // The road is probably an internal_junction_road. The two intersection polygons will
