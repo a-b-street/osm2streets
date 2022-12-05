@@ -1,6 +1,6 @@
 export const makePlainGeoJsonLayer = (text) => {
+  // TODO Update for new types
   const intersectionColours = {
-    undefined: "#666", // for default tarmac
     Connection: "#666",
     Intersection: "#966",
     Terminus: "#999",
@@ -11,7 +11,8 @@ export const makePlainGeoJsonLayer = (text) => {
     style: function (feature) {
       if (feature.properties.type == "intersection") {
         return {
-          color: intersectionColours[feature.properties.intersection_kind],
+          color:
+            intersectionColours[feature.properties.intersection_kind] || "#666",
           weight: 1,
           fillOpacity: 0.7,
         };
