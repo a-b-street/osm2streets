@@ -51,6 +51,7 @@ impl StreetNetwork {
             pairs.push((
                 intersection.polygon.to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
+                    ("id", intersection.id.0.into()),
                     ("type", "intersection".into()),
                     (
                         "osm_node_ids",
@@ -97,6 +98,7 @@ impl StreetNetwork {
                         .to_geojson(Some(&self.gps_bounds)),
                     make_props(&[
                         ("type", format!("{:?}", lane.lt).into()),
+                        ("road", road.id.0.into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
                         (
