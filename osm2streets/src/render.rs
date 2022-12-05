@@ -6,9 +6,8 @@ use std::path::Path;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 
-use crate::{
-    DebugStreets, Direction, DrivingSide, Intersection, LaneSpec, LaneType, RoadID, StreetNetwork,
-};
+use crate::road::RoadEdge;
+use crate::{DebugStreets, Direction, DrivingSide, Intersection, LaneType, StreetNetwork};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -398,43 +397,13 @@ fn make_props(list: &[(&str, serde_json::Value)]) -> serde_json::Map<String, ser
 // TODO Where should this live?
 /// For an intersection, show all corners where sidewalks meet.
 fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -> Vec<Polygon> {
-    #[derive(Clone)]
-    struct Edge {
-        road: RoadID,
-        // Pointed into the intersection
-        pl: PolyLine,
-        lane: LaneSpec,
-    }
-
-    // Get the left and right edge of each road, pointed into the intersection. All sorted
-    // clockwise
-    // TODO Use the road view idea instead. Or just refactor this.
-    let mut edges = Vec::new();
-    for road in streets.roads_per_intersection(intersection.id) {
-        let mut left = Edge {
-            road: road.id,
-            pl: road.center_line.must_shift_left(road.total_width() / 2.0),
-            lane: road.lane_specs_ltr[0].clone(),
-        };
-        let mut right = Edge {
-            road: road.id,
-            pl: road.center_line.must_shift_right(road.total_width() / 2.0),
-            lane: road.lane_specs_ltr.last().unwrap().clone(),
-        };
-        if road.dst_i == intersection.id {
-            edges.push(right);
-            edges.push(left);
-        } else {
-            left.pl = left.pl.reversed();
-            right.pl = right.pl.reversed();
-            edges.push(left);
-            edges.push(right);
-        }
-    }
-
-    // Look at every adjacent pair
-    let mut results = Vec::new();
+    // Look at every adjacent pair of edges
+    let mut edges = RoadEdge::calculate(
+        streets.roads_per_intersection(intersection.id),
+        intersection.id,
+    );
     edges.push(edges[0].clone());
+    let mut results = Vec::new();
     for pair in edges.windows(2) {
         let one = &pair[0];
         let two = &pair[1];
