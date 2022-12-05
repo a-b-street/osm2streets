@@ -9,17 +9,13 @@ use osm2streets::{
 
 use super::OsmExtract;
 
-pub struct Output {
-    /// A mapping of all points to the split road. Some internal points on roads get removed in
-    /// `split_up_roads`, so this mapping isn't redundant.
-    pub pt_to_road: HashMap<HashablePt2D, RoadID>,
-}
-
+/// Returns a mapping of all points to the split road. Some internal points on roads get removed
+/// here, so this mapping isn't redundant.
 pub fn split_up_roads(
     streets: &mut StreetNetwork,
     mut input: OsmExtract,
     timer: &mut Timer,
-) -> Output {
+) -> HashMap<HashablePt2D, RoadID> {
     timer.start("splitting up roads");
 
     let mut roundabout_centers: Vec<(Pt2D, Vec<osm::NodeID>)> = Vec::new();
@@ -285,7 +281,7 @@ pub fn split_up_roads(
     timer.stop("calculate intersection movements");
 
     timer.stop("splitting up roads");
-    Output { pt_to_road }
+    pt_to_road
 }
 
 // TODO Consider doing this in PolyLine::new always. Also in extend() -- it attempts to dedupe
