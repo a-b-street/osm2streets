@@ -224,9 +224,8 @@ impl Road {
         self.reference_line.length()
     }
 
-    /// Returns a line along `RoadPosition::Center` (but untrimmed) and total width for ALL lanes.
-    pub fn untrimmed_road_geometry(&self, driving_side: DrivingSide) -> (PolyLine, Distance) {
-        let total_width = self.total_width();
+    /// Returns an untrimmed line along `RoadPosition::Center`
+    pub fn untrimmed_road_geometry(&self, driving_side: DrivingSide) -> PolyLine {
         let ref_position = match self.reference_line_placement {
             Placement::Consistent(p) => p,
             Placement::Varying(p, _) => p,
@@ -235,12 +234,9 @@ impl Road {
         let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
         let center_offset = self.left_edge_offset_of(RoadPosition::Center, driving_side);
 
-        (
-            self.reference_line
-                .shift_either_direction(center_offset - ref_offset)
-                .unwrap(),
-            total_width,
-        )
+        self.reference_line
+            .shift_either_direction(center_offset - ref_offset)
+            .unwrap()
     }
 
     pub fn total_width(&self) -> Distance {

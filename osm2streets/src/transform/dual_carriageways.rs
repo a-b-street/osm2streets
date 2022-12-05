@@ -266,7 +266,6 @@ impl DualCarriagewayPt2 {
                 .map(|r| {
                     streets.roads[&r.road]
                         .untrimmed_road_geometry(streets.config.driving_side)
-                        .0
                         .length()
                 })
                 .sum(),
@@ -276,7 +275,6 @@ impl DualCarriagewayPt2 {
                 .map(|r| {
                     streets.roads[&r.road]
                         .untrimmed_road_geometry(streets.config.driving_side)
-                        .0
                         .length()
                 })
                 .sum(),
@@ -305,7 +303,6 @@ impl DualCarriagewayPt2 {
         for pair in side.windows(2) {
             dist += streets.roads[&pair[0].road]
                 .untrimmed_road_geometry(streets.config.driving_side)
-                .0
                 .length();
             let i = pair[0].dst_i;
             for r in streets.intersections[&i].roads.clone() {

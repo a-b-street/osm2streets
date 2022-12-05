@@ -90,7 +90,6 @@ impl StreetNetwork {
             }
             if road
                 .untrimmed_road_geometry(self.config.driving_side)
-                .0
                 .length()
                 <= threshold
             {

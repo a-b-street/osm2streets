@@ -156,7 +156,7 @@ impl StreetNetwork {
             for road in self.roads_per_intersection(endpts[0]) {
                 // trimmed_center_line hasn't been initialized yet, so override this
                 let mut input = road.to_input_road();
-                input.center_pts = road.untrimmed_road_geometry(self.config.driving_side).0;
+                input.center_pts = road.untrimmed_road_geometry(self.config.driving_side);
                 input_roads.push(input);
             }
             let mut results = intersection_polygon(
@@ -176,7 +176,7 @@ impl StreetNetwork {
                 if road.id == road_id {
                     input.center_pts = trimmed_center_pts.clone();
                 } else {
-                    input.center_pts = road.untrimmed_road_geometry(self.config.driving_side).0;
+                    input.center_pts = road.untrimmed_road_geometry(self.config.driving_side);
                 }
                 input_roads.push(input);
             }
