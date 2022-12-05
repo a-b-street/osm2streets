@@ -12,6 +12,13 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // It'd be nice to mutate in the loop, but the borrow checker won't let us
     let mut set_polygons = Vec::new();
     let mut make_stop_signs = Vec::new();
+
+    // And actually, we don't want to mutate center_lines until the very end. The input to the
+    // geometry algorithm should be UNTRIMMED center lines. Every road will get trimmed twice, once
+    // at each end. When calculating the opposite end, we want to use the full untrimmed line for
+    // all roads.
+    let mut trimmed_center_lines = Vec::new();
+
     for i in streets.intersections.values() {
         timer.next();
         let input_roads = i
@@ -23,7 +30,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
                 for (r, pl) in results.trimmed_center_pts {
-                    streets.roads.get_mut(&r).unwrap().center_line = pl;
+                    trimmed_center_lines.push((r, i.id, pl));
                 }
             }
             Err(err) => {
@@ -56,6 +63,27 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     }
     for i in remove_dangling_nodes {
         streets.intersections.remove(&i).unwrap();
+    }
+
+    for (r, i, pl) in trimmed_center_lines {
+        let road = streets.roads.get_mut(&r).unwrap();
+        let maybe_slice = if i == road.src_i {
+            // pl is trimmed on the start side
+            road.center_line.safe_get_slice_starting_at(pl.first_pt())
+        } else {
+            road.center_line.safe_get_slice_ending_at(pl.last_pt())
+        };
+        if let Some(slice) = maybe_slice {
+            road.center_line = slice;
+        } else {
+            // This happens when trimming on the other side actually "eats away" past this side.
+            // The road is probably an internal_junction_road. The two intersection polygons will
+            // physically overlap each other.
+            //
+            // TODO Or... service_road_loop's deadend at the bottom. We need to EXTEND the line
+            // sometimes.
+            error!("Can't trim {r} on the {i} end");
+        }
     }
 
     fix_map_edges(streets);

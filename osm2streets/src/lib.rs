@@ -174,6 +174,7 @@ impl StreetNetwork {
             for road in self.roads_per_intersection(endpts[1]) {
                 let mut input = road.to_input_road();
                 if road.id == road_id {
+                    // TODO Does this do something different now?
                     input.center_line = trimmed_center_pts.clone();
                 } else {
                     input.center_line = road.untrimmed_road_geometry(self.config.driving_side);
