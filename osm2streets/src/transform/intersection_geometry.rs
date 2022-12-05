@@ -22,7 +22,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
-                for (r, (pl, _)) in results.trimmed_center_pts {
+                for (r, pl) in results.trimmed_center_pts {
                     streets.roads.get_mut(&r).unwrap().center_line = pl;
                 }
             }
@@ -99,7 +99,7 @@ fn fix_map_edges(streets: &mut StreetNetwork) {
         )
         .unwrap();
         set_polygons.push((i.id, results.intersection_polygon));
-        for (r, (pl, _)) in results.trimmed_center_pts {
+        for (r, pl) in results.trimmed_center_pts {
             streets.roads.get_mut(&r).unwrap().center_line = pl;
         }
         info!(

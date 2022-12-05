@@ -156,7 +156,7 @@ impl StreetNetwork {
             for road in self.roads_per_intersection(endpts[0]) {
                 // trimmed_center_line hasn't been initialized yet, so override this
                 let mut input = road.to_input_road();
-                input.center_pts = road.untrimmed_road_geometry(self.config.driving_side);
+                input.center_line = road.untrimmed_road_geometry(self.config.driving_side);
                 input_roads.push(input);
             }
             let mut results = intersection_polygon(
@@ -165,7 +165,7 @@ impl StreetNetwork {
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
             )?;
-            results.trimmed_center_pts.remove(&road_id).unwrap().0
+            results.trimmed_center_pts.remove(&road_id).unwrap()
         };
 
         // Now the second
@@ -174,9 +174,9 @@ impl StreetNetwork {
             for road in self.roads_per_intersection(endpts[1]) {
                 let mut input = road.to_input_road();
                 if road.id == road_id {
-                    input.center_pts = trimmed_center_pts.clone();
+                    input.center_line = trimmed_center_pts.clone();
                 } else {
-                    input.center_pts = road.untrimmed_road_geometry(self.config.driving_side);
+                    input.center_line = road.untrimmed_road_geometry(self.config.driving_side);
                 }
                 input_roads.push(input);
             }
@@ -186,7 +186,7 @@ impl StreetNetwork {
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
             )?;
-            Ok(results.trimmed_center_pts.remove(&road_id).unwrap().0)
+            Ok(results.trimmed_center_pts.remove(&road_id).unwrap())
         }
     }
 

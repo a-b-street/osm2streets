@@ -26,18 +26,23 @@ pub struct InputRoad {
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
     /// The true center of the road, including sidewalks. The input is untrimmed when called on the
-    /// first endpoint, then trimmed on that one side when called on th second endpoint.
-    pub center_pts: PolyLine,
-    pub half_width: Distance,
+    /// first endpoint, then trimmed on that first side when called on the second endpoint.
+    pub center_line: PolyLine,
+    pub total_width: Distance,
     pub highway_type: String,
+}
+
+impl InputRoad {
+    pub fn half_width(&self) -> Distance {
+        self.total_width / 2.0
+    }
 }
 
 #[derive(Clone)]
 pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
-    /// Road -> (trimmed center line, half width)
-    pub trimmed_center_pts: BTreeMap<RoadID, (PolyLine, Distance)>,
+    pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
 }

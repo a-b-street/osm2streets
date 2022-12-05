@@ -242,6 +242,9 @@ impl Road {
     pub fn total_width(&self) -> Distance {
         self.lane_specs_ltr.iter().map(|l| l.width).sum()
     }
+    pub fn half_width(&self) -> Distance {
+        self.total_width() / 2.0
+    }
 
     /// Calculates the number of (forward, both_ways, backward) lanes. The order of the lanes
     /// doesn't matter.
@@ -271,7 +274,7 @@ impl Road {
         use RoadPosition::*;
 
         match position {
-            FullWidthCenter => self.total_width() / 2.0,
+            FullWidthCenter => self.half_width(),
             Center => {
                 // Need to find the midpoint between the first and last occurrence of any roadway.
                 let mut left_buffer = Distance::ZERO;
@@ -373,7 +376,7 @@ impl Road {
                 }
 
                 warn!("named lane doesn't exist");
-                self.total_width() / 2.0
+                self.half_width()
             }
         }
     }
@@ -427,8 +430,8 @@ impl Road {
             id: self.id,
             src_i: self.src_i,
             dst_i: self.dst_i,
-            center_pts: self.center_line.clone(),
-            half_width: self.total_width() / 2.0,
+            center_line: self.center_line.clone(),
+            total_width: self.total_width(),
             highway_type: self.highway_type.clone(),
         }
     }
@@ -469,12 +472,12 @@ impl RoadEdge {
         for road in sorted_roads {
             let mut left = RoadEdge {
                 road: road.id,
-                pl: road.center_line.must_shift_left(road.total_width() / 2.0),
+                pl: road.center_line.must_shift_left(road.half_width()),
                 lane: road.lane_specs_ltr[0].clone(),
             };
             let mut right = RoadEdge {
                 road: road.id,
-                pl: road.center_line.must_shift_right(road.total_width() / 2.0),
+                pl: road.center_line.must_shift_right(road.half_width()),
                 lane: road.lane_specs_ltr.last().unwrap().clone(),
             };
             if road.dst_i == i {
