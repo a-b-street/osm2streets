@@ -466,6 +466,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "id": 0,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [
@@ -505,6 +506,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 1,
         "intersection_kind": "Terminus",
         "movements": [],
         "osm_node_ids": [
@@ -544,6 +546,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "id": 17,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [
@@ -583,6 +586,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "id": 22,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [
@@ -634,6 +638,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 38,
         "intersection_kind": "Intersection",
         "movements": [
           "Road #0 -> Road #6",
@@ -680,6 +685,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 39,
         "intersection_kind": "Terminus",
         "movements": [],
         "osm_node_ids": [
@@ -719,6 +725,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 45,
         "intersection_kind": "Terminus",
         "movements": [],
         "osm_node_ids": [
@@ -774,6 +781,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 46,
         "intersection_kind": "Intersection",
         "movements": [
           "Road #6 -> Road #15",
@@ -820,6 +828,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 47,
         "intersection_kind": "Terminus",
         "movements": [],
         "osm_node_ids": [
@@ -859,6 +868,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "id": 48,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [
@@ -926,6 +936,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 49,
         "intersection_kind": "Intersection",
         "movements": [
           "Road #1 -> Road #5",
@@ -1012,6 +1023,7 @@
       },
       "properties": {
         "control": "Signed",
+        "id": 50,
         "intersection_kind": "Intersection",
         "movements": [
           "Road #8 -> Road #3",
