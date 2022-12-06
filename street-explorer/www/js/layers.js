@@ -143,6 +143,7 @@ export const makeLaneMarkingsLayer = (text) => {
         stroke: false,
       };
     },
+    interactive: false,
   });
 };
 
