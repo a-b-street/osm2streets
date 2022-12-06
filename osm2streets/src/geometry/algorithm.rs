@@ -80,7 +80,7 @@ pub fn intersection_polygon(
     };
 
     if road_lines.len() == 1 {
-        return super::terminus::terminus(results, roads, &road_lines);
+        return super::terminus::terminus(results, roads.into_values().next().unwrap());
     }
 
     if !trim_roads_for_merging.is_empty() {

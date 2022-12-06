@@ -1,64 +1,54 @@
-use std::collections::BTreeMap;
-
 use anyhow::Result;
-use geom::{Distance, Ring, EPSILON_DIST};
+use geom::{Distance, Ring};
 
-use super::{close_off_polygon, Results, RoadLine, DEGENERATE_INTERSECTION_HALF_LENGTH};
-use crate::{InputRoad, RoadID};
+use super::Results;
+use crate::InputRoad;
 
-pub(crate) fn terminus(
-    mut results: Results,
-    mut roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: &[RoadLine],
-) -> Result<Results> {
-    let len = DEGENERATE_INTERSECTION_HALF_LENGTH * 4.0;
-
-    let id = road_lines[0].id;
-    let mut pl_a = road_lines[0].fwd_pl.clone();
-    let mut pl_b = road_lines[0].back_pl.clone();
-    // If the lines are too short (usually due to the boundary polygon clipping roads too
-    // much), just extend them.
-    // TODO Not sure why we need +1.5x more, but this looks better. Some math is definitely off
-    // somewhere.
-    pl_a = pl_a.extend_to_length(len + 1.5 * DEGENERATE_INTERSECTION_HALF_LENGTH);
-    pl_b = pl_b.extend_to_length(len + 1.5 * DEGENERATE_INTERSECTION_HALF_LENGTH);
-
-    let r = roads.get_mut(&id).unwrap();
-    let len_with_buffer = len + 3.0 * EPSILON_DIST;
-    let trimmed = if r.center_line.length() >= len_with_buffer {
-        if r.src_i == results.intersection_id {
-            r.center_line = r.center_line.exact_slice(len, r.center_line.length());
-        } else {
-            r.center_line = r
-                .center_line
-                .exact_slice(Distance::ZERO, r.center_line.length() - len);
-        }
-        r.center_line.clone()
-    } else if r.src_i == results.intersection_id {
-        r.center_line.extend_to_length(len_with_buffer)
+/// For dead-ends and map edges, just use a piece of the road as the intersection.
+pub(crate) fn terminus(mut results: Results, road: InputRoad) -> Result<Results> {
+    // Point at the intersection so we can be simple below
+    let mut center = if road.dst_i == results.intersection_id {
+        road.center_line.clone()
     } else {
-        r.center_line
-            .reversed()
-            .extend_to_length(len_with_buffer)
-            .reversed()
+        road.center_line.reversed()
     };
 
-    // After trimming the center points, the two sides of the road may be at different
-    // points, so shift the center out again to find the endpoints.
-    // TODO Refactor with generalized_trim_back.
-    let mut endpts = vec![pl_b.last_pt(), pl_a.last_pt()];
-    if r.dst_i == results.intersection_id {
-        endpts.push(trimmed.shift_right(r.half_width())?.last_pt());
-        endpts.push(trimmed.shift_left(r.half_width())?.last_pt());
-    } else {
-        endpts.push(trimmed.shift_left(r.half_width())?.first_pt());
-        endpts.push(trimmed.shift_right(r.half_width())?.first_pt());
+    // Make the intersection roughly square
+    let intersection_len = road.total_width;
+    // Arbitrarily require the rest of the road to be at least this long, before trimming
+    let min_road_len = 3.0 * intersection_len;
+
+    // If the road is too short, extend it. Two caveats:
+    //
+    // 1) This kind of makes sense for a MapEdge, but is weird to do for a Terminus.
+    // 2) We might've trimmed the other side of this road already or not. If we haven't, we might
+    //    trim too much later and still wind up with something too short.
+    if center.length() < min_road_len {
+        center = center.extend_to_length(min_road_len);
     }
 
-    endpts.dedup();
-    results.intersection_polygon = Ring::must_new(close_off_polygon(endpts)).into_polygon();
-    for (id, r) in roads {
-        results.trimmed_center_pts.insert(id, r.center_line);
+    // Before trimming, remember the left and right endpoint.
+    // TODO This logic isn't idempotent; it assumes the center_line starts untrimmed.
+    let mut endpts = vec![
+        center.shift_left(road.half_width())?.last_pt(),
+        center.shift_right(road.half_width())?.last_pt(),
+    ];
+
+    // Trim
+    center = center.exact_slice(Distance::ZERO, center.length() - intersection_len);
+
+    // Make the square polygon
+    endpts.push(center.shift_right(road.half_width())?.last_pt());
+    endpts.push(center.shift_left(road.half_width())?.last_pt());
+    endpts.push(endpts[0]);
+
+    results.intersection_polygon = Ring::deduping_new(endpts)?.into_polygon();
+
+    // Fix orientation if needed
+    if road.src_i == results.intersection_id {
+        center = center.reversed();
     }
+
+    results.trimmed_center_pts.insert(road.id, center);
     Ok(results)
 }

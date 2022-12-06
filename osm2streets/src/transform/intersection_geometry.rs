@@ -1,7 +1,7 @@
 use abstutil::Timer;
 use geom::{Circle, Distance};
 
-use crate::{IntersectionControl, IntersectionKind, StreetNetwork};
+use crate::{IntersectionControl, StreetNetwork};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     let mut remove_dangling_nodes = Vec::new();
@@ -56,58 +56,5 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     }
     for i in remove_dangling_nodes {
         streets.intersections.remove(&i).unwrap();
-    }
-
-    fix_map_edges(streets);
-}
-
-fn fix_map_edges(streets: &mut StreetNetwork) {
-    // Some roads near map edges get completely squished. Stretch them out here. Attempting to do
-    // this in the streets_reader layer doesn't work, because predicting how much roads will be
-    // trimmed is impossible.
-    let min_len = Distance::meters(5.0);
-    let mut set_polygons = Vec::new();
-    for i in streets.intersections.values() {
-        if i.kind != IntersectionKind::MapEdge {
-            continue;
-        }
-        let r = i.roads.iter().next().unwrap();
-        let road = streets.roads.get_mut(r).unwrap();
-        if road.center_line.length() >= min_len {
-            continue;
-        }
-        if road.dst_i == i.id {
-            road.center_line = road.center_line.extend_to_length(min_len);
-        } else {
-            road.center_line = road
-                .center_line
-                .reversed()
-                .extend_to_length(min_len)
-                .reversed();
-        }
-
-        // Same boilerplate as above
-        let input_roads = i
-            .roads
-            .iter()
-            .map(|r| streets.roads[r].to_input_road())
-            .collect::<Vec<_>>();
-        let results = crate::intersection_polygon(
-            i.id,
-            input_roads,
-            &streets.intersections[&i.id].trim_roads_for_merging,
-        )
-        .unwrap();
-        set_polygons.push((i.id, results.intersection_polygon));
-        for (r, pl) in results.trimmed_center_pts {
-            streets.roads.get_mut(&r).unwrap().center_line = pl;
-        }
-        info!(
-            "Shifted map edge {} out a bit to make the road a reasonable length",
-            i.id
-        );
-    }
-    for (i, polygon) in set_polygons {
-        streets.intersections.get_mut(&i).unwrap().polygon = polygon;
     }
 }
