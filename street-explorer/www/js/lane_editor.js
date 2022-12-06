@@ -13,6 +13,11 @@ await init();
 export class LaneEditor {
   constructor(mapContainer) {
     this.map = setupLeafletMap(mapContainer);
+    this.map.on({
+      click: () => {
+        this.resetEditView();
+      },
+    });
     this.network = null;
     this.layers = [];
     this.currentWay = null;
@@ -34,16 +39,19 @@ export class LaneEditor {
     };
   }
 
-  async importView(importButton) {
-    // Reset state
+  resetEditView() {
     this.currentWay = null;
     if (this.currentWaysLayer) {
       this.currentWaysLayer.remove();
     }
     this.currentWaysLayer = null;
+    document.getElementById("tags").innerHTML = "";
+  }
+
+  async importView(importButton) {
+    this.resetEditView();
     this.editedWays = new Set();
     document.getElementById("edits-list").innerText = "0 edits";
-    document.getElementById("tags").innerHTML = "";
 
     // Grab OSM XML from Overpass
     // (Sadly toBBoxString doesn't seem to match the order for Overpass)
@@ -117,6 +125,8 @@ export class LaneEditor {
               } else {
                 this.editWay(BigInt(feature.properties.osm_way_ids[0]));
               }
+              // Prevent map.click from being triggered and resetting the edit view
+              L.DomEvent.stop(ev);
             },
           });
         },
@@ -137,16 +147,15 @@ export class LaneEditor {
   }
 
   editWay(id) {
+    this.resetEditView();
     this.currentWay = id;
-    if (this.currentWaysLayer) {
-      this.currentWaysLayer.remove();
-    }
     this.currentWaysLayer = L.geoJSON(
       JSON.parse(this.network.getGeometryForWay(id)),
       {
         style: (feature) => {
           return { stroke: false, fill: true, color: "red", opacity: 0.5 };
         },
+        interactive: false,
       }
     ).addTo(this.map);
 
