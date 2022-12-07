@@ -150,8 +150,8 @@ impl JsStreetNetwork {
             .unwrap();
 
         // Show a wide buffer around the way
-        let polygon =
-            PolyLine::unchecked_new(self.ways[&id].pts.clone()).make_polygons(1.5 * width);
+        let polygon = PolyLine::unchecked_new(self.ways[&id].pts.clone())
+            .make_arrow(1.5 * width, geom::ArrowCap::Triangle);
 
         abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
     }
