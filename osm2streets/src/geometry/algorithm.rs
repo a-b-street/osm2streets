@@ -81,6 +81,9 @@ pub fn intersection_polygon(
 
     if road_lines.len() == 1 {
         return super::terminus::terminus(results, roads.into_values().next().unwrap());
+    } else if road_lines.len() == 2 {
+        let mut iter = roads.into_values();
+        return super::degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap());
     }
 
     if !trim_roads_for_merging.is_empty() {

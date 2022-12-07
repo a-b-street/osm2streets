@@ -6,12 +6,8 @@ use crate::InputRoad;
 
 /// For dead-ends and map edges, just use a piece of the road as the intersection.
 pub(crate) fn terminus(mut results: Results, road: InputRoad) -> Result<Results> {
-    // Point at the intersection so we can be simple below
-    let mut center = if road.dst_i == results.intersection_id {
-        road.center_line.clone()
-    } else {
-        road.center_line.reversed()
-    };
+    // Point at the intersection, to simplify logic below
+    let mut center = road.center_line_pointed_at(results.intersection_id);
 
     // Make the intersection roughly square
     let intersection_len = road.total_width;
