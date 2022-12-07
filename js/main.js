@@ -174,11 +174,18 @@ class TestCase {
       };
     }
 
-    const button = container.appendChild(document.createElement("button"));
-    button.type = "button";
-    button.innerHTML = "Download osm.xml";
-    button.onclick = () =>
+    const button1 = container.appendChild(document.createElement("button"));
+    button1.type = "button";
+    button1.innerHTML = "Download osm.xml";
+    button1.onclick = () =>
       downloadGeneratedFile(`${this.name || "new"}.osm.xml`, this.osmXML);
+
+    const button2 = container.appendChild(document.createElement("button"));
+    button2.type = "button";
+    button2.innerHTML = "Reset view";
+    button2.onclick = () => {
+      this.app.map.fitBounds(this.bounds, { animate: false });
+    };
   }
 }
 
