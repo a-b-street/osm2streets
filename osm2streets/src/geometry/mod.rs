@@ -48,6 +48,32 @@ impl InputRoad {
             self.center_line.reversed()
         }
     }
+
+    // TODO This is a hack. Probably we want to get rid of InputRoad.
+    pub fn to_road(&self) -> crate::Road {
+        crate::Road {
+            id: self.id,
+            src_i: self.src_i,
+            dst_i: self.dst_i,
+            center_line: self.center_line.clone(),
+            lane_specs_ltr: vec![crate::LaneSpec {
+                lt: crate::LaneType::Driving,
+                dir: crate::Direction::Fwd,
+                width: self.total_width,
+                turn_restrictions: Vec::new(),
+            }],
+            // Mostly dummy values, except for what selfEdge::calculate needs
+            osm_ids: Vec::new(),
+            highway_type: String::new(),
+            name: None,
+            internal_junction_road: false,
+            layer: 0,
+            reference_line: PolyLine::dummy(),
+            reference_line_placement: crate::lanes::Placement::Transition,
+            turn_restrictions: Vec::new(),
+            complicated_turn_restrictions: Vec::new(),
+        }
+    }
 }
 
 #[derive(Clone)]
