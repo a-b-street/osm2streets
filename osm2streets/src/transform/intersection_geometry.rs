@@ -4,6 +4,13 @@ use geom::{Circle, Distance};
 use crate::{IntersectionControl, StreetNetwork};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
+    // TODO intersection_polygon assumes untrimmed lines as input, so reset here. Once we always
+    // maintain a trimmed center_line and this transformation goes away entirely, we'll have to
+    // revisit how this works.
+    for road in streets.roads.values_mut() {
+        road.update_center_line(streets.config.driving_side);
+    }
+
     let mut remove_dangling_nodes = Vec::new();
     timer.start_iter(
         "find each intersection polygon",
