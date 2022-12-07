@@ -1,58 +1,14 @@
 use std::collections::BTreeMap;
 
 use anyhow::Result;
-
-use geom::{InfiniteLine, PolyLine, Polygon, Pt2D, Ring};
+use geom::{InfiniteLine, PolyLine, Pt2D, Ring};
 
 use super::Results;
 use crate::road::RoadEdge;
-use crate::{InputRoad, IntersectionID, RoadID};
-
-/// Trims back all roads connected to the intersection, and generates a polygon for the
-/// intersection. The trimmed roads should meet this polygon at a right angle. The input is assumed
-/// to be untrimmed (based on the original reference geometry), and the roads must be ordered clockwise.
-pub fn intersection_polygon(
-    intersection_id: IntersectionID,
-    input_roads: Vec<InputRoad>,
-    trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
-) -> Result<Results> {
-    // TODO Possibly take this as input in the first place
-    let mut roads: BTreeMap<RoadID, InputRoad> = BTreeMap::new();
-    let mut sorted_roads: Vec<RoadID> = Vec::new();
-    for r in input_roads {
-        sorted_roads.push(r.id);
-        roads.insert(r.id, r);
-    }
-
-    if roads.is_empty() {
-        bail!("{intersection_id} has no roads");
-    }
-
-    let results = Results {
-        intersection_id,
-        intersection_polygon: Polygon::dummy(),
-        debug: Vec::new(),
-        trimmed_center_pts: BTreeMap::new(),
-    };
-
-    if roads.len() == 1 {
-        super::terminus::terminus(results, roads.into_values().next().unwrap())
-    } else if roads.len() == 2 {
-        let mut iter = roads.into_values();
-        super::degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
-    } else if !trim_roads_for_merging.is_empty() {
-        super::pretrimmed::pretrimmed_geometry(results, roads, sorted_roads, trim_roads_for_merging)
-    } else if let Some(result) =
-        super::on_off_ramp::on_off_ramp(results.clone(), roads.clone(), &sorted_roads)
-    {
-        Ok(result)
-    } else {
-        trim_to_corners(results, roads, sorted_roads)
-    }
-}
+use crate::{InputRoad, RoadID};
 
 /// Handles intersections with at least 3 roads.
-fn trim_to_corners(
+pub fn trim_to_corners(
     mut results: Results,
     mut roads: BTreeMap<RoadID, InputRoad>,
     sorted_road_ids: Vec<RoadID>,

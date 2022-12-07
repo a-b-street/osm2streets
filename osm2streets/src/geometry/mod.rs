@@ -8,18 +8,18 @@
 //!
 //! I wrote a novella about this: <https://a-b-street.github.io/docs/tech/map/geometry/index.html>
 
-mod algorithm;
 mod degenerate;
+mod general_case;
 mod on_off_ramp;
 mod pretrimmed;
 mod terminus;
 
 use std::collections::BTreeMap;
 
-use geom::{Distance, PolyLine, Polygon};
+use anyhow::Result;
+use geom::{Distance, PolyLine, Polygon, Pt2D};
 
 use crate::{IntersectionID, RoadID};
-pub use algorithm::intersection_polygon;
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
 // two intersections at a time in A/B Street's edit mode. Within just this repo, it does seem
@@ -84,4 +84,47 @@ pub struct Results {
     pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
+}
+
+/// Trims back all roads connected to the intersection, and generates a polygon for the
+/// intersection. The trimmed roads should meet this polygon at a right angle. The input is assumed
+/// to be untrimmed (based on the original reference geometry), and the roads must be ordered clockwise.
+pub fn intersection_polygon(
+    intersection_id: IntersectionID,
+    input_roads: Vec<InputRoad>,
+    trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
+) -> Result<Results> {
+    // TODO Possibly take this as input in the first place
+    let mut roads: BTreeMap<RoadID, InputRoad> = BTreeMap::new();
+    let mut sorted_roads: Vec<RoadID> = Vec::new();
+    for r in input_roads {
+        sorted_roads.push(r.id);
+        roads.insert(r.id, r);
+    }
+
+    if roads.is_empty() {
+        bail!("{intersection_id} has no roads");
+    }
+
+    let results = Results {
+        intersection_id,
+        intersection_polygon: Polygon::dummy(),
+        debug: Vec::new(),
+        trimmed_center_pts: BTreeMap::new(),
+    };
+
+    if roads.len() == 1 {
+        terminus::terminus(results, roads.into_values().next().unwrap())
+    } else if roads.len() == 2 {
+        let mut iter = roads.into_values();
+        degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
+    } else if !trim_roads_for_merging.is_empty() {
+        pretrimmed::pretrimmed_geometry(results, roads, sorted_roads, trim_roads_for_merging)
+    } else if let Some(result) =
+        on_off_ramp::on_off_ramp(results.clone(), roads.clone(), &sorted_roads)
+    {
+        Ok(result)
+    } else {
+        general_case::trim_to_corners(results, roads, sorted_roads)
+    }
 }
