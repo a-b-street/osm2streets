@@ -5,7 +5,7 @@ use anyhow::Result;
 use abstutil::wraparound_get;
 use geom::{Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring, EPSILON_DIST};
 
-use super::{close_off_polygon, Results, RoadLine, DEGENERATE_INTERSECTION_HALF_LENGTH};
+use super::{close_off_polygon, Results, RoadLine};
 use crate::{InputRoad, IntersectionID, RoadID};
 
 pub fn intersection_polygon(
@@ -134,15 +134,7 @@ fn generalized_trim_back(
         };
 
         // Always trim back a minimum amount, if possible.
-        let mut shortest_center =
-            if road_center.length() >= DEGENERATE_INTERSECTION_HALF_LENGTH + 3.0 * EPSILON_DIST {
-                road_center.exact_slice(
-                    Distance::ZERO,
-                    road_center.length() - DEGENERATE_INTERSECTION_HALF_LENGTH,
-                )
-            } else {
-                road_center.clone()
-            };
+        let mut shortest_center = road_center.clone();
 
         for (r2, pl2) in &road_lines {
             if r1 == r2 {

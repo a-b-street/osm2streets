@@ -2,8 +2,10 @@ use std::collections::BTreeMap;
 
 use geom::{Circle, Distance, InfiniteLine, PolyLine, Pt2D, Ring, EPSILON_DIST};
 
-use super::{close_off_polygon, Results, RoadLine, DEGENERATE_INTERSECTION_HALF_LENGTH};
+use super::{close_off_polygon, Results, RoadLine};
 use crate::{InputRoad, IntersectionID, RoadID};
+
+const MERGE_POINT_LENGTH: Distance = Distance::const_meters(5.0);
 
 // The normal generalized_trim_back approach produces huge intersections when 3 roads meet at
 // certain angles. It usually happens for highway on/off ramps. Try something different here. In
@@ -138,10 +140,10 @@ pub(crate) fn on_off_ramp(
         };
         roads.get_mut(&thick_id).unwrap().center_line = trimmed_thick;
         // Give the merge point some length
-        if extra.length() <= 2.0 * DEGENERATE_INTERSECTION_HALF_LENGTH + 3.0 * EPSILON_DIST {
+        if extra.length() <= MERGE_POINT_LENGTH + 3.0 * EPSILON_DIST {
             return None;
         }
-        let extra = extra.exact_slice(2.0 * DEGENERATE_INTERSECTION_HALF_LENGTH, extra.length());
+        let extra = extra.exact_slice(MERGE_POINT_LENGTH, extra.length());
 
         // Now the crazy part -- take the other thick, and LENGTHEN it
         let other = roads
