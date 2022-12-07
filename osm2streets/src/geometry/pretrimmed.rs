@@ -46,6 +46,8 @@ pub fn pretrimmed_geometry(
         }
     }
 
+    // TODO Use a general procedure based on RoadEdge. Maybe include original corners, from
+    // trim_to_corners
     let mut endpts = Vec::new();
     for r in sorted_roads {
         let r = &roads[&r];

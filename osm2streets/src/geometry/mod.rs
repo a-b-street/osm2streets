@@ -16,7 +16,7 @@ mod terminus;
 
 use std::collections::BTreeMap;
 
-use geom::{Distance, PolyLine, Polygon, Pt2D};
+use geom::{Distance, PolyLine, Polygon};
 
 use crate::{IntersectionID, RoadID};
 pub use algorithm::intersection_polygon;
@@ -84,23 +84,4 @@ pub struct Results {
     pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
     /// Extra polygons with labels to debug the algorithm
     pub debug: Vec<(String, Polygon)>,
-}
-
-// TODO Dedupe with Piece!
-#[derive(Clone)]
-pub(crate) struct RoadLine {
-    id: RoadID,
-    // Both are oriented to be incoming to the intersection (ending at it).
-    // TODO Maybe express as the "right" and "left"
-    fwd_pl: PolyLine,
-    back_pl: PolyLine,
-}
-
-// TODO Remove in favor of Ring::deduping_new
-fn close_off_polygon(mut pts: Vec<Pt2D>) -> Vec<Pt2D> {
-    if pts.last().unwrap().approx_eq(pts[0], Distance::meters(0.1)) {
-        pts.pop();
-    }
-    pts.push(pts[0]);
-    pts
 }

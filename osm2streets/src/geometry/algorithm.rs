@@ -4,7 +4,7 @@ use anyhow::Result;
 
 use geom::{InfiniteLine, PolyLine, Polygon, Pt2D, Ring};
 
-use super::{Results, RoadLine};
+use super::Results;
 use crate::road::RoadEdge;
 use crate::{InputRoad, IntersectionID, RoadID};
 
@@ -28,18 +28,6 @@ pub fn intersection_polygon(
         bail!("{intersection_id} has no roads");
     }
 
-    // TODO Can we get rid of RoadLine?
-    let mut road_lines = Vec::new();
-    for id in sorted_roads.clone() {
-        let road = &roads[&id];
-        let center_pl = road.center_line_pointed_at(intersection_id);
-        road_lines.push(RoadLine {
-            id,
-            fwd_pl: center_pl.shift_right(road.half_width())?,
-            back_pl: center_pl.shift_left(road.half_width())?,
-        });
-    }
-
     let results = Results {
         intersection_id,
         intersection_polygon: Polygon::dummy(),
@@ -47,15 +35,15 @@ pub fn intersection_polygon(
         trimmed_center_pts: BTreeMap::new(),
     };
 
-    if road_lines.len() == 1 {
+    if roads.len() == 1 {
         super::terminus::terminus(results, roads.into_values().next().unwrap())
-    } else if road_lines.len() == 2 {
+    } else if roads.len() == 2 {
         let mut iter = roads.into_values();
         super::degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
     } else if !trim_roads_for_merging.is_empty() {
         super::pretrimmed::pretrimmed_geometry(results, roads, sorted_roads, trim_roads_for_merging)
     } else if let Some(result) =
-        super::on_off_ramp::on_off_ramp(results.clone(), roads.clone(), road_lines.clone())
+        super::on_off_ramp::on_off_ramp(results.clone(), roads.clone(), &sorted_roads)
     {
         Ok(result)
     } else {

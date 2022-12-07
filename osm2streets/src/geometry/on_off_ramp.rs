@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
-use geom::{Circle, Distance, InfiniteLine, PolyLine, Pt2D, Ring, EPSILON_DIST};
+use geom::{Circle, Distance, InfiniteLine, PolyLine, Ring, EPSILON_DIST};
 
-use super::{close_off_polygon, Results, RoadLine};
+use super::Results;
 use crate::{InputRoad, IntersectionID, RoadID};
 
 const MERGE_POINT_LENGTH: Distance = Distance::const_meters(5.0);
@@ -13,9 +13,9 @@ const MERGE_POINT_LENGTH: Distance = Distance::const_meters(5.0);
 pub(crate) fn on_off_ramp(
     mut results: Results,
     mut roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: Vec<RoadLine>,
+    sorted_roads: &Vec<RoadID>,
 ) -> Option<Results> {
-    if road_lines.len() != 3 {
+    if roads.len() != 3 {
         return None;
     }
     // TODO Really this should apply based on some geometric consideration (one of the endpoints
@@ -23,7 +23,7 @@ pub(crate) fn on_off_ramp(
     // an OK filter.
     //
     // Example candidate: https://www.openstreetmap.org/node/32177767
-    if !road_lines.iter().any(|r| {
+    if !roads.values().any(|r| {
         [
             "motorway",
             "motorway_link",
@@ -32,21 +32,23 @@ pub(crate) fn on_off_ramp(
             "tertiary_link",
             "trunk_link",
         ]
-        .contains(&roads[&r.id].highway_type.as_str())
+        .contains(&r.highway_type.as_str())
     }) {
         return None;
     }
 
     let mut pieces = Vec::new();
-    // TODO Use this abstraction for all the code here?
-    for r in road_lines {
-        let road = &roads[&r.id];
+    for r in sorted_roads {
+        let road = &roads[r];
+        let center = road.center_line_pointed_at(results.intersection_id);
+        let left = center.shift_left(road.half_width()).ok()?;
+        let right = center.shift_right(road.half_width()).ok()?;
         pieces.push(Piece {
             id: road.id,
             dst_i: road.dst_i,
-            left: r.back_pl,
-            center: road.center_line_pointed_at(results.intersection_id),
-            right: r.fwd_pl,
+            left,
+            center,
+            right,
         });
     }
 
@@ -160,29 +162,23 @@ pub(crate) fn on_off_ramp(
         }
     }
 
-    // Now build the actual polygon
-    let mut endpoints = Vec::new();
-    for id in [thin.id, thick1.id, thick2.id] {
+    // TODO Use a general procedure based on RoadEdge. Maybe include original corners, from
+    // trim_to_corners
+    let mut endpts = Vec::new();
+    for id in sorted_roads {
         let r = &roads[&id];
         // Shift those final centers out again to find the main endpoints for the polygon.
         if r.dst_i == results.intersection_id {
-            endpoints.push(r.center_line.shift_right(r.half_width()).ok()?.last_pt());
-            endpoints.push(r.center_line.shift_left(r.half_width()).ok()?.last_pt());
+            endpts.push(r.center_line.shift_right(r.half_width()).ok()?.last_pt());
+            endpts.push(r.center_line.shift_left(r.half_width()).ok()?.last_pt());
         } else {
-            endpoints.push(r.center_line.shift_left(r.half_width()).ok()?.first_pt());
-            endpoints.push(r.center_line.shift_right(r.half_width()).ok()?.first_pt());
+            endpts.push(r.center_line.shift_left(r.half_width()).ok()?.first_pt());
+            endpts.push(r.center_line.shift_right(r.half_width()).ok()?.first_pt());
         }
     }
-    /*for (idx, pt) in endpoints.iter().enumerate() {
-        debug.push((format!("{}", idx), Circle::new(*pt, Distance::meters(2.0)).to_polygon()));
-    }*/
+    endpts.push(endpts[0]);
 
-    endpoints.sort_by_key(|pt| pt.to_hashable());
-    endpoints.dedup();
-    let center = Pt2D::center(&endpoints);
-    endpoints.sort_by_key(|pt| pt.angle_to(center).normalized_degrees() as i64);
-    endpoints.dedup();
-    results.intersection_polygon = Ring::must_new(close_off_polygon(endpoints)).into_polygon();
+    results.intersection_polygon = Ring::deduping_new(endpts).ok()?.into_polygon();
     for (id, r) in roads {
         results.trimmed_center_pts.insert(id, r.center_line);
     }
