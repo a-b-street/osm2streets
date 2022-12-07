@@ -11,6 +11,7 @@
 mod algorithm;
 mod degenerate;
 mod on_off_ramp;
+mod pretrimmed;
 mod terminus;
 
 use std::collections::BTreeMap;

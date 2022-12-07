@@ -2,9 +2,9 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 
-use geom::{Distance, InfiniteLine, PolyLine, Polygon, Pt2D, Ring};
+use geom::{InfiniteLine, PolyLine, Polygon, Pt2D, Ring};
 
-use super::{close_off_polygon, Results, RoadLine};
+use super::{Results, RoadLine};
 use crate::road::RoadEdge;
 use crate::{InputRoad, IntersectionID, RoadID};
 
@@ -26,34 +26,6 @@ pub fn intersection_polygon(
 
     if roads.is_empty() {
         bail!("{intersection_id} has no roads");
-    }
-
-    // First pre-trim roads if it's a consolidated intersection.
-    for road in roads.values_mut() {
-        if let Some(endpt) = trim_roads_for_merging.get(&(road.id, road.src_i == intersection_id)) {
-            if road.src_i == intersection_id {
-                match road.center_line.safe_get_slice_starting_at(*endpt) {
-                    Some(pl) => {
-                        road.center_line = pl;
-                    }
-                    None => {
-                        error!("{}'s trimmed points start past the endpt {endpt}", road.id);
-                        // Just skip. See https://github.com/a-b-street/abstreet/issues/654 for a
-                        // start to diagnose. Repro at https://www.openstreetmap.org/node/53211693.
-                    }
-                }
-            } else {
-                assert_eq!(road.dst_i, intersection_id);
-                match road.center_line.safe_get_slice_ending_at(*endpt) {
-                    Some(pl) => {
-                        road.center_line = pl;
-                    }
-                    None => {
-                        error!("{}'s trimmed points end before the endpt {endpt}", road.id);
-                    }
-                }
-            }
-        }
     }
 
     // TODO Can we get rid of RoadLine?
@@ -81,7 +53,7 @@ pub fn intersection_polygon(
         let mut iter = roads.into_values();
         super::degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
     } else if !trim_roads_for_merging.is_empty() {
-        pretrimmed_geometry(results, roads, &road_lines)
+        super::pretrimmed::pretrimmed_geometry(results, roads, sorted_roads, trim_roads_for_merging)
     } else if let Some(result) =
         super::on_off_ramp::on_off_ramp(results.clone(), roads.clone(), road_lines.clone())
     {
@@ -205,35 +177,6 @@ fn trim_to_corners(
         results.trimmed_center_pts.insert(road.id, road.center_line);
     }
 
-    Ok(results)
-}
-
-fn pretrimmed_geometry(
-    mut results: Results,
-    roads: BTreeMap<RoadID, InputRoad>,
-    road_lines: &[RoadLine],
-) -> Result<Results> {
-    let mut endpoints: Vec<Pt2D> = Vec::new();
-    for r in road_lines {
-        let r = &roads[&r.id];
-        // Shift those final centers out again to find the main endpoints for the polygon.
-        if r.dst_i == results.intersection_id {
-            endpoints.push(r.center_line.shift_right(r.half_width())?.last_pt());
-            endpoints.push(r.center_line.shift_left(r.half_width())?.last_pt());
-        } else {
-            endpoints.push(r.center_line.shift_left(r.half_width())?.first_pt());
-            endpoints.push(r.center_line.shift_right(r.half_width())?.first_pt());
-        }
-    }
-
-    results.intersection_polygon = Ring::new(close_off_polygon(Pt2D::approx_dedupe(
-        endpoints,
-        Distance::meters(0.1),
-    )))?
-    .into_polygon();
-    for (id, r) in roads {
-        results.trimmed_center_pts.insert(id, r.center_line);
-    }
     Ok(results)
 }
 
