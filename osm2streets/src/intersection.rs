@@ -18,6 +18,8 @@ pub struct Intersection {
     /// StreetNetwork; roads and intersections get merged and deleted.
     pub point: Pt2D,
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
+    ///
+    /// TODO Consistently make this clockwise.
     pub polygon: Polygon,
     pub kind: IntersectionKind,
     pub control: IntersectionControl,

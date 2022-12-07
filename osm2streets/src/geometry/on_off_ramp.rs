@@ -39,16 +39,11 @@ pub(crate) fn on_off_ramp(
     // TODO Use this abstraction for all the code here?
     for r in road_lines {
         let road = &roads[&r.id];
-        let center = if road.dst_i == results.intersection_id {
-            road.center_line.clone()
-        } else {
-            road.center_line.reversed()
-        };
         pieces.push(Piece {
             id: road.id,
             dst_i: road.dst_i,
             left: r.back_pl,
-            center,
+            center: road.center_line_pointed_at(results.intersection_id),
             right: r.fwd_pl,
         });
     }

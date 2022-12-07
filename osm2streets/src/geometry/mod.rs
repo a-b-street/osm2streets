@@ -9,6 +9,7 @@
 //! I wrote a novella about this: <https://a-b-street.github.io/docs/tech/map/geometry/index.html>
 
 mod algorithm;
+mod degenerate;
 mod on_off_ramp;
 mod terminus;
 
@@ -37,6 +38,15 @@ pub struct InputRoad {
 impl InputRoad {
     pub fn half_width(&self) -> Distance {
         self.total_width / 2.0
+    }
+
+    pub fn center_line_pointed_at(&self, i: IntersectionID) -> PolyLine {
+        if self.dst_i == i {
+            self.center_line.clone()
+        } else {
+            assert_eq!(self.src_i, i);
+            self.center_line.reversed()
+        }
     }
 }
 
