@@ -59,8 +59,6 @@ pub struct Results {
     pub debug: Vec<(String, Polygon)>,
 }
 
-const DEGENERATE_INTERSECTION_HALF_LENGTH: Distance = Distance::const_meters(2.5);
-
 // TODO Dedupe with Piece!
 #[derive(Clone)]
 pub(crate) struct RoadLine {
@@ -71,6 +69,7 @@ pub(crate) struct RoadLine {
     back_pl: PolyLine,
 }
 
+// TODO Remove in favor of Ring::deduping_new
 fn close_off_polygon(mut pts: Vec<Pt2D>) -> Vec<Pt2D> {
     if pts.last().unwrap().approx_eq(pts[0], Distance::meters(0.1)) {
         pts.pop();

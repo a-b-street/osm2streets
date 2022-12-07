@@ -10,7 +10,7 @@ pub(crate) fn degenerate(
     road1: InputRoad,
     road2: InputRoad,
 ) -> Result<Results> {
-    // Make the intersection shape roughly square, relative to the thinner road
+    // Arbitrary parameters
     let intersection_half_len = Distance::meters(1.0);
     let min_road_len = 2.0 * intersection_half_len;
 
