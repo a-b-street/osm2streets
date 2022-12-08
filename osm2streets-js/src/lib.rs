@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use abstutil::{Tags, Timer};
-use geom::{Distance, Line, PolyLine, Polygon};
+use geom::{Distance, PolyLine, Polygon};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -150,27 +150,33 @@ impl JsStreetNetwork {
             .unwrap();
 
         let polyline = PolyLine::unchecked_new(self.ways[&id].pts.clone());
-        let chevrons = polyline.lines().flat_map(|l| {
-            let num_chevrons = (l.length() / Distance::meters(20.0)).floor() as i64;
-            (0..num_chevrons)
-                .map(|i| {
-                    let top_pt = l
-                        .dist_along(Distance::meters((i as f64 * 20.0) + 10.0))
-                        .unwrap();
-                    PolyLine::must_new(vec![
-                        top_pt.project_away(width / 2.0, l.angle().rotate_degs(135.0)),
-                        top_pt,
-                        top_pt.project_away(width / 2.0, l.angle().rotate_degs(-135.0)),
-                    ])
-                    .make_polygons(width * 0.2)
-                })
-                .collect::<Vec<Polygon>>()
-        });
 
         // Show a wide buffer around the way
         let mut polygon = polyline.make_polygons(1.5 * width);
 
-        chevrons.for_each(|c| polygon = polygon.difference(&c).unwrap()[0].clone());
+        // "Cut out" one or more chevrons from the polygon to indicate the direction
+        let num_chevrons = std::cmp::max(
+            1,
+            (polyline.length() / Distance::meters(50.0)).floor() as i64,
+        );
+        let chevrons = (1..=num_chevrons)
+            .map(|i| {
+                let (top_pt, angle) = polyline
+                    // chevrons are uniformly spread along the polyline
+                    .dist_along((i as f64 / (num_chevrons as f64 + 1.0)) * polyline.length())
+                    .unwrap();
+                PolyLine::must_new(vec![
+                    top_pt.project_away(width / 2.0, angle.rotate_degs(135.0)),
+                    top_pt,
+                    top_pt.project_away(width / 2.0, angle.rotate_degs(-135.0)),
+                ])
+                .make_polygons(width * 0.2)
+            })
+            .collect::<Vec<Polygon>>();
+
+        chevrons
+            .iter()
+            .for_each(|c| polygon = polygon.difference(c).unwrap()[0].clone());
 
         abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
     }
