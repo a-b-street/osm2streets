@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use geom::{Circle, Distance, InfiniteLine, PolyLine, Ring, EPSILON_DIST};
+use geom::{Distance, InfiniteLine, PolyLine, Ring, EPSILON_DIST};
 
 use super::Results;
 use crate::{InputRoad, IntersectionID, RoadID};
@@ -93,21 +93,14 @@ pub(crate) fn on_off_ramp(
                         .intersection_infinite(&perp)
                         .and_then(|trim_to| thick.center.get_slice_ending_at(trim_to))?;
 
-                    if false {
-                        results.debug.push((
-                            "1".to_string(),
-                            Circle::new(hit, Distance::meters(3.0)).to_polygon(),
-                        ));
-                        results.debug.push((
-                            "2".to_string(),
-                            Circle::new(trimmed_thin.last_pt(), Distance::meters(3.0)).to_polygon(),
-                        ));
-                        results.debug.push((
-                            "3".to_string(),
-                            Circle::new(trimmed_thick.last_pt(), Distance::meters(3.0))
-                                .to_polygon(),
-                        ));
-                    }
+                    results.debug.push((hit, "1".to_string()));
+                    results
+                        .debug
+                        .push((trimmed_thin.last_pt(), "2".to_string()));
+                    results
+                        .debug
+                        .push((trimmed_thick.last_pt(), "3".to_string()));
+
                     if best_hit
                         .as_ref()
                         .map(|(pl, _, _)| trimmed_thin.length() < pl.length())

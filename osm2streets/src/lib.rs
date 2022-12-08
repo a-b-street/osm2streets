@@ -231,6 +231,12 @@ impl StreetNetwork {
                 .push((self.roads[&r].center_line.clone(), label.into()));
         }
     }
+
+    pub(crate) fn debug_point<I: Into<String>>(&self, pt: Pt2D, label: I) {
+        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
+            step.points.push((pt, label.into()));
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

@@ -32,6 +32,9 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                 for (r, pl) in results.trimmed_center_pts {
                     streets.roads.get_mut(&r).unwrap().center_line = pl;
                 }
+                for (pt, label) in results.debug {
+                    streets.debug_point(pt, label);
+                }
             }
             Err(err) => {
                 error!("Can't make intersection geometry for {}: {}", i.id, err);

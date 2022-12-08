@@ -82,8 +82,8 @@ pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
     pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
-    /// Extra polygons with labels to debug the algorithm
-    pub debug: Vec<(String, Polygon)>,
+    /// Extra points with labels to debug the algorithm
+    pub debug: Vec<(Pt2D, String)>,
 }
 
 /// Trims back all roads connected to the intersection, and generates a polygon for the
