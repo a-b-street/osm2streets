@@ -17,8 +17,9 @@ mod terminus;
 use std::collections::BTreeMap;
 
 use anyhow::Result;
-use geom::{Distance, PolyLine, Polygon, Pt2D};
+use geom::{Distance, PolyLine, Polygon, Pt2D, Ring};
 
+use crate::road::RoadEdge;
 use crate::{IntersectionID, RoadID};
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
@@ -127,4 +128,51 @@ pub fn intersection_polygon(
     } else {
         general_case::trim_to_corners(results, roads, sorted_roads)
     }
+}
+
+/// After trimming roads back, form the final polygon using the endpoints of each road edge and
+/// also the corners where those edges originally met.
+fn polygon_from_corners(
+    roads: &BTreeMap<RoadID, InputRoad>,
+    sorted_road_ids: &Vec<RoadID>,
+    orig_centers: &BTreeMap<RoadID, PolyLine>,
+    i: IntersectionID,
+) -> Result<Polygon> {
+    let mut sorted_roads = Vec::new();
+    for id in sorted_road_ids {
+        sorted_roads.push(roads[id].to_road());
+    }
+    let mut edges = RoadEdge::calculate(sorted_roads.iter().collect(), i);
+    edges.push(edges[0].clone());
+
+    // Form the intersection polygon by using the endpoints of each road edge.
+    let mut endpts = Vec::new();
+    for pair in edges.windows(2) {
+        let one = &pair[0];
+        let two = &pair[1];
+
+        endpts.push(one.pl.last_pt());
+
+        if one.road != two.road {
+            // But also, we want to use the original points where untrimmed road edges collided.
+            // We didn't retain those in the main loop above. So instead, let's use the trimmed
+            // edges. If the other side of a road produced a larger trim, this side won't collide.
+            // So extend the side until it has the same length as the original untrimmed line. Note
+            // all the reversing is to find the hit closest to the intersection.
+            if let Some((corner, _)) = one
+                .pl
+                .extend_to_length(orig_centers[&one.road].length())
+                .reversed()
+                .intersection(
+                    &two.pl
+                        .extend_to_length(orig_centers[&two.road].length())
+                        .reversed(),
+                )
+            {
+                endpts.push(corner);
+            }
+        }
+    }
+    endpts.push(endpts[0]);
+    Ok(Ring::deduping_new(endpts)?.into_polygon())
 }

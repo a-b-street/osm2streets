@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 
 use anyhow::Result;
-use geom::{InfiniteLine, PolyLine, Pt2D, Ring};
+use geom::{InfiniteLine, PolyLine, Pt2D};
 
-use super::Results;
+use super::{polygon_from_corners, Results};
 use crate::road::RoadEdge;
 use crate::{InputRoad, RoadID};
 
@@ -82,46 +82,12 @@ pub fn trim_to_corners(
         // TODO If there's no hit, consider extending both lines and seeing if they hit
     }
 
-    // After trimming all the roads, look at the edges again
-    let mut sorted_roads = Vec::new();
-    for id in sorted_road_ids {
-        sorted_roads.push(roads[&id].to_road());
-    }
-    let mut edges = RoadEdge::calculate(sorted_roads.iter().collect(), results.intersection_id);
-    edges.push(edges[0].clone());
-
-    // Form the intersection polygon by using the endpoints of each road edge.
-    let mut endpts = Vec::new();
-    for pair in edges.windows(2) {
-        let one = &pair[0];
-        let two = &pair[1];
-
-        endpts.push(one.pl.last_pt());
-
-        if one.road != two.road {
-            // But also, we want to use the original points where untrimmed road edges collided.
-            // We didn't retain those in the main loop above. So instead, let's use the trimmed
-            // edges. If the other side of a road produced a larger trim, this side won't collide.
-            // So extend the side until it has the same length as the original untrimmed line. Note
-            // all the reversing is to find the hit closest to the intersection.
-            if let Some((corner, _)) = one
-                .pl
-                .extend_to_length(orig_centers[&one.road].length())
-                .reversed()
-                .intersection(
-                    &two.pl
-                        .extend_to_length(orig_centers[&two.road].length())
-                        .reversed(),
-                )
-            {
-                endpts.push(corner);
-            }
-        }
-    }
-    endpts.push(endpts[0]);
-    if let Ok(ring) = Ring::deduping_new(endpts) {
-        results.intersection_polygon = ring.into_polygon();
-    }
+    results.intersection_polygon = polygon_from_corners(
+        &roads,
+        &sorted_road_ids,
+        &orig_centers,
+        results.intersection_id,
+    )?;
 
     for road in roads.into_values() {
         results.trimmed_center_pts.insert(road.id, road.center_line);

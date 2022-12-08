@@ -155,8 +155,8 @@ pub(crate) fn on_off_ramp(
         }
     }
 
-    // TODO Use a general procedure based on RoadEdge. Maybe include original corners, from
-    // trim_to_corners
+    // Don't use polygon_from_corners() here. It looks for additional corners, which don't make
+    // sense here.
     let mut endpts = Vec::new();
     for id in sorted_roads {
         let r = &roads[&id];

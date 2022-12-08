@@ -2,9 +2,9 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 
-use geom::{Pt2D, Ring};
+use geom::Pt2D;
 
-use super::Results;
+use super::{polygon_from_corners, Results};
 use crate::{InputRoad, RoadID};
 
 /// If we previously collapsed a short road, we recorded where adjacent roads got trimmed to. If
@@ -16,6 +16,11 @@ pub fn pretrimmed_geometry(
     sorted_roads: Vec<RoadID>,
     trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
 ) -> Result<Results> {
+    let mut orig_centers = BTreeMap::new();
+    for id in &sorted_roads {
+        orig_centers.insert(*id, roads[id].center_line.clone());
+    }
+
     // Use the previous trim values
     for road in roads.values_mut() {
         if let Some(endpt) =
@@ -46,23 +51,13 @@ pub fn pretrimmed_geometry(
         }
     }
 
-    // TODO Use a general procedure based on RoadEdge. Maybe include original corners, from
-    // trim_to_corners
-    let mut endpts = Vec::new();
-    for r in sorted_roads {
-        let r = &roads[&r];
-        // Shift those centers out again to find the main endpoints for the polygon.
-        if r.dst_i == results.intersection_id {
-            endpts.push(r.center_line.shift_right(r.half_width())?.last_pt());
-            endpts.push(r.center_line.shift_left(r.half_width())?.last_pt());
-        } else {
-            endpts.push(r.center_line.shift_left(r.half_width())?.first_pt());
-            endpts.push(r.center_line.shift_right(r.half_width())?.first_pt());
-        }
-    }
-    endpts.push(endpts[0]);
+    results.intersection_polygon = polygon_from_corners(
+        &roads,
+        &sorted_roads,
+        &orig_centers,
+        results.intersection_id,
+    )?;
 
-    results.intersection_polygon = Ring::deduping_new(endpts)?.into_polygon();
     for (id, r) in roads {
         results.trimmed_center_pts.insert(id, r.center_line);
     }
