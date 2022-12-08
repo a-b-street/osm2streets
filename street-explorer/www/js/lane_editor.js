@@ -158,7 +158,7 @@ export class LaneEditor {
             fill: true,
             color: "red",
             weight: 1,
-            fillOpacity: 0.5,
+            fillOpacity: 0.3,
           };
         },
         interactive: false,
