@@ -36,7 +36,13 @@ pub fn trim_to_corners(
         }
 
         // Look for where the two road edges collide, closest to the intersection.
-        if let Some((pt, _)) = one.pl.reversed().intersection(&two.pl.reversed()) {
+        if let Some((mut pt, _)) = one.pl.reversed().intersection(&two.pl.reversed()) {
+            // TODO Hack. PolyLine intersection appears to be broken when the first points match.
+            // Fix upstream.
+            if one.pl.last_pt() == two.pl.last_pt() {
+                pt = one.pl.last_pt();
+            }
+
             // For both edges, project perpendicularly back to the original center, and trim back
             // to that point.
             for side in [one, two] {
