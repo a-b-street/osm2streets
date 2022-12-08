@@ -154,10 +154,10 @@ impl StreetNetwork {
         let trimmed_center_pts = {
             let mut input_roads = Vec::new();
             for road in self.roads_per_intersection(endpts[0]) {
-                // trimmed_center_line hasn't been initialized yet, so override this
-                let mut input = road.to_input_road();
-                input.center_line = road.untrimmed_road_geometry(self.config.driving_side);
-                input_roads.push(input);
+                // Make sure center_line is correct
+                let mut copy = road.clone();
+                copy.update_center_line(self.config.driving_side);
+                input_roads.push(copy.to_input_road());
             }
             let mut results = intersection_polygon(
                 endpts[0],
@@ -172,13 +172,13 @@ impl StreetNetwork {
         {
             let mut input_roads = Vec::new();
             for road in self.roads_per_intersection(endpts[1]) {
-                let mut input = road.to_input_road();
+                let mut copy = road.clone();
                 if road.id == road_id {
-                    input.center_line = trimmed_center_pts.clone();
+                    copy.center_line = trimmed_center_pts.clone();
                 } else {
-                    input.center_line = road.untrimmed_road_geometry(self.config.driving_side);
+                    copy.update_center_line(self.config.driving_side);
                 }
-                input_roads.push(input);
+                input_roads.push(copy.to_input_road());
             }
             let mut results = intersection_polygon(
                 endpts[1],
