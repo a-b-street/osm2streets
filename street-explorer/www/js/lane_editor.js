@@ -153,7 +153,13 @@ export class LaneEditor {
       JSON.parse(this.network.getGeometryForWay(id)),
       {
         style: (feature) => {
-          return { stroke: false, fill: true, color: "red", opacity: 0.5 };
+          return {
+            stroke: true,
+            fill: true,
+            color: "red",
+            weight: 1,
+            fillOpacity: 0.5,
+          };
         },
         interactive: false,
       }
