@@ -109,9 +109,8 @@ impl Road {
         result
     }
 
-    /// Calculates and sets the center_line from reference_line, reference_line_placement
-    /// (and TODO trim_start, trim_end).
-    pub fn update_center_line(&mut self, driving_side: DrivingSide) {
+    /// Calculates the untrimmed center_line from reference_line and reference_line_placement
+    pub fn get_untrimmed_center_line(&self, driving_side: DrivingSide) -> PolyLine {
         let ref_position = match self.reference_line_placement {
             Placement::Consistent(p) => p,
             Placement::Varying(p, _) => {
@@ -127,13 +126,62 @@ impl Road {
         let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
         let target_offset = self.left_edge_offset_of(RoadPosition::FullWidthCenter, driving_side);
 
-        self.center_line = self
+        self
             .reference_line
             .shift_either_direction(target_offset - ref_offset)
             .unwrap_or_else(|_| {
                 warn!("resulting center_line is degenerate!");
                 self.reference_line.clone()
-            });
+            })
+    }
+
+    /// Calculates and sets the untrimmed center_line from reference_line and
+    /// reference_line_placement
+    pub fn update_center_line(&mut self, driving_side: DrivingSide) {
+        self.center_line = self.get_untrimmed_center_line(driving_side);
+    }
+
+    /// `newly_trimmed` is trimmed on the `i` end. Update this road's `center_line` on that end,
+    /// leaving the other alone.
+    pub fn trim_center_line(&mut self, i: IntersectionID, mut newly_trimmed: PolyLine, mut debug: Option<&mut crate::DebugStreets>) {
+        // TODO This feels like a generally useful PolyLine method
+
+        // Point towards i
+        let mut current = self.center_line.clone();
+        if self.src_i == i {
+            current = current.reversed();
+            newly_trimmed = newly_trimmed.reversed();
+        }
+
+        // Idea 1: current's start should exist somewhere along newly_trimmed. Start a slice there.
+        let mut fixed = if let Some(pl) = newly_trimmed.safe_get_slice_starting_at(current.first_pt()) {
+            pl
+        } else {
+            if let Some(ref mut step) = debug {
+                step.polylines.push((current.clone(), format!("current for {i}")));
+                step.polylines.push((newly_trimmed.must_shift_right(Distance::meters(5.0)), format!("newly_trimmed for {i}")));
+            }
+
+            // This breaks if the other side has been extended. In that case, see if
+            // newly_trimmed's first pt is somewhere along current!
+            if let Some(pl) = current.safe_get_slice_ending_at(newly_trimmed.first_pt()) {
+                pl.must_extend(newly_trimmed)
+            } else {
+                // TODO Does this mean the two algorithms trimmed past each other?
+
+                panic!("break for {} on src_i side {}", self.osm_ids[0], i == self.src_i);
+                return;
+            }
+        };
+
+        // Idea 2: Find the first point that current and pl have in common. Use current up to that
+        // point, then pl after it.
+
+        if self.src_i == i {
+            fixed = fixed.reversed();
+        }
+
+        self.center_line = fixed;
     }
 
     pub fn is_light_rail(&self) -> bool {
@@ -425,12 +473,13 @@ impl Road {
         vec![self.src_i, self.dst_i]
     }
 
-    pub(crate) fn to_input_road(&self) -> InputRoad {
+    pub(crate) fn to_input_road(&self, driving_side: DrivingSide) -> InputRoad {
         InputRoad {
             id: self.id,
             src_i: self.src_i,
             dst_i: self.dst_i,
-            center_line: self.center_line.clone(),
+            // Always use untrimmed (on both sides) as input
+            center_line: self.get_untrimmed_center_line(driving_side),
             total_width: self.total_width(),
             highway_type: self.highway_type.clone(),
         }

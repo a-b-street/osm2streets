@@ -19,18 +19,18 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
     // It'd be nice to mutate in the loop, but the borrow checker won't let us
     let mut set_polygons = Vec::new();
     let mut make_stop_signs = Vec::new();
-    for i in streets.intersections.values() {
+    for i in streets.intersections.values().rev() {
         timer.next();
         let input_roads = i
             .roads
             .iter()
-            .map(|r| streets.roads[r].to_input_road())
+            .map(|r| streets.roads[r].to_input_road(streets.config.driving_side))
             .collect::<Vec<_>>();
         match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
                 for (r, pl) in results.trimmed_center_pts {
-                    streets.roads.get_mut(&r).unwrap().center_line = pl;
+                    streets.roads.get_mut(&r).unwrap().trim_center_line(i.id, pl, streets.debug_steps.borrow_mut().last_mut());
                 }
                 for (pt, label) in results.debug {
                     streets.debug_point(pt, label);
@@ -51,6 +51,7 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                     set_polygons.push((i.id, Circle::new(pt, Distance::meters(3.0)).to_polygon()));
 
                     // Also don't attempt to make Movements later!
+                    // TODO Revisit; this is an old A/B Street assumption
                     make_stop_signs.push(i.id);
                 } else {
                     remove_dangling_nodes.push(i.id);

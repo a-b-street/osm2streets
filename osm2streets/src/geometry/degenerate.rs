@@ -19,7 +19,7 @@ pub(crate) fn degenerate(
     let mut center2 = road2.center_line_pointed_at(results.intersection_id);
 
     // If either road is too short, just fail outright. What else should we do?
-    // TODO Also, if we haven't trimmed the other side yet, we don't have the full picture
+    // TODO We have no idea what'll happen to the other side
     if center1.length() < min_road_len || center2.length() < min_road_len {
         bail!("Road is too short to trim for a degenerate intersection");
     }
