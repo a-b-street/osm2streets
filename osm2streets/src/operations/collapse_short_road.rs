@@ -61,23 +61,24 @@ impl StreetNetwork {
                         continue;
                     }
 
-                    let pl = self.estimate_trimmed_geometry(road.id).unwrap();
-                    if road.src_i == i {
-                        if trim_roads_for_merging.contains_key(&(road.id, true)) {
-                            panic!(
-                                "trim_roads_for_merging has a src_i duplicate for {}",
-                                road.id
-                            );
+                    if let Ok(pl) = self.estimate_trimmed_geometry(road.id) {
+                        if road.src_i == i {
+                            if trim_roads_for_merging.contains_key(&(road.id, true)) {
+                                panic!(
+                                    "trim_roads_for_merging has a src_i duplicate for {}",
+                                    road.id
+                                );
+                            }
+                            trim_roads_for_merging.insert((road.id, true), pl.first_pt());
+                        } else {
+                            if trim_roads_for_merging.contains_key(&(road.id, false)) {
+                                panic!(
+                                    "trim_roads_for_merging has a dst_i duplicate for {}",
+                                    road.id
+                                );
+                            }
+                            trim_roads_for_merging.insert((road.id, false), pl.last_pt());
                         }
-                        trim_roads_for_merging.insert((road.id, true), pl.first_pt());
-                    } else {
-                        if trim_roads_for_merging.contains_key(&(road.id, false)) {
-                            panic!(
-                                "trim_roads_for_merging has a dst_i duplicate for {}",
-                                road.id
-                            );
-                        }
-                        trim_roads_for_merging.insert((road.id, false), pl.last_pt());
                     }
                 }
             }
