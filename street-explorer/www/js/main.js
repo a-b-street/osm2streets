@@ -56,11 +56,35 @@ export class StreetExplorer {
           return;
         }
 
-        await app.setCurrentTest((app) =>
-          TestCase.importCurrentView(app, importButton)
-        );
+        await app.setCurrentTest((app) => {
+          const boundary = mapBoundsToGeojson(app.map);
+          TestCase.importBoundary(app, importButton, boundary);
+        });
       };
     }
+
+    // Set up controls for importing via rectangle and polygon boundaries.
+    app.map.pm.addControls({
+      position: "bottomright",
+      editControls: false,
+      drawMarker: false,
+      drawCircleMarker: false,
+      drawPolyline: false,
+      drawCircle: false,
+      drawText: false,
+    });
+    app.map.on("pm:create", (e) => {
+      // Reset the geoman drawing layer
+      app.map.eachLayer((layer) => {
+        // This is apparently how geoman layers are identified
+        if (layer._path != null) {
+          layer.remove();
+        }
+      });
+
+      const boundary = geomanToGeojson(e.layer.getLatLngs()[0]);
+      TestCase.importBoundary(app, importButton, boundary);
+    });
 
     return app;
   }
@@ -115,12 +139,16 @@ class TestCase {
     return new TestCase(app, name, osmInput, bounds);
   }
 
-  static async importCurrentView(app, importButton) {
-    // Grab OSM XML from Overpass
-    // (Sadly toBBoxString doesn't seem to match the order for Overpass)
-    const b = app.map.getBounds();
-    const bbox = `${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
-    const query = `(nwr(${bbox}); node(w)->.x; <;); out meta;`;
+  static async importBoundary(app, importButton, boundaryGeojson) {
+    // Construct a query to extract all XML data in the polygon clip. See
+    // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL
+    var filter = 'poly:"';
+    for (const [lat, lng] of boundaryGeojson.features[0].geometry
+      .coordinates[0]) {
+      filter += `${lat} ${lng} `;
+    }
+    filter = filter.slice(0, -1) + '"';
+    const query = `(nwr(${filter}); node(w)->.x; <;); out meta;`;
     const url = `https://overpass-api.de/api/interpreter?data=${query}`;
     console.log(`Fetching from overpass: ${url}`);
 
@@ -266,6 +294,55 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
   } catch (err) {
     window.alert(`Import failed: ${err}`);
   }
+}
+
+function latLngToGeojson(pt) {
+  return [pt.lat, pt.lng];
+}
+
+function geomanToGeojson(points) {
+  console.log(points);
+
+  points.push(points[0]);
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          coordinates: [points.map(latLngToGeojson)],
+          type: "Polygon",
+        },
+      },
+    ],
+  };
+}
+
+// Turn the current viewport into a rectangular boundary
+function mapBoundsToGeojson(map) {
+  const b = map.getBounds();
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          coordinates: [
+            [
+              latLngToGeojson(b.getSouthWest()),
+              latLngToGeojson(b.getNorthWest()),
+              latLngToGeojson(b.getNorthEast()),
+              latLngToGeojson(b.getSouthEast()),
+              latLngToGeojson(b.getSouthWest()),
+            ],
+          ],
+          type: "Polygon",
+        },
+      },
+    ],
+  };
 }
 
 // TODO Unused. Preserve logic for dragging individual files as layers.
