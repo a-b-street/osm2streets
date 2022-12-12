@@ -6,6 +6,7 @@ use geom::{GPSBounds, Pt2D};
 pub use self::multipolygon::glue_multipolygon;
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
 
+mod clip;
 mod multipolygon;
 mod reader;
 

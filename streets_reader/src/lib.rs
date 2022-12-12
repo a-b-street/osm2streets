@@ -13,7 +13,7 @@ pub use self::extract::OsmExtract;
 use osm_reader::Document;
 
 // TODO Clean up the public API of all of this
-pub mod clip;
+mod clip;
 pub mod extract;
 pub mod osm_reader;
 pub mod split_ways;
@@ -35,15 +35,8 @@ pub fn osm_to_street_network(
     // happens in split_ways.
     streets.config = cfg;
 
-    if let Some(ref pts) = clip_pts {
-        let gps_bounds = GPSBounds::from(pts.clone());
-        streets.boundary_polygon = Ring::new(gps_bounds.convert(pts))?.into_polygon();
-        streets.gps_bounds = gps_bounds;
-    }
-
     let (extract, doc) = extract_osm(&mut streets, osm_xml_input, clip_pts, timer)?;
     split_ways::split_up_roads(&mut streets, extract, timer);
-    clip::clip_map(&mut streets, timer)?;
 
     // Cul-de-sacs aren't supported yet.
     streets.retain_roads(|r| r.src_i != r.dst_i);
@@ -57,13 +50,20 @@ fn extract_osm(
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
 ) -> Result<(OsmExtract, Document)> {
-    let doc = Document::read(osm_xml_input, &streets.gps_bounds, timer)?;
+    let mut doc = Document::read(osm_xml_input, &streets.gps_bounds, timer)?;
 
-    if clip_pts.is_none() {
+    if let Some(pts) = clip_pts {
+        let gps_bounds = GPSBounds::from(pts.clone());
+        streets.boundary_polygon = Ring::new(gps_bounds.convert(&pts))?.into_polygon();
+        streets.gps_bounds = gps_bounds;
+        doc.clip(&streets.boundary_polygon);
+    } else {
         // Use the boundary from .osm.
         streets.gps_bounds = doc.gps_bounds.clone();
         streets.boundary_polygon = streets.gps_bounds.to_bounds().get_rectangle();
+        // No need to clip the Document in this case.
     }
+
     // Calculate DrivingSide from some arbitrary point
     streets.config.driving_side =
         if driving_side::is_left_handed(streets.gps_bounds.get_rectangle()[0].into()) {
