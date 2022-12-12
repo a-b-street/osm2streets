@@ -10,6 +10,7 @@ use geom::{GPSBounds, LonLat, Ring};
 use osm2streets::{DrivingSide, MapConfig, StreetNetwork};
 
 pub use self::extract::OsmExtract;
+use osm_reader::Document;
 
 // TODO Clean up the public API of all of this
 pub mod clip;
@@ -28,7 +29,7 @@ pub fn osm_to_street_network(
     clip_pts: Option<Vec<LonLat>>,
     cfg: MapConfig,
     timer: &mut Timer,
-) -> Result<(StreetNetwork, osm_reader::Document)> {
+) -> Result<(StreetNetwork, Document)> {
     let mut streets = StreetNetwork::blank();
     // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
     // happens in split_ways.
@@ -55,8 +56,8 @@ fn extract_osm(
     osm_xml_input: &str,
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
-) -> Result<(OsmExtract, osm_reader::Document)> {
-    let doc = crate::osm_reader::read(osm_xml_input, &streets.gps_bounds, timer)?;
+) -> Result<(OsmExtract, Document)> {
+    let doc = Document::read(osm_xml_input, &streets.gps_bounds, timer)?;
 
     if clip_pts.is_none() {
         // Use the boundary from .osm.

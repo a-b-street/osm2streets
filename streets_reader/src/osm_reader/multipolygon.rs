@@ -1,4 +1,4 @@
-//! Utilities for extracting concrete geometry from OSM objects.
+//! Utilities for extracting concrete geometry from OSM multipolygons.
 
 use anyhow::Result;
 
@@ -7,22 +7,73 @@ use osm2streets::osm::{OsmID, RelationID, WayID};
 
 use super::{Document, Relation};
 
-pub fn get_multipolygon_members(
-    id: RelationID,
-    rel: &Relation,
-    doc: &Document,
-) -> Vec<(WayID, Vec<Pt2D>)> {
-    let mut pts_per_way = Vec::new();
-    for (role, member) in &rel.members {
-        if let OsmID::Way(w) = member {
-            if role == "outer" {
-                pts_per_way.push((*w, doc.ways[w].pts.clone()));
-            } else {
-                println!("{} has unhandled member role {}, ignoring it", id, role);
+impl Document {
+    pub fn get_multipolygon_members(
+        &self,
+        id: RelationID,
+        rel: &Relation,
+    ) -> Vec<(WayID, Vec<Pt2D>)> {
+        let mut pts_per_way = Vec::new();
+        for (role, member) in &rel.members {
+            if let OsmID::Way(w) = member {
+                if role == "outer" {
+                    pts_per_way.push((*w, self.ways[w].pts.clone()));
+                } else {
+                    println!("{} has unhandled member role {}, ignoring it", id, role);
+                }
             }
         }
+        pts_per_way
     }
-    pts_per_way
+
+    /// May return multiple polygons, when there are multiple `outer` members. Silently filters out
+    /// invalid polygons.
+    pub fn multipoly_geometry(&self, rel_id: RelationID, rel: &Relation) -> Result<Vec<Polygon>> {
+        let mut outer: Vec<Vec<Pt2D>> = Vec::new();
+        let mut inner: Vec<Vec<Pt2D>> = Vec::new();
+        for (role, member) in &rel.members {
+            if let OsmID::Way(w) = member {
+                let mut deduped = self.ways[w].pts.clone();
+                deduped.dedup();
+                if deduped.len() < 3 {
+                    continue;
+                }
+
+                if role == "outer" {
+                    outer.push(deduped);
+                } else if role == "inner" {
+                    inner.push(deduped);
+                } else {
+                    bail!("What's role {} for multipolygon {}?", role, rel_id);
+                }
+            }
+        }
+        // TODO Handle multiple outers with holes
+        if outer.is_empty() || outer.len() > 1 && !inner.is_empty() {
+            bail!(
+                "Multipolygon {} has {} outer, {} inner. Huh?",
+                rel_id,
+                outer.len(),
+                inner.len()
+            );
+        }
+        if inner.is_empty() {
+            Ok(outer
+                .into_iter()
+                .filter_map(|pts| Ring::new(pts).ok())
+                .map(|r| r.into_polygon())
+                .collect())
+        } else {
+            let mut inner_rings = Vec::new();
+            for pts in inner {
+                inner_rings.push(Ring::new(pts)?);
+            }
+            Ok(vec![Polygon::with_holes(
+                Ring::new(outer.pop().unwrap())?,
+                inner_rings,
+            )])
+        }
+    }
 }
 
 /// Take a bunch of partial PolyLines and attempt to glue them together into a single Ring. If the
@@ -125,57 +176,4 @@ fn glue_to_boundary(result_pl: PolyLine, boundary: &Ring) -> Option<Polygon> {
         trimmed_pts.extend(boundary_glue.reversed().into_points());
     }
     Some(Ring::must_new(trimmed_pts).into_polygon())
-}
-
-/// May return multiple polygons, when there are multiple `outer` members. Silently filters out
-/// invalid polygons.
-pub fn multipoly_geometry(
-    rel_id: RelationID,
-    rel: &Relation,
-    doc: &Document,
-) -> Result<Vec<Polygon>> {
-    let mut outer: Vec<Vec<Pt2D>> = Vec::new();
-    let mut inner: Vec<Vec<Pt2D>> = Vec::new();
-    for (role, member) in &rel.members {
-        if let OsmID::Way(w) = member {
-            let mut deduped = doc.ways[w].pts.clone();
-            deduped.dedup();
-            if deduped.len() < 3 {
-                continue;
-            }
-
-            if role == "outer" {
-                outer.push(deduped);
-            } else if role == "inner" {
-                inner.push(deduped);
-            } else {
-                bail!("What's role {} for multipolygon {}?", role, rel_id);
-            }
-        }
-    }
-    // TODO Handle multiple outers with holes
-    if outer.is_empty() || outer.len() > 1 && !inner.is_empty() {
-        bail!(
-            "Multipolygon {} has {} outer, {} inner. Huh?",
-            rel_id,
-            outer.len(),
-            inner.len()
-        );
-    }
-    if inner.is_empty() {
-        Ok(outer
-            .into_iter()
-            .filter_map(|pts| Ring::new(pts).ok())
-            .map(|r| r.into_polygon())
-            .collect())
-    } else {
-        let mut inner_rings = Vec::new();
-        for pts in inner {
-            inner_rings.push(Ring::new(pts)?);
-        }
-        Ok(vec![Polygon::with_holes(
-            Ring::new(outer.pop().unwrap())?,
-            inner_rings,
-        )])
-    }
 }

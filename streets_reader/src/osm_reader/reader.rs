@@ -5,8 +5,10 @@ use anyhow::Result;
 use xmlparser::Token;
 
 use abstutil::{prettyprint_usize, Tags, Timer};
-use geom::{GPSBounds, LonLat, Pt2D};
+use geom::{GPSBounds, LonLat};
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
+
+use super::{Document, Node, Relation, Way};
 
 // References to missing objects are just filtered out.
 // Per https://wiki.openstreetmap.org/wiki/OSM_XML#Certainties_and_Uncertainties, we assume
@@ -18,174 +20,151 @@ use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
 // TODO Replicate IDs in each object, and change members to just hold a reference to the object
 // (which is guaranteed to exist).
 
-pub struct Document {
-    pub gps_bounds: GPSBounds,
-    pub nodes: BTreeMap<NodeID, Node>,
-    pub ways: BTreeMap<WayID, Way>,
-    pub relations: BTreeMap<RelationID, Relation>,
-}
+impl Document {
+    /// Parses raw OSM XML and extracts all objects.
+    pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -> Result<Self> {
+        let mut doc = Self {
+            gps_bounds: input_gps_bounds.clone(),
+            nodes: BTreeMap::new(),
+            ways: BTreeMap::new(),
+            relations: BTreeMap::new(),
+        };
 
-pub struct Node {
-    pub pt: Pt2D,
-    pub tags: Tags,
-}
+        // We use the lower-level xmlparser instead of roxmltree to reduce peak memory usage in
+        // large files.
+        let mut reader = ElementReader {
+            tokenizer: xmlparser::Tokenizer::from(raw_string),
+        }
+        .peekable();
 
-pub struct Way {
-    // Duplicates geometry, because it's convenient
-    pub nodes: Vec<NodeID>,
-    pub pts: Vec<Pt2D>,
-    pub tags: Tags,
-    pub version: Option<usize>,
-}
-
-pub struct Relation {
-    pub tags: Tags,
-    /// Role, member
-    pub members: Vec<(String, OsmID)>,
-}
-
-pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -> Result<Document> {
-    let mut doc = Document {
-        gps_bounds: input_gps_bounds.clone(),
-        nodes: BTreeMap::new(),
-        ways: BTreeMap::new(),
-        relations: BTreeMap::new(),
-    };
-
-    // We use the lower-level xmlparser instead of roxmltree to reduce peak memory usage in large
-    // files.
-    let mut reader = ElementReader {
-        tokenizer: xmlparser::Tokenizer::from(raw_string),
-    }
-    .peekable();
-
-    timer.start("scrape objects");
-    while let Some(obj) = reader.next() {
-        match obj.name {
-            "bounds" => {
-                // If we weren't provided with GPSBounds, use this.
-                if doc.gps_bounds != GPSBounds::new() {
-                    continue;
+        timer.start("scrape objects");
+        while let Some(obj) = reader.next() {
+            match obj.name {
+                "bounds" => {
+                    // If we weren't provided with GPSBounds, use this.
+                    if doc.gps_bounds != GPSBounds::new() {
+                        continue;
+                    }
+                    doc.gps_bounds.update(LonLat::new(
+                        obj.attribute("minlon").parse::<f64>().unwrap(),
+                        obj.attribute("minlat").parse::<f64>().unwrap(),
+                    ));
+                    doc.gps_bounds.update(LonLat::new(
+                        obj.attribute("maxlon").parse::<f64>().unwrap(),
+                        obj.attribute("maxlat").parse::<f64>().unwrap(),
+                    ));
                 }
-                doc.gps_bounds.update(LonLat::new(
-                    obj.attribute("minlon").parse::<f64>().unwrap(),
-                    obj.attribute("minlat").parse::<f64>().unwrap(),
-                ));
-                doc.gps_bounds.update(LonLat::new(
-                    obj.attribute("maxlon").parse::<f64>().unwrap(),
-                    obj.attribute("maxlat").parse::<f64>().unwrap(),
-                ));
-            }
-            "node" => {
-                if doc.gps_bounds == GPSBounds::new() {
-                    warn!(
-                        "No clipping polygon provided and the .osm is missing a <bounds> element, \
-                         so figuring out the bounds manually."
-                    );
-                    doc.gps_bounds = scrape_bounds(raw_string);
-                }
+                "node" => {
+                    if doc.gps_bounds == GPSBounds::new() {
+                        warn!(
+                            "No clipping polygon provided and the .osm is missing a <bounds> element, \
+                             so figuring out the bounds manually."
+                        );
+                        doc.gps_bounds = scrape_bounds(raw_string);
+                    }
 
-                let id = NodeID(obj.attribute("id").parse::<i64>().unwrap());
-                if doc.nodes.contains_key(&id) {
-                    bail!("Duplicate {}, your .osm is corrupt", id);
+                    let id = NodeID(obj.attribute("id").parse::<i64>().unwrap());
+                    if doc.nodes.contains_key(&id) {
+                        bail!("Duplicate {}, your .osm is corrupt", id);
+                    }
+                    let pt = LonLat::new(
+                        obj.attribute("lon").parse::<f64>().unwrap(),
+                        obj.attribute("lat").parse::<f64>().unwrap(),
+                    )
+                    .to_pt(&doc.gps_bounds);
+                    let tags = read_tags(&mut reader);
+                    doc.nodes.insert(id, Node { pt, tags });
                 }
-                let pt = LonLat::new(
-                    obj.attribute("lon").parse::<f64>().unwrap(),
-                    obj.attribute("lat").parse::<f64>().unwrap(),
-                )
-                .to_pt(&doc.gps_bounds);
-                let tags = read_tags(&mut reader);
-                doc.nodes.insert(id, Node { pt, tags });
-            }
-            "way" => {
-                let id = WayID(obj.attribute("id").parse::<i64>().unwrap());
-                if doc.ways.contains_key(&id) {
-                    bail!("Duplicate {}, your .osm is corrupt", id);
-                }
-                let version = obj
-                    .attributes
-                    .get("version")
-                    .and_then(|x| x.parse::<usize>().ok());
+                "way" => {
+                    let id = WayID(obj.attribute("id").parse::<i64>().unwrap());
+                    if doc.ways.contains_key(&id) {
+                        bail!("Duplicate {}, your .osm is corrupt", id);
+                    }
+                    let version = obj
+                        .attributes
+                        .get("version")
+                        .and_then(|x| x.parse::<usize>().ok());
 
-                let mut nodes = Vec::new();
-                let mut pts = Vec::new();
-                while reader.peek().map(|x| x.name == "nd").unwrap_or(false) {
-                    let node_ref = reader.next().unwrap();
-                    let n = NodeID(node_ref.attribute("ref").parse::<i64>().unwrap());
-                    // Just skip missing nodes
-                    if let Some(node) = doc.nodes.get(&n) {
-                        nodes.push(n);
-                        pts.push(node.pt);
+                    let mut nodes = Vec::new();
+                    let mut pts = Vec::new();
+                    while reader.peek().map(|x| x.name == "nd").unwrap_or(false) {
+                        let node_ref = reader.next().unwrap();
+                        let n = NodeID(node_ref.attribute("ref").parse::<i64>().unwrap());
+                        // Just skip missing nodes
+                        if let Some(node) = doc.nodes.get(&n) {
+                            nodes.push(n);
+                            pts.push(node.pt);
+                        }
+                    }
+
+                    // We assume <nd>'s come before <tag>'s
+                    let tags = read_tags(&mut reader);
+
+                    if !nodes.is_empty() {
+                        doc.ways.insert(
+                            id,
+                            Way {
+                                nodes,
+                                pts,
+                                tags,
+                                version,
+                            },
+                        );
                     }
                 }
+                "relation" => {
+                    let id = RelationID(obj.attribute("id").parse::<i64>().unwrap());
+                    if doc.relations.contains_key(&id) {
+                        bail!("Duplicate {}, your .osm is corrupt", id);
+                    }
+                    let mut members = Vec::new();
+                    while reader.peek().map(|x| x.name == "member").unwrap_or(false) {
+                        let child = reader.next().unwrap();
+                        let member = match child.attribute("type") {
+                            "node" => {
+                                let n = NodeID(child.attribute("ref").parse::<i64>().unwrap());
+                                if !doc.nodes.contains_key(&n) {
+                                    continue;
+                                }
+                                OsmID::Node(n)
+                            }
+                            "way" => {
+                                let w = WayID(child.attribute("ref").parse::<i64>().unwrap());
+                                if !doc.ways.contains_key(&w) {
+                                    continue;
+                                }
+                                OsmID::Way(w)
+                            }
+                            "relation" => {
+                                let r = RelationID(child.attribute("ref").parse::<i64>().unwrap());
+                                if !doc.relations.contains_key(&r) {
+                                    continue;
+                                }
+                                OsmID::Relation(r)
+                            }
+                            _ => continue,
+                        };
+                        members.push((child.attribute("role").to_string(), member));
+                    }
 
-                // We assume <nd>'s come before <tag>'s
-                let tags = read_tags(&mut reader);
+                    // We assume <nd>'s come before <tag>'s
+                    let tags = read_tags(&mut reader);
 
-                if !nodes.is_empty() {
-                    doc.ways.insert(
-                        id,
-                        Way {
-                            nodes,
-                            pts,
-                            tags,
-                            version,
-                        },
-                    );
+                    doc.relations.insert(id, Relation { tags, members });
                 }
+                _ => {}
             }
-            "relation" => {
-                let id = RelationID(obj.attribute("id").parse::<i64>().unwrap());
-                if doc.relations.contains_key(&id) {
-                    bail!("Duplicate {}, your .osm is corrupt", id);
-                }
-                let mut members = Vec::new();
-                while reader.peek().map(|x| x.name == "member").unwrap_or(false) {
-                    let child = reader.next().unwrap();
-                    let member = match child.attribute("type") {
-                        "node" => {
-                            let n = NodeID(child.attribute("ref").parse::<i64>().unwrap());
-                            if !doc.nodes.contains_key(&n) {
-                                continue;
-                            }
-                            OsmID::Node(n)
-                        }
-                        "way" => {
-                            let w = WayID(child.attribute("ref").parse::<i64>().unwrap());
-                            if !doc.ways.contains_key(&w) {
-                                continue;
-                            }
-                            OsmID::Way(w)
-                        }
-                        "relation" => {
-                            let r = RelationID(child.attribute("ref").parse::<i64>().unwrap());
-                            if !doc.relations.contains_key(&r) {
-                                continue;
-                            }
-                            OsmID::Relation(r)
-                        }
-                        _ => continue,
-                    };
-                    members.push((child.attribute("role").to_string(), member));
-                }
-
-                // We assume <nd>'s come before <tag>'s
-                let tags = read_tags(&mut reader);
-
-                doc.relations.insert(id, Relation { tags, members });
-            }
-            _ => {}
         }
-    }
-    timer.stop("scrape objects");
-    info!(
-        "Found {} nodes, {} ways, {} relations",
-        prettyprint_usize(doc.nodes.len()),
-        prettyprint_usize(doc.ways.len()),
-        prettyprint_usize(doc.relations.len())
-    );
+        timer.stop("scrape objects");
+        info!(
+            "Found {} nodes, {} ways, {} relations",
+            prettyprint_usize(doc.nodes.len()),
+            prettyprint_usize(doc.ways.len()),
+            prettyprint_usize(doc.relations.len())
+        );
 
-    Ok(doc)
+        Ok(doc)
+    }
 }
 
 fn read_tags(reader: &mut Peekable<ElementReader>) -> Tags {
