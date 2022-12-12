@@ -14,6 +14,7 @@ import {
   makeIntersectionMarkingsLayer,
   makeOsmLayer,
   makePlainGeoJsonLayer,
+  makeBoundaryLayer,
 } from "./layers.js";
 import {
   LayerGroup,
@@ -64,27 +65,33 @@ export class StreetExplorer {
     }
 
     // Set up controls for importing via rectangle and polygon boundaries.
-    app.map.pm.addControls({
-      position: "bottomright",
-      editControls: false,
-      drawMarker: false,
-      drawCircleMarker: false,
-      drawPolyline: false,
-      drawCircle: false,
-      drawText: false,
-    });
-    app.map.on("pm:create", (e) => {
-      // Reset the geoman drawing layer
-      app.map.eachLayer((layer) => {
-        // This is apparently how geoman layers are identified
-        if (layer._path != null) {
-          layer.remove();
-        }
+    // TODO This is flaky. What do we do when geoman's magic init doesn't happen by now?
+    if (app.map.pm) {
+      app.map.pm.addControls({
+        position: "bottomright",
+        editControls: false,
+        drawMarker: false,
+        drawCircleMarker: false,
+        drawPolyline: false,
+        drawCircle: false,
+        drawText: false,
       });
+      // TODO Disable snapping with OTHER layers, but do snap to drawn points.
+      app.map.on("pm:create", async (e) => {
+        // Reset the geoman drawing layer
+        app.map.eachLayer((layer) => {
+          // This is apparently how geoman layers are identified
+          if (layer._path != null) {
+            layer.remove();
+          }
+        });
 
-      const boundary = geomanToGeojson(e.layer.getLatLngs()[0]);
-      TestCase.importBoundary(app, importButton, boundary);
-    });
+        await app.setCurrentTest((app) => {
+          const boundary = geomanToGeojson(e.layer.getLatLngs()[0]);
+          TestCase.importBoundary(app, importButton, boundary);
+        });
+      });
+    }
 
     return app;
   }
@@ -143,7 +150,7 @@ class TestCase {
     // Construct a query to extract all XML data in the polygon clip. See
     // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL
     var filter = 'poly:"';
-    for (const [lat, lng] of boundaryGeojson.features[0].geometry
+    for (const [lng, lat] of boundaryGeojson.features[0].geometry
       .coordinates[0]) {
       filter += `${lat} ${lng} `;
     }
@@ -163,7 +170,7 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      importOSM("Imported area", app, osmInput, true);
+      importOSM("Imported area", app, osmInput, true, boundaryGeojson);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
         .getData()
@@ -198,7 +205,7 @@ class TestCase {
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
-        importOSM("Details", this.app, this.osmXML, false);
+        importOSM("Details", this.app, this.osmXML, false, null);
       };
     }
 
@@ -217,7 +224,7 @@ class TestCase {
   }
 }
 
-function importOSM(groupName, app, osmXML, addOSMLayer) {
+function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
   try {
     const importSettings = app.getImportSettings();
     const network = new JsStreetNetwork(osmXML, {
@@ -229,6 +236,9 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
       osm2lanes: !!importSettings.osm2lanes,
     });
     var group = new LayerGroup(groupName, app.map);
+    if (boundaryGeojson) {
+      group.addLayer("Boundary", makeBoundaryLayer(boundaryGeojson));
+    }
     if (addOSMLayer) {
       group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
     }
@@ -297,12 +307,10 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
 }
 
 function latLngToGeojson(pt) {
-  return [pt.lat, pt.lng];
+  return [pt.lng, pt.lat];
 }
 
 function geomanToGeojson(points) {
-  console.log(points);
-
   points.push(points[0]);
   return {
     type: "FeatureCollection",
