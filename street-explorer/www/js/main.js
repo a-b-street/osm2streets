@@ -66,7 +66,7 @@ export class StreetExplorer {
 
     // Set up controls for importing via rectangle and polygon boundaries.
     // TODO This is flaky. What do we do when geoman's magic init doesn't happen by now?
-    if (app.map.pm) {
+    if (app.map.pm && app.currentTest == null) {
       app.map.pm.addControls({
         position: "bottomright",
         editControls: false,
@@ -133,11 +133,13 @@ class TestCase {
     const osmInput = await loadFile(prefix + "input.osm");
     const geometry = await loadFile(prefix + "geometry.json");
     const network = await loadFile(prefix + "road_network.dot");
+    const boundary = await loadFile(prefix + "boundary.json");
 
     const geometryLayer = makePlainGeoJsonLayer(geometry);
     const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
+    group.addLayer("Boundary", makeBoundaryLayer(JSON.parse(boundary)));
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
     group.addLayer("Network", await makeDotLayer(network, { bounds }));
     group.addLayer("Geometry", geometryLayer);
@@ -204,6 +206,13 @@ class TestCase {
         this.app.layers.removeGroups((name) => name != "built-in test case");
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
+        // But keep the boundary on
+        const boundaryLayer = this.app.layers.getLayer(
+          "built-in test case",
+          "Boundary"
+        );
+        boundaryLayer.enabled = true;
+        this.app.map.addLayer(boundaryLayer.getData());
 
         importOSM("Details", this.app, this.osmXML, false, null);
       };
