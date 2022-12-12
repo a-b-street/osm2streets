@@ -24,6 +24,7 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 /// let mut net = load_road_network(String::from("tests/src/aurora_sausage_link/input.osm"), &mut timer).unwrap();
 /// println!("{}", net.to_dot());
 pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetwork> {
+    // TODO Use the same clip
     let clip_pts = None;
 
     let (mut street_network, _) = streets_reader::osm_to_street_network(

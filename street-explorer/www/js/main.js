@@ -121,11 +121,12 @@ export class StreetExplorer {
 }
 
 class TestCase {
-  constructor(app, name, osmXML, bounds) {
+  constructor(app, name, osmXML, bounds, boundary) {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
     this.bounds = bounds;
+    this.boundary = boundary;
   }
 
   static async loadFromServer(app, name) {
@@ -133,19 +134,19 @@ class TestCase {
     const osmInput = await loadFile(prefix + "input.osm");
     const geometry = await loadFile(prefix + "geometry.json");
     const network = await loadFile(prefix + "road_network.dot");
-    const boundary = await loadFile(prefix + "boundary.json");
+    const boundary = JSON.parse(await loadFile(prefix + "boundary.json"));
 
     const geometryLayer = makePlainGeoJsonLayer(geometry);
     const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
-    group.addLayer("Boundary", makeBoundaryLayer(JSON.parse(boundary)));
+    group.addLayer("Boundary", makeBoundaryLayer(boundary));
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
     group.addLayer("Network", await makeDotLayer(network, { bounds }));
     group.addLayer("Geometry", geometryLayer);
     app.layers.addGroup(group);
 
-    return new TestCase(app, name, osmInput, bounds);
+    return new TestCase(app, name, osmInput, bounds, boundary);
   }
 
   static async importBoundary(app, importButton, boundaryGeojson) {
@@ -183,7 +184,7 @@ class TestCase {
       fixURL.searchParams.delete("test");
       window.history.pushState({}, "", fixURL);
 
-      return new TestCase(app, null, osmInput, bounds);
+      return new TestCase(app, null, osmInput, bounds, boundaryGeojson);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
       // There won't be a currentTest
@@ -206,15 +207,8 @@ class TestCase {
         this.app.layers.removeGroups((name) => name != "built-in test case");
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
-        // But keep the boundary on
-        const boundaryLayer = this.app.layers.getLayer(
-          "built-in test case",
-          "Boundary"
-        );
-        boundaryLayer.enabled = true;
-        this.app.map.addLayer(boundaryLayer.getData());
 
-        importOSM("Details", this.app, this.osmXML, false, null);
+        importOSM("Details", this.app, this.osmXML, false, this.boundary);
       };
     }
 
@@ -236,18 +230,20 @@ class TestCase {
 function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
   try {
     const importSettings = app.getImportSettings();
-    const network = new JsStreetNetwork(osmXML, {
-      debug_each_step: !!importSettings.debugEachStep,
-      dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
-      cycletrack_snapping_experiment:
-        !!importSettings.cycletrackSnappingExperiment,
-      inferred_sidewalks: importSettings.sidewalks === "infer",
-      osm2lanes: !!importSettings.osm2lanes,
-    });
+    const network = new JsStreetNetwork(
+      osmXML,
+      JSON.stringify(boundaryGeojson),
+      {
+        debug_each_step: !!importSettings.debugEachStep,
+        dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
+        cycletrack_snapping_experiment:
+          !!importSettings.cycletrackSnappingExperiment,
+        inferred_sidewalks: importSettings.sidewalks === "infer",
+        osm2lanes: !!importSettings.osm2lanes,
+      }
+    );
     var group = new LayerGroup(groupName, app.map);
-    if (boundaryGeojson) {
-      group.addLayer("Boundary", makeBoundaryLayer(boundaryGeojson));
-    }
+    group.addLayer("Boundary", makeBoundaryLayer(boundaryGeojson));
     if (addOSMLayer) {
       group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
     }

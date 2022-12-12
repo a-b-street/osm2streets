@@ -3,6 +3,7 @@ mod tests {
     use abstutil::Timer;
     use anyhow::{bail, Result};
     use experimental::RoadNetwork;
+    use geom::LonLat;
     use osm2streets::{MapConfig, Transformation};
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
@@ -20,7 +21,9 @@ mod tests {
         let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
-        let clip_pts = None;
+        let clip_pts = Some(LonLat::read_geojson_polygon(&format!(
+            "{path}/boundary.json"
+        ))?);
         let (mut street_network, _) = streets_reader::osm_to_street_network(
             &std::fs::read_to_string(format!("{path}/input.osm"))?,
             clip_pts,
