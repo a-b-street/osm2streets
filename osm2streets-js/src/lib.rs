@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use abstutil::{Tags, Timer};
-use geom::{Distance, PolyLine, Polygon};
+use geom::{Distance, LonLat, PolyLine, Polygon};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -24,8 +24,13 @@ pub struct JsStreetNetwork {
 
 #[wasm_bindgen]
 impl JsStreetNetwork {
+    // TODO clip_pts_geojson should be Option. Empty means None.
     #[wasm_bindgen(constructor)]
-    pub fn new(osm_xml_input: &str, input: &JsValue) -> Result<JsStreetNetwork, JsValue> {
+    pub fn new(
+        osm_xml_input: &str,
+        clip_pts_geojson: &str,
+        input: &JsValue,
+    ) -> Result<JsStreetNetwork, JsValue> {
         abstutil::logger::setup();
         // Panics shouldn't happen, but if they do, console.log them.
         console_error_panic_hook::set_once();
@@ -34,11 +39,23 @@ impl JsStreetNetwork {
             .into_serde()
             .map_err(|err| JsValue::from_str(&err.to_string()))?;
 
+        let clip_pts = if clip_pts_geojson.is_empty() {
+            None
+        } else {
+            let mut list = LonLat::parse_geojson_polygons(clip_pts_geojson.to_string())
+                .map_err(|err| JsValue::from_str(&err.to_string()))?;
+            if list.len() != 1 {
+                return Err(JsValue::from_str(&format!(
+                    "{clip_pts_geojson} doesn't contain exactly one polygon"
+                )));
+            }
+            Some(list.pop().unwrap().0)
+        };
+
         let mut cfg = MapConfig::default();
         cfg.inferred_sidewalks = input.inferred_sidewalks;
         cfg.osm2lanes = input.osm2lanes;
 
-        let clip_pts = None;
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =
             streets_reader::osm_to_street_network(osm_xml_input, clip_pts, cfg, &mut timer)

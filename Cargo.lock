@@ -1023,6 +1023,7 @@ dependencies = [
  "abstutil",
  "anyhow",
  "experimental",
+ "geom",
  "osm2streets",
  "serde",
  "serde_json",
