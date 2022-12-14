@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{HashSet, BTreeMap};
 
 use geo::Winding;
 use geom::{HashablePt2D, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
@@ -127,6 +127,7 @@ impl PlanarGraph {
 
     fn to_faces(&self) -> Vec<Face> {
         let mut faces = Vec::new();
+        let mut seen: HashSet<(EdgeID, Side)> = HashSet::new();
 
         //faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right, Direction::Forwards));
         //faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left, Direction::Backwards));
@@ -145,8 +146,18 @@ impl PlanarGraph {
 
         for e in self.edges.keys() {
             for side in [Side::Left, Side::Right] {
+                if seen.contains(&(*e, side)) {
+                    continue;
+                }
+
                 for dir in [Direction::Forwards, Direction::Backwards] {
-                    faces.extend(self.trace_face(*e, side, dir));
+                    if let Some(face) = self.trace_face(*e, side, dir) {
+                        for member in &face.members {
+                            seen.insert((member.edge, member.side));
+                        }
+                        
+                        faces.push(face);
+                    }
                 }
             }
         }
@@ -231,7 +242,7 @@ impl OrientedEdge {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 enum Side {
     Left,
     Right,
@@ -278,6 +289,7 @@ pub fn to_geojson(streets: &StreetNetwork) -> String {
         props.insert("fill".to_string(), true.into());
         props.insert("fillColor".to_string(), "cyan".into());
         props.insert("fillOpacity".to_string(), 0.5.into());
+        props.insert("id".to_string(), pairs.len().into());
         pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
     }
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))

@@ -270,10 +270,30 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
+
+    var hideFaces = new Set();
     group.addLayer("Planar graph", new L.geoJSON(JSON.parse(network.toPlanarGeojson()), {
       style: function (feature) {
         return feature.properties;
-      }
+      },
+      onEachFeature: function (feature, layer) {
+        layer.on({
+          click: function (ev) {
+            L.DomEvent.preventDefault(ev);
+            const layer = ev.target;
+            const id = layer.feature.properties.id;
+            var fillOpacity = 0.5;
+            if (hideFaces.has(id)) {
+              hideFaces.delete(id);
+              fillOpacity = 0.5;
+            } else {
+              hideFaces.add(id);
+              fillOpacity = 0.1;
+            }
+            layer.setStyle({ fillOpacity });
+          },
+        });
+      },
     }));
 
     const numDebugSteps = network.getDebugSteps().length;
