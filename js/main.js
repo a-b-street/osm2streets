@@ -59,7 +59,7 @@ export class StreetExplorer {
 
         await app.setCurrentTest((app) => {
           const boundary = mapBoundsToGeojson(app.map);
-          TestCase.importBoundary(app, importButton, boundary);
+          return TestCase.importBoundary(app, importButton, boundary);
         });
       };
     }
@@ -88,7 +88,7 @@ export class StreetExplorer {
 
         await app.setCurrentTest((app) => {
           const boundary = geomanToGeojson(e.layer.getLatLngs()[0]);
-          TestCase.importBoundary(app, importButton, boundary);
+          return TestCase.importBoundary(app, importButton, boundary);
         });
       });
     }
