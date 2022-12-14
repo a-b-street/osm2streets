@@ -269,6 +269,12 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
+    // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
+    group.addLayer("Planar graph", new L.geoJSON(JSON.parse(network.toPlanarGeojson()), {
+      style: function (feature) {
+        return feature.properties;
+      }
+    }));
 
     const numDebugSteps = network.getDebugSteps().length;
     // This enables all layers within the group. We don't want to do that for the OSM layer. So only disable if we're debugging.

@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate log;
+
 use std::collections::BTreeMap;
 
 use abstutil::{Tags, Timer};
@@ -6,6 +9,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{osm, DebugStreets, LaneID, MapConfig, RoadID, StreetNetwork, Transformation};
+
+mod planar;
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -148,6 +153,11 @@ impl JsStreetNetwork {
                 index,
             })
             .unwrap()
+    }
+
+    #[wasm_bindgen(js_name = toPlanarGeojson)]
+    pub fn to_planar_geojson(&self) -> String {
+        planar::to_geojson(&self.inner)
     }
 
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a

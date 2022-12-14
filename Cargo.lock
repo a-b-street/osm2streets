@@ -699,8 +699,10 @@ dependencies = [
  "experimental",
  "geom",
  "instant",
+ "log",
  "osm2streets",
  "serde",
+ "serde_json",
  "streets_reader",
  "wasm-bindgen",
 ]
