@@ -14,6 +14,7 @@ import {
   makeIntersectionMarkingsLayer,
   makeOsmLayer,
   makePlainGeoJsonLayer,
+  makeBoundaryLayer,
 } from "./layers.js";
 import {
   LayerGroup,
@@ -56,10 +57,40 @@ export class StreetExplorer {
           return;
         }
 
-        await app.setCurrentTest((app) =>
-          TestCase.importCurrentView(app, importButton)
-        );
+        await app.setCurrentTest((app) => {
+          const boundary = mapBoundsToGeojson(app.map);
+          TestCase.importBoundary(app, importButton, boundary);
+        });
       };
+    }
+
+    // Set up controls for importing via rectangle and polygon boundaries.
+    // TODO This is flaky. What do we do when geoman's magic init doesn't happen by now?
+    if (app.map.pm && app.currentTest == null) {
+      app.map.pm.addControls({
+        position: "bottomright",
+        editControls: false,
+        drawMarker: false,
+        drawCircleMarker: false,
+        drawPolyline: false,
+        drawCircle: false,
+        drawText: false,
+      });
+      // TODO Disable snapping with OTHER layers, but do snap to drawn points.
+      app.map.on("pm:create", async (e) => {
+        // Reset the geoman drawing layer
+        app.map.eachLayer((layer) => {
+          // This is apparently how geoman layers are identified
+          if (layer._path != null) {
+            layer.remove();
+          }
+        });
+
+        await app.setCurrentTest((app) => {
+          const boundary = geomanToGeojson(e.layer.getLatLngs()[0]);
+          TestCase.importBoundary(app, importButton, boundary);
+        });
+      });
     }
 
     return app;
@@ -90,11 +121,12 @@ export class StreetExplorer {
 }
 
 class TestCase {
-  constructor(app, name, osmXML, bounds) {
+  constructor(app, name, osmXML, bounds, boundary) {
     this.app = app;
     this.name = name;
     this.osmXML = osmXML;
     this.bounds = bounds;
+    this.boundary = boundary;
   }
 
   static async loadFromServer(app, name) {
@@ -102,25 +134,31 @@ class TestCase {
     const osmInput = await loadFile(prefix + "input.osm");
     const geometry = await loadFile(prefix + "geometry.json");
     const network = await loadFile(prefix + "road_network.dot");
+    const boundary = JSON.parse(await loadFile(prefix + "boundary.json"));
 
     const geometryLayer = makePlainGeoJsonLayer(geometry);
     const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
+    group.addLayer("Boundary", makeBoundaryLayer(boundary));
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
     group.addLayer("Network", await makeDotLayer(network, { bounds }));
     group.addLayer("Geometry", geometryLayer);
     app.layers.addGroup(group);
 
-    return new TestCase(app, name, osmInput, bounds);
+    return new TestCase(app, name, osmInput, bounds, boundary);
   }
 
-  static async importCurrentView(app, importButton) {
-    // Grab OSM XML from Overpass
-    // (Sadly toBBoxString doesn't seem to match the order for Overpass)
-    const b = app.map.getBounds();
-    const bbox = `${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
-    const query = `(nwr(${bbox}); node(w)->.x; <;); out meta;`;
+  static async importBoundary(app, importButton, boundaryGeojson) {
+    // Construct a query to extract all XML data in the polygon clip. See
+    // https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL
+    var filter = 'poly:"';
+    for (const [lng, lat] of boundaryGeojson.features[0].geometry
+      .coordinates[0]) {
+      filter += `${lat} ${lng} `;
+    }
+    filter = filter.slice(0, -1) + '"';
+    const query = `(nwr(${filter}); node(w)->.x; <;); out meta;`;
     const url = `https://overpass-api.de/api/interpreter?data=${query}`;
     console.log(`Fetching from overpass: ${url}`);
 
@@ -135,7 +173,7 @@ class TestCase {
 
       importButton.innerText = "Importing OSM data...";
 
-      importOSM("Imported area", app, osmInput, true);
+      importOSM("Imported area", app, osmInput, true, boundaryGeojson);
       const bounds = app.layers
         .getLayer("Imported area", "Geometry")
         .getData()
@@ -146,7 +184,7 @@ class TestCase {
       fixURL.searchParams.delete("test");
       window.history.pushState({}, "", fixURL);
 
-      return new TestCase(app, null, osmInput, bounds);
+      return new TestCase(app, null, osmInput, bounds, boundaryGeojson);
     } catch (err) {
       window.alert(`Import failed: ${err}`);
       // There won't be a currentTest
@@ -170,7 +208,7 @@ class TestCase {
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
-        importOSM("Details", this.app, this.osmXML, false);
+        importOSM("Details", this.app, this.osmXML, false, this.boundary);
       };
     }
 
@@ -189,18 +227,23 @@ class TestCase {
   }
 }
 
-function importOSM(groupName, app, osmXML, addOSMLayer) {
+function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
   try {
     const importSettings = app.getImportSettings();
-    const network = new JsStreetNetwork(osmXML, {
-      debug_each_step: !!importSettings.debugEachStep,
-      dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
-      cycletrack_snapping_experiment:
-        !!importSettings.cycletrackSnappingExperiment,
-      inferred_sidewalks: importSettings.sidewalks === "infer",
-      osm2lanes: !!importSettings.osm2lanes,
-    });
+    const network = new JsStreetNetwork(
+      osmXML,
+      JSON.stringify(boundaryGeojson),
+      {
+        debug_each_step: !!importSettings.debugEachStep,
+        dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
+        cycletrack_snapping_experiment:
+          !!importSettings.cycletrackSnappingExperiment,
+        inferred_sidewalks: importSettings.sidewalks === "infer",
+        osm2lanes: !!importSettings.osm2lanes,
+      }
+    );
     var group = new LayerGroup(groupName, app.map);
+    group.addLayer("Boundary", makeBoundaryLayer(boundaryGeojson));
     if (addOSMLayer) {
       group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
     }
@@ -266,6 +309,53 @@ function importOSM(groupName, app, osmXML, addOSMLayer) {
   } catch (err) {
     window.alert(`Import failed: ${err}`);
   }
+}
+
+function latLngToGeojson(pt) {
+  return [pt.lng, pt.lat];
+}
+
+function geomanToGeojson(points) {
+  points.push(points[0]);
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          coordinates: [points.map(latLngToGeojson)],
+          type: "Polygon",
+        },
+      },
+    ],
+  };
+}
+
+// Turn the current viewport into a rectangular boundary
+function mapBoundsToGeojson(map) {
+  const b = map.getBounds();
+  return {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          coordinates: [
+            [
+              latLngToGeojson(b.getSouthWest()),
+              latLngToGeojson(b.getNorthWest()),
+              latLngToGeojson(b.getNorthEast()),
+              latLngToGeojson(b.getSouthEast()),
+              latLngToGeojson(b.getSouthWest()),
+            ],
+          ],
+          type: "Polygon",
+        },
+      },
+    ],
+  };
 }
 
 // TODO Unused. Preserve logic for dragging individual files as layers.

@@ -299,14 +299,17 @@ export class JsStreetNetwork {
     }
     /**
     * @param {string} osm_xml_input
+    * @param {string} clip_pts_geojson
     * @param {any} input
     */
-    constructor(osm_xml_input, input) {
+    constructor(osm_xml_input, clip_pts_geojson, input) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             const ptr0 = passStringToWasm0(osm_xml_input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
             const len0 = WASM_VECTOR_LEN;
-            wasm.jsstreetnetwork_new(retptr, ptr0, len0, addBorrowedObject(input));
+            const ptr1 = passStringToWasm0(clip_pts_geojson, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+            const len1 = WASM_VECTOR_LEN;
+            wasm.jsstreetnetwork_new(retptr, ptr0, len0, ptr1, len1, addBorrowedObject(input));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];

@@ -72,7 +72,8 @@ export class LaneEditor {
 
       importButton.innerText = "Importing OSM data...";
 
-      this.network = new JsStreetNetwork(osmXML, {
+      const clipPts = "";
+      this.network = new JsStreetNetwork(osmXML, clipPts, {
         debug_each_step: false,
         dual_carriageway_experiment: false,
         cycletrack_snapping_experiment: false,

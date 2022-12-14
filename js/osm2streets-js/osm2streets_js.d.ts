@@ -23,9 +23,10 @@ export class JsStreetNetwork {
   free(): void;
 /**
 * @param {string} osm_xml_input
+* @param {string} clip_pts_geojson
 * @param {any} input
 */
-  constructor(osm_xml_input: string, input: any);
+  constructor(osm_xml_input: string, clip_pts_geojson: string, input: any);
 /**
 * @returns {string}
 */
@@ -89,7 +90,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_jsstreetnetwork_free: (a: number) => void;
-  readonly jsstreetnetwork_new: (a: number, b: number, c: number, d: number) => void;
+  readonly jsstreetnetwork_new: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
   readonly jsstreetnetwork_toGeojsonPlain: (a: number, b: number) => void;
   readonly jsstreetnetwork_toLanePolygonsGeojson: (a: number, b: number) => void;
   readonly jsstreetnetwork_toLaneMarkingsGeojson: (a: number, b: number) => void;

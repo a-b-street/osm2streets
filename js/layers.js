@@ -204,6 +204,10 @@ export const makeDebugLayer = (text) => {
   });
 };
 
+export const makeBoundaryLayer = (geojson) => {
+  return new L.geoJSON(geojson, { interactive: false });
+};
+
 export const layerMakers = {
   json: makePlainGeoJsonLayer,
   osm: makeOsmLayer,
