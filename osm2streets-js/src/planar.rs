@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use geo::Winding;
 use geom::{HashablePt2D, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
 
 use osm2streets::{RoadID, StreetNetwork};
@@ -19,13 +20,20 @@ enum EdgeID {
 struct Node {
     // Sorted clockwise
     edges: Vec<EdgeID>,
+
+    // TODO can we do RoadEdge::calculate type logic here?
 }
 
 impl Node {
-    // TODO Is this correct?
     fn next_edge(&self, this_node: Pt2D, oriented_edge: OrientedEdge, graph: &PlanarGraph) -> OrientedEdge {
         let idx = self.edges.iter().position(|x| *x == oriented_edge.edge).unwrap();
-        let offset = if oriented_edge.side == Side::Right {
+
+        // TODO Confusing... side is relative to direction too.
+        let mut side_for_offset = oriented_edge.side;
+        if oriented_edge.direction == Direction::Backwards {
+            side_for_offset = side_for_offset.opposite();
+        }
+        let offset = if side_for_offset == Side::Right {
             // Go counter-clockwise, because we're on the "inside"
             -1
         } else {
@@ -117,25 +125,31 @@ impl PlanarGraph {
 
     fn to_faces(&self) -> Vec<Face> {
         let mut faces = Vec::new();
-        for e in self.edges.keys() {
-            if *e != EdgeID::Road(RoadID(46)) {
-                //continue;
-            }
 
-            if let Some(face) = self.trace_face(*e, Side::Right) {
-                faces.push(face);
-                //break;
-            }
+        //faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right));
+        faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left));
+
+        for e in self.edges.keys() {
+            //faces.extend(self.trace_face(*e, Side::Right));
+            //faces.extend(self.trace_face(*e, Side::Left));
         }
         faces
     }
 
     fn trace_face(&self, start_edge: EdgeID, start_side: Side) -> Option<Face> {
-        // TODO Figure out which direction will let us go clockwise. I think side doesn't matter.
+        // Initial direction depends on the orientation of the edge! We MUST go clockwise.
+        let ls: geo::LineString = (&self.edges[&start_edge]).into();
+        // TODO Handle no winding order
+        let start_direction = if ls.is_cw() {
+            // The order is funny here because...
+            Direction::Backwards
+        } else {
+            Direction::Forwards
+        };
         let start = OrientedEdge {
             edge: start_edge,
             side: start_side,
-            direction: Direction::Forwards,
+            direction: start_direction,
         };
 
         let mut members = Vec::new();
@@ -144,6 +158,11 @@ impl PlanarGraph {
 
         let mut current = start.clone();
         loop {
+            // TODO bail out
+            if members.len() > 10 {
+                break;
+            }
+
             members.push(current.clone());
             if current == start && !pts.is_empty() {
                 pts.push(pts[0]);
@@ -180,6 +199,8 @@ struct Face {
 #[derive(Clone, PartialEq, Debug)]
 struct OrientedEdge {
     edge: EdgeID,
+    // side is ABSOLUTE to the original forwards orientation of the edge. NOT relative to the
+    // direction.
     side: Side,
     direction: Direction,
 }
