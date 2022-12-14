@@ -128,8 +128,8 @@ impl PlanarGraph {
     fn to_faces(&self) -> Vec<Face> {
         let mut faces = Vec::new();
 
-        faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right, Direction::Forwards));
-        faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left, Direction::Backwards));
+        //faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right, Direction::Forwards));
+        //faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left, Direction::Backwards));
 
         /*
         // Initial direction depends on the orientation of the edge! We MUST go clockwise.
@@ -144,8 +144,11 @@ impl PlanarGraph {
         */
 
         for e in self.edges.keys() {
-            //faces.extend(self.trace_face(*e, Side::Right));
-            //faces.extend(self.trace_face(*e, Side::Left));
+            for side in [Side::Left, Side::Right] {
+                for dir in [Direction::Forwards, Direction::Backwards] {
+                    faces.extend(self.trace_face(*e, side, dir));
+                }
+            }
         }
         faces
     }
