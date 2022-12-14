@@ -21,44 +21,19 @@ struct Node {
     // Sorted clockwise
     edges: Vec<EdgeID>,
 
-    // TODO can we do RoadEdge::calculate type logic here?
+    // NOTE the direction here is relative to pointing AT this thing
+    // if we can do the lookup... probably just by edge and side?
+    oriented_edges: Vec<OrientedEdge>,
 }
 
 impl Node {
     fn next_edge(&self, this_node: Pt2D, oriented_edge: OrientedEdge, graph: &PlanarGraph) -> OrientedEdge {
-        let idx = self.edges.iter().position(|x| *x == oriented_edge.edge).unwrap();
-
-        // TODO Confusing... side is relative to direction too.
-        let mut side_for_offset = oriented_edge.side;
-        if oriented_edge.direction == Direction::Backwards {
-            side_for_offset = side_for_offset.opposite();
-        }
-        let offset = if side_for_offset == Side::Right {
-            // Go counter-clockwise, because we're on the "inside"
-            -1
-        } else {
-            1
-        };
-        let next_edge = *abstutil::wraparound_get(&self.edges, idx as isize + offset);
-
-        let next_dir = if graph.edges[&next_edge].first_pt() == this_node {
-            Direction::Forwards
-        } else {
-            Direction::Backwards
-        };
-
-        let next_side = if next_dir == Direction::Forwards {
-            // TODO Right? Or the same?
-            oriented_edge.side
-        } else {
-            oriented_edge.side.opposite()
-        };
-
-        OrientedEdge {
-            edge: next_edge,
-            side: next_side,
-            direction: next_dir,
-        }
+        let idx = self.oriented_edges.iter().position(|x| *x == oriented_edge).unwrap() as isize;
+        // ALWAYS go counter-clockwise. Easy.
+        let mut next = abstutil::wraparound_get(&self.oriented_edges, idx - 1).clone();
+        // Always flip the direction. We just arrived at this node, now we're going away.
+        next.direction = next.direction.opposite();
+        next
     }
 }
 
@@ -75,7 +50,7 @@ impl PlanarGraph {
         let endpts = [pl.first_pt(), pl.last_pt()];
         self.edges.insert(id, pl);
         for endpt in endpts {
-            let node = self.nodes.entry(endpt.to_hashable()).or_insert_with(|| Node { edges: Vec::new() });
+            let node = self.nodes.entry(endpt.to_hashable()).or_insert_with(|| Node { edges: Vec::new(), oriented_edges: Vec::new() });
             node.edges.push(id);
 
             // Re-sort the node
@@ -107,6 +82,33 @@ impl PlanarGraph {
             });
 
             node.edges = pointing_to_node.into_iter().map(|(id, _, _)| id).collect();
+
+            // and then calculate the oriented edges, trusting the above
+            // this is RoadEdge::calculate logic
+            node.oriented_edges.clear();
+            for e in &node.edges {
+                let mut left = OrientedEdge {
+                    edge: *e,
+                    side: Side::Left,
+                    // Tmp
+                    direction: Direction::Forwards,
+                };
+                let mut right = OrientedEdge {
+                    edge: *e,
+                    side: Side::Right,
+                    // Tmp
+                    direction: Direction::Forwards,
+                };
+                if self.edges[e].first_pt() == endpt {
+                    left.direction = Direction::Backwards;
+                    right.direction = Direction::Backwards;
+                    node.oriented_edges.push(left);
+                    node.oriented_edges.push(right);
+                } else {
+                    node.oriented_edges.push(right);
+                    node.oriented_edges.push(left);
+                }
+            }
         }
     }
 
@@ -126,8 +128,20 @@ impl PlanarGraph {
     fn to_faces(&self) -> Vec<Face> {
         let mut faces = Vec::new();
 
-        //faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right));
-        faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left));
+        faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right, Direction::Forwards));
+        faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left, Direction::Backwards));
+
+        /*
+        // Initial direction depends on the orientation of the edge! We MUST go clockwise.
+        let ls: geo::LineString = (&self.edges[&start_edge]).into();
+        // TODO Handle no winding order
+        let start_direction = if ls.is_cw() {
+            // The order is funny here because...
+            Direction::Forwards
+        } else {
+            Direction::Backwards
+        };
+        */
 
         for e in self.edges.keys() {
             //faces.extend(self.trace_face(*e, Side::Right));
@@ -136,16 +150,7 @@ impl PlanarGraph {
         faces
     }
 
-    fn trace_face(&self, start_edge: EdgeID, start_side: Side) -> Option<Face> {
-        // Initial direction depends on the orientation of the edge! We MUST go clockwise.
-        let ls: geo::LineString = (&self.edges[&start_edge]).into();
-        // TODO Handle no winding order
-        let start_direction = if ls.is_cw() {
-            // The order is funny here because...
-            Direction::Backwards
-        } else {
-            Direction::Forwards
-        };
+    fn trace_face(&self, start_edge: EdgeID, start_side: Side, start_direction: Direction) -> Option<Face> {
         let start = OrientedEdge {
             edge: start_edge,
             side: start_side,
@@ -242,6 +247,14 @@ impl Side {
 enum Direction {
     Forwards,
     Backwards,
+}
+impl Direction {
+    fn opposite(self) -> Self {
+        match self {
+            Self::Forwards => Self::Backwards,
+            Self::Backwards => Self::Forwards,
+        }
+    }
 }
 
 fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
