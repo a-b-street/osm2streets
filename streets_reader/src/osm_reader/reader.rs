@@ -22,9 +22,13 @@ use super::{Document, Node, Relation, Way};
 
 impl Document {
     /// Parses raw OSM XML and extracts all objects.
-    pub fn read(raw_string: &str, input_gps_bounds: &GPSBounds, timer: &mut Timer) -> Result<Self> {
+    pub fn read(
+        raw_string: &str,
+        gps_bounds: Option<GPSBounds>,
+        timer: &mut Timer,
+    ) -> Result<Self> {
         let mut doc = Self {
-            gps_bounds: input_gps_bounds.clone(),
+            gps_bounds,
             nodes: BTreeMap::new(),
             ways: BTreeMap::new(),
             relations: BTreeMap::new(),
@@ -42,25 +46,27 @@ impl Document {
             match obj.name {
                 "bounds" => {
                     // If we weren't provided with GPSBounds, use this.
-                    if doc.gps_bounds != GPSBounds::new() {
+                    if doc.gps_bounds.is_some() {
                         continue;
                     }
-                    doc.gps_bounds.update(LonLat::new(
-                        obj.attribute("minlon").parse::<f64>().unwrap(),
-                        obj.attribute("minlat").parse::<f64>().unwrap(),
-                    ));
-                    doc.gps_bounds.update(LonLat::new(
-                        obj.attribute("maxlon").parse::<f64>().unwrap(),
-                        obj.attribute("maxlat").parse::<f64>().unwrap(),
-                    ));
+                    doc.gps_bounds = Some(GPSBounds::from(vec![
+                        LonLat::new(
+                            obj.attribute("minlon").parse::<f64>().unwrap(),
+                            obj.attribute("minlat").parse::<f64>().unwrap(),
+                        ),
+                        LonLat::new(
+                            obj.attribute("maxlon").parse::<f64>().unwrap(),
+                            obj.attribute("maxlat").parse::<f64>().unwrap(),
+                        ),
+                    ]));
                 }
                 "node" => {
-                    if doc.gps_bounds == GPSBounds::new() {
+                    if doc.gps_bounds.is_none() {
                         warn!(
                             "No clipping polygon provided and the .osm is missing a <bounds> element, \
                              so figuring out the bounds manually."
                         );
-                        doc.gps_bounds = scrape_bounds(raw_string);
+                        doc.gps_bounds = Some(scrape_bounds(raw_string));
                     }
 
                     let id = NodeID(obj.attribute("id").parse::<i64>().unwrap());
@@ -71,7 +77,7 @@ impl Document {
                         obj.attribute("lon").parse::<f64>().unwrap(),
                         obj.attribute("lat").parse::<f64>().unwrap(),
                     )
-                    .to_pt(&doc.gps_bounds);
+                    .to_pt(doc.gps_bounds.as_ref().unwrap());
                     let tags = read_tags(&mut reader);
                     doc.nodes.insert(id, Node { pt, tags });
                 }

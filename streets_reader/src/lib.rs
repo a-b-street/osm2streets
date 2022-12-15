@@ -13,13 +13,12 @@ pub use self::extract::OsmExtract;
 use osm_reader::Document;
 
 // TODO Clean up the public API of all of this
-mod clip;
 pub mod extract;
 pub mod osm_reader;
 pub mod split_ways;
 
 /// Create a `StreetNetwork` from the contents of an `.osm.xml` file. If `clip_pts` is specified,
-/// use theese as a boundary polygon. (Use `LonLat::read_osmosis_polygon` or similar to produce
+/// use theese as a boundary polygon. (Use `LonLat::read_geojson_polygon` or similar to produce
 /// these.)
 ///
 /// You probably want to do `StreetNetwork::apply_transformations` on the result to get a useful
@@ -50,16 +49,18 @@ fn extract_osm(
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
 ) -> Result<(OsmExtract, Document)> {
-    let mut doc = Document::read(osm_xml_input, &streets.gps_bounds, timer)?;
+    let mut doc = Document::read(
+        osm_xml_input,
+        clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
+        timer,
+    )?;
+    // If GPSBounds aren't provided above, they'll be computed in the Document
+    streets.gps_bounds = doc.gps_bounds.clone().unwrap();
 
     if let Some(pts) = clip_pts {
-        let gps_bounds = GPSBounds::from(pts.clone());
-        streets.boundary_polygon = Ring::new(gps_bounds.convert(&pts))?.into_polygon();
-        streets.gps_bounds = gps_bounds;
+        streets.boundary_polygon = Ring::new(streets.gps_bounds.convert(&pts))?.into_polygon();
         doc.clip(&streets.boundary_polygon);
     } else {
-        // Use the boundary from .osm.
-        streets.gps_bounds = doc.gps_bounds.clone();
         streets.boundary_polygon = streets.gps_bounds.to_bounds().get_rectangle();
         // No need to clip the Document in this case.
     }

@@ -494,6 +494,10 @@ impl Road {
 
         Some(pl)
     }
+
+    pub fn from_osm_way(&self, way: osm::WayID) -> bool {
+        self.osm_ids.iter().any(|id| id.osm_way_id == way)
+    }
 }
 
 impl StreetNetwork {

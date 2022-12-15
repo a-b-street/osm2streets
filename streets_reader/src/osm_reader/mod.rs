@@ -11,7 +11,8 @@ mod multipolygon;
 mod reader;
 
 pub struct Document {
-    pub gps_bounds: GPSBounds,
+    // This is guaranteed to be filled out after Document::read
+    pub gps_bounds: Option<GPSBounds>,
     pub nodes: BTreeMap<NodeID, Node>,
     pub ways: BTreeMap<WayID, Way>,
     pub relations: BTreeMap<RelationID, Relation>,
