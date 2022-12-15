@@ -1,16 +1,16 @@
-use std::collections::{btree_map::Entry, BTreeMap, HashMap};
+use std::collections::{hash_map::Entry, HashMap};
 
-use abstutil::{Counter, Tags, Timer};
-use geom::{Distance, HashablePt2D, PolyLine, Pt2D};
+use abstutil::{Counter, Timer};
+use geom::{HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    osm, Direction, IntersectionControl, IntersectionID, IntersectionKind, OriginalRoad, Road,
-    RoadID, StreetNetwork,
+    Direction, IntersectionControl, IntersectionID, IntersectionKind, OriginalRoad, Road, RoadID,
+    StreetNetwork,
 };
 
 use super::OsmExtract;
 
-/// Returns a mapping of all points to the split road. Some internal points on roads get removed
-/// here, so this mapping isn't redundant.
+/// Also returns a mapping of all points to the split road. Some internal points on roads get
+/// removed here, so this mapping isn't redundant.
 pub fn split_up_roads(
     streets: &mut StreetNetwork,
     mut input: OsmExtract,
@@ -18,79 +18,45 @@ pub fn split_up_roads(
 ) -> HashMap<HashablePt2D, RoadID> {
     timer.start("splitting up roads");
 
-    let mut roundabout_centers: Vec<(Pt2D, Vec<osm::NodeID>)> = Vec::new();
-    // Note we iterate over this later and assign IDs based on the order, so HashMap would be
-    // non-deterministic
-    let mut pt_to_intersection: BTreeMap<HashablePt2D, osm::NodeID> = BTreeMap::new();
+    // Note all logic here is based on treating points as HashablePt2D, not as OSM node IDs. That's
+    // because some members of way.pts might be synthetic, from clipping.
 
-    input.roads.retain(|(id, pts, tags)| {
-        if should_collapse_roundabout(pts, tags) {
-            info!("Collapsing tiny roundabout {}", id);
-
-            let ids: Vec<osm::NodeID> = pts
-                .iter()
-                .map(|pt| input.osm_node_ids[&pt.to_hashable()])
-                .collect();
-
-            // Arbitrarily use the first node's ID
-            // TODO Test more carefully after opaque IDs
-            let id = ids[0];
-
-            for pt in pts {
-                pt_to_intersection.insert(pt.to_hashable(), id);
-            }
-
-            roundabout_centers.push((Pt2D::center(pts), ids));
-
-            false
-        } else {
-            true
-        }
-    });
-
+    // Create intersections for any points shared by at least 2 roads, and for endpoints of every
+    // road.
     let mut counts_per_pt = Counter::new();
+    let mut pt_to_intersection_id: HashMap<HashablePt2D, IntersectionID> = HashMap::new();
     for (_, pts, _) in &input.roads {
-        for (idx, raw_pt) in pts.iter().enumerate() {
-            let pt = raw_pt.to_hashable();
-            let count = counts_per_pt.inc(pt);
+        for (idx, pt) in pts.iter().enumerate() {
+            let hash_pt = pt.to_hashable();
+            let count = counts_per_pt.inc(hash_pt);
 
-            // All start and endpoints of ways are also intersections.
             if count == 2 || idx == 0 || idx == pts.len() - 1 {
-                if let Entry::Vacant(e) = pt_to_intersection.entry(pt) {
-                    let id = input.osm_node_ids[&pt];
-                    e.insert(id);
+                if let Entry::Vacant(entry) = pt_to_intersection_id.entry(hash_pt) {
+                    // Clipped points won't have any OSM ID.
+                    let mut osm_ids = Vec::new();
+                    if let Some(node_id) = input.osm_node_ids.get(&hash_pt) {
+                        osm_ids.push(*node_id);
+                    }
+
+                    let kind = if osm_ids.is_empty() {
+                        IntersectionKind::MapEdge
+                    } else {
+                        // Assume a complicated intersection, until we determine otherwise
+                        IntersectionKind::Intersection
+                    };
+                    let control = if osm_ids.is_empty() {
+                        IntersectionControl::Uncontrolled
+                    } else if input.traffic_signals.remove(&hash_pt).is_some() {
+                        IntersectionControl::Signalled
+                    } else {
+                        // TODO default to uncontrolled, guess StopSign as a transform
+                        IntersectionControl::Signed
+                    };
+
+                    let id = streets.insert_intersection(osm_ids, *pt, kind, control);
+                    entry.insert(id);
                 }
             }
-        }
-    }
-
-    let mut osm_id_to_id: HashMap<osm::NodeID, IntersectionID> = HashMap::new();
-    for (pt, osm_id) in &pt_to_intersection {
-        let id = streets.insert_intersection(
-            vec![*osm_id],
-            pt.to_pt2d(),
-            // Assume a complicated intersection, until we determine otherwise.
-            IntersectionKind::Intersection,
-            if input.traffic_signals.remove(pt).is_some() {
-                IntersectionControl::Signalled
-            } else {
-                // TODO default to uncontrolled, guess StopSign as a transform
-                IntersectionControl::Signed
-            },
-        );
-        osm_id_to_id.insert(*osm_id, id);
-    }
-
-    // Set roundabouts to their center
-    for (pt, osm_ids) in roundabout_centers {
-        let id = streets.insert_intersection(
-            osm_ids.clone(),
-            pt,
-            IntersectionKind::Intersection,
-            IntersectionControl::Signed,
-        );
-        for osm_id in osm_ids {
-            osm_id_to_id.insert(osm_id, id);
         }
     }
 
@@ -102,15 +68,14 @@ pub fn split_up_roads(
         timer.next();
         let mut tags = orig_tags.clone();
         let mut pts = Vec::new();
-        let endpt1 = pt_to_intersection[&orig_pts[0].to_hashable()];
-        let mut i1 = endpt1;
+        let mut i1 = pt_to_intersection_id[&orig_pts[0].to_hashable()];
 
         for pt in orig_pts {
             pts.push(*pt);
             if pts.len() == 1 {
                 continue;
             }
-            if let Some(i2) = pt_to_intersection.get(&pt.to_hashable()) {
+            if let Some(i2) = pt_to_intersection_id.get(&pt.to_hashable()) {
                 let id = streets.next_road_id();
 
                 // Note we populate this before simplify_linestring, so even if some points are
@@ -121,37 +86,29 @@ pub fn split_up_roads(
                     }
                 }
 
+                let i1_node_id = input.osm_node_ids.get(&pts[0].to_hashable()).cloned();
+                let i2_node_id = input.osm_node_ids.get(&pt.to_hashable()).cloned();
+
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
+                        // TODO If either endpoint is on the boundary, we won't record any OSM ID.
+                        // Should we just store WayID and not OriginalRoad?
+                        let mut osm_ids = Vec::new();
+                        if let (Some(i1_node), Some(i2_node)) = (i1_node_id, i2_node_id) {
+                            osm_ids.push(OriginalRoad {
+                                osm_way_id: *osm_way_id,
+                                i1: i1_node,
+                                i2: i2_node,
+                            });
+                        }
+
                         streets.roads.insert(
                             id,
-                            Road::new(
-                                id,
-                                vec![OriginalRoad {
-                                    osm_way_id: *osm_way_id,
-                                    i1,
-                                    i2: *i2,
-                                }],
-                                osm_id_to_id[&i1],
-                                osm_id_to_id[i2],
-                                pl,
-                                tags,
-                                &streets.config,
-                            ),
+                            Road::new(id, osm_ids, i1, *i2, pl, tags, &streets.config),
                         );
-                        streets
-                            .intersections
-                            .get_mut(&osm_id_to_id[&i1])
-                            .unwrap()
-                            .roads
-                            .push(id);
-                        streets
-                            .intersections
-                            .get_mut(&osm_id_to_id[i2])
-                            .unwrap()
-                            .roads
-                            .push(id);
+                        streets.intersections.get_mut(&i1).unwrap().roads.push(id);
+                        streets.intersections.get_mut(&i2).unwrap().roads.push(id);
                     }
                     Err(err) => {
                         error!("Skipping {id}: {err}");
@@ -173,8 +130,12 @@ pub fn split_up_roads(
     let mut restrictions = Vec::new();
     for (restriction, from_osm, via_osm, to_osm) in input.simple_turn_restrictions {
         // A via node might not be an intersection
-        let via_id = if let Some(x) = osm_id_to_id.get(&via_osm) {
-            *x
+        let via_id = if let Some(i) = streets
+            .intersections
+            .values()
+            .find(|i| i.osm_ids.contains(&via_osm))
+        {
+            i.id
         } else {
             continue;
         };
@@ -185,8 +146,8 @@ pub fn split_up_roads(
         // If some of the roads are missing, they were likely filtered out -- usually service
         // roads.
         if let (Some(from), Some(to)) = (
-            roads.iter().find(|r| r.osm_ids[0].osm_way_id == from_osm),
-            roads.iter().find(|r| r.osm_ids[0].osm_way_id == to_osm),
+            roads.iter().find(|r| r.from_osm_way(from_osm)),
+            roads.iter().find(|r| r.from_osm_way(to_osm)),
         ) {
             restrictions.push((from.id, restriction, to.id));
         }
@@ -207,13 +168,11 @@ pub fn split_up_roads(
         let via_candidates: Vec<&Road> = streets
             .roads
             .values()
-            .filter(|r| r.osm_ids[0].osm_way_id == via_osm)
+            .filter(|r| r.from_osm_way(via_osm))
             .collect();
         if via_candidates.len() != 1 {
             warn!(
-                "Couldn't resolve turn restriction from way {} to way {} via way {}. Candidate \
-                 roads for via: {:?}. See {}",
-                from_osm, to_osm, via_osm, via_candidates, rel_osm
+                "Couldn't resolve turn restriction from way {from_osm} to way {to_osm} via way {via_osm}. Candidate roads for via: {:?}. See {rel_osm}", via_candidates
             );
             continue;
         }
@@ -223,20 +182,20 @@ pub fn split_up_roads(
             .roads_per_intersection(via.src_i)
             .into_iter()
             .chain(streets.roads_per_intersection(via.dst_i).into_iter())
-            .find(|r| r.osm_ids[0].osm_way_id == from_osm);
+            .find(|r| r.from_osm_way(from_osm));
         let maybe_to = streets
             .roads_per_intersection(via.src_i)
             .into_iter()
             .chain(streets.roads_per_intersection(via.dst_i).into_iter())
-            .find(|r| r.osm_ids[0].osm_way_id == to_osm);
+            .find(|r| r.from_osm_way(to_osm));
         match (maybe_from, maybe_to) {
             (Some(from), Some(to)) => {
                 complicated_restrictions.push((from.id, via.id, to.id));
             }
             _ => {
                 warn!(
-                    "Couldn't resolve turn restriction from {} to {} via {:?}",
-                    from_osm, to_osm, via
+                    "Couldn't resolve turn restriction from {from_osm} to {to_osm} via {:?}",
+                    via
                 );
             }
         }
@@ -273,8 +232,8 @@ pub fn split_up_roads(
     timer.stop("match traffic signals to intersections");
 
     timer.start("calculate intersection movements");
-    let intersection_ids = osm_id_to_id.values();
-    for &i in intersection_ids {
+    let intersection_ids: Vec<_> = streets.intersections.keys().cloned().collect();
+    for i in intersection_ids {
         streets.sort_roads(i);
         streets.update_movements(i);
     }
@@ -297,16 +256,4 @@ fn simplify_linestring(pts: Vec<Pt2D>) -> Vec<Pt2D> {
     // places where they were already pretty broken.
     let epsilon = 0.5;
     Pt2D::simplify_rdp(pts, epsilon)
-}
-
-/// Many "roundabouts" like https://www.openstreetmap.org/way/427144965 are so tiny that they wind
-/// up with ridiculous geometry, cause constant gridlock, and prevent merging adjacent blocks.
-///
-/// Note https://www.openstreetmap.org/way/394991047 is an example of something that shouldn't get
-/// modified. The only distinction, currently, is length -- but I'd love a better definition.
-/// Possibly the number of connecting roads.
-fn should_collapse_roundabout(pts: &[Pt2D], tags: &Tags) -> bool {
-    tags.is_any("junction", vec!["roundabout", "circular"])
-        && pts[0] == *pts.last().unwrap()
-        && PolyLine::unchecked_new(pts.to_vec()).length() < Distance::meters(50.0)
 }
