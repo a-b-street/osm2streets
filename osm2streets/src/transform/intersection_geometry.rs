@@ -23,19 +23,11 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
-                for (r, pl) in results.trimmed_center_pts {
-                    let road = streets.roads.get_mut(&r).unwrap();
-                    // Normally this'll be positive, indicating trim. If it's negative, the
-                    // algorithm extended the first or last line
-                    let trim = road
-                        .get_untrimmed_center_line(streets.config.driving_side)
-                        .length()
-                        - pl.length();
-                    if road.src_i == i.id {
-                        road.trim_start = trim;
-                    } else {
-                        road.trim_end = trim;
-                    }
+                for (r, dist) in results.trim_starts {
+                    streets.roads.get_mut(&r).unwrap().trim_start = dist;
+                }
+                for (r, dist) in results.trim_ends {
+                    streets.roads.get_mut(&r).unwrap().trim_end = dist;
                 }
                 for (pt, label) in results.debug {
                     streets.debug_point(pt, label);

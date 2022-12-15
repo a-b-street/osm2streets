@@ -164,7 +164,11 @@ impl StreetNetwork {
                 &BTreeMap::new(),
             )
             .ok()?;
-            trims.push(untrimmed.length() - results.trimmed_center_pts[&road_id].length());
+            trims.push(if i == orig_road.src_i {
+                results.trim_starts[&road_id]
+            } else {
+                results.trim_ends[&road_id]
+            });
         }
 
         Road::trim_polyline_both_ends(untrimmed, trims[0], trims[1])

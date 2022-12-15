@@ -84,8 +84,11 @@ pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
     /// The only transformation to `center_line` passed in must be to trim it (reducing the length)
-    /// or to lengthen the first/last line.
-    pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
+    /// or to lengthen the first/last line. `trim_starts` and `trim_ends` are calculated from this,
+    /// and the caller deliberately can't see `trimmed_center_pts`.
+    trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
+    pub trim_starts: BTreeMap<RoadID, Distance>,
+    pub trim_ends: BTreeMap<RoadID, Distance>,
     /// Extra points with labels to debug the algorithm
     pub debug: Vec<(Pt2D, String)>,
 }
@@ -115,9 +118,12 @@ pub fn intersection_polygon(
         intersection_polygon: Polygon::dummy(),
         debug: Vec::new(),
         trimmed_center_pts: BTreeMap::new(),
+        trim_starts: BTreeMap::new(),
+        trim_ends: BTreeMap::new(),
     };
+    let mut untrimmed_roads = roads.clone();
 
-    if roads.len() == 1 {
+    let mut results = if roads.len() == 1 {
         terminus::terminus(results, roads.into_values().next().unwrap())
     } else if roads.len() == 2 {
         let mut iter = roads.into_values();
@@ -130,7 +136,22 @@ pub fn intersection_polygon(
         Ok(result)
     } else {
         general_case::trim_to_corners(results, roads, sorted_roads)
+    }?;
+
+    // We've filled out trimmed_center_pts, now calculate trim_starts and trim_ends
+    for (r, pl) in &results.trimmed_center_pts {
+        // Normally this'll be positive, indicating trim. If it's negative, the algorithm extended
+        // the first or last line
+        let road = untrimmed_roads.remove(r).unwrap();
+        let trim = road.center_line.length() - pl.length();
+        if road.src_i == intersection_id {
+            results.trim_starts.insert(*r, trim);
+        } else {
+            results.trim_ends.insert(*r, trim);
+        }
     }
+
+    Ok(results)
 }
 
 /// After trimming roads back, form the final polygon using the endpoints of each road edge and
