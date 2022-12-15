@@ -11,6 +11,8 @@ use crate::MapConfig;
 
 pub struct OsmExtract {
     /// Unsplit roads. These aren't Roads yet, because they may not obey those invariants.
+    /// Note there may be multiple entries here with the same WayID. Effectively those have been
+    /// partly pre-split.
     pub roads: Vec<(WayID, Vec<Pt2D>, Tags)>,
     /// Traffic signals to the direction they apply
     pub traffic_signals: HashMap<HashablePt2D, Direction>,

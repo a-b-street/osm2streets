@@ -32,6 +32,7 @@ impl Document {
             nodes: BTreeMap::new(),
             ways: BTreeMap::new(),
             relations: BTreeMap::new(),
+            clipped_copied_ways: Vec::new(),
         };
 
         // We use the lower-level xmlparser instead of roxmltree to reduce peak memory usage in

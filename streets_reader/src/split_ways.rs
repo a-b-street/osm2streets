@@ -38,6 +38,8 @@ pub fn split_up_roads(
                         osm_ids.push(*node_id);
                     }
 
+                    // TODO If there happens to be an OSM node defined RIGHT where a boundary is
+                    // drawn, we might not detect it as a MapEdge?
                     let kind = if osm_ids.is_empty() {
                         IntersectionKind::MapEdge
                     } else {

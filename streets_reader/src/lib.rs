@@ -86,6 +86,14 @@ fn extract_osm(
         timer.next();
         out.handle_way(*id, way, &streets.config);
     }
+    timer.start_iter(
+        "processing OSM ways split into pieces",
+        doc.clipped_copied_ways.len(),
+    );
+    for (id, way) in &doc.clipped_copied_ways {
+        timer.next();
+        out.handle_way(*id, way, &streets.config);
+    }
 
     timer.start_iter("processing OSM relations", doc.relations.len());
     for (id, rel) in &doc.relations {
