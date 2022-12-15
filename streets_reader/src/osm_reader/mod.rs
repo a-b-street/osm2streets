@@ -16,6 +16,9 @@ pub struct Document {
     pub nodes: BTreeMap<NodeID, Node>,
     pub ways: BTreeMap<WayID, Way>,
     pub relations: BTreeMap<RelationID, Relation>,
+
+    /// These ways share a WayID, but each have different pts
+    pub clipped_copied_ways: Vec<(WayID, Way)>,
 }
 
 pub struct Node {
@@ -23,6 +26,7 @@ pub struct Node {
     pub tags: Tags,
 }
 
+#[derive(Clone)]
 pub struct Way {
     // Duplicates geometry, because it's convenient
     pub nodes: Vec<NodeID>,
