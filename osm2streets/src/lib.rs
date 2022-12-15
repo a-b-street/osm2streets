@@ -6,7 +6,6 @@ extern crate log;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 
-use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap};
@@ -147,47 +146,28 @@ impl StreetNetwork {
 
     /// This calculates a road's `trimmed_center_line` early, before
     /// `Transformation::GenerateIntersectionGeometry` has run. Use sparingly.
-    pub(crate) fn estimate_trimmed_geometry(&self, road_id: RoadID) -> Result<PolyLine> {
-        let endpts = self.roads[&road_id].endpoints();
+    // TODO Remove and maintain trim_start/end instead
+    pub(crate) fn estimate_trimmed_geometry(&self, road_id: RoadID) -> Option<PolyLine> {
+        let orig_road = &self.roads[&road_id];
+        let untrimmed = orig_road.get_untrimmed_center_line(self.config.driving_side);
 
-        // First trim at one of the endpoints
-        let trimmed_center_pts = {
+        let mut trims = Vec::new();
+        for i in [orig_road.src_i, orig_road.dst_i] {
             let mut input_roads = Vec::new();
-            for road in self.roads_per_intersection(endpts[0]) {
-                // Make sure center_line is correct
-                let mut copy = road.clone();
-                copy.update_center_line(self.config.driving_side);
-                input_roads.push(copy.to_input_road());
+            for road in self.roads_per_intersection(i) {
+                input_roads.push(road.to_input_road(self.config.driving_side));
             }
-            let mut results = intersection_polygon(
-                endpts[0],
+            let results = intersection_polygon(
+                i,
                 input_roads,
                 // TODO Not sure if we should use this or not
                 &BTreeMap::new(),
-            )?;
-            results.trimmed_center_pts.remove(&road_id).unwrap()
-        };
-
-        // Now the second
-        {
-            let mut input_roads = Vec::new();
-            for road in self.roads_per_intersection(endpts[1]) {
-                let mut copy = road.clone();
-                if road.id == road_id {
-                    copy.center_line = trimmed_center_pts.clone();
-                } else {
-                    copy.update_center_line(self.config.driving_side);
-                }
-                input_roads.push(copy.to_input_road());
-            }
-            let mut results = intersection_polygon(
-                endpts[1],
-                input_roads,
-                // TODO Not sure if we should use this or not
-                &BTreeMap::new(),
-            )?;
-            Ok(results.trimmed_center_pts.remove(&road_id).unwrap())
+            )
+            .ok()?;
+            trims.push(untrimmed.length() - results.trimmed_center_pts[&road_id].length());
         }
+
+        Road::trim_polyline_both_ends(untrimmed, trims[0], trims[1])
     }
 
     pub(crate) fn start_debug_step<I: Into<String>>(&self, label: I) {
