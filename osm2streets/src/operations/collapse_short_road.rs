@@ -61,7 +61,7 @@ impl StreetNetwork {
                         continue;
                     }
 
-                    if let Ok(pl) = self.estimate_trimmed_geometry(road.id) {
+                    if let Some(pl) = self.estimate_trimmed_geometry(road.id) {
                         if road.src_i == i {
                             if trim_roads_for_merging.contains_key(&(road.id, true)) {
                                 panic!(

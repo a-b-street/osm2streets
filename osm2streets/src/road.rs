@@ -45,6 +45,11 @@ pub struct Road {
     /// offset based on reference_line_placement and trimmed by
     /// `Transformation::GenerateIntersectionGeometry`.
     pub center_line: PolyLine,
+    /// How much to trim from the start of `get_untrimmed_center_line`. Negative means to instead
+    /// extend the first line.
+    pub trim_start: Distance,
+    pub trim_end: Distance,
+
     pub turn_restrictions: Vec<(RestrictionType, RoadID)>,
     /// (via, to). For turn restrictions where 'via' is an entire road. Only BanTurns.
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
@@ -99,6 +104,8 @@ impl Road {
             reference_line,
             reference_line_placement: placement,
             center_line: PolyLine::dummy(),
+            trim_start: Distance::ZERO,
+            trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
 
@@ -112,6 +119,11 @@ impl Road {
     /// Calculates and sets the center_line from reference_line, reference_line_placement
     /// (and TODO trim_start, trim_end).
     pub fn update_center_line(&mut self, driving_side: DrivingSide) {
+        self.center_line = self.get_untrimmed_center_line(driving_side);
+    }
+
+    /// Calculates the center_line from reference_line, reference_line_placement
+    pub fn get_untrimmed_center_line(&self, driving_side: DrivingSide) -> PolyLine {
         let ref_position = match self.reference_line_placement {
             Placement::Consistent(p) => p,
             Placement::Varying(p, _) => {
@@ -127,13 +139,12 @@ impl Road {
         let ref_offset = self.left_edge_offset_of(ref_position, driving_side);
         let target_offset = self.left_edge_offset_of(RoadPosition::FullWidthCenter, driving_side);
 
-        self.center_line = self
-            .reference_line
+        self.reference_line
             .shift_either_direction(target_offset - ref_offset)
             .unwrap_or_else(|_| {
                 warn!("resulting center_line is degenerate!");
                 self.reference_line.clone()
-            });
+            })
     }
 
     pub fn is_light_rail(&self) -> bool {
@@ -425,12 +436,13 @@ impl Road {
         vec![self.src_i, self.dst_i]
     }
 
-    pub(crate) fn to_input_road(&self) -> InputRoad {
+    pub(crate) fn to_input_road(&self, driving_side: DrivingSide) -> InputRoad {
         InputRoad {
             id: self.id,
             src_i: self.src_i,
             dst_i: self.dst_i,
-            center_line: self.center_line.clone(),
+            // Always pass in the untrimmed center
+            center_line: self.get_untrimmed_center_line(driving_side),
             total_width: self.total_width(),
             highway_type: self.highway_type.clone(),
         }
@@ -442,6 +454,45 @@ impl Road {
 
     pub fn common_endpoint(&self, other: &Road) -> CommonEndpoint {
         CommonEndpoint::new((self.src_i, self.dst_i), (other.src_i, other.dst_i))
+    }
+
+    /// This trims a polyline on both ends. Positive trim distances mean to shorten the polyline,
+    /// and negative mean to extend the polyline in a straight line by some amount. If this returns
+    /// `None`, then the two trim distances are incompatible -- the entire polyline disappears.
+    ///
+    /// TODO Maybe move this to PolyLine directly. This is a utility method currently for A/B
+    /// Street road editing to also use.
+    pub fn trim_polyline_both_ends(
+        mut pl: PolyLine,
+        trim_start: Distance,
+        trim_end: Distance,
+    ) -> Option<PolyLine> {
+        // The two ends trimmed past each other
+        if trim_start + trim_end > pl.length() {
+            return None;
+        }
+
+        // Note we use maybe_exact_slice and bail out upon failure of the resulting line being too
+        // small. This is effectively the same case as above; the final trimmed result ends up
+        // being too close to empty.
+        if trim_start > Distance::ZERO {
+            pl = pl.maybe_exact_slice(trim_start, pl.length()).ok()?;
+        } else if trim_start < Distance::ZERO {
+            pl = pl
+                .reversed()
+                .extend_to_length(pl.length() - trim_start)
+                .reversed();
+        }
+
+        if trim_end > Distance::ZERO {
+            pl = pl
+                .maybe_exact_slice(Distance::ZERO, pl.length() - trim_end)
+                .ok()?;
+        } else if trim_end < Distance::ZERO {
+            pl = pl.extend_to_length(pl.length() - trim_end);
+        }
+
+        Some(pl)
     }
 }
 

@@ -30,8 +30,7 @@ pub struct InputRoad {
     pub id: RoadID,
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
-    /// The true center of the road, including sidewalks. The input is untrimmed when called on the
-    /// first endpoint, then trimmed on that first side when called on the second endpoint.
+    /// The true center of the road, including sidewalks. This must be untrimmed on both ends when passed in.
     pub center_line: PolyLine,
     pub total_width: Distance,
     pub highway_type: String,
@@ -72,6 +71,8 @@ impl InputRoad {
             layer: 0,
             reference_line: PolyLine::dummy(),
             reference_line_placement: crate::lanes::Placement::Transition,
+            trim_start: Distance::ZERO,
+            trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
         }
@@ -82,6 +83,8 @@ impl InputRoad {
 pub struct Results {
     pub intersection_id: IntersectionID,
     pub intersection_polygon: Polygon,
+    /// The only transformation to `center_line` passed in must be to trim it (reducing the length)
+    /// or to lengthen the first/last line.
     pub trimmed_center_pts: BTreeMap<RoadID, PolyLine>,
     /// Extra points with labels to debug the algorithm
     pub debug: Vec<(Pt2D, String)>,

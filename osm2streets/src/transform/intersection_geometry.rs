@@ -1,36 +1,41 @@
 use abstutil::Timer;
 use geom::{Circle, Distance};
 
-use crate::{IntersectionControl, StreetNetwork};
+use crate::{Road, StreetNetwork};
 
 pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
-    // TODO intersection_polygon assumes untrimmed lines as input, so reset here. Once we always
-    // maintain a trimmed center_line and this transformation goes away entirely, we'll have to
-    // revisit how this works.
-    for road in streets.roads.values_mut() {
-        road.update_center_line(streets.config.driving_side);
-    }
-
-    let mut remove_dangling_nodes = Vec::new();
     timer.start_iter(
         "find each intersection polygon",
         streets.intersections.len(),
     );
     // It'd be nice to mutate in the loop, but the borrow checker won't let us
+    let mut remove_dangling_nodes = Vec::new();
     let mut set_polygons = Vec::new();
-    let mut make_stop_signs = Vec::new();
+
+    // Set trim distances for all roads
     for i in streets.intersections.values() {
         timer.next();
         let input_roads = i
             .roads
             .iter()
-            .map(|r| streets.roads[r].to_input_road())
+            .map(|r| streets.roads[r].to_input_road(streets.config.driving_side))
             .collect::<Vec<_>>();
         match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 set_polygons.push((i.id, results.intersection_polygon));
                 for (r, pl) in results.trimmed_center_pts {
-                    streets.roads.get_mut(&r).unwrap().center_line = pl;
+                    let road = streets.roads.get_mut(&r).unwrap();
+                    // Normally this'll be positive, indicating trim. If it's negative, the
+                    // algorithm extended the first or last line
+                    let trim = road
+                        .get_untrimmed_center_line(streets.config.driving_side)
+                        .length()
+                        - pl.length();
+                    if road.src_i == i.id {
+                        road.trim_start = trim;
+                    } else {
+                        road.trim_end = trim;
+                    }
                 }
                 for (pt, label) in results.debug {
                     streets.debug_point(pt, label);
@@ -49,20 +54,28 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
                         road.center_line.last_pt()
                     };
                     set_polygons.push((i.id, Circle::new(pt, Distance::meters(3.0)).to_polygon()));
-
-                    // Also don't attempt to make Movements later!
-                    make_stop_signs.push(i.id);
                 } else {
                     remove_dangling_nodes.push(i.id);
                 }
             }
         }
     }
+
+    for road in streets.roads.values_mut() {
+        let untrimmed = road.get_untrimmed_center_line(streets.config.driving_side);
+        if let Some(pl) =
+            Road::trim_polyline_both_ends(untrimmed.clone(), road.trim_start, road.trim_end)
+        {
+            road.center_line = pl;
+        } else {
+            // TODO Mark for collapsing?
+            error!("{} got trimmed into oblivion", road.id);
+            road.center_line = untrimmed;
+        }
+    }
+
     for (i, polygon) in set_polygons {
         streets.intersections.get_mut(&i).unwrap().polygon = polygon;
-    }
-    for i in make_stop_signs {
-        streets.intersections.get_mut(&i).unwrap().control = IntersectionControl::Signed;
     }
     for i in remove_dangling_nodes {
         streets.intersections.remove(&i).unwrap();
