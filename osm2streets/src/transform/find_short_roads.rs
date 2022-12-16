@@ -1,6 +1,6 @@
 use geom::Distance;
 
-use crate::{IntersectionControl, Road, RoadID, StreetNetwork};
+use crate::{IntersectionControl, RoadID, StreetNetwork};
 
 /// Combines a few different sources/methods to decide which roads are short. Marks them for
 /// merging.
@@ -19,11 +19,6 @@ pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> V
         if consolidate_all && distance_heuristic(*id, streets) {
             roads.push(*id);
         }
-    }
-
-    // Gradually rolling out
-    if streets.config.find_dog_legs_experiment {
-        roads.extend(streets.find_dog_legs());
     }
 
     // Use this to quickly test overrides to some ways before upstreaming in OSM. Since these IDs
@@ -99,84 +94,4 @@ impl StreetNetwork {
 
         self.mark_short_roads(results)
     }
-
-    /// A heuristic to find short roads in places that would otherwise be a normal four-way
-    /// intersection
-    ///
-    /// ```text
-    ///       |
-    ///       |
-    /// ---X~~X----
-    ///    |
-    ///    |
-    /// ```
-    ///
-    /// The ~~ is the short road we want to detect
-    pub fn find_dog_legs(&mut self) -> Vec<RoadID> {
-        let threshold = Distance::meters(5.0);
-
-        let mut results = Vec::new();
-        'ROAD: for road in self.roads.values() {
-            let road_length = if let Some(pl) = self.estimate_trimmed_geometry(road.id) {
-                pl.length()
-            } else {
-                continue;
-            };
-            if road_length > threshold {
-                continue;
-            }
-
-            for i in road.endpoints() {
-                let connections = self.roads_per_intersection(i);
-                if connections.len() != 3 {
-                    continue 'ROAD;
-                }
-                for connection in &connections {
-                    // Are both intersections 3-ways of driveable roads? (Don't even attempt
-                    // cycleways yet...)
-                    if !connection.is_driveable() {
-                        continue 'ROAD;
-                    }
-                    // Don't do anything near map edge intersections
-                    if self.intersections[&connection.src_i].is_map_edge()
-                        || self.intersections[&connection.dst_i].is_map_edge()
-                    {
-                        continue 'ROAD;
-                    }
-                }
-
-                // Don't touch the point where dual carriageways split/join, like
-                // https://www.openstreetmap.org/node/496331163
-                if dual_carriageway_split(connections) {
-                    continue 'ROAD;
-                }
-            }
-
-            results.push(road.id);
-        }
-        self.mark_short_roads(results)
-    }
-}
-
-// TODO Dedupe with find_divided_highways logic in parking_mapper
-fn dual_carriageway_split(roads: Vec<&Road>) -> bool {
-    assert_eq!(roads.len(), 3);
-    // Look for one-way roads with the same name
-    for (road1, road2) in [
-        (roads[0], roads[1]),
-        (roads[0], roads[2]),
-        (roads[1], roads[2]),
-    ] {
-        if road1.oneway_for_driving().is_some()
-            && road2.oneway_for_driving().is_some()
-            && road1.name == road2.name
-        {
-            // If they're about the same angle, it's probably not a join/split
-            let within_degrees = 30.0;
-            if !road1.angle().approx_eq(road2.angle(), within_degrees) {
-                return true;
-            }
-        }
-    }
-    false
 }

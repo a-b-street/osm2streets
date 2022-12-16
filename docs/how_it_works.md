@@ -87,15 +87,6 @@ There are a few heuristics, all experimental:
 
 - if the trimmed road geometry is short
 - if the road is short and connects two traffic signals
-- the short `~~` piece in "dog-leg" intersections:
-
-```text                                                                                      
-      |
-      |
----X~~X----
-   |
-   |
-```
 
 ### CollapseShortRoads
 
@@ -125,3 +116,5 @@ TODO. Explain branches and bridges.
 ### GenerateIntersectionGeometry
 
 Along with `ClassifyIntersections`, this is the most important transformation (and maybe should be expressed differently). For every intersection, it runs through [this algorithm](https://a-b-street.github.io/docs/tech/map/geometry/index.html). Road center-lines get "trimmed" back from the intersection, and the intersection gets a polygon.
+
+This process trims every road on both ends. Sometimes the trims overlap and the road disappears entirely. In that case, we mark the road as `internal_junction_road` and remove it entirely with a later pass of `CollapseShortRoads`.
