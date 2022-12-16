@@ -46,7 +46,9 @@
       },
       "properties": {
         "dst_i": 1,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4637378
+        ],
         "src_i": 0,
         "type": "road"
       },
@@ -90,7 +92,9 @@
       },
       "properties": {
         "dst_i": 3,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4644156
+        ],
         "src_i": 2,
         "type": "road"
       },
@@ -188,7 +192,9 @@
       },
       "properties": {
         "dst_i": 0,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4644167
+        ],
         "src_i": 6,
         "type": "road"
       },
@@ -286,7 +292,9 @@
       },
       "properties": {
         "dst_i": 10,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4725116
+        ],
         "src_i": 9,
         "type": "road"
       },
@@ -322,7 +330,9 @@
       },
       "properties": {
         "dst_i": 12,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4869147
+        ],
         "src_i": 11,
         "type": "road"
       },
@@ -366,7 +376,9 @@
       },
       "properties": {
         "dst_i": 13,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4869148
+        ],
         "src_i": 0,
         "type": "road"
       },
@@ -402,7 +414,9 @@
       },
       "properties": {
         "dst_i": 15,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          4915352
+        ],
         "src_i": 14,
         "type": "road"
       },
@@ -552,7 +566,9 @@
       },
       "properties": {
         "dst_i": 18,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          6412023
+        ],
         "src_i": 16,
         "type": "road"
       },
@@ -736,7 +752,9 @@
       },
       "properties": {
         "dst_i": 25,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          39948315
+        ],
         "src_i": 21,
         "type": "road"
       },
@@ -986,7 +1004,9 @@
       },
       "properties": {
         "dst_i": 23,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          163631482
+        ],
         "src_i": 30,
         "type": "road"
       },
@@ -1022,7 +1042,9 @@
       },
       "properties": {
         "dst_i": 2,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          175933057
+        ],
         "src_i": 31,
         "type": "road"
       },
@@ -1066,7 +1088,9 @@
       },
       "properties": {
         "dst_i": 21,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          177678723
+        ],
         "src_i": 32,
         "type": "road"
       },
@@ -1157,6 +1181,7 @@
       "properties": {
         "dst_i": 34,
         "osm_way_ids": [
+          305036669,
           305036669
         ],
         "src_i": 15,
@@ -1194,7 +1219,9 @@
       },
       "properties": {
         "dst_i": 17,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          331907114
+        ],
         "src_i": 35,
         "type": "road"
       },
@@ -1550,7 +1577,9 @@
       },
       "properties": {
         "dst_i": 43,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          455866872
+        ],
         "src_i": 42,
         "type": "road"
       },
@@ -1586,7 +1615,9 @@
       },
       "properties": {
         "dst_i": 7,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          474077561
+        ],
         "src_i": 44,
         "type": "road"
       },
@@ -1820,7 +1851,9 @@
       },
       "properties": {
         "dst_i": 2,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          622519703
+        ],
         "src_i": 51,
         "type": "road"
       },
@@ -2274,9 +2307,8 @@
       "properties": {
         "control": "Signed",
         "id": 7,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Connection",
         "movements": [
-          "Road #21 -> Road #4",
           "Road #40 -> Road #4"
         ],
         "osm_node_ids": [

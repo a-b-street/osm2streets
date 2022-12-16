@@ -162,7 +162,9 @@
       },
       "properties": {
         "dst_i": 5,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          97736474
+        ],
         "src_i": 4,
         "type": "road"
       },
@@ -198,7 +200,9 @@
       },
       "properties": {
         "dst_i": 2,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          97736490
+        ],
         "src_i": 6,
         "type": "road"
       },
@@ -272,7 +276,9 @@
       },
       "properties": {
         "dst_i": 10,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          106408376
+        ],
         "src_i": 9,
         "type": "road"
       },
@@ -346,7 +352,9 @@
       },
       "properties": {
         "dst_i": 14,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          106408380
+        ],
         "src_i": 13,
         "type": "road"
       },
@@ -382,7 +390,9 @@
       },
       "properties": {
         "dst_i": 0,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          131610256
+        ],
         "src_i": 15,
         "type": "road"
       },
@@ -722,7 +732,9 @@
       },
       "properties": {
         "dst_i": 25,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          237561064
+        ],
         "src_i": 34,
         "type": "road"
       },
@@ -1517,6 +1529,7 @@
       "properties": {
         "dst_i": 16,
         "osm_way_ids": [
+          326998445,
           512550749
         ],
         "src_i": 38,
@@ -1668,7 +1681,9 @@
       },
       "properties": {
         "dst_i": 43,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436235332
+        ],
         "src_i": 42,
         "type": "road"
       },
@@ -1834,7 +1849,9 @@
       },
       "properties": {
         "dst_i": 46,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          437324814
+        ],
         "src_i": 35,
         "type": "road"
       },
@@ -2068,7 +2085,9 @@
       },
       "properties": {
         "dst_i": 50,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          437325586
+        ],
         "src_i": 49,
         "type": "road"
       },
@@ -2266,7 +2285,9 @@
       },
       "properties": {
         "dst_i": 54,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          528305072
+        ],
         "src_i": 44,
         "type": "road"
       },
@@ -2302,7 +2323,9 @@
       },
       "properties": {
         "dst_i": 7,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          528305479
+        ],
         "src_i": 55,
         "type": "road"
       },
@@ -2376,7 +2399,9 @@
       },
       "properties": {
         "dst_i": 56,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          528307073
+        ],
         "src_i": 57,
         "type": "road"
       },
@@ -2450,7 +2475,9 @@
       },
       "properties": {
         "dst_i": 20,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          606189735
+        ],
         "src_i": 58,
         "type": "road"
       },
@@ -2586,7 +2613,9 @@
       },
       "properties": {
         "dst_i": 30,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          608764856
+        ],
         "src_i": 59,
         "type": "road"
       },
@@ -2685,6 +2714,7 @@
       "properties": {
         "dst_i": 61,
         "osm_way_ids": [
+          665499814,
           665499815
         ],
         "src_i": 62,
