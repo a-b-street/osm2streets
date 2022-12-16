@@ -328,10 +328,12 @@ fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
 }
 
 pub fn to_geojson(streets: &StreetNetwork) -> String {
-    streets_to_planar(streets).render_network(&streets.gps_bounds)
+    let graph = streets_to_planar(streets);
+
+    graph.render_network(&streets.gps_bounds)
 
     /*let mut pairs = Vec::new();
-    for face in streets_to_planar(streets).to_faces() {
+    for face in graph.to_faces() {
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
         props.insert("fillColor".to_string(), "cyan".into());

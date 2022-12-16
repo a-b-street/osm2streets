@@ -11,6 +11,7 @@ export function loadTests() {
     "i5_exit_ramp",
     "kingsway_junction",
     "leeds_cycleway",
+    "levenshulme",
     "montlake_roundabout",
     "northgate_dual_carriageway",
     "oneway_loop",
