@@ -7,8 +7,8 @@ use geom::{Angle, Distance, PolyLine};
 use crate::lanes::{Placement, RoadPosition};
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, Direction, DrivingSide, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints,
-    StreetNetwork,
+    IntersectionKind, LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID,
+    RoadWithEndpoints, StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -395,17 +395,52 @@ impl Road {
     /// Returns one PolyLine representing the center of each lane in this road. This must be called
     /// after `Transformation::GenerateIntersectionGeometry` is run. The result also faces the same
     /// direction as the road.
-    pub(crate) fn get_lane_center_lines(&self) -> Vec<PolyLine> {
-        let total_width = self.total_width();
+    pub(crate) fn get_lane_center_lines(&self, streets: &StreetNetwork) -> Vec<PolyLine> {
+        // If this is a "main" road of a Connection or Fork, use the untrimmed center. The lanes
+        // don't actually stop at the intersection polygon.
+        let mut trim_start = self.trim_start;
+        let mut trim_end = self.trim_end;
 
+        if self.id == RoadID(2) {
+            trim_end = Distance::ZERO;
+        }
+        if self.id == RoadID(8) {
+            trim_start = Distance::ZERO;
+        }
+
+        /*if streets.intersections[&self.src_i].kind == IntersectionKind::Connection
+            || streets.intersections[&self.src_i].kind == IntersectionKind::Fork
+        {
+            trim_start = Distance::ZERO;
+        }
+        if streets.intersections[&self.dst_i].kind == IntersectionKind::Connection
+            || streets.intersections[&self.dst_i].kind == IntersectionKind::Fork
+        {
+            trim_end = Distance::ZERO;
+        }*/
+
+        let center = Self::trim_polyline_both_ends(
+            self.get_untrimmed_center_line(streets.config.driving_side),
+            trim_start,
+            trim_end,
+        )
+        .unwrap();
+
+        let total_width = self.total_width();
         let mut width_so_far = Distance::ZERO;
         let mut output = Vec::new();
         for lane in &self.lane_specs_ltr {
+            // TODO Never extend sidewalks into the intersection though
+            let mut use_center = center.clone();
+            if lane.lt.is_walkable() {
+                use_center = self.center_line.clone();
+            }
+
             width_so_far += lane.width / 2.0;
             output.push(
-                self.center_line
+                use_center
                     .shift_from_center(total_width, width_so_far)
-                    .unwrap_or_else(|_| self.center_line.clone()),
+                    .unwrap_or_else(|_| use_center),
             );
             width_so_far += lane.width / 2.0;
         }

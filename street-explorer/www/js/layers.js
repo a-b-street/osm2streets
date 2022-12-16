@@ -1,10 +1,10 @@
 export const makePlainGeoJsonLayer = (text) => {
-  // TODO Update for new types
   const intersectionColours = {
-    Connection: "#666",
-    Intersection: "#966",
-    Terminus: "#999",
     MapEdge: "#696",
+    Terminus: "#999",
+    Connection: "#666",
+    Fork: "#966",
+    Intersection: "black",
   };
 
   return new L.geoJSON(JSON.parse(text), {
@@ -12,7 +12,7 @@ export const makePlainGeoJsonLayer = (text) => {
       if (feature.properties.type == "intersection") {
         return {
           color:
-            intersectionColours[feature.properties.intersection_kind] || "#666",
+            intersectionColours[feature.properties.intersection_kind],
           weight: 1,
           fillOpacity: 0.7,
         };

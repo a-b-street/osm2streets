@@ -91,7 +91,7 @@ impl StreetNetwork {
             for (lane, pl) in road
                 .lane_specs_ltr
                 .iter()
-                .zip(road.get_lane_center_lines().into_iter())
+                .zip(road.get_lane_center_lines(self).into_iter())
             {
                 pairs.push((
                     pl.make_polygons(lane.width)
@@ -138,7 +138,7 @@ impl StreetNetwork {
 
         for road in self.roads.values() {
             // Always oriented in the direction of the road
-            let mut lane_centers = road.get_lane_center_lines();
+            let mut lane_centers = road.get_lane_center_lines(self);
 
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
                 // Generate a "center line" between lanes of different directions
