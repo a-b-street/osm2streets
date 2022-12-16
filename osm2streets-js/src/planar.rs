@@ -33,7 +33,7 @@ impl Node {
 }
 
 impl PlanarGraph {
-    fn from_rings(mut input: Vec<Ring>) -> Self {
+    fn from_rings(mut input: Vec<(String, Ring)>) -> Self {
         let mut graph = Self {
             edges: BTreeMap::new(),
             nodes: BTreeMap::new(),
@@ -41,29 +41,25 @@ impl PlanarGraph {
 
         // Similar to split_ways logic
         let mut counts_per_pt = Counter::new();
-        for ring in &input {
-            info!("handling ring");
+        for (_, ring) in &input {
             // The first/last point is arbitrary and will always be a node. That lets us actually
             // make a face for every original ring passed in.
             for pt in ring.points() {
                 let hash_pt = hashify(*pt);
                 let count = counts_per_pt.inc(hash_pt);
 
-                if count == 2 && !graph.nodes.contains_key(&hash_pt) {
-                    info!("  added a node");
+                // TODO Can't figure out why we're missing nodes
+                //if count == 2 && !graph.nodes.contains_key(&hash_pt) {
+                if !graph.nodes.contains_key(&hash_pt) {
                     graph.nodes.insert(hash_pt, Node {
                         edges: Vec::new(),
                         oriented_edges: Vec::new(),
                     });
                 }
             }
-
-            for (pt, count) in counts_per_pt.borrow() {
-                info!("{} has {count}", unhashify(*pt));
-            }
         }
 
-        for ring in input {
+        for (name, ring) in input {
             let mut pts = Vec::new();
             for pt in ring.into_points() {
                 pts.push(pt);
@@ -86,9 +82,10 @@ impl PlanarGraph {
         let id = self.edges.len();
 
         let endpts = [pl.first_pt(), pl.last_pt()];
+
         self.edges.insert(id, pl);
         for endpt in endpts {
-            let node = self.nodes.entry(hashify(endpt)).or_insert_with(|| Node { edges: Vec::new(), oriented_edges: Vec::new() });
+            let node = self.nodes.get_mut(&hashify(endpt)).unwrap();
             node.edges.push(id);
 
             // Re-sort the node
@@ -321,10 +318,10 @@ fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
         /*input.push(road.center_line.must_shift_left(road.half_width()));
         input.push(road.center_line.must_shift_right(road.half_width()));*/
         // Literally pass in rings, lol
-        input.push(road.center_line.make_polygons(road.total_width()).into_outer_ring());
+        input.push((format!("{}", road.id), road.center_line.make_polygons(road.total_width()).into_outer_ring()));
     }
     for i in streets.intersections.values() {
-        input.push(i.polygon.clone().into_outer_ring());
+        input.push((format!("{}", i.id), i.polygon.clone().into_outer_ring()));
     }
 
     PlanarGraph::from_rings(input)
