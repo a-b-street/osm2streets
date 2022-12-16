@@ -1,11 +1,9 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
 use geom::Distance;
-
-use crate::OriginalRoad;
 
 /// None corresponds to the native name
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -74,9 +72,6 @@ pub struct MapConfig {
     pub osm2lanes: bool,
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
     pub include_railroads: bool,
-
-    /// Experimentally merge these OSM ways
-    pub merge_osm_ways: BTreeSet<OriginalRoad>,
 }
 
 impl MapConfig {
@@ -90,7 +85,6 @@ impl MapConfig {
             turn_on_red: true,
             osm2lanes: false,
             include_railroads: true,
-            merge_osm_ways: BTreeSet::new(),
         }
     }
 }

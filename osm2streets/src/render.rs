@@ -34,10 +34,7 @@ impl StreetNetwork {
                     (
                         "osm_way_ids",
                         serde_json::Value::Array(
-                            road.osm_ids
-                                .iter()
-                                .map(|id| id.osm_way_id.0.into())
-                                .collect(),
+                            road.osm_ids.iter().map(|id| id.0.into()).collect(),
                         ),
                     ),
                     ("src_i", road.src_i.0.into()),
@@ -114,10 +111,7 @@ impl StreetNetwork {
                         (
                             "osm_way_ids",
                             serde_json::Value::Array(
-                                road.osm_ids
-                                    .iter()
-                                    .map(|id| id.osm_way_id.0.into())
-                                    .collect(),
+                                road.osm_ids.iter().map(|id| id.0.into()).collect(),
                             ),
                         ),
                     ]),

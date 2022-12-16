@@ -7,16 +7,15 @@ use geom::{Angle, Distance, PolyLine};
 use crate::lanes::{Placement, RoadPosition};
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, Direction, DrivingSide, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, OriginalRoad, RestrictionType, RoadID, RoadWithEndpoints,
-    StreetNetwork,
+    LaneSpec, LaneType, MapConfig, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Road {
     pub id: RoadID,
-    /// The original segments of OSM ways making up this road. One road may consist of multiple
-    /// segments (when an intersection is collapsed).
-    pub osm_ids: Vec<OriginalRoad>,
+    /// The original OSM ways making up this road. One road may consist of multiple ways (when an
+    /// intersection is collapsed).
+    pub osm_ids: Vec<osm::WayID>,
 
     pub src_i: IntersectionID,
     pub dst_i: IntersectionID,
@@ -60,7 +59,7 @@ pub struct Road {
 impl Road {
     pub fn new(
         id: RoadID,
-        osm_ids: Vec<OriginalRoad>,
+        osm_ids: Vec<osm::WayID>,
         src_i: IntersectionID,
         dst_i: IntersectionID,
         reference_line: PolyLine,
@@ -496,7 +495,7 @@ impl Road {
     }
 
     pub fn from_osm_way(&self, way: osm::WayID) -> bool {
-        self.osm_ids.iter().any(|id| id.osm_way_id == way)
+        self.osm_ids.iter().any(|id| *id == way)
     }
 }
 

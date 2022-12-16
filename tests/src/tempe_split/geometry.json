@@ -38,7 +38,9 @@
       },
       "properties": {
         "dst_i": 1,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          5607328
+        ],
         "src_i": 2,
         "type": "road"
       },
@@ -82,7 +84,9 @@
       },
       "properties": {
         "dst_i": 3,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          256917837
+        ],
         "src_i": 2,
         "type": "road"
       },
@@ -118,7 +122,9 @@
       },
       "properties": {
         "dst_i": 2,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436791113
+        ],
         "src_i": 4,
         "type": "road"
       },
@@ -154,7 +160,9 @@
       },
       "properties": {
         "dst_i": 6,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436791491
+        ],
         "src_i": 5,
         "type": "road"
       },
@@ -380,7 +388,9 @@
       },
       "properties": {
         "dst_i": 8,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436794701
+        ],
         "src_i": 21,
         "type": "road"
       },
@@ -454,7 +464,9 @@
       },
       "properties": {
         "dst_i": 9,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          533573776
+        ],
         "src_i": 15,
         "type": "road"
       },
@@ -490,7 +502,9 @@
       },
       "properties": {
         "dst_i": 7,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          533573779
+        ],
         "src_i": 10,
         "type": "road"
       },
@@ -542,7 +556,9 @@
       },
       "properties": {
         "dst_i": 13,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          561633983
+        ],
         "src_i": 11,
         "type": "road"
       },
@@ -640,7 +656,9 @@
       },
       "properties": {
         "dst_i": 12,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          561633983
+        ],
         "src_i": 18,
         "type": "road"
       },
@@ -801,7 +819,8 @@
       "properties": {
         "dst_i": 27,
         "osm_way_ids": [
-          561633985
+          561633985,
+          909817905
         ],
         "src_i": 15,
         "type": "road"
@@ -952,7 +971,9 @@
       },
       "properties": {
         "dst_i": 19,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          600096923
+        ],
         "src_i": 26,
         "type": "road"
       },
@@ -988,7 +1009,9 @@
       },
       "properties": {
         "dst_i": 21,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          709820488
+        ],
         "src_i": 20,
         "type": "road"
       },
@@ -1070,7 +1093,9 @@
       },
       "properties": {
         "dst_i": 26,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          762209212
+        ],
         "src_i": 25,
         "type": "road"
       },

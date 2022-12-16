@@ -13,7 +13,7 @@ use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
-pub use self::ids::{CommonEndpoint, IntersectionID, OriginalRoad, RoadID};
+pub use self::ids::{CommonEndpoint, IntersectionID, RoadID};
 pub use self::intersection::{
     Intersection, IntersectionControl, IntersectionKind, Movement, TrafficConflict,
 };

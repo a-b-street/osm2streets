@@ -30,7 +30,9 @@
       },
       "properties": {
         "dst_i": 1,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          136876988
+        ],
         "src_i": 0,
         "type": "road"
       },
@@ -74,7 +76,9 @@
       },
       "properties": {
         "dst_i": 3,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          422264711
+        ],
         "src_i": 5,
         "type": "road"
       },
@@ -111,6 +115,7 @@
       "properties": {
         "dst_i": 16,
         "osm_way_ids": [
+          422264712,
           422264712
         ],
         "src_i": 4,
@@ -186,7 +191,9 @@
       },
       "properties": {
         "dst_i": 6,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436789564
+        ],
         "src_i": 5,
         "type": "road"
       },
@@ -230,7 +237,9 @@
       },
       "properties": {
         "dst_i": 5,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          436789580
+        ],
         "src_i": 7,
         "type": "road"
       },
@@ -305,6 +314,7 @@
       "properties": {
         "dst_i": 10,
         "osm_way_ids": [
+          436942361,
           436942361
         ],
         "src_i": 9,
@@ -472,7 +482,9 @@
       },
       "properties": {
         "dst_i": 17,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          845775034
+        ],
         "src_i": 8,
         "type": "road"
       },
@@ -516,7 +528,9 @@
       },
       "properties": {
         "dst_i": 5,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          966022991
+        ],
         "src_i": 18,
         "type": "road"
       },
@@ -552,7 +566,9 @@
       },
       "properties": {
         "dst_i": 20,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          966022991
+        ],
         "src_i": 5,
         "type": "road"
       },
@@ -604,7 +620,9 @@
       },
       "properties": {
         "dst_i": 5,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          966022995
+        ],
         "src_i": 21,
         "type": "road"
       },
@@ -640,7 +658,9 @@
       },
       "properties": {
         "dst_i": 23,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          966022995
+        ],
         "src_i": 5,
         "type": "road"
       },

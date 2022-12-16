@@ -3,8 +3,7 @@ use std::collections::{hash_map::Entry, HashMap};
 use abstutil::{Counter, Timer};
 use geom::{HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
-    Direction, IntersectionControl, IntersectionID, IntersectionKind, OriginalRoad, Road, RoadID,
-    StreetNetwork,
+    Direction, IntersectionControl, IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork,
 };
 
 use super::OsmExtract;
@@ -88,26 +87,12 @@ pub fn split_up_roads(
                     }
                 }
 
-                let i1_node_id = input.osm_node_ids.get(&pts[0].to_hashable()).cloned();
-                let i2_node_id = input.osm_node_ids.get(&pt.to_hashable()).cloned();
-
                 let untrimmed_center_line = simplify_linestring(std::mem::take(&mut pts));
                 match PolyLine::new(untrimmed_center_line) {
                     Ok(pl) => {
-                        // TODO If either endpoint is on the boundary, we won't record any OSM ID.
-                        // Should we just store WayID and not OriginalRoad?
-                        let mut osm_ids = Vec::new();
-                        if let (Some(i1_node), Some(i2_node)) = (i1_node_id, i2_node_id) {
-                            osm_ids.push(OriginalRoad {
-                                osm_way_id: *osm_way_id,
-                                i1: i1_node,
-                                i2: i2_node,
-                            });
-                        }
-
                         streets.roads.insert(
                             id,
-                            Road::new(id, osm_ids, i1, *i2, pl, tags, &streets.config),
+                            Road::new(id, vec![*osm_way_id], i1, *i2, pl, tags, &streets.config),
                         );
                         streets.intersections.get_mut(&i1).unwrap().roads.push(id);
                         streets.intersections.get_mut(&i2).unwrap().roads.push(id);

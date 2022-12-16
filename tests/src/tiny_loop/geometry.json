@@ -70,7 +70,9 @@
       },
       "properties": {
         "dst_i": 5,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          21639584
+        ],
         "src_i": 0,
         "type": "road"
       },
@@ -222,7 +224,9 @@
       },
       "properties": {
         "dst_i": 1,
-        "osm_way_ids": [],
+        "osm_way_ids": [
+          21639584
+        ],
         "src_i": 6,
         "type": "road"
       },

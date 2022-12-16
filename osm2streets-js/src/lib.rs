@@ -162,7 +162,7 @@ impl JsStreetNetwork {
             .inner
             .roads
             .values()
-            .find(|r| r.osm_ids.iter().any(|x| x.osm_way_id == id))
+            .find(|r| r.from_osm_way(id))
             .map(|r| r.total_width())
             .unwrap();
 
@@ -205,7 +205,7 @@ impl JsStreetNetwork {
         let tags: Tags = abstutil::from_json(tags.as_bytes()).unwrap();
 
         for road in self.inner.roads.values_mut() {
-            if road.osm_ids.iter().any(|x| x.osm_way_id == id) {
+            if road.from_osm_way(id) {
                 // TODO This could panic, for example if the user removes the highway tag
                 road.lane_specs_ltr = osm2streets::get_lane_specs_ltr(&tags, &self.inner.config);
             }

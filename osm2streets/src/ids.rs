@@ -3,7 +3,6 @@ use std::fmt;
 use abstutil::{deserialize_usize, serialize_usize};
 use serde::{Deserialize, Serialize};
 
-use crate::osm::{NodeID, WayID};
 use crate::Road;
 
 /// Opaque and non-contiguous
@@ -35,40 +34,6 @@ pub struct IntersectionID(
 impl fmt::Display for IntersectionID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Intersection #{}", self.0)
-    }
-}
-
-/// Refers to a road segment between two nodes, using OSM IDs. Note OSM IDs are not stable over
-/// time.
-#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct OriginalRoad {
-    pub osm_way_id: WayID,
-    pub i1: NodeID,
-    pub i2: NodeID,
-}
-
-impl fmt::Display for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "OriginalRoad({} from {} to {}",
-            self.osm_way_id, self.i1, self.i2
-        )
-    }
-}
-impl fmt::Debug for OriginalRoad {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-impl OriginalRoad {
-    pub fn new(way: i64, (i1, i2): (i64, i64)) -> OriginalRoad {
-        OriginalRoad {
-            osm_way_id: WayID(way),
-            i1: NodeID(i1),
-            i2: NodeID(i2),
-        }
     }
 }
 

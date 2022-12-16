@@ -6,8 +6,7 @@ use crate::{IntersectionControl, RoadID, StreetNetwork};
 /// merging.
 ///
 /// 1) Anything tagged in OSM
-/// 2) Anything a temporary local merge_osm_ways.json file
-/// 3) If `consolidate_all` is true, an experimental distance-based heuristic
+/// 2) If `consolidate_all` is true, an experimental distance-based heuristic
 pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> Vec<RoadID> {
     let mut roads = Vec::new();
     for (id, road) in &streets.roads {
@@ -18,18 +17,6 @@ pub fn find_short_roads(streets: &mut StreetNetwork, consolidate_all: bool) -> V
 
         if consolidate_all && distance_heuristic(*id, streets) {
             roads.push(*id);
-        }
-    }
-
-    // Use this to quickly test overrides to some ways before upstreaming in OSM. Since these IDs
-    // might be based on already merged roads, do these last.
-    for road in streets.roads.values() {
-        if road
-            .osm_ids
-            .iter()
-            .any(|id| streets.config.merge_osm_ways.contains(id))
-        {
-            roads.push(road.id);
         }
     }
 
