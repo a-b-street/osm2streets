@@ -1,21 +1,16 @@
 use std::collections::{HashSet, BTreeMap};
 
-use geo::Winding;
-use geom::{HashablePt2D, Distance, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
+use abstutil::Counter;
+use geom::{Circle, Distance, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
 
-use osm2streets::{RoadID, StreetNetwork};
+use osm2streets::StreetNetwork;
 
 struct PlanarGraph {
     edges: BTreeMap<EdgeID, PolyLine>,
-    nodes: BTreeMap<HashablePt2D, Node>,
-    gps_bounds: GPSBounds,
+    nodes: BTreeMap<(isize, isize), Node>,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
-enum EdgeID {
-    Road(RoadID),
-    // TODO Boundary(IntersectionID, IntersectionID)  meaning clockwise
-}
+type EdgeID = usize;
 
 struct Node {
     // Sorted clockwise
@@ -38,19 +33,62 @@ impl Node {
 }
 
 impl PlanarGraph {
-    fn new(gps_bounds: GPSBounds) -> Self {
-        Self {
+    fn from_rings(mut input: Vec<Ring>) -> Self {
+        let mut graph = Self {
             edges: BTreeMap::new(),
             nodes: BTreeMap::new(),
-            gps_bounds,
+        };
+
+        // Similar to split_ways logic
+        let mut counts_per_pt = Counter::new();
+        for ring in &input {
+            info!("handling ring");
+            // The first/last point is arbitrary and will always be a node. That lets us actually
+            // make a face for every original ring passed in.
+            for pt in ring.points() {
+                let hash_pt = hashify(*pt);
+                let count = counts_per_pt.inc(hash_pt);
+
+                if count == 2 && !graph.nodes.contains_key(&hash_pt) {
+                    info!("  added a node");
+                    graph.nodes.insert(hash_pt, Node {
+                        edges: Vec::new(),
+                        oriented_edges: Vec::new(),
+                    });
+                }
+            }
+
+            for (pt, count) in counts_per_pt.borrow() {
+                info!("{} has {count}", unhashify(*pt));
+            }
         }
+
+        for ring in input {
+            let mut pts = Vec::new();
+            for pt in ring.into_points() {
+                pts.push(pt);
+                if pts.len() == 1 {
+                    continue;
+                }
+                if graph.nodes.contains_key(&hashify(pt)) {
+                    graph.add_edge(PolyLine::must_new(pts));
+                }
+
+                pts = vec![pt];
+            }
+            assert_eq!(pts.len(), 1);
+        }
+
+        graph
     }
 
-    fn add_edge(&mut self, id: EdgeID, pl: PolyLine) {
+    fn add_edge(&mut self, pl: PolyLine) {
+        let id = self.edges.len();
+
         let endpts = [pl.first_pt(), pl.last_pt()];
         self.edges.insert(id, pl);
         for endpt in endpts {
-            let node = self.nodes.entry(endpt.to_hashable()).or_insert_with(|| Node { edges: Vec::new(), oriented_edges: Vec::new() });
+            let node = self.nodes.entry(hashify(endpt)).or_insert_with(|| Node { edges: Vec::new(), oriented_edges: Vec::new() });
             node.edges.push(id);
 
             // Re-sort the node
@@ -112,14 +150,22 @@ impl PlanarGraph {
         }
     }
 
-    fn render_edges(&self) -> String {
+    fn render_network(&self, gps_bounds: &GPSBounds) -> String {
         let mut pairs = Vec::new();
 
+        // Just show nodes and edges, to start
         for (_, pl) in &self.edges {
             let mut props = serde_json::Map::new();
             props.insert("stroke".to_string(), true.into());
             props.insert("color".to_string(), "cyan".into());
-            pairs.push((pl.to_geojson(Some(&self.gps_bounds)), props));
+            pairs.push((pl.to_geojson(Some(gps_bounds)), props));
+        }
+
+        for pt in self.nodes.keys() {
+            let mut props = serde_json::Map::new();
+            props.insert("fill".to_string(), true.into());
+            props.insert("fillColor".to_string(), "red".into());
+            pairs.push((Circle::new(unhashify(*pt), Distance::meters(1.0)).to_polygon().to_geojson(Some(gps_bounds)), props));
         }
 
         abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
@@ -188,7 +234,7 @@ impl PlanarGraph {
             pts.extend(current.to_points(self));
 
             let endpt = current.last_pt(self);
-            current = self.nodes[&endpt.to_hashable()].next_edge(endpt, current, self);
+            current = self.nodes[&hashify(endpt)].next_edge(endpt, current, self);
         }
 
         info!("trace_face found {} members, {} pts", members.len(), pts.len());
@@ -224,27 +270,11 @@ struct OrientedEdge {
 
 impl OrientedEdge {
     fn to_points(&self, graph: &PlanarGraph) -> Vec<Pt2D> {
-        // Simple version, no shifting. Breaks on dead-ends.
-        if false {
-            let mut pts = graph.edges[&self.edge].clone().into_points();
-            if self.direction == Direction::Backwards {
-                pts.reverse();
-            }
-            pts
-        } else {
-            // Shifts fixed amount. Produces a bunch of bad results
-            let mut pts = graph.edges[&self.edge].clone().into_points();
-            let pl = PolyLine::unchecked_new(pts);
-            let pl = match self.side {
-                Side::Right => pl.must_shift_right(Distance::meters(1.0)),
-                Side::Left => pl.must_shift_left(Distance::meters(1.0)),
-            };
-            let mut pts = pl.into_points();
-            if self.direction == Direction::Backwards {
-                pts.reverse();
-            }
-            pts
+        let mut pts = graph.edges[&self.edge].clone().into_points();
+        if self.direction == Direction::Backwards {
+            pts.reverse();
         }
+        pts
     }
 
     fn last_pt(&self, graph: &PlanarGraph) -> Pt2D {
@@ -286,17 +316,24 @@ impl Direction {
 }
 
 fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
-    let mut graph = PlanarGraph::new(streets.gps_bounds.clone());
+    let mut input = Vec::new();
     for road in streets.roads.values() {
-        graph.add_edge(EdgeID::Road(road.id), road.reference_line.clone());
+        /*input.push(road.center_line.must_shift_left(road.half_width()));
+        input.push(road.center_line.must_shift_right(road.half_width()));*/
+        // Literally pass in rings, lol
+        input.push(road.center_line.make_polygons(road.total_width()).into_outer_ring());
     }
-    graph
+    for i in streets.intersections.values() {
+        input.push(i.polygon.clone().into_outer_ring());
+    }
+
+    PlanarGraph::from_rings(input)
 }
 
 pub fn to_geojson(streets: &StreetNetwork) -> String {
-    //streets_to_planar(streets).render_edges()
+    streets_to_planar(streets).render_network(&streets.gps_bounds)
 
-    let mut pairs = Vec::new();
+    /*let mut pairs = Vec::new();
     for face in streets_to_planar(streets).to_faces() {
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
@@ -305,5 +342,17 @@ pub fn to_geojson(streets: &StreetNetwork) -> String {
         props.insert("id".to_string(), pairs.len().into());
         pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
     }
-    abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
+    abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))*/
+}
+
+fn hashify(pt: Pt2D) -> (isize, isize) {
+    let x = (pt.x() * 100.0) as isize;
+    let y = (pt.y() * 100.0) as isize;
+    (x, y)
+}
+
+fn unhashify(pt: (isize, isize)) -> Pt2D {
+    let x = pt.0 as f64 / 100.0;
+    let y = pt.1 as f64 / 100.0;
+    Pt2D::new(x, y)
 }
