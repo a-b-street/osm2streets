@@ -75,8 +75,6 @@ pub struct MapConfig {
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
     pub include_railroads: bool,
 
-    /// Enable experimental dog-leg intersection merging
-    pub find_dog_legs_experiment: bool,
     /// Experimentally merge these OSM ways
     pub merge_osm_ways: BTreeSet<OriginalRoad>,
 }
@@ -92,7 +90,6 @@ impl MapConfig {
             turn_on_red: true,
             osm2lanes: false,
             include_railroads: true,
-            find_dog_legs_experiment: false,
             merge_osm_ways: BTreeSet::new(),
         }
     }
