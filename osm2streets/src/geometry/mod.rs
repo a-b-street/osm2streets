@@ -193,6 +193,20 @@ fn polygon_from_corners(
                         .reversed(),
                 )
             {
+                // When both roads lead between the same pair of endpoints, it's possible the
+                // extended lines don't collide on the intersection side, but they do on the other
+                // side. This can happen when the current side is pre-trimmed, for example. To deal
+                // with this, see if the collision point is on the original polyline on the
+                // incorrect half.
+                //
+                // For simplicity, we use one.pl, not extended. Extending only matters on the
+                // correct intersection end, anyway.
+                if let Some((dist, _)) = one.pl.dist_along_of_point(corner) {
+                    if dist < one.pl.length() / 2.0 {
+                        continue;
+                    }
+                }
+
                 endpts.push(corner);
             }
         }
