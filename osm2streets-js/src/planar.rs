@@ -1,7 +1,7 @@
 use std::collections::{HashSet, BTreeMap};
 
 use geo::Winding;
-use geom::{HashablePt2D, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
+use geom::{HashablePt2D, Distance, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
 
 use osm2streets::{RoadID, StreetNetwork};
 
@@ -129,8 +129,7 @@ impl PlanarGraph {
         let mut faces = Vec::new();
         let mut seen: HashSet<(EdgeID, Side)> = HashSet::new();
 
-        //faces.extend(self.trace_face(EdgeID::Road(RoadID(46)), Side::Right, Direction::Forwards));
-        //faces.extend(self.trace_face(EdgeID::Road(RoadID(33)), Side::Left, Direction::Backwards));
+        //faces.extend(self.trace_face(EdgeID::Road(RoadID(4)), Side::Right, Direction::Forwards));
 
         /*
         // Initial direction depends on the orientation of the edge! We MUST go clockwise.
@@ -177,10 +176,9 @@ impl PlanarGraph {
 
         let mut current = start.clone();
         loop {
-            // TODO bail out
-            if members.len() > 10 {
+            /*if members.len() > 10 {
                 break;
-            }
+            }*/
 
             members.push(current.clone());
             if current == start && !pts.is_empty() {
@@ -226,11 +224,27 @@ struct OrientedEdge {
 
 impl OrientedEdge {
     fn to_points(&self, graph: &PlanarGraph) -> Vec<Pt2D> {
-        let mut pts = graph.edges[&self.edge].clone().into_points();
-        if self.direction == Direction::Backwards {
-            pts.reverse();
+        // Simple version, no shifting. Breaks on dead-ends.
+        if false {
+            let mut pts = graph.edges[&self.edge].clone().into_points();
+            if self.direction == Direction::Backwards {
+                pts.reverse();
+            }
+            pts
+        } else {
+            // Shifts fixed amount. Produces a bunch of bad results
+            let mut pts = graph.edges[&self.edge].clone().into_points();
+            let pl = PolyLine::unchecked_new(pts);
+            let pl = match self.side {
+                Side::Right => pl.must_shift_right(Distance::meters(1.0)),
+                Side::Left => pl.must_shift_left(Distance::meters(1.0)),
+            };
+            let mut pts = pl.into_points();
+            if self.direction == Direction::Backwards {
+                pts.reverse();
+            }
+            pts
         }
-        pts
     }
 
     fn last_pt(&self, graph: &PlanarGraph) -> Pt2D {
@@ -284,7 +298,6 @@ pub fn to_geojson(streets: &StreetNetwork) -> String {
 
     let mut pairs = Vec::new();
     for face in streets_to_planar(streets).to_faces() {
-        info!("found a face with {} members", face.members.len());
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
         props.insert("fillColor".to_string(), "cyan".into());
