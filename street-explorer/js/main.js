@@ -279,6 +279,7 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       onEachFeature: function (feature, layer) {
         layer.on({
           click: function (ev) {
+            // TODO Doesn't stop double-click zooming
             L.DomEvent.preventDefault(ev);
             const layer = ev.target;
             const id = layer.feature.properties.id;
