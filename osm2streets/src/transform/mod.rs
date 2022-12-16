@@ -40,6 +40,9 @@ impl Transformation {
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
             Transformation::GenerateIntersectionGeometry,
+            // The above may discover more roads to collapse
+            Transformation::CollapseShortRoads,
+            Transformation::GenerateIntersectionGeometry,
         ]
     }
 

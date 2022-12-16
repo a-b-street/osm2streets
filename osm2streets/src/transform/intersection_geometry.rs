@@ -60,9 +60,10 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         {
             road.center_line = pl;
         } else {
-            // TODO Mark for collapsing?
-            error!("{} got trimmed into oblivion", road.id);
+            error!("{} got trimmed into oblivion, collapse it later", road.id);
             road.center_line = untrimmed;
+            // Collapse it later
+            road.internal_junction_road = true;
         }
     }
 
