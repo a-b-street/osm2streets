@@ -42,6 +42,8 @@ impl Transformation {
             Transformation::GenerateIntersectionGeometry,
             // The above may discover more roads to collapse
             Transformation::CollapseShortRoads,
+            // TODO We need this to happen after the above gets rid of something too small
+            Transformation::CollapseSausageLinks,
             Transformation::GenerateIntersectionGeometry,
         ]
     }

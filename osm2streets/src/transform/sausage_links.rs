@@ -7,6 +7,10 @@ use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, Stre
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
 /// Collapse them into one road with a barrier in the middle.
+///
+/// Two types of roads can be transformed here:
+/// - one-way driveable roads
+/// - separate cycleways (one- or two-way)
 pub fn collapse_sausage_links(streets: &mut StreetNetwork) {
     for (id1, id2) in find_sausage_links(streets) {
         fix(streets, id1, id2);
@@ -19,7 +23,7 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
     for road1 in streets.roads.values() {
         // TODO People often forget to fix the lanes when splitting a dual carriageway, but don't
         // attempt to detect/repair that yet.
-        if road1.oneway_for_driving().is_none() {
+        if road1.oneway_for_driving().is_none() && !road1.is_cycleway() {
             continue;
         }
         // Find roads that lead between the two endpoints
@@ -43,12 +47,17 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
         }
 
         let road2 = &streets.roads[&id2];
-        if road2.oneway_for_driving().is_none() || road1.name != road2.name {
+        if road2.oneway_for_driving().is_none() && !road2.is_cycleway() {
+            continue;
+        }
+
+        // If they're driveable, make sure the names match
+        if road1.is_driveable() && road2.is_driveable() && road1.name != road2.name {
             continue;
         }
 
         // The two roads must point in a loop. Since they're both one-way, we can just
-        // check the endpoints.
+        // check the endpoints. (TODO How's this work for two-way cycleways?)
         // See the 'service_road_loop' test for why this is needed.
         if !(road1.dst_i == road2.src_i && road2.dst_i == road1.src_i) {
             continue;
@@ -68,15 +77,19 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
     pairs
 }
 
-fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
+fn fix(streets: &mut StreetNetwork, mut id1: RoadID, mut id2: RoadID) {
     // We're never modifying intersections, so even if sausage links are clustered together, both
     // roads should always continue to exist as we fix things.
     assert!(streets.roads.contains_key(&id1));
     assert!(streets.roads.contains_key(&id2));
 
-    // Arbitrarily remove the 2nd
+    // Arbitrarily keep the 1st and remove the 2nd. But if we've got a cycleway and driveable road,
+    // keep the driveable road, since it's more likely to have a meaningful name and highway_type.
+    if streets.roads[&id1].is_cycleway() {
+        std::mem::swap(&mut id1, &mut id2);
+    }
+
     let mut road2 = streets.remove_road(id2);
-    // And modify the 1st
     let road1 = streets.roads.get_mut(&id1).unwrap();
 
     road1.osm_ids.extend(road2.osm_ids);
