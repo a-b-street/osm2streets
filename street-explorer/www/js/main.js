@@ -199,16 +199,26 @@ class TestCase {
   renderControls(container) {
     container.innerHTML = "";
     if (this.name) {
-      const button = container.appendChild(document.createElement("button"));
-      button.type = "button";
-      button.innerHTML = "Generate Details";
-      button.onclick = () => {
+      const button1 = container.appendChild(document.createElement("button"));
+      button1.type = "button";
+      button1.innerHTML = "Generate Details";
+      button1.onclick = () => {
         // First remove all existing groups except for the original one
         this.app.layers.removeGroups((name) => name != "built-in test case");
         // Then disable the original group. Seeing dueling geometry isn't a good default.
         this.app.layers.getGroup("built-in test case").setEnabled(false);
 
         importOSM("Details", this.app, this.osmXML, false, this.boundary);
+      };
+
+      const button2 = container.appendChild(document.createElement("button"));
+      button2.type = "button";
+      button2.innerHTML = "Update OSM data";
+      const boundary = this.boundary;
+      button2.onclick = async () => {
+        await this.app.setCurrentTest((app) => {
+          return TestCase.importBoundary(app, button2, boundary);
+        });
       };
     }
 
