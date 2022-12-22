@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use geom::{Polygon, Pt2D};
+use geom::{Circle, Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
 use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
@@ -14,9 +14,6 @@ pub struct Intersection {
     /// intersection may have multiple OSM nodes (when the intersection is consolidated).
     pub osm_ids: Vec<osm::NodeID>,
 
-    /// Represents the original place where OSM center-lines meet. This may be meaningless beyond
-    /// StreetNetwork; roads and intersections get merged and deleted.
-    pub point: Pt2D,
     /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
     ///
     /// TODO Consistently make this clockwise.
@@ -115,8 +112,8 @@ impl StreetNetwork {
             Intersection {
                 id,
                 osm_ids,
-                point,
-                polygon: Polygon::dummy(),
+                // Initially make a small circle around the original point
+                polygon: Circle::new(point, Distance::meters(3.0)).to_polygon(),
                 kind: t,
                 control,
                 // Filled out later

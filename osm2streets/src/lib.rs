@@ -205,7 +205,7 @@ impl StreetNetwork {
     pub(crate) fn debug_intersection<I: Into<String>>(&self, i: IntersectionID, label: I) {
         if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
             step.points
-                .push((self.intersections[&i].point, label.into()));
+                .push((self.intersections[&i].polygon.center(), label.into()));
         }
     }
 
