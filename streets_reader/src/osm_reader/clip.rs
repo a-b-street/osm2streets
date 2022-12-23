@@ -1,6 +1,7 @@
 use geom::{Distance, PolyLine, Polygon};
 
 use osm2streets::osm;
+use osm2streets::osm::OsmID;
 
 use super::Document;
 
@@ -55,7 +56,17 @@ impl Document {
         }
 
         // TODO Handle ways that're areas
-        // TODO Handle relations
+
+        // TODO Handle relations more thoroughly
+        for relation in self.relations.values_mut() {
+            relation.members.retain(|(_, id)| match id {
+                OsmID::Node(x) => self.nodes.contains_key(x),
+                OsmID::Way(x) => self.ways.contains_key(x),
+                OsmID::Relation(_) => true,
+            });
+        }
+        self.relations
+            .retain(|_, relation| !relation.members.is_empty());
     }
 }
 
