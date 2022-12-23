@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
-use osm::{NodeID, OsmID, RelationID, WayID};
-
 use abstutil::Tags;
 use geom::{HashablePt2D, Pt2D};
+use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
 use osm2streets::{osm, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};

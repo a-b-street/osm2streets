@@ -1,5 +1,7 @@
 use geom::{Distance, PolyLine, Polygon};
 
+use osm2streets::osm;
+
 use super::Document;
 
 impl Document {
@@ -21,13 +23,17 @@ impl Document {
         // For line-string ways (not areas), clip them to the boundary. way.pts and way.nodes
         // become out-of-sync.
         for (id, way) in &mut self.ways {
-            // TODO This could just be a cul-de-sac road
-            if way.pts[0] == *way.pts.last().unwrap() {
+            // Only clip roads. Areas need more work.
+            if !way.tags.has_any(vec![osm::HIGHWAY, "railway"]) {
                 continue;
             }
 
+            // Careful. We use unchecked_new because we might be dealing with a loop, but we still
+            // need to dedupe, or we might have invalid line segments.
+            let mut way_pts = way.pts.clone();
+            way_pts.dedup();
             let mut polylines =
-                clip_polyline_to_ring(PolyLine::unchecked_new(way.pts.clone()), boundary_polygon);
+                clip_polyline_to_ring(PolyLine::unchecked_new(way_pts), boundary_polygon);
             // Usually there's just one result
             if polylines.len() == 1 {
                 way.pts = polylines.pop().unwrap().into_points();
