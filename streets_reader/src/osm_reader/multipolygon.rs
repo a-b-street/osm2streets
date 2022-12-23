@@ -17,7 +17,10 @@ impl Document {
         for (role, member) in &rel.members {
             if let OsmID::Way(w) = member {
                 if role == "outer" {
-                    pts_per_way.push((*w, self.ways[w].pts.clone()));
+                    // TODO Hack. Clipping doesn't handle relations / members yet
+                    if let Some(way) = self.ways.get(w) {
+                        pts_per_way.push((*w, way.pts.clone()));
+                    }
                 } else {
                     println!("{} has unhandled member role {}, ignoring it", id, role);
                 }

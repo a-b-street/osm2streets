@@ -210,8 +210,10 @@ pub fn split_up_roads(
                     } else {
                         road.src_i
                     };
-                    streets.intersections.get_mut(&i).unwrap().control =
-                        IntersectionControl::Signalled;
+                    let i = streets.intersections.get_mut(&i).unwrap();
+                    if !i.is_map_edge() {
+                        i.control = IntersectionControl::Signalled;
+                    }
                 }
             }
         }

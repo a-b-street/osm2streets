@@ -196,10 +196,7 @@ impl StreetNetwork {
         intersection.kind = kind;
     }
 
-    pub fn calculate_movements_and_kind(
-        &self,
-        i: IntersectionID,
-    ) -> (Vec<Movement>, IntersectionKind) {
+    fn calculate_movements_and_kind(&self, i: IntersectionID) -> (Vec<Movement>, IntersectionKind) {
         let roads: Vec<_> = self
             .roads_per_intersection(i)
             .into_iter()
