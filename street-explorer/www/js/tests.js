@@ -1,6 +1,7 @@
 export function loadTests() {
   // FIXME: load the list of tests from the server
   const testNames = [
+    "dog_leg",
     "arizona_highways",
     "aurora_sausage_link",
     "borough_sausage_links",
