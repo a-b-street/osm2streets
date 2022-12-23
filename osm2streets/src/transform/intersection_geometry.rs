@@ -65,6 +65,11 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
             // Collapse it later
             road.internal_junction_road = true;
         }
+
+        if road.trim_start == Distance::ZERO && road.trim_end == Distance::ZERO {
+            error!("{} wasn't trimmed at all. Let's collapse it", road.id);
+            road.internal_junction_road = true;
+        }
     }
 
     for (i, polygon) in set_polygons {
