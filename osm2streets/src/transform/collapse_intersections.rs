@@ -119,4 +119,8 @@ pub fn trim_deadends(streets: &mut StreetNetwork) {
 
     // It's possible we need to do this in a fixed-point until there are no changes, but meh.
     // Results look good so far.
+
+    // We may have created orphaned intersections. Clean up here.
+    // TODO Anywhere calling remove_road potentially causes this too
+    streets.intersections.retain(|_, i| !i.roads.is_empty());
 }

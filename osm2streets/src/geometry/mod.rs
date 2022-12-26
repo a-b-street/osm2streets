@@ -109,9 +109,7 @@ pub fn intersection_polygon(
         roads.insert(r.id, r);
     }
 
-    if roads.is_empty() {
-        bail!("{intersection_id} has no roads");
-    }
+    assert!(!roads.is_empty());
 
     let results = Results {
         intersection_id,
