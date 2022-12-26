@@ -37,6 +37,7 @@ mod render;
 mod road;
 mod transform;
 mod types;
+mod validate;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StreetNetwork {

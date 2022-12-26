@@ -88,6 +88,20 @@ impl Intersection {
     pub fn is_map_edge(&self) -> bool {
         self.kind == IntersectionKind::MapEdge
     }
+
+    pub fn describe(&self) -> String {
+        let osm_ids = self
+            .osm_ids
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join(", ");
+        if osm_ids.is_empty() {
+            self.id.to_string()
+        } else {
+            format!("{} ({})", self.id, osm_ids)
+        }
+    }
 }
 
 impl StreetNetwork {
