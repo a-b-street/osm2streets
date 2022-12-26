@@ -139,6 +139,21 @@ impl StreetNetwork {
         timer.stop("simplify StreetNetwork");
     }
 
+    /// Apply a sequence of transformations, but also check invariants after every step. More
+    /// expensive and may crash, but useful for testing.
+    pub fn apply_transformations_with_invariant_checks(
+        &mut self,
+        transformations: Vec<Transformation>,
+        timer: &mut Timer,
+    ) {
+        timer.start("simplify StreetNetwork");
+        for transformation in transformations {
+            transformation.apply(self, timer);
+            self.check_invariants();
+        }
+        timer.stop("simplify StreetNetwork");
+    }
+
     /// Apply a sequence of transformations, but also save a copy of the `StreetNetwork` before
     /// each step. Some steps may also internally add debugging info.
     pub fn apply_transformations_stepwise_debugging(

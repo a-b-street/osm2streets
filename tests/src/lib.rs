@@ -31,9 +31,10 @@ mod tests {
             &mut timer,
         )?;
         street_network.check_invariants();
-        street_network
-            .apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
-        street_network.check_invariants();
+        street_network.apply_transformations_with_invariant_checks(
+            Transformation::standard_for_clipped_areas(),
+            &mut timer,
+        );
         street_network.save_to_geojson(format!("{path}/geometry.json"))?;
 
         let road_network: RoadNetwork = street_network.into();

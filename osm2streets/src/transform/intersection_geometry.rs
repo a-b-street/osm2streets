@@ -9,7 +9,6 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
         streets.intersections.len(),
     );
     // It'd be nice to mutate in the loop, but the borrow checker won't let us
-    let mut remove_dangling_nodes = Vec::new();
     let mut set_polygons = Vec::new();
 
     // Set trim distances for all roads
@@ -36,19 +35,15 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
             Err(err) => {
                 error!("Can't make intersection geometry for {}: {}", i.id, err);
 
-                // If we haven't removed disconnected roads, we may have dangling nodes around.
-                if let Some(r) = i.roads.iter().next() {
-                    // Don't trim lines back at all
-                    let road = &streets.roads[r];
-                    let pt = if road.src_i == i.id {
-                        road.center_line.first_pt()
-                    } else {
-                        road.center_line.last_pt()
-                    };
-                    set_polygons.push((i.id, Circle::new(pt, Distance::meters(3.0)).to_polygon()));
+                let r = i.roads[0];
+                // Don't trim lines back at all
+                let road = &streets.roads[&r];
+                let pt = if road.src_i == i.id {
+                    road.center_line.first_pt()
                 } else {
-                    remove_dangling_nodes.push(i.id);
-                }
+                    road.center_line.last_pt()
+                };
+                set_polygons.push((i.id, Circle::new(pt, Distance::meters(3.0)).to_polygon()));
             }
         }
     }
@@ -69,8 +64,5 @@ pub fn generate(streets: &mut StreetNetwork, timer: &mut Timer) {
 
     for (i, polygon) in set_polygons {
         streets.intersections.get_mut(&i).unwrap().polygon = polygon;
-    }
-    for i in remove_dangling_nodes {
-        streets.intersections.remove(&i).unwrap();
     }
 }
