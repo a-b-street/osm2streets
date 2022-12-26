@@ -5,7 +5,7 @@ use geom::{Distance, LonLat, PolyLine, Polygon};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use osm2streets::{osm, DebugStreets, MapConfig, StreetNetwork, Transformation};
+use osm2streets::{osm, DebugStreets, LaneID, MapConfig, RoadID, StreetNetwork, Transformation};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -140,9 +140,19 @@ impl JsStreetNetwork {
         self.inner.debug_clockwise_ordering_geojson().unwrap()
     }
 
-    #[wasm_bindgen(js_name = debugMovementsGeojson)]
-    pub fn debug_movements_geojson(&self) -> String {
-        self.inner.debug_movements_geojson().unwrap()
+    #[wasm_bindgen(js_name = debugAllMovementsGeojson)]
+    pub fn debug_all_movements_geojson(&self) -> String {
+        self.inner.debug_all_movements_geojson().unwrap()
+    }
+
+    #[wasm_bindgen(js_name = debugMovementsFromLaneGeojson)]
+    pub fn debug_movements_from_lane_geojson(&self, road: usize, index: usize) -> String {
+        self.inner
+            .debug_movements_from_lane_geojson(LaneID {
+                road: RoadID(road),
+                index,
+            })
+            .unwrap()
     }
 
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a

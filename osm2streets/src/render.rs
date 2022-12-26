@@ -7,7 +7,10 @@ use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 
 use crate::road::RoadEdge;
-use crate::{DebugStreets, Direction, DrivingSide, Intersection, LaneType, StreetNetwork};
+use crate::{
+    DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneType, Movement,
+    StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
@@ -85,10 +88,11 @@ impl StreetNetwork {
         let mut pairs = Vec::new();
 
         for road in self.roads.values() {
-            for (lane, pl) in road
+            for (idx, (lane, pl)) in road
                 .lane_specs_ltr
                 .iter()
                 .zip(road.get_lane_center_lines().into_iter())
+                .enumerate()
             {
                 pairs.push((
                     pl.make_polygons(lane.width)
@@ -96,6 +100,7 @@ impl StreetNetwork {
                     make_props(&[
                         ("type", format!("{:?}", lane.lt).into()),
                         ("road", road.id.0.into()),
+                        ("index", idx.into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
                         (
@@ -279,8 +284,7 @@ impl StreetNetwork {
         Ok(output)
     }
 
-    /// For an intersection, show all the movements.
-    pub fn debug_movements_geojson(&self) -> Result<String> {
+    fn movements_for_intersection(&self, i: IntersectionID) -> Vec<(Movement, Polygon)> {
         // Each movement is represented as an arrow from the end of one road to the beginning of
         // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
         // the center to the appropriate driving side.
@@ -290,49 +294,77 @@ impl StreetNetwork {
             Distance::meters(1.3)
         };
 
+        // Find the points where the arrows should (leave, enter) the roads.
+        let road_points: BTreeMap<_, _> = self.intersections[&i]
+            .roads
+            .iter()
+            .map(|r| {
+                let road = &self.roads[r];
+                let first_road_segment = if road.src_i == i {
+                    road.center_line.first_line()
+                } else {
+                    road.center_line.last_line().reversed()
+                };
+                // Offset the arrow start/end points if it is bidirectional.
+                (
+                    r,
+                    if road.oneway_for_driving().is_some() {
+                        (first_road_segment.pt1(), first_road_segment.pt1())
+                    } else {
+                        (
+                            first_road_segment
+                                .shift_either_direction(arrow_fwd_offset_dist)
+                                .pt1(),
+                            first_road_segment
+                                .shift_either_direction(-arrow_fwd_offset_dist)
+                                .pt1(),
+                        )
+                    },
+                )
+            })
+            .collect();
+
+        let mut result = Vec::new();
+        for (a, b) in &self.intersections[&i].movements {
+            if a != b {
+                if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
+                    result.push((
+                        (*a, *b),
+                        line.to_polyline()
+                            .make_arrow(Distance::meters(0.5), ArrowCap::Triangle),
+                    ));
+                }
+            }
+        }
+        result
+    }
+
+    pub fn debug_all_movements_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();
 
-        for (i, intersection) in &self.intersections {
-            // Find the points where the arrows should (leave, enter) the roads.
-            let road_points: BTreeMap<_, _> = intersection
-                .roads
-                .iter()
-                .map(|r| {
-                    let road = &self.roads[r];
-                    let first_road_segment = if road.src_i == *i {
-                        road.center_line.first_line()
-                    } else {
-                        road.center_line.last_line().reversed()
-                    };
-                    // Offset the arrow start/end points if it is bidirectional.
-                    (
-                        r,
-                        if road.oneway_for_driving().is_some() {
-                            (first_road_segment.pt1(), first_road_segment.pt1())
-                        } else {
-                            (
-                                first_road_segment
-                                    .shift_either_direction(arrow_fwd_offset_dist)
-                                    .pt1(),
-                                first_road_segment
-                                    .shift_either_direction(-arrow_fwd_offset_dist)
-                                    .pt1(),
-                            )
-                        },
-                    )
-                })
-                .collect();
-            for (a, b) in &intersection.movements {
-                if a != b {
-                    if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
-                        pairs.push((
-                            line.to_polyline()
-                                .make_arrow(Distance::meters(0.5), ArrowCap::Triangle)
-                                .to_geojson(Some(&self.gps_bounds)),
-                            make_props(&[]),
-                        ))
-                    }
-                }
+        for i in self.intersections.keys() {
+            for (_, polygon) in self.movements_for_intersection(*i) {
+                pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
+            }
+        }
+
+        let obj = geom::geometries_with_properties_to_geojson(pairs);
+        let output = serde_json::to_string_pretty(&obj)?;
+        Ok(output)
+    }
+
+    pub fn debug_movements_from_lane_geojson(&self, id: LaneID) -> Result<String> {
+        let road = &self.roads[&id.road];
+        let i = if road.lane_specs_ltr[id.index].dir == Direction::Fwd {
+            road.dst_i
+        } else {
+            road.src_i
+        };
+
+        let mut pairs = Vec::new();
+        for ((from, _), polygon) in self.movements_for_intersection(i) {
+            if from == road.id {
+                pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
             }
         }
 

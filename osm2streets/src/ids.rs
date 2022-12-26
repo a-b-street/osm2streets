@@ -37,6 +37,23 @@ impl fmt::Display for IntersectionID {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct LaneID {
+    pub road: RoadID,
+    /// Index into `lane_specs_ltr`
+    #[serde(
+        serialize_with = "serialize_usize",
+        deserialize_with = "deserialize_usize"
+    )]
+    pub index: usize,
+}
+
+impl fmt::Display for LaneID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Lane {} of {}", self.index, self.road)
+    }
+}
+
 /// It's sometimes useful to track both a road's ID and endpoints together. Use this sparingly.
 #[derive(Clone)]
 pub struct RoadWithEndpoints {
