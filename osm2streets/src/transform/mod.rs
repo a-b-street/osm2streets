@@ -5,7 +5,6 @@ use crate::StreetNetwork;
 mod collapse_intersections;
 mod collapse_short_road;
 mod dual_carriageways;
-mod find_short_roads;
 mod intersection_geometry;
 mod remove_disconnected;
 mod sausage_links;
@@ -17,8 +16,6 @@ pub enum Transformation {
     TrimDeadendCycleways,
     SnapCycleways,
     RemoveDisconnectedRoads,
-    // TODO Move dog leg config here
-    FindShortRoads { consolidate_all_intersections: bool },
     CollapseShortRoads,
     CollapseDegenerateIntersections,
     CollapseSausageLinks,
@@ -33,9 +30,6 @@ impl Transformation {
         vec![
             Transformation::TrimDeadendCycleways,
             Transformation::CollapseSausageLinks,
-            Transformation::FindShortRoads {
-                consolidate_all_intersections: false,
-            },
             Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
             Transformation::ShrinkOverlappingRoads,
@@ -76,7 +70,6 @@ impl Transformation {
             Transformation::TrimDeadendCycleways => "trim dead-end cycleways",
             Transformation::SnapCycleways => "snap separate cycleways",
             Transformation::RemoveDisconnectedRoads => "remove disconnected roads",
-            Transformation::FindShortRoads { .. } => "find short roads",
             Transformation::CollapseShortRoads => "collapse short roads",
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
             Transformation::CollapseSausageLinks => "collapse sausage links",
@@ -97,11 +90,6 @@ impl Transformation {
             }
             Transformation::RemoveDisconnectedRoads => {
                 remove_disconnected::remove_disconnected_roads(streets);
-            }
-            Transformation::FindShortRoads {
-                consolidate_all_intersections,
-            } => {
-                find_short_roads::find_short_roads(streets, *consolidate_all_intersections);
             }
             Transformation::CollapseShortRoads => {
                 collapse_short_road::collapse_all_junction_roads(streets);

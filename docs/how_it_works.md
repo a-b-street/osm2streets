@@ -79,18 +79,9 @@ See <https://github.com/a-b-street/osm2streets/pull/61> for now
 
 Often a clipping boundary will bring in some roads that aren't connected to the main street network. This partitions the graph into connected components and removes all but the largest.
 
-### FindShortRoads
-
-This just looks for "short" roads that should get later collapsed. Anything in OSM explicitly tagged `junction=intersection` will get collapsed, and in fact, this transformation artificially creates this tag to signal to the later transformation.
-
-There are a few heuristics, all experimental:
-
-- if the trimmed road geometry is short
-- if the road is short and connects two traffic signals
-
 ### CollapseShortRoads
 
-This calls the collapse operation on anything marked by `FindShortRoads`. Complexity again just comes from lack of opaque IDs.
+This calls the collapse operation on anything tagged in OSM as `junction=intersection` and on roads that get trimmed away entirely when calculating intersection geometry.
 
 ### CollapseDegenerateIntersections
 
