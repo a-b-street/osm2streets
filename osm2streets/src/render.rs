@@ -339,20 +339,6 @@ impl StreetNetwork {
         result
     }
 
-    pub fn debug_all_movements_geojson(&self) -> Result<String> {
-        let mut pairs = Vec::new();
-
-        for i in self.intersections.keys() {
-            for (_, polygon) in self.movements_for_intersection(*i) {
-                pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
-            }
-        }
-
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
-    }
-
     pub fn debug_movements_from_lane_geojson(&self, id: LaneID) -> Result<String> {
         let road = &self.roads[&id.road];
         let i = if road.lane_specs_ltr[id.index].dir == Direction::Fwd {
