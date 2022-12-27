@@ -140,11 +140,6 @@ impl JsStreetNetwork {
         self.inner.debug_clockwise_ordering_geojson().unwrap()
     }
 
-    #[wasm_bindgen(js_name = debugAllMovementsGeojson)]
-    pub fn debug_all_movements_geojson(&self) -> String {
-        self.inner.debug_all_movements_geojson().unwrap()
-    }
-
     #[wasm_bindgen(js_name = debugMovementsFromLaneGeojson)]
     pub fn debug_movements_from_lane_geojson(&self, road: usize, index: usize) -> String {
         self.inner
