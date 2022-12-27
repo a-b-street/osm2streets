@@ -10,7 +10,7 @@ export function jsstreetnetwork_toIntersectionMarkingsGeojson(a: number, b: numb
 export function jsstreetnetwork_toGraphviz(a: number, b: number): void;
 export function jsstreetnetwork_getDebugSteps(a: number, b: number): void;
 export function jsstreetnetwork_debugClockwiseOrderingGeojson(a: number, b: number): void;
-export function jsstreetnetwork_debugMovementsGeojson(a: number, b: number): void;
+export function jsstreetnetwork_debugMovementsFromLaneGeojson(a: number, b: number, c: number, d: number): void;
 export function jsstreetnetwork_getOsmTagsForWay(a: number, b: number, c: number, d: number): void;
 export function jsstreetnetwork_getGeometryForWay(a: number, b: number, c: number, d: number): void;
 export function jsstreetnetwork_overwriteOsmTagsForWay(a: number, b: number, c: number, d: number, e: number): void;

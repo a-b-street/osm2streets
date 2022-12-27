@@ -93,8 +93,8 @@ export const lanePolygonStyle = (feature) => {
   };
 };
 
-export const makeLanePolygonLayer = (text) => {
-  return new L.geoJSON(JSON.parse(text), {
+export const makeLanePolygonLayer = (network, dynamicMovementLayer, map) => {
+  return new L.geoJSON(JSON.parse(network.toLanePolygonsGeojson()), {
     style: lanePolygonStyle,
     onEachFeature: function (feature, layer) {
       layer.on({
@@ -103,11 +103,25 @@ export const makeLanePolygonLayer = (text) => {
           layer.setStyle({
             fillOpacity: 0.5,
           });
+
+          if (dynamicMovementLayer) {
+            map.removeLayer(dynamicMovementLayer);
+          }
+          const movements = network.debugMovementsFromLaneGeojson(
+            feature.properties.road,
+            feature.properties.index
+          );
+          dynamicMovementLayer = L.geoJSON(JSON.parse(movements));
+          dynamicMovementLayer.addTo(map);
         },
         mouseout: function (ev) {
           layer.setStyle({
             fillOpacity: 0.9,
           });
+
+          if (dynamicMovementLayer) {
+            map.removeLayer(dynamicMovementLayer);
+          }
         },
       });
 

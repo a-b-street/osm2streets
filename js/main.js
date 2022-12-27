@@ -32,6 +32,7 @@ export class StreetExplorer {
     this.currentTest = null;
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
+    this.dynamicMovementLayer = null;
 
     // Add all tests to the sidebar
     loadTests();
@@ -260,7 +261,7 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     group.addLayer("Geometry", makePlainGeoJsonLayer(network.toGeojsonPlain()));
     group.addLayer(
       "Lane polygons",
-      makeLanePolygonLayer(network.toLanePolygonsGeojson())
+      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map)
     );
     group.addLayer(
       "Lane markings",
@@ -272,9 +273,6 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     );
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
-    );
-    group.addLazyLayer("Debug movements", () =>
-      makeDebugLayer(network.debugMovementsGeojson())
     );
     // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
 
@@ -294,7 +292,11 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
         makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
       );
       group.addLazyLayer("Lane polygons", () =>
-        makeLanePolygonLayer(step.getNetwork().toLanePolygonsGeojson())
+        makeLanePolygonLayer(
+          step.getNetwork(),
+          app.dynamicMovementLayer,
+          app.map
+        )
       );
       group.addLazyLayer("Lane markings", () =>
         makeLaneMarkingsLayer(step.getNetwork().toLaneMarkingsGeojson())

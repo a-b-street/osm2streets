@@ -56,9 +56,11 @@ export class JsStreetNetwork {
 */
   debugClockwiseOrderingGeojson(): string;
 /**
+* @param {number} road
+* @param {number} index
 * @returns {string}
 */
-  debugMovementsGeojson(): string;
+  debugMovementsFromLaneGeojson(road: number, index: number): string;
 /**
 * @param {bigint} id
 * @returns {string}
@@ -98,7 +100,7 @@ export interface InitOutput {
   readonly jsstreetnetwork_toGraphviz: (a: number, b: number) => void;
   readonly jsstreetnetwork_getDebugSteps: (a: number, b: number) => void;
   readonly jsstreetnetwork_debugClockwiseOrderingGeojson: (a: number, b: number) => void;
-  readonly jsstreetnetwork_debugMovementsGeojson: (a: number, b: number) => void;
+  readonly jsstreetnetwork_debugMovementsFromLaneGeojson: (a: number, b: number, c: number, d: number) => void;
   readonly jsstreetnetwork_getOsmTagsForWay: (a: number, b: number, c: number, d: number) => void;
   readonly jsstreetnetwork_getGeometryForWay: (a: number, b: number, c: number, d: number) => void;
   readonly jsstreetnetwork_overwriteOsmTagsForWay: (a: number, b: number, c: number, d: number, e: number) => void;
