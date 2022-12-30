@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "wasm": "wasm-pack build --dev --target web ../osm2streets-js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -14,5 +15,11 @@
     "vite-plugin-wasm-pack": "0.1.11"
   },
   "dependencies": {
+    "@geoman-io/leaflet-geoman-free": "^2.13.1",
+    "leaflet": "^1.9.3",
+    "leaflet-geosearch": "^3.7.0",
+    "leaflet-hash": "^0.2.1",
+    "leaflet-osm": "^0.1.0",
+    "projektpro-leaflet-smoothwheelzoom": "^0.1.4"
   }
 }

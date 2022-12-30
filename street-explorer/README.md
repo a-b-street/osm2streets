@@ -3,7 +3,7 @@
 ## Running
 
 [Install wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), then:
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). Run `npm install` once. Then just `npm run dev`.
 
 ```
 npm install
