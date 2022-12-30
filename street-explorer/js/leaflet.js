@@ -4,7 +4,7 @@ import "leaflet-geosearch/dist/geosearch.css";
 import L from "leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-hash";
-import "projektpro-leaflet-smoothwheelzoom";
+import "./deps/SmoothWheelZoom.js";
 
 export function setupLeafletMap(mapContainer) {
   const osm = L.tileLayer(
@@ -29,9 +29,9 @@ export function setupLeafletMap(mapContainer) {
     maxZoom: 21,
     zoomSnap: 0,
     zoomDelta: 0.5,
-    /*scrollWheelZoom: false,
+    scrollWheelZoom: false,
     smoothWheelZoom: true,
-    smoothSensitivity: 1,*/
+    smoothSensitivity: 1,
   }).setView([40.0, 10.0], 4);
 
   new GeoSearchControl({
