@@ -2,13 +2,7 @@ import L from "leaflet";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 
-import {
-  downloadGeneratedFile,
-  handleDragOver,
-  loadFile,
-  makeDropHandler,
-  makeLinkHandler,
-} from "./files.js";
+import { downloadGeneratedFile, loadFile } from "./files.js";
 import { loadTests } from "./tests.js";
 import {
   makeDebugLayer,
@@ -369,14 +363,3 @@ function mapBoundsToGeojson(map) {
     ],
   };
 }
-
-// TODO Unused. Preserve logic for dragging individual files as layers.
-const useMap = (map) => {
-  const container = map.getContainer();
-  container.ondrop = makeDropHandler(map);
-  container.ondragover = handleDragOver;
-
-  map.loadLink = makeLinkHandler(map);
-  map.openTest = makeOpenTest(map);
-  console.info("New map created! File drops enabled.", container);
-};
