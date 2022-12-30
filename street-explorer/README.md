@@ -2,10 +2,12 @@
 
 ## Running
 
-[Install wasm-pack](https://rustwasm.github.io/wasm-pack/installer/), then:
+[Install wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) and
+[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), then:
 
 ```
-street-explorer/> ./serve_locally.sh
+npm install
+npm run dev
 ```
 
 You can edit HTML, CSS, and JS and just refresh the page immediately. If you

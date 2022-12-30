@@ -6,7 +6,7 @@ import {
   lanePolygonStyle,
 } from "./layers.js";
 import { setupLeafletMap } from "./leaflet.js";
-import init, { JsStreetNetwork } from "./osm2streets-js/osm2streets_js.js";
+import init, { JsStreetNetwork } from "osm2streets-js";
 
 await init();
 
