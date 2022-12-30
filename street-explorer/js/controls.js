@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import L from "leaflet";
 import { downloadGeneratedFile } from "./files.js";
 
 export class Layer {

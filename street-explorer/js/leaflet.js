@@ -1,10 +1,10 @@
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-geosearch/dist/geosearch.css';
+import "leaflet/dist/leaflet.css";
+import "leaflet-geosearch/dist/geosearch.css";
 
-import L from 'leaflet';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import L from "leaflet";
+import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-hash";
-import 'projektpro-leaflet-smoothwheelzoom';
+import "projektpro-leaflet-smoothwheelzoom";
 
 export function setupLeafletMap(mapContainer) {
   const osm = L.tileLayer(
