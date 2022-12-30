@@ -8,6 +8,7 @@ Read [how it works](docs/how_it_works.md)
 
 - latest stable Rust
 - [wasm-pack](https://github.com/rustwasm/wasm-pack)
+- NodeJS and npm tool
 
 ## Tests
 
