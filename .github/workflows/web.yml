@@ -18,7 +18,8 @@ jobs:
           cd street-explorer
           wasm-pack build --release --target web ../osm2streets-js
           # Make a full copy of what we'll publish, dereferencing symlinks
-          cp -RLv www/ publish_www
+          cp -RLv * publish_www
+          rm -fv publish_www/README.md publish_www/serve_locally.sh
           # wasm-pack generates this file, but it'll prevent the action below from working
           rm -fv publish_www/js/osm2streets-js/.gitignore
 
