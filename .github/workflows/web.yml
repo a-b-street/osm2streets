@@ -13,18 +13,25 @@ jobs:
       - name: Install wasm-pack
         uses: jetli/wasm-pack-action@v0.3.0
 
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Install node dependencies
+        run: npm ci
+
       - name: Build web app
         run: |
           cd street-explorer
           wasm-pack build --release --target web ../osm2streets-js
-          # Make a full copy of what we'll publish, dereferencing symlinks
-          cp -RLv * publish_www
-          rm -fv publish_www/README.md publish_www/serve_locally.sh
-          # wasm-pack generates this file, but it'll prevent the action below from working
-          rm -fv publish_www/js/osm2streets-js/.gitignore
+          npm run build --if-present
+          # Manually copy the tests
+          cp -RLv tests dist
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./street-explorer/publish_www/
+          publish_dir: ./street-explorer/dist/
