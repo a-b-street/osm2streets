@@ -1,3 +1,6 @@
+import L from 'leaflet';
+import "leaflet-osm";
+
 export const makePlainGeoJsonLayer = (text) => {
   // TODO Update for new types
   const intersectionColours = {
