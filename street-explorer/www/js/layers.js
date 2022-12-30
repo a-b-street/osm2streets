@@ -186,28 +186,6 @@ export const makeOsmLayer = (text) => {
   );
 };
 
-export const makeDotLayer = async (text, { bounds }) => {
-  return new Promise((resolve, reject) => {
-    const graph = d3
-      .select("#road-network")
-      .graphviz({
-        zoom: false,
-      })
-      .on("end", () => {
-        const svg = graph._selection.node().firstElementChild; // assume first child for now
-        if (!svg) console.error("no svg element came about from the render");
-        resolve(
-          new L.svgOverlay(svg, bounds, {
-            opacity: 0.3,
-            interactive: true,
-          })
-        );
-      })
-      .dot(text)
-      .render();
-  });
-};
-
 export const makeDebugLayer = (text) => {
   return new L.geoJSON(JSON.parse(text), {
     onEachFeature: function (feature, layer) {
@@ -225,5 +203,4 @@ export const makeBoundaryLayer = (geojson) => {
 export const layerMakers = {
   json: makePlainGeoJsonLayer,
   osm: makeOsmLayer,
-  dot: makeDotLayer,
 };

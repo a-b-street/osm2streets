@@ -8,7 +8,6 @@ import {
 import { loadTests } from "./tests.js";
 import {
   makeDebugLayer,
-  makeDotLayer,
   makeLaneMarkingsLayer,
   makeLanePolygonLayer,
   makeIntersectionMarkingsLayer,
@@ -134,7 +133,6 @@ class TestCase {
     const prefix = `tests/${name}/`;
     const osmInput = await loadFile(prefix + "input.osm");
     const geometry = await loadFile(prefix + "geometry.json");
-    const network = await loadFile(prefix + "road_network.dot");
     const boundary = JSON.parse(await loadFile(prefix + "boundary.json"));
 
     const geometryLayer = makePlainGeoJsonLayer(geometry);
@@ -143,7 +141,6 @@ class TestCase {
     var group = new LayerGroup("built-in test case", app.map);
     group.addLayer("Boundary", makeBoundaryLayer(boundary));
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
-    group.addLayer("Network", await makeDotLayer(network, { bounds }));
     group.addLayer("Geometry", geometryLayer);
     app.layers.addGroup(group);
 
@@ -274,7 +271,6 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
-    // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
 
     const numDebugSteps = network.getDebugSteps().length;
     // This enables all layers within the group. We don't want to do that for the OSM layer. So only disable if we're debugging.
