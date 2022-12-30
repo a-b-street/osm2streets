@@ -1,5 +1,3 @@
-
-
 /* Variables */
 body {
   --pad: 1rem;
@@ -24,16 +22,24 @@ body > aside {
 }
 
 @media (orientation: landscape) {
-  body { flex-direction: row }
-  body > aside { flex-direction: column }
+  body {
+    flex-direction: row;
+  }
+  body > aside {
+    flex-direction: column;
+  }
   body > aside {
     max-width: 27rem;
   }
 }
 
 @media (orientation: portrait) {
-  body { flex-direction: column }
-  body > aside { flex-direction: row }
+  body {
+    flex-direction: column;
+  }
+  body > aside {
+    flex-direction: row;
+  }
 
   body > aside {
     max-height: 13rem;
@@ -84,7 +90,20 @@ form#import-settings > details > div > label {
 
 /* Theming */
 
-body, h1, h2, h3, h4, h5, a, button, input, textarea, .button, label, p, select {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+a,
+button,
+input,
+textarea,
+.button,
+label,
+p,
+select {
   font-family: "Source Code Pro", monospace;
 }
 
@@ -92,26 +111,37 @@ body {
   background: var(--bg-color);
   color: #cccccc;
 }
-a:link { color: #72e0d1 }
-a:visited { color: #83ba52 }
+a:link {
+  color: #72e0d1;
+}
+a:visited {
+  color: #83ba52;
+}
 
-button, input, textarea, .button {
+button,
+input,
+textarea,
+.button {
   background-color: #323253;
   color: #cccccc;
 }
-button:hover, input:hover, .button:hover {
+button:hover,
+input:hover,
+.button:hover {
   background-color: #444480;
 }
-button:active, input:active, .button:active {
+button:active,
+input:active,
+.button:active {
   background-color: #38482a;
 }
-button:disabled, .button.disabled {
+button:disabled,
+.button.disabled {
   background-color: #333333;
 }
 
-
- /* The switch - the box around the slider */
- .switch {
+/* The switch - the box around the slider */
+.switch {
   position: relative;
   display: inline-block;
   width: 2.4em;
@@ -136,8 +166,8 @@ button:disabled, .button.disabled {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -148,8 +178,8 @@ button:disabled, .button.disabled {
   left: 0.2em;
   bottom: 0.2em;
   background-color: #222;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider:before {

@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import L from "leaflet";
 import "leaflet-osm";
 
 export const makePlainGeoJsonLayer = (text) => {
