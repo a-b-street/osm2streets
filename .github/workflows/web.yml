@@ -14,10 +14,11 @@ jobs:
         uses: jetli/wasm-pack-action@v0.3.0
 
       - name: Install node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'npm'
+          cache-dependency-path: street-explorer/package-lock.json
 
       - name: Install node dependencies
         run: npm ci
