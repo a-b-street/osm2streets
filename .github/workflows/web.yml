@@ -21,7 +21,9 @@ jobs:
           cache-dependency-path: street-explorer/package-lock.json
 
       - name: Install node dependencies
-        run: npm ci
+        run: |
+          cd street-explorer
+          npm ci
 
       - name: Build web app
         run: |
