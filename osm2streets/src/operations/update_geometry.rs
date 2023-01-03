@@ -5,7 +5,7 @@ use crate::{IntersectionID, Road, StreetNetwork};
 impl StreetNetwork {
     /// Recalculates trim distances and intersection geometry. This is idempotent; it doesn't use
     /// any results from the previous call.
-    pub fn update_geometry(&mut self, id: IntersectionID) {
+    pub(crate) fn update_geometry(&mut self, id: IntersectionID) {
         let i = &self.intersections[&id];
 
         // Update the polygon and Set trim distances for roads

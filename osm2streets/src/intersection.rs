@@ -196,10 +196,15 @@ impl StreetNetwork {
         intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
     }
 
-    /// Updates the derived properties of an intersection.
-    ///
+    /// Updates an intersection's derived properties -- geometry (and attached roads) and
+    /// movements.
+    pub fn update_i(&mut self, i: IntersectionID) {
+        self.update_geometry(i);
+        self.update_movements(i);
+    }
+
     /// The kind and movements of a `MapEdge` are handled independently, so this method skips them.
-    pub fn update_movements(&mut self, i: IntersectionID) {
+    pub(crate) fn update_movements(&mut self, i: IntersectionID) {
         if self.intersections[&i].kind == IntersectionKind::MapEdge {
             return;
         }

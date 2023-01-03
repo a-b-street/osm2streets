@@ -224,8 +224,7 @@ pub fn split_up_roads(
     let intersection_ids: Vec<_> = streets.intersections.keys().cloned().collect();
     for i in intersection_ids {
         streets.sort_roads(i);
-        streets.update_geometry(i);
-        streets.update_movements(i);
+        streets.update_i(i);
     }
     timer.stop("calculate intersection geometry and movements");
 

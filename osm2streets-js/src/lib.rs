@@ -203,7 +203,7 @@ impl JsStreetNetwork {
             }
         }
         for i in intersections {
-            self.inner.update_geometry(i);
+            self.inner.update_i(i);
         }
 
         self.ways.get_mut(&id).unwrap().tags = tags;
