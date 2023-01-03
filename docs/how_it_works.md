@@ -49,6 +49,11 @@ For each intersection, this calculates vehicle movements (at the granularity of 
 
 It first calculates trimmed intersection geometry for the two intersections. On each connected road (besides the short one being collapsed, of course), we store the trimming distance in `trim_roads_for_merging`, so that later the intersection geometry algorithm can follow a special case for the single merged intersection.
 
+### update_geometry
+
+This follows [this algorithm](https://a-b-street.github.io/docs/tech/map/geometry/index.html) (outdated!). Road center-lines get "trimmed" back from the intersection, and the intersection gets a polygon.
+
+This process trims every road on both ends. Sometimes the trims overlap and the road disappears entirely. In that case, we mark the road as `internal_junction_road` and remove it entirely with a later pass of `CollapseShortRoads`.
 
 ## Transformations
 
@@ -99,9 +104,3 @@ A "simple sausage link" is a dual carriageway that split very briefly and then r
 ### MergeDualCarriageways (experimental)
 
 TODO. Explain branches and bridges.
-
-### GenerateIntersectionGeometry
-
-Along with `ClassifyIntersections`, this is the most important transformation (and maybe should be expressed differently). For every intersection, it runs through [this algorithm](https://a-b-street.github.io/docs/tech/map/geometry/index.html). Road center-lines get "trimmed" back from the intersection, and the intersection gets a polygon.
-
-This process trims every road on both ends. Sometimes the trims overlap and the road disappears entirely. In that case, we mark the road as `internal_junction_road` and remove it entirely with a later pass of `CollapseShortRoads`.

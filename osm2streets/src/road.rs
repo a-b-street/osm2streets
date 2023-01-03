@@ -39,10 +39,9 @@ pub struct Road {
     /// tag and might be nonsense for the first/last segment.
     pub reference_line: PolyLine,
     pub reference_line_placement: Placement,
-    /// The physical center of all the lanes, including sidewalks (at RoadPosition::FullWidthCenter).
-    /// This will differ from reference_line and modified by transformations, notably it will be
-    /// offset based on reference_line_placement and trimmed by
-    /// `Transformation::GenerateIntersectionGeometry`.
+    /// The physical center of all the lanes, including sidewalks (at
+    /// RoadPosition::FullWidthCenter). This will differ from `reference_line`, incorporating
+    /// `reference_line_placement`, `trim_start`, `trim_end`, etc.
     pub center_line: PolyLine,
     /// How much to trim from the start of `get_untrimmed_center_line`. Negative means to instead
     /// extend the first line.
@@ -115,8 +114,8 @@ impl Road {
         result
     }
 
-    /// Calculates and sets the center_line from reference_line, reference_line_placement
-    /// (and TODO trim_start, trim_end).
+    /// Resets the center_line using reference_line and reference_line_placement. Does
+    /// not apply trim.
     pub fn update_center_line(&mut self, driving_side: DrivingSide) {
         self.center_line = self.get_untrimmed_center_line(driving_side);
     }
@@ -391,9 +390,8 @@ impl Road {
         }
     }
 
-    /// Returns one PolyLine representing the center of each lane in this road. This must be called
-    /// after `Transformation::GenerateIntersectionGeometry` is run. The result also faces the same
-    /// direction as the road.
+    /// Returns one PolyLine representing the center of each lane in this road. The result also
+    /// faces the same direction as the road.
     pub(crate) fn get_lane_center_lines(&self) -> Vec<PolyLine> {
         let total_width = self.total_width();
 

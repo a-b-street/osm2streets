@@ -109,8 +109,6 @@ pub fn intersection_polygon(
         roads.insert(r.id, r);
     }
 
-    assert!(!roads.is_empty());
-
     let results = Results {
         intersection_id,
         intersection_polygon: Polygon::dummy(),
@@ -119,6 +117,14 @@ pub fn intersection_polygon(
         trim_starts: BTreeMap::new(),
         trim_ends: BTreeMap::new(),
     };
+
+    // TODO Hack! Transformation::CollapseDegenerateIntersections triggers this, because we try to
+    // update_geometry in the middle. We need to track changes and defer the recalculation.
+    if roads.is_empty() {
+        error!("Hack! intersection_polygon({intersection_id}) called with no roads");
+        return Ok(results);
+    }
+
     let mut untrimmed_roads = roads.clone();
 
     let mut results = if roads.len() == 1 {

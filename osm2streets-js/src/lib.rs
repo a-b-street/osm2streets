@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use abstutil::{Tags, Timer};
 use geom::{Distance, LonLat, PolyLine, Polygon};
@@ -70,24 +70,9 @@ impl JsStreetNetwork {
             transformations.push(Transformation::SnapCycleways);
             transformations.push(Transformation::TrimDeadendCycleways);
             transformations.push(Transformation::CollapseDegenerateIntersections);
-            // TODO Indeed it'd be much nicer to recalculate this as the above transformations
-            // modify things
-            transformations.push(Transformation::GenerateIntersectionGeometry);
         }
         if input.debug_each_step {
             street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
-
-            // For all but the last step, generate intersection geometry, so these
-            // intermediate states can be rendered.
-            // TODO Revisit this -- rendering should use untrimmed geometry, or an initial guess of
-            // trimmed geometry.
-            let mut steps = street_network.debug_steps.borrow_mut();
-            for i in 0..steps.len() - 1 {
-                steps[i].streets.apply_transformations(
-                    vec![Transformation::GenerateIntersectionGeometry],
-                    &mut timer,
-                );
-            }
         } else {
             street_network.apply_transformations(transformations, &mut timer);
         }
@@ -203,22 +188,23 @@ impl JsStreetNetwork {
         abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
     }
 
-    /// Modifies all affected roads and only reruns `Transformation::GenerateIntersectionGeometry`.
+    /// Modifies all affected roads
     #[wasm_bindgen(js_name = overwriteOsmTagsForWay)]
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: String) {
         let id = osm::WayID(id);
         let tags: Tags = abstutil::from_json(tags.as_bytes()).unwrap();
 
+        let mut intersections = BTreeSet::new();
         for road in self.inner.roads.values_mut() {
             if road.from_osm_way(id) {
                 // TODO This could panic, for example if the user removes the highway tag
                 road.lane_specs_ltr = osm2streets::get_lane_specs_ltr(&tags, &self.inner.config);
+                intersections.extend(road.endpoints());
             }
         }
-        self.inner.apply_transformations(
-            vec![Transformation::GenerateIntersectionGeometry],
-            &mut Timer::throwaway(),
-        );
+        for i in intersections {
+            self.inner.update_geometry(i);
+        }
 
         self.ways.get_mut(&id).unwrap().tags = tags;
     }

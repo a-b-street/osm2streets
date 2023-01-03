@@ -99,7 +99,7 @@ impl StreetNetwork {
         for i in endpts {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
-            // Recalculate movements and complexity.
+            self.update_geometry(i);
             self.update_movements(i);
         }
     }
@@ -112,6 +112,7 @@ impl StreetNetwork {
                 .roads
                 .retain(|r| *r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
+            self.update_geometry(i);
             self.update_movements(i);
         }
         self.roads.remove(&id).unwrap()
@@ -145,9 +146,7 @@ impl StreetNetwork {
             .collect()
     }
 
-    /// This calculates a road's `trimmed_center_line` early, before
-    /// `Transformation::GenerateIntersectionGeometry` has run. Use sparingly.
-    // TODO Remove and maintain trim_start/end instead
+    /// This calculates a road's trimmed `center_line` early. TODO Remove entirely...
     pub(crate) fn estimate_trimmed_geometry(&self, road_id: RoadID) -> Option<PolyLine> {
         let orig_road = &self.roads[&road_id];
         let untrimmed = orig_road.get_untrimmed_center_line(self.config.driving_side);

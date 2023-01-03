@@ -794,8 +794,12 @@
         "type": "Polygon"
       },
       "properties": {
+<<<<<<< HEAD
         "dst_i": 22,
         "layer": 0,
+=======
+        "dst_i": 19,
+>>>>>>> Get rid of the transformation, and instead update geometry everywhere that's necessary. #136
         "osm_way_ids": [
           211780341,
           539540865
@@ -1243,6 +1247,7 @@
         "coordinates": [
           [
             [
+<<<<<<< HEAD
               -0.09328985662431377,
               51.50123626119595
             ],
@@ -1282,6 +1287,8 @@
         "coordinates": [
           [
             [
+=======
+>>>>>>> Get rid of the transformation, and instead update geometry everywhere that's necessary. #136
               -0.09294306264761487,
               51.50120000594694
             ],
@@ -3601,12 +3608,12 @@
         "coordinates": [
           [
             [
-              -0.09327868067335443,
+              -0.09327867922868652,
               51.5012539607434
             ],
             [
-              -0.0932152510840549,
-              51.501312772775556
+              -0.0932152525287228,
+              51.5013127745742
             ],
             [
               -0.09325497367293523,
@@ -3625,15 +3632,15 @@
               51.50121034994342
             ],
             [
-              -0.09328985662431377,
-              51.50123626119595
+              -0.09319282839340856,
+              51.501149830099635
             ],
             [
-              -0.09327868211802234,
-              51.5012539607434
+              -0.09333407501973308,
+              51.501230301392035
             ],
             [
-              -0.09327868067335443,
+              -0.09327867922868652,
               51.5012539607434
             ]
           ]
@@ -3641,25 +3648,26 @@
         "type": "Polygon"
       },
       "properties": {
-        "control": "Signed",
+        "control": "Signalled",
         "id": 19,
         "intersection_kind": "Intersection",
         "movements": [
           "Road #65 -> Road #60",
           "Road #65 -> Road #19",
-          "Road #65 -> Road #32",
+          "Road #65 -> Road #20",
           "Road #60 -> Road #65",
           "Road #60 -> Road #19",
-          "Road #60 -> Road #32",
+          "Road #60 -> Road #20",
           "Road #19 -> Road #65",
           "Road #19 -> Road #60",
-          "Road #19 -> Road #32",
-          "Road #32 -> Road #65",
-          "Road #32 -> Road #60",
-          "Road #32 -> Road #19"
+          "Road #19 -> Road #20",
+          "Road #20 -> Road #65",
+          "Road #20 -> Road #60",
+          "Road #20 -> Road #19"
         ],
         "osm_node_ids": [
-          5220776408
+          5220776408,
+          5220776403
         ],
         "type": "intersection"
       },
@@ -3750,49 +3758,6 @@
         ],
         "osm_node_ids": [
           2217388387
-        ],
-        "type": "intersection"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
-              -0.09333407501973308,
-              51.501230301392035
-            ],
-            [
-              -0.09330136918289639,
-              51.50121802565286
-            ],
-            [
-              -0.09319546057834237,
-              51.501192114400325
-            ],
-            [
-              -0.09319282839340856,
-              51.501149830099635
-            ],
-            [
-              -0.09333407501973308,
-              51.501230301392035
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "control": "Signalled",
-        "id": 22,
-        "intersection_kind": "Connection",
-        "movements": [
-          "Road #32 -> Road #20",
-          "Road #20 -> Road #32"
-        ],
-        "osm_node_ids": [
-          5220776403
         ],
         "type": "intersection"
       },

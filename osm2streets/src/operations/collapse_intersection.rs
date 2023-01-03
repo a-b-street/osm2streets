@@ -29,6 +29,8 @@ impl StreetNetwork {
 
         // We could be more careful merging highway_type, layer, name, and other attributes, but in
         // practice, it doesn't matter for the short segments we're merging.
+        // TODO Here's an example where it'd be great to defer recalculating movements and
+        // geometry until insert_road() below.
         let mut keep_road = self.remove_road(keep_r);
         let destroy_road = self.remove_road(destroy_r);
         self.intersections.remove(&i).unwrap();
