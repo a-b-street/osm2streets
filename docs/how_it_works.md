@@ -96,10 +96,6 @@ There are special cases documented in the code.
 
 A "simple sausage link" is a dual carriageway that split very briefly and then re-joins, with no intermediate roads. These are collapsed into one road between the intersections, with a barrier lane inserted in the middle. The code is well-documented and better reference.
 
-### ShrinkOverlappingRoads
-
-This is a hack to make dual carriageways drawn close together in OSM look half-reasonable, before we successfully merge them. It looks for road polygons that physically overlap, then just halves all lane widths. It doesn't attempt to shift the road center or re-apply placement tags.
-
 ### MergeDualCarriageways (experimental)
 
 TODO. Explain branches and bridges.
