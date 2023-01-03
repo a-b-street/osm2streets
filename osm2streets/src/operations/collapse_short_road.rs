@@ -123,8 +123,7 @@ impl StreetNetwork {
 
         // We just connected a bunch of things to keep_i. Fix ordering and movements.
         self.sort_roads(keep_i);
-        self.update_geometry(keep_i);
-        self.update_movements(keep_i);
+        self.update_i(keep_i);
 
         // TODO Fix up turn restrictions. Many cases:
         // [ ] road we're deleting has simple restrictions

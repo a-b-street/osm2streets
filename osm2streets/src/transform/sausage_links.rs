@@ -153,8 +153,7 @@ fn fix(streets: &mut StreetNetwork, id1: RoadID, id2: RoadID) {
     road1.update_center_line(streets.config.driving_side);
     let intersections = road1.endpoints();
     for i in intersections {
-        streets.update_geometry(i);
-        streets.update_movements(i);
+        streets.update_i(i);
     }
 }
 

@@ -99,8 +99,7 @@ impl StreetNetwork {
         for i in endpts {
             self.intersections.get_mut(&i).unwrap().roads.push(id);
             self.sort_roads(i);
-            self.update_geometry(i);
-            self.update_movements(i);
+            self.update_i(i);
         }
     }
 
@@ -112,8 +111,7 @@ impl StreetNetwork {
                 .roads
                 .retain(|r| *r != id);
             // Since the roads are already sorted, removing doesn't break the sort.
-            self.update_geometry(i);
-            self.update_movements(i);
+            self.update_i(i);
         }
         self.roads.remove(&id).unwrap()
     }
