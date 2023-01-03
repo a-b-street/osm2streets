@@ -5,7 +5,6 @@ authors = ["Dustin Carlino <dabreegster@gmail.com>"]
 edition = "2021"
 
 [dependencies]
-aabb-quadtree = "0.1.0"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 geom = { git = "https://github.com/a-b-street/abstreet" }

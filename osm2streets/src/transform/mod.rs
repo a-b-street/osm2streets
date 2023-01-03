@@ -9,7 +9,6 @@ mod intersection_geometry;
 mod remove_disconnected;
 mod sausage_links;
 mod separate_cycletracks;
-mod shrink_roads;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
@@ -19,7 +18,6 @@ pub enum Transformation {
     CollapseShortRoads,
     CollapseDegenerateIntersections,
     CollapseSausageLinks,
-    ShrinkOverlappingRoads,
     MergeDualCarriageways,
     GenerateIntersectionGeometry,
 }
@@ -32,7 +30,6 @@ impl Transformation {
             Transformation::CollapseSausageLinks,
             Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
-            Transformation::ShrinkOverlappingRoads,
             Transformation::GenerateIntersectionGeometry,
             // The above may discover more roads to collapse
             Transformation::CollapseShortRoads,
@@ -73,7 +70,6 @@ impl Transformation {
             Transformation::CollapseShortRoads => "collapse short roads",
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
             Transformation::CollapseSausageLinks => "collapse sausage links",
-            Transformation::ShrinkOverlappingRoads => "shrink overlapping roads",
             Transformation::MergeDualCarriageways => "merge dual carriageways",
             Transformation::GenerateIntersectionGeometry => "generate intersection geometry",
         }
@@ -99,9 +95,6 @@ impl Transformation {
             }
             Transformation::CollapseSausageLinks => {
                 sausage_links::collapse_sausage_links(streets);
-            }
-            Transformation::ShrinkOverlappingRoads => {
-                shrink_roads::shrink(streets, timer);
             }
             Transformation::MergeDualCarriageways => {
                 dual_carriageways::merge(streets);

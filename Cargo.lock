@@ -667,7 +667,6 @@ dependencies = [
 name = "osm2streets"
 version = "0.1.0"
 dependencies = [
- "aabb-quadtree",
  "abstutil",
  "anyhow",
  "geom",
