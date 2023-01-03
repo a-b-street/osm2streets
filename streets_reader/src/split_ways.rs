@@ -220,13 +220,14 @@ pub fn split_up_roads(
     }
     timer.stop("match traffic signals to intersections");
 
-    timer.start("calculate intersection movements");
+    timer.start("calculate intersection geometry and movements");
     let intersection_ids: Vec<_> = streets.intersections.keys().cloned().collect();
     for i in intersection_ids {
         streets.sort_roads(i);
+        streets.update_geometry(i);
         streets.update_movements(i);
     }
-    timer.stop("calculate intersection movements");
+    timer.stop("calculate intersection geometry and movements");
 
     timer.stop("splitting up roads");
     pt_to_road

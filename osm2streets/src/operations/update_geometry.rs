@@ -35,9 +35,9 @@ impl StreetNetwork {
                 // Don't trim lines back at all
                 let road = &self.roads[&r];
                 let pt = if road.src_i == i.id {
-                    road.center_line.first_pt()
+                    road.reference_line.first_pt()
                 } else {
-                    road.center_line.last_pt()
+                    road.reference_line.last_pt()
                 };
                 self.intersections.get_mut(&id).unwrap().polygon =
                     Circle::new(pt, Distance::meters(3.0)).to_polygon();

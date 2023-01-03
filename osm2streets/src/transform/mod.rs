@@ -5,7 +5,6 @@ use crate::StreetNetwork;
 mod collapse_intersections;
 mod collapse_short_road;
 mod dual_carriageways;
-mod intersection_geometry;
 mod remove_disconnected;
 mod sausage_links;
 mod separate_cycletracks;
@@ -19,7 +18,6 @@ pub enum Transformation {
     CollapseDegenerateIntersections,
     CollapseSausageLinks,
     MergeDualCarriageways,
-    GenerateIntersectionGeometry,
 }
 
 impl Transformation {
@@ -30,10 +28,8 @@ impl Transformation {
             Transformation::CollapseSausageLinks,
             Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
-            Transformation::GenerateIntersectionGeometry,
             // The above may discover more roads to collapse
             Transformation::CollapseShortRoads,
-            Transformation::GenerateIntersectionGeometry,
         ]
     }
 
@@ -71,7 +67,6 @@ impl Transformation {
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
             Transformation::CollapseSausageLinks => "collapse sausage links",
             Transformation::MergeDualCarriageways => "merge dual carriageways",
-            Transformation::GenerateIntersectionGeometry => "generate intersection geometry",
         }
     }
 
@@ -98,9 +93,6 @@ impl Transformation {
             }
             Transformation::MergeDualCarriageways => {
                 dual_carriageways::merge(streets);
-            }
-            Transformation::GenerateIntersectionGeometry => {
-                intersection_geometry::generate(streets, timer);
             }
         }
         timer.stop(self.name());

@@ -14,7 +14,7 @@ pub struct Intersection {
     /// intersection may have multiple OSM nodes (when the intersection is consolidated).
     pub osm_ids: Vec<osm::NodeID>,
 
-    /// This will be a placeholder until `Transformation::GenerateIntersectionGeometry` runs.
+    /// This will be a placeholder circle until `update_geometry` runs or if errors occur.
     ///
     /// TODO Consistently make this clockwise.
     pub polygon: Polygon,
