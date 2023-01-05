@@ -17,14 +17,15 @@ and tools to render and work with the results.
 ## Features
 
 - A schema able to represent:
+
   - **Roads** leading between two intersections
     - Thickened line-strings
     - A list of lanes from left-to-right, with: type, direction, width
   - **Intersections** linking roads
     - Polygon areas, with each road polygon intersecting at a perpendicular
       angle
-    - *Planned: turning movements and crosswalks*
-  - *Planned: bike boxes / advanced stop lines, pedestrian crossing islands, modal filters*
+    - _Planned: turning movements and crosswalks_
+  - _Planned: bike boxes / advanced stop lines, pedestrian crossing islands, modal filters_
 
 - Rendering to GeoJSON
   - Individual lane and intersection polygons
@@ -61,19 +62,27 @@ offline without running an external server).
   here.
 - [Bus Spotting](https://github.com/dabreegster/bus_spotting): a bus network
   GTFS viewer, using `osm2streets` to snap routes to roads
-- *Planned: plugins for [iD](https://github.com/openstreetmap/iD) and
+- [MapLibre route snapper
+  plugin](https://github.com/dabreegster/route_snapper/): draw line-strings
+  snapped to the road network
+- [osm2streets-vector-tileserver](https://github.com/jakecoppinger/osm2streets-vector-tileserver): Dynamically generate vector tiles and view with QGIS, Mapbox, etc
+  - [safe-cycling-map](https://github.com/jakecoppinger/safe-cycling-map) is an example Mapbox use
+- [lane editor](https://a-b-street.github.io/osm2streets/lane_editor.html) to edit OSM tags and see visual results
+- _Planned: plugins for [iD](https://github.com/openstreetmap/iD) and
   [JOSM](https://josm.openstreetmap.de/) to display streets in detail and
-  visually edit lane tagging*
+  visually edit lane tagging_
 
 ### Using osm2streets in your projects
 
 You can use osm2streets today with Leaflet, Mapbox, OpenLayers, or any other
 web map frameworks. The [osm2streets Javascript
 API](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-js) can
-render to GeoJSON. 
+render to GeoJSON.
 
 Since the API isn't stable yet, please [get in
 touch](https://github.com/a-b-street/osm2streets/issues/new) first.
+
+[Java bindings](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-java) are also in progress, with Python and C++ planned.
 
 ## Architecture
 
@@ -89,7 +98,7 @@ The osm2streets library itself (Rust):
 Bindings for other languages:
 
 - [osm2streets-js](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-js): Javascript via WebAssembly
-- *Planned: Java, Python, R*
+- _Planned: Java, Python, R_
 
 The [StreetExplorer web app](https://a-b-street.github.io/osm2streets/) (Javascript, CSS using Leaflet):
 
