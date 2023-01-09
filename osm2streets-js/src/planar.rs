@@ -1,7 +1,7 @@
-use std::collections::{HashSet, BTreeMap};
+use std::collections::{BTreeMap, HashSet};
 
 use abstutil::Counter;
-use geom::{Circle, Distance, PolyLine, Pt2D, GPSBounds, Ring, Polygon};
+use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Polygon, Pt2D, Ring};
 
 use osm2streets::StreetNetwork;
 
@@ -23,8 +23,17 @@ struct Node {
 }
 
 impl Node {
-    fn next_edge(&self, this_node: Pt2D, oriented_edge: OrientedEdge, graph: &PlanarGraph) -> OrientedEdge {
-        let idx = self.oriented_edges.iter().position(|x| *x == oriented_edge).unwrap() as isize;
+    fn next_edge(
+        &self,
+        this_node: Pt2D,
+        oriented_edge: OrientedEdge,
+        graph: &PlanarGraph,
+    ) -> OrientedEdge {
+        let idx = self
+            .oriented_edges
+            .iter()
+            .position(|x| *x == oriented_edge)
+            .unwrap() as isize;
         // ALWAYS go counter-clockwise. Easy.
         let mut next = abstutil::wraparound_get(&self.oriented_edges, idx - 1).clone();
         // Always flip the direction. We just arrived at this node, now we're going away.
@@ -35,48 +44,72 @@ impl Node {
 
 impl PlanarGraph {
     fn from_rings(mut input: Vec<(String, Ring)>) -> Self {
+        // First explode the input into line segments
+        // TODO Rewrite as a geo operation!
+        let mut line_segments: Vec<(String, Line)> = Vec::new();
+        info!("{} input rings", input.len());
+        for (name, ring) in &input {
+            for pair in ring.points().windows(2) {
+                if let Ok(line) = Line::new(pair[0], pair[1]) {
+                    line_segments.push((name.clone(), line));
+                }
+            }
+        }
+        info!("becomes {} line segments", line_segments.len());
+
+        // Then find every line that intersects another, and split the line as needed
+        // index of a line -> all points to split at
+        let mut hits: BTreeMap<usize, HashSet<HashedPoint>> = BTreeMap::new();
+        for (idx1, (name1, line1)) in line_segments.iter().enumerate() {
+            for (idx2, (name2, line2)) in line_segments.iter().enumerate() {
+                if name1 == name2 {
+                    continue;
+                }
+                if let Some(pt) = line1.intersection(line2) {
+                    hits.entry(idx1)
+                        .or_insert_with(HashSet::new)
+                        .insert(hashify(pt));
+                    hits.entry(idx2)
+                        .or_insert_with(HashSet::new)
+                        .insert(hashify(pt));
+                }
+            }
+        }
+        info!("{} lines need to be split somewhere", hits.len());
+
+        // Turn into a graph
         let mut graph = Self {
             edges: BTreeMap::new(),
             nodes: BTreeMap::new(),
         };
 
-        // Similar to split_ways logic
-        let mut counts_per_pt = Counter::new();
-        for (_, ring) in &input {
-            // The first/last point is arbitrary and will always be a node. That lets us actually
-            // make a face for every original ring passed in.
-            for pt in ring.points() {
-                let hash_pt = hashify(*pt);
-                let count = counts_per_pt.inc(hash_pt);
-
-                // TODO Can't figure out why we're missing nodes
-                //if count == 2 && !graph.nodes.contains_key(&hash_pt) {
-                if !graph.nodes.contains_key(&hash_pt) {
-                    graph.nodes.insert(hash_pt, Node {
-                        edges: Vec::new(),
-                        oriented_edges: Vec::new(),
-                    });
-                }
+        // First just nodes
+        for (_, line) in &line_segments {
+            graph.add_node(line.pt1());
+            graph.add_node(line.pt2());
+        }
+        for (_, line_hits) in hits {
+            for pt in line_hits {
+                graph.add_node(unhashify(pt));
             }
         }
 
-        for (name, ring) in input {
-            let mut pts = Vec::new();
-            for pt in ring.into_points() {
-                pts.push(pt);
-                if pts.len() == 1 {
-                    continue;
-                }
-                if graph.nodes.contains_key(&hashify(pt)) {
-                    graph.add_edge(PolyLine::must_new(pts));
-                }
-
-                pts = vec![pt];
-            }
-            assert_eq!(pts.len(), 1);
+        // Then edges
+        for (_, line) in line_segments {
+            graph.add_edge(line.to_polyline());
         }
 
         graph
+    }
+
+    fn add_node(&mut self, pt: Pt2D) {
+        self.nodes.insert(
+            hashify(pt),
+            Node {
+                edges: Vec::new(),
+                oriented_edges: Vec::new(),
+            },
+        );
     }
 
     fn add_edge(&mut self, pl: PolyLine) {
@@ -112,9 +145,7 @@ impl PlanarGraph {
                 *sorting_pt = pl.must_dist_along(pl.length() - shortest_edge).0;
             }
             pointing_to_node.sort_by_key(|(_, _, sorting_pt)| {
-                sorting_pt
-                    .angle_to(true_center)
-                    .normalized_degrees() as i64
+                sorting_pt.angle_to(true_center).normalized_degrees() as i64
             });
 
             node.edges = pointing_to_node.into_iter().map(|(id, _, _)| id).collect();
@@ -163,7 +194,12 @@ impl PlanarGraph {
             let mut props = serde_json::Map::new();
             props.insert("fill".to_string(), true.into());
             props.insert("fillColor".to_string(), "red".into());
-            pairs.push((Circle::new(unhashify(*pt), Distance::meters(1.0)).to_polygon().to_geojson(Some(gps_bounds)), props));
+            pairs.push((
+                Circle::new(unhashify(*pt), Distance::meters(1.0))
+                    .to_polygon()
+                    .to_geojson(Some(gps_bounds)),
+                props,
+            ));
         }
 
         abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
@@ -198,7 +234,7 @@ impl PlanarGraph {
                         for member in &face.members {
                             seen.insert((member.edge, member.side));
                         }
-                        
+
                         faces.push(face);
                     }
                 }
@@ -207,7 +243,12 @@ impl PlanarGraph {
         faces
     }
 
-    fn trace_face(&self, start_edge: EdgeID, start_side: Side, start_direction: Direction) -> Option<Face> {
+    fn trace_face(
+        &self,
+        start_edge: EdgeID,
+        start_side: Side,
+        start_direction: Direction,
+    ) -> Option<Face> {
         let start = OrientedEdge {
             edge: start_edge,
             side: start_side,
@@ -235,7 +276,11 @@ impl PlanarGraph {
             current = self.nodes[&hashify(endpt)].next_edge(endpt, current, self);
         }
 
-        info!("trace_face found {} members, {} pts", members.len(), pts.len());
+        info!(
+            "trace_face found {} members, {} pts",
+            members.len(),
+            pts.len()
+        );
         for x in &members {
             info!("  - {:?}", x);
         }
@@ -319,12 +364,20 @@ fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
         /*input.push(road.center_line.must_shift_left(road.half_width()));
         input.push(road.center_line.must_shift_right(road.half_width()));*/
         // Literally pass in rings, lol
-        input.push((format!("{}", road.id), road.center_line.make_polygons(road.total_width()).into_outer_ring()));
+        input.push((
+            format!("{}", road.id),
+            road.center_line
+                .make_polygons(road.total_width())
+                .into_outer_ring(),
+        ));
     }
     for i in streets.intersections.values() {
         input.push((format!("{}", i.id), i.polygon.clone().into_outer_ring()));
     }
-    input.push(("boundary".to_string(), streets.boundary_polygon.clone().into_outer_ring()));
+    input.push((
+        "boundary".to_string(),
+        streets.boundary_polygon.clone().into_outer_ring(),
+    ));
 
     PlanarGraph::from_rings(input)
 }
