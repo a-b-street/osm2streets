@@ -276,6 +276,23 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
         style: function (feature) {
           return feature.properties;
         },
+        onEachFeature: function (feature, layer) {
+          let isCircle = feature.geometry.type == "Polygon";
+          layer.on({
+            mouseover: function (ev) {
+              ev.target.setStyle({
+                fillOpacity: 0.5,
+                opacity: 0.5,
+              });
+            },
+            mouseout: function (ev) {
+              layer.setStyle({
+                fillOpacity: 0.9,
+                opacity: 0.9,
+              });
+            },
+          });
+        },
       })
     );
 
