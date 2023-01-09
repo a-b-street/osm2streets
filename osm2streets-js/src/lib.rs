@@ -155,9 +155,13 @@ impl JsStreetNetwork {
             .unwrap()
     }
 
-    #[wasm_bindgen(js_name = toPlanarGeojson)]
-    pub fn to_planar_geojson(&self) -> String {
-        planar::to_geojson(&self.inner)
+    #[wasm_bindgen(js_name = toPlanarGeojsonNetwork)]
+    pub fn to_planar_geojson_network(&self) -> String {
+        planar::to_geojson_network(&self.inner)
+    }
+    #[wasm_bindgen(js_name = toPlanarGeojsonFaces)]
+    pub fn to_planar_geojson_faces(&self) -> String {
+        planar::to_geojson_faces(&self.inner)
     }
 
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a

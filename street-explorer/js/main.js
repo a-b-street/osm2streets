@@ -269,33 +269,45 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
     );
-    // TODO Graphviz hits `ReferenceError: can't access lexical declaration 'graph' before initialization`
+
+    group.addLayer(
+      "Planar graph (network)",
+      new L.geoJSON(JSON.parse(network.toPlanarGeojsonNetwork()), {
+        style: function (feature) {
+          return feature.properties;
+        },
+      })
+    );
 
     var hideFaces = new Set();
-    group.addLayer("Planar graph", new L.geoJSON(JSON.parse(network.toPlanarGeojson()), {
-      style: function (feature) {
-        return feature.properties;
-      },
-      onEachFeature: function (feature, layer) {
-        layer.on({
-          click: function (ev) {
-            // TODO Doesn't stop double-click zooming
-            L.DomEvent.preventDefault(ev);
-            const layer = ev.target;
-            const id = layer.feature.properties.id;
-            var fillOpacity = 0.5;
-            if (hideFaces.has(id)) {
-              hideFaces.delete(id);
-              fillOpacity = 0.5;
-            } else {
-              hideFaces.add(id);
-              fillOpacity = 0.1;
-            }
-            layer.setStyle({ fillOpacity });
+    group.addLazyLayer(
+      "Planar graph (faces)",
+      () =>
+        new L.geoJSON(JSON.parse(network.toPlanarGeojsonFaces()), {
+          style: function (feature) {
+            return feature.properties;
           },
-        });
-      },
-    }));
+          onEachFeature: function (feature, layer) {
+            layer.on({
+              click: function (ev) {
+                // TODO Doesn't stop double-click zooming
+                L.DomEvent.preventDefault(ev);
+                const layer = ev.target;
+                const id = layer.feature.properties.id;
+                var fillOpacity = 0.5;
+                if (hideFaces.has(id)) {
+                  hideFaces.delete(id);
+                  fillOpacity = 0.5;
+                } else {
+                  hideFaces.add(id);
+                  fillOpacity = 0.1;
+                }
+                layer.setStyle({ fillOpacity });
+              },
+            });
+          },
+        })
+    );
 
     const numDebugSteps = network.getDebugSteps().length;
     // This enables all layers within the group. We don't want to do that for the OSM layer. So only disable if we're debugging.

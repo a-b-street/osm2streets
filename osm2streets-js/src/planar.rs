@@ -382,12 +382,14 @@ fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
     PlanarGraph::from_rings(input)
 }
 
-pub fn to_geojson(streets: &StreetNetwork) -> String {
+pub fn to_geojson_network(streets: &StreetNetwork) -> String {
     let graph = streets_to_planar(streets);
-
     graph.render_network(&streets.gps_bounds)
+}
 
-    /*let mut pairs = Vec::new();
+pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
+    let graph = streets_to_planar(streets);
+    let mut pairs = Vec::new();
     for face in graph.to_faces() {
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
@@ -396,7 +398,7 @@ pub fn to_geojson(streets: &StreetNetwork) -> String {
         props.insert("id".to_string(), pairs.len().into());
         pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
     }
-    abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))*/
+    abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
 }
 
 fn hashify(pt: Pt2D) -> HashedPoint {
