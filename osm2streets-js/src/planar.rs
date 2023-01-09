@@ -7,10 +7,11 @@ use osm2streets::StreetNetwork;
 
 struct PlanarGraph {
     edges: BTreeMap<EdgeID, PolyLine>,
-    nodes: BTreeMap<(isize, isize), Node>,
+    nodes: BTreeMap<HashedPoint, Node>,
 }
 
 type EdgeID = usize;
+type HashedPoint = (isize, isize);
 
 struct Node {
     // Sorted clockwise
@@ -323,6 +324,7 @@ fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
     for i in streets.intersections.values() {
         input.push((format!("{}", i.id), i.polygon.clone().into_outer_ring()));
     }
+    input.push(("boundary".to_string(), streets.boundary_polygon.clone().into_outer_ring()));
 
     PlanarGraph::from_rings(input)
 }
@@ -344,13 +346,13 @@ pub fn to_geojson(streets: &StreetNetwork) -> String {
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))*/
 }
 
-fn hashify(pt: Pt2D) -> (isize, isize) {
+fn hashify(pt: Pt2D) -> HashedPoint {
     let x = (pt.x() * 100.0) as isize;
     let y = (pt.y() * 100.0) as isize;
     (x, y)
 }
 
-fn unhashify(pt: (isize, isize)) -> Pt2D {
+fn unhashify(pt: HashedPoint) -> Pt2D {
     let x = pt.0 as f64 / 100.0;
     let y = pt.1 as f64 / 100.0;
     Pt2D::new(x, y)
