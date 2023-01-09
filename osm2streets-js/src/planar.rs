@@ -44,57 +44,17 @@ impl Node {
 
 impl PlanarGraph {
     fn from_rings(mut input: Vec<(String, Ring)>) -> Self {
-        // First explode the input into line segments
-        // TODO Rewrite as a geo operation!
-        let mut line_segments: Vec<(String, Line)> = Vec::new();
-        info!("{} input rings", input.len());
-        for (name, ring) in &input {
-            for pair in ring.points().windows(2) {
-                if let Ok(line) = Line::new(pair[0], pair[1]) {
-                    line_segments.push((name.clone(), line));
-                }
-            }
-        }
-        info!("becomes {} line segments", line_segments.len());
+        let line_segments: Vec<(String, Line)> = explode_lines(input);
 
-        // Then find every line that intersects another, and split the line as needed
-        // index of a line -> all points to split at
-        let mut hits: BTreeMap<usize, HashSet<HashedPoint>> = BTreeMap::new();
-        for (idx1, (name1, line1)) in line_segments.iter().enumerate() {
-            for (idx2, (name2, line2)) in line_segments.iter().enumerate() {
-                if name1 == name2 {
-                    continue;
-                }
-                if let Some(pt) = line1.intersection(line2) {
-                    hits.entry(idx1)
-                        .or_insert_with(HashSet::new)
-                        .insert(hashify(pt));
-                    hits.entry(idx2)
-                        .or_insert_with(HashSet::new)
-                        .insert(hashify(pt));
-                }
-            }
-        }
-        info!("{} lines need to be split somewhere", hits.len());
-
-        // Turn into a graph
         let mut graph = Self {
             edges: BTreeMap::new(),
             nodes: BTreeMap::new(),
         };
-
-        // First just nodes
         for (_, line) in &line_segments {
+            // This'll repeatedly overwrite nodes
             graph.add_node(line.pt1());
             graph.add_node(line.pt2());
         }
-        for (_, line_hits) in hits {
-            for pt in line_hits {
-                graph.add_node(unhashify(pt));
-            }
-        }
-
-        // Then edges
         for (_, line) in line_segments {
             graph.add_edge(line.to_polyline());
         }
@@ -187,6 +147,7 @@ impl PlanarGraph {
             let mut props = serde_json::Map::new();
             props.insert("stroke".to_string(), true.into());
             props.insert("color".to_string(), "cyan".into());
+            props.insert("opacity".to_string(), 0.9.into());
             pairs.push((pl.to_geojson(Some(gps_bounds)), props));
         }
 
@@ -194,6 +155,7 @@ impl PlanarGraph {
             let mut props = serde_json::Map::new();
             props.insert("fill".to_string(), true.into());
             props.insert("fillColor".to_string(), "red".into());
+            props.insert("fillOpacity".to_string(), 0.9.into());
             pairs.push((
                 Circle::new(unhashify(*pt), Distance::meters(1.0))
                     .to_polygon()
@@ -411,4 +373,63 @@ fn unhashify(pt: HashedPoint) -> Pt2D {
     let x = pt.0 as f64 / 100.0;
     let y = pt.1 as f64 / 100.0;
     Pt2D::new(x, y)
+}
+
+fn explode_lines(input: Vec<(String, Ring)>) -> Vec<(String, Line)> {
+    // First explode the input into line segments
+    // TODO Rewrite as a geo operation!
+    let mut line_segments: Vec<(String, Line)> = Vec::new();
+    info!("{} input rings", input.len());
+    for (name, ring) in &input {
+        for pair in ring.points().windows(2) {
+            if let Ok(line) = Line::new(pair[0], pair[1]) {
+                line_segments.push((name.clone(), line));
+            }
+        }
+    }
+    info!("becomes {} line segments", line_segments.len());
+
+    // Then find every line that intersects another, and split the line as needed
+    // index of a line -> all points to split at
+    let mut hits: BTreeMap<usize, HashSet<HashedPoint>> = BTreeMap::new();
+    for (idx1, (name1, line1)) in line_segments.iter().enumerate() {
+        for (idx2, (name2, line2)) in line_segments.iter().enumerate() {
+            if name1 == name2 {
+                continue;
+            }
+            if let Some(pt) = line1.intersection(line2) {
+                hits.entry(idx1)
+                    .or_insert_with(HashSet::new)
+                    .insert(hashify(pt));
+                hits.entry(idx2)
+                    .or_insert_with(HashSet::new)
+                    .insert(hashify(pt));
+            }
+        }
+    }
+    info!("{} lines need to be split somewhere", hits.len());
+
+    // TODO Very messy, expensive way of doing it, but avoids index mess
+    let mut output = Vec::new();
+    for (idx, (name, orig_line)) in line_segments.into_iter().enumerate() {
+        if let Some(split_pts) = hits.remove(&idx) {
+            let mut points = vec![orig_line.pt1(), orig_line.pt2()];
+            for pt in split_pts {
+                points.push(unhashify(pt));
+            }
+
+            // TODO Shouldn't need to, but
+            points.retain(|pt| orig_line.dist_along_of_point(*pt).is_some());
+            points.sort_by_key(|pt| orig_line.dist_along_of_point(*pt).unwrap());
+
+            for pair in points.windows(2) {
+                if let Ok(line) = Line::new(pair[0], pair[1]) {
+                    output.push((name.clone(), line));
+                }
+            }
+        } else {
+            output.push((name, orig_line));
+        }
+    }
+    output
 }
