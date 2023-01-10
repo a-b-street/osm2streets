@@ -395,14 +395,14 @@ pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
 }
 
 fn hashify(pt: Pt2D) -> HashedPoint {
-    let x = (pt.x() * 100.0) as isize;
-    let y = (pt.y() * 100.0) as isize;
+    let x = (pt.x() * 10.0) as isize;
+    let y = (pt.y() * 10.0) as isize;
     (x, y)
 }
 
 fn unhashify(pt: HashedPoint) -> Pt2D {
-    let x = pt.0 as f64 / 100.0;
-    let y = pt.1 as f64 / 100.0;
+    let x = pt.0 as f64 / 10.0;
+    let y = pt.1 as f64 / 10.0;
     Pt2D::new(x, y)
 }
 
