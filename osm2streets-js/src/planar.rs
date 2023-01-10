@@ -146,9 +146,22 @@ impl PlanarGraph {
         for (_, pl) in &self.edges {
             let mut props = serde_json::Map::new();
             props.insert("stroke".to_string(), true.into());
+            props.insert("weight".to_string(), 5.into());
             props.insert("color".to_string(), "cyan".into());
             props.insert("opacity".to_string(), 0.9.into());
-            pairs.push((pl.to_geojson(Some(gps_bounds)), props));
+
+            // To emphasize edges that aren't split properly, trim lines from both ends a bit
+            // TODO Not super helpful
+            let buffer = Distance::meters(2.0);
+            if pl.length() > buffer * 3.0 {
+                pairs.push((
+                    pl.exact_slice(buffer, pl.length() - buffer)
+                        .to_geojson(Some(gps_bounds)),
+                    props,
+                ));
+            } else {
+                pairs.push((pl.to_geojson(Some(gps_bounds)), props));
+            }
         }
 
         for pt in self.nodes.keys() {

@@ -17,9 +17,13 @@
   },
   "dependencies": {
     "@geoman-io/leaflet-geoman-free": "^2.13.1",
+    "@turf/boolean-point-in-polygon": "^6.5.0",
+    "@turf/point-to-line-distance": "^6.5.0",
+    "install": "^0.13.0",
     "leaflet": "^1.9.3",
     "leaflet-geosearch": "^3.7.0",
     "leaflet-hash": "^0.2.1",
-    "leaflet-osm": "^0.1.0"
+    "leaflet-osm": "^0.1.0",
+    "npm": "^9.2.0"
   }
 }
