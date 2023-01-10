@@ -164,10 +164,15 @@ impl PlanarGraph {
             }
         }
 
+        let close = self.find_close_nodes();
         for pt in self.nodes.keys() {
             let mut props = serde_json::Map::new();
             props.insert("fill".to_string(), true.into());
-            props.insert("fillColor".to_string(), "red".into());
+            if close.contains(pt) {
+                props.insert("fillColor".to_string(), "red".into());
+            } else {
+                props.insert("fillColor".to_string(), "green".into());
+            }
             props.insert("fillOpacity".to_string(), 0.9.into());
             pairs.push((
                 Circle::new(unhashify(*pt), Distance::meters(1.0))
@@ -268,6 +273,19 @@ impl PlanarGraph {
         } else {
             None
         }
+    }
+
+    fn find_close_nodes(&self) -> HashSet<HashedPoint> {
+        let mut close = HashSet::new();
+        for pt1 in self.nodes.keys() {
+            for pt2 in self.nodes.keys() {
+                if pt1 != pt2 && unhashify(*pt1).dist_to(unhashify(*pt2)) < Distance::meters(0.5) {
+                    close.insert(*pt1);
+                    close.insert(*pt2);
+                }
+            }
+        }
+        close
     }
 }
 
