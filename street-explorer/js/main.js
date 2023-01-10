@@ -254,18 +254,25 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     if (addOSMLayer) {
       group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
     }
-    group.addLayer("Geometry", makePlainGeoJsonLayer(network.toGeojsonPlain()));
+    group.addLayer(
+      "Geometry",
+      makePlainGeoJsonLayer(network.toGeojsonPlain()),
+      { enabled: false }
+    );
     group.addLayer(
       "Lane polygons",
-      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map)
+      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map),
+      { enabled: false }
     );
     group.addLayer(
       "Lane markings",
-      makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
+      makeLaneMarkingsLayer(network.toLaneMarkingsGeojson()),
+      { enabled: false }
     );
     group.addLayer(
       "Intersection markings",
-      makeIntersectionMarkingsLayer(network.toIntersectionMarkingsGeojson())
+      makeIntersectionMarkingsLayer(network.toIntersectionMarkingsGeojson()),
+      { enabled: false }
     );
     group.addLazyLayer("Debug road ordering", () =>
       makeDebugLayer(network.debugClockwiseOrderingGeojson())
