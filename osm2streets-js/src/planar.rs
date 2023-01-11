@@ -29,17 +29,17 @@ impl Node {
         this_node: Pt2D,
         oriented_edge: OrientedEdge,
         graph: &PlanarGraph,
-    ) -> OrientedEdge {
+    ) -> Option<OrientedEdge> {
         let idx = self
             .oriented_edges
             .iter()
             .position(|x| *x == oriented_edge)
-            .unwrap() as isize;
+            ? as isize;
         // ALWAYS go counter-clockwise. Easy.
         let mut next = abstutil::wraparound_get(&self.oriented_edges, idx - 1).clone();
         // Always flip the direction. We just arrived at this node, now we're going away.
         next.direction = next.direction.opposite();
-        next
+        Some(next)
     }
 }
 
@@ -259,7 +259,12 @@ impl PlanarGraph {
             pts.extend(current.to_points(self));
 
             let endpt = current.last_pt(self);
-            current = self.nodes[&hashify(endpt)].next_edge(endpt, current, self);
+            if let Some(next) = self.nodes[&hashify(endpt)].next_edge(endpt, current.clone(), self) {
+                current = next;
+            } else {
+                error!("what happened at {:?}", current);
+                return None;
+            }
         }
 
         info!(
@@ -277,6 +282,7 @@ impl PlanarGraph {
                 polygon: ring.into_polygon(),
             })
         } else {
+            error!("Traced something, but then bad points");
             None
         }
     }
