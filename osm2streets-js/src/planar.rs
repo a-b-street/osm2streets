@@ -81,11 +81,13 @@ impl PlanarGraph {
             return;
         }
 
-        let endpts = [pl.first_pt(), pl.last_pt()];
+        // TODO be very careful, always work with HashedPoints in here, not Pt2D.
+        // do geo::LineString<isize> or something to be paranoid.
+        let endpts = [id.0, id.1];
 
         self.edges.insert(id, pl);
         for endpt in endpts {
-            let node = self.nodes.get_mut(&hashify(endpt)).unwrap();
+            let node = self.nodes.get_mut(&endpt).unwrap();
             node.edges.push(id);
 
             // Re-sort the node
@@ -94,8 +96,10 @@ impl PlanarGraph {
             let mut average_endpts = Vec::new();
             for e in &node.edges {
                 let mut pl = self.edges[e].clone();
-                if pl.first_pt() == endpt {
+                if hashify(pl.first_pt()) == endpt {
                     pl = pl.reversed();
+                } else {
+                    assert_eq!(hashify(pl.last_pt()), endpt);
                 }
                 average_endpts.push(pl.last_pt());
                 pointing_to_node.push((*e, pl, Pt2D::zero()));
@@ -132,12 +136,13 @@ impl PlanarGraph {
                     // Tmp
                     direction: Direction::Forwards,
                 };
-                if self.edges[e].first_pt() == endpt {
+                if hashify(self.edges[e].first_pt()) == endpt {
                     left.direction = Direction::Backwards;
                     right.direction = Direction::Backwards;
                     node.oriented_edges.push(left);
                     node.oriented_edges.push(right);
                 } else {
+                    assert_eq!(hashify(self.edges[e].last_pt()), endpt);
                     node.oriented_edges.push(right);
                     node.oriented_edges.push(left);
                 }
