@@ -31,25 +31,28 @@ export function addPlanar(group, network, map) {
   );
 
   let faceJson = JSON.parse(network.toPlanarGeojsonFaces());
-  group.addLayer("Planar graph (faces)", new L.geoJSON(faceJson), {
-    style: function (feature) {
-      return feature.properties;
-    },
-    onEachFeature: function (feature, layer) {
-      layer.on({
-        mouseover: function (ev) {
-          ev.target.setStyle({
-            fillOpacity: 0.1,
-          });
-        },
-        mouseout: function (ev) {
-          layer.setStyle({
-            fillOpacity: 0.5,
-          });
-        },
-      });
-    },
-  });
+  group.addLayer(
+    "Planar graph (faces)",
+    new L.geoJSON(faceJson, {
+      style: function (feature) {
+        return feature.properties;
+      },
+      onEachFeature: function (feature, layer) {
+        layer.on({
+          mouseover: function (ev) {
+            ev.target.setStyle({
+              fillOpacity: 0.1,
+            });
+          },
+          mouseout: function (ev) {
+            layer.setStyle({
+              fillOpacity: 0.5,
+            });
+          },
+        });
+      },
+    })
+  );
 
   let div = document.getElementById("crowdedStuff");
   let cursorPos = document.getElementById("cursorPos");
