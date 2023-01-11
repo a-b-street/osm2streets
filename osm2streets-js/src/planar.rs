@@ -76,7 +76,7 @@ impl PlanarGraph {
     fn add_edge(&mut self, pl: PolyLine) {
         let id = EdgeID(hashify(pl.first_pt()), hashify(pl.last_pt()));
         if id.0 == id.1 {
-            info!("Skipping empty edge at {:?}. raw geom is length {}", id, pl.length());
+            //info!("Skipping empty edge at {:?}. raw geom is length {}", id, pl.length());
             return;
         }
 
