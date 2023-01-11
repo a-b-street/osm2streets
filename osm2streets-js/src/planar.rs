@@ -5,7 +5,7 @@ use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Polygon, Pt2D, Ring};
 use osm2streets::StreetNetwork;
 
 struct PlanarGraph {
-    edges: BTreeMap<EdgeID, PolyLine>,
+    edges: BTreeMap<EdgeID, Edge>,
     nodes: BTreeMap<HashedPoint, Node>,
 }
 
@@ -23,6 +23,11 @@ struct Node {
     oriented_edges: Vec<OrientedEdge>,
 }
 
+struct Edge {
+    geometry: PolyLine,
+    sources: HashSet<String>,
+}
+
 impl Node {
     fn next_edge(
         &self,
@@ -33,8 +38,7 @@ impl Node {
         let idx = self
             .oriented_edges
             .iter()
-            .position(|x| *x == oriented_edge)
-            ? as isize;
+            .position(|x| *x == oriented_edge)? as isize;
         // ALWAYS go counter-clockwise. Easy.
         let mut next = abstutil::wraparound_get(&self.oriented_edges, idx - 1).clone();
         // Always flip the direction. We just arrived at this node, now we're going away.
@@ -56,8 +60,8 @@ impl PlanarGraph {
             graph.add_node(line.pt1());
             graph.add_node(line.pt2());
         }
-        for (_, line) in line_segments {
-            graph.add_edge(line.to_polyline());
+        for (source, line) in line_segments {
+            graph.add_edge(line.to_polyline(), source);
         }
 
         graph
@@ -73,15 +77,16 @@ impl PlanarGraph {
         );
     }
 
-    fn add_edge(&mut self, pl: PolyLine) {
+    fn add_edge(&mut self, pl: PolyLine, source: String) {
         let id = EdgeID(hashify(pl.first_pt()), hashify(pl.last_pt()));
         if id.0 == id.1 {
             //info!("Skipping empty edge at {:?}. raw geom is length {}", id, pl.length());
             return;
         }
 
-        if self.edges.contains_key(&id) {
+        if let Some(edge) = self.edges.get_mut(&id) {
             //info!("Already have {:?}, skipping duplicate edge", id);
+            edge.sources.insert(source);
             return;
         }
 
@@ -89,7 +94,15 @@ impl PlanarGraph {
         // do geo::LineString<isize> or something to be paranoid.
         let endpts = [id.0, id.1];
 
-        self.edges.insert(id, pl);
+        let mut sources = HashSet::new();
+        sources.insert(source);
+        self.edges.insert(
+            id,
+            Edge {
+                geometry: pl,
+                sources,
+            },
+        );
         for endpt in endpts {
             let node = self.nodes.get_mut(&endpt).unwrap();
             node.edges.push(id);
@@ -99,7 +112,7 @@ impl PlanarGraph {
             let mut pointing_to_node = Vec::new();
             let mut average_endpts = Vec::new();
             for e in &node.edges {
-                let mut pl = self.edges[e].clone();
+                let mut pl = self.edges[e].geometry.clone();
                 if hashify(pl.first_pt()) == endpt {
                     pl = pl.reversed();
                 } else {
@@ -140,13 +153,13 @@ impl PlanarGraph {
                     // Tmp
                     direction: Direction::Forwards,
                 };
-                if hashify(self.edges[e].first_pt()) == endpt {
+                if hashify(self.edges[e].geometry.first_pt()) == endpt {
                     left.direction = Direction::Backwards;
                     right.direction = Direction::Backwards;
                     node.oriented_edges.push(left);
                     node.oriented_edges.push(right);
                 } else {
-                    assert_eq!(hashify(self.edges[e].last_pt()), endpt);
+                    assert_eq!(hashify(self.edges[e].geometry.last_pt()), endpt);
                     node.oriented_edges.push(right);
                     node.oriented_edges.push(left);
                 }
@@ -158,7 +171,8 @@ impl PlanarGraph {
         let mut pairs = Vec::new();
 
         // Just show nodes and edges, to start
-        for (_, pl) in &self.edges {
+        for (_, edge) in &self.edges {
+            let pl = &edge.geometry;
             let mut props = serde_json::Map::new();
             props.insert("stroke".to_string(), true.into());
             props.insert("weight".to_string(), 5.into());
@@ -269,7 +283,8 @@ impl PlanarGraph {
             pts.extend(current.to_points(self));
 
             let endpt = current.last_pt(self);
-            if let Some(next) = self.nodes[&hashify(endpt)].next_edge(endpt, current.clone(), self) {
+            if let Some(next) = self.nodes[&hashify(endpt)].next_edge(endpt, current.clone(), self)
+            {
                 current = next;
             } else {
                 error!("what happened at {:?}", current);
@@ -287,9 +302,15 @@ impl PlanarGraph {
         }*/
 
         if let Ok(ring) = Ring::deduping_new(pts) {
+            let mut sources = HashSet::new();
+            for e in &members {
+                sources.extend(self.edges[&e.edge].sources.clone());
+            }
+
             Some(Face {
                 members,
                 polygon: ring.into_polygon(),
+                sources,
             })
         } else {
             error!("Traced something, but then bad points");
@@ -315,6 +336,7 @@ struct Face {
     polygon: Polygon,
     // Clockwise and first=last
     members: Vec<OrientedEdge>,
+    sources: HashSet<String>,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -328,7 +350,7 @@ struct OrientedEdge {
 
 impl OrientedEdge {
     fn to_points(&self, graph: &PlanarGraph) -> Vec<Pt2D> {
-        let mut pts = graph.edges[&self.edge].clone().into_points();
+        let mut pts = graph.edges[&self.edge].geometry.clone().into_points();
         if self.direction == Direction::Backwards {
             pts.reverse();
         }
@@ -338,8 +360,8 @@ impl OrientedEdge {
     fn last_pt(&self, graph: &PlanarGraph) -> Pt2D {
         let edge = &graph.edges[&self.edge];
         match self.direction {
-            Direction::Forwards => edge.last_pt(),
-            Direction::Backwards => edge.first_pt(),
+            Direction::Forwards => edge.geometry.last_pt(),
+            Direction::Backwards => edge.geometry.first_pt(),
         }
     }
 }
@@ -411,6 +433,7 @@ pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
         props.insert("fillColor".to_string(), "cyan".into());
         props.insert("fillOpacity".to_string(), 0.5.into());
         props.insert("id".to_string(), pairs.len().into());
+        props.insert("sources".to_string(), format!("{:?}", face.sources).into());
         pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
     }
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))

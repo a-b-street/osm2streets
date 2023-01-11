@@ -3,7 +3,6 @@ import pointToLineDistance from "@turf/point-to-line-distance";
 
 export function addPlanar(group, network, map) {
   let networkJSON = JSON.parse(network.toPlanarGeojsonNetwork());
-
   group.addLazyLayer(
     "Planar graph (network)",
     () =>
@@ -31,28 +30,26 @@ export function addPlanar(group, network, map) {
       })
   );
 
-  group.addLayer(
-    "Planar graph (faces)",
-    new L.geoJSON(JSON.parse(network.toPlanarGeojsonFaces()), {
-      style: function (feature) {
-        return feature.properties;
-      },
-      onEachFeature: function (feature, layer) {
-        layer.on({
-          mouseover: function (ev) {
-            ev.target.setStyle({
-              fillOpacity: 0.1,
-            });
-          },
-          mouseout: function (ev) {
-            layer.setStyle({
-              fillOpacity: 0.5,
-            });
-          },
-        });
-      },
-    })
-  );
+  let faceJson = JSON.parse(network.toPlanarGeojsonFaces());
+  group.addLayer("Planar graph (faces)", new L.geoJSON(faceJson), {
+    style: function (feature) {
+      return feature.properties;
+    },
+    onEachFeature: function (feature, layer) {
+      layer.on({
+        mouseover: function (ev) {
+          ev.target.setStyle({
+            fillOpacity: 0.1,
+          });
+        },
+        mouseout: function (ev) {
+          layer.setStyle({
+            fillOpacity: 0.5,
+          });
+        },
+      });
+    },
+  });
 
   let div = document.getElementById("crowdedStuff");
   let cursorPos = document.getElementById("cursorPos");
@@ -78,6 +75,13 @@ export function addPlanar(group, network, map) {
         div.innerHTML = `<h1 style="color: red">${points} nodes, ${lines} edges by cursor</h1>`;
       } else {
         div.innerHTML = `${points} nodes, ${lines} edges by cursor`;
+      }
+
+      for (let feature of faceJson.features) {
+        if (booleanPointInPolygon(pt, feature)) {
+          cursorPos.innerText = `Face: ${feature.properties.sources}`;
+          break;
+        }
       }
     },
   });
