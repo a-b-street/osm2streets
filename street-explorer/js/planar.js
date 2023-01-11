@@ -30,7 +30,6 @@ export function addPlanar(group, network, map) {
     })
   );
 
-  var hideFaces = new Set();
   group.addLazyLayer(
     "Planar graph (faces)",
     () =>
@@ -40,21 +39,17 @@ export function addPlanar(group, network, map) {
         },
         onEachFeature: function (feature, layer) {
           layer.on({
-            click: function (ev) {
-              // TODO Doesn't stop double-click zooming
-              L.DomEvent.preventDefault(ev);
-              const layer = ev.target;
-              const id = layer.feature.properties.id;
-              var fillOpacity = 0.5;
-              if (hideFaces.has(id)) {
-                hideFaces.delete(id);
-                fillOpacity = 0.5;
-              } else {
-                hideFaces.add(id);
-                fillOpacity = 0.1;
-              }
-              layer.setStyle({ fillOpacity });
+            mouseover: function (ev) {
+              ev.target.setStyle({
+                fillOpacity: 0.1
+              });
             },
+            mouseout: function (ev) {
+              layer.setStyle({
+                fillOpacity: 0.5
+              });
+            },
+
           });
         },
       })
