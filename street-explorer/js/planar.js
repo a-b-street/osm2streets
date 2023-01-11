@@ -56,15 +56,18 @@ export function addPlanar(group, network, map) {
   );
 
   let div = document.getElementById("crowdedStuff");
+  let cursorPos = document.getElementById("cursorPos");
   map.on({
     mousemove: (e) => {
       let pt = [e.latlng.lng, e.latlng.lat];
       let points = 0;
       let lines = 0;
+      cursorPos.innerText = "hover on a node";
       for (let feature of networkJSON.features) {
         if (feature.geometry.type == "Polygon") {
           if (booleanPointInPolygon(pt, feature)) {
             points++;
+            cursorPos.innerText = feature.properties.id;
           }
         } else {
           if (pointToLineDistance(pt, feature, { units: "meters" }) < 1.0) {

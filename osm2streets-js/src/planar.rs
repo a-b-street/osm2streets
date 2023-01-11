@@ -185,6 +185,7 @@ impl PlanarGraph {
                 props.insert("fillColor".to_string(), "green".into());
             }
             props.insert("fillOpacity".to_string(), 0.9.into());
+            props.insert("id".to_string(), format!("{:?}", pt).into());
             pairs.push((
                 Circle::new(unhashify(*pt), Distance::meters(1.0))
                     .to_polygon()
@@ -272,14 +273,14 @@ impl PlanarGraph {
             }
         }
 
-        info!(
+        /*info!(
             "trace_face found {} members, {} pts",
             members.len(),
             pts.len()
         );
         for x in &members {
             info!("  - {:?}", x);
-        }
+        }*/
 
         if let Ok(ring) = Ring::deduping_new(pts) {
             Some(Face {
