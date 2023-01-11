@@ -428,9 +428,33 @@ pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
     let graph = streets_to_planar(streets);
     let mut pairs = Vec::new();
     for face in graph.to_faces() {
+        // Classify the face
+        let mut intersections = 0;
+        let mut roads = 0;
+        let mut boundary = false;
+        for x in &face.sources {
+            if x == "boundary" {
+                boundary = true;
+            } else if x.starts_with("Road") {
+                roads += 1;
+            } else if x.starts_with("Intersection") {
+                intersections += 1;
+            }
+        }
+
+        let color = if intersections == 1 && roads > 0 && !boundary {
+            // an intersection
+            "black"
+        } else if intersections == 2 && roads == 1 && !boundary {
+            // a road
+            "black"
+        } else {
+            "cyan"
+        };
+
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
-        props.insert("fillColor".to_string(), "cyan".into());
+        props.insert("fillColor".to_string(), color.into());
         props.insert("fillOpacity".to_string(), 0.5.into());
         props.insert("id".to_string(), pairs.len().into());
         props.insert("sources".to_string(), format!("{:?}", face.sources).into());
