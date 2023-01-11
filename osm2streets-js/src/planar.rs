@@ -1,6 +1,5 @@
 use std::collections::{BTreeMap, HashSet};
 
-use abstutil::Counter;
 use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Polygon, Pt2D, Ring};
 
 use osm2streets::StreetNetwork;
@@ -10,8 +9,10 @@ struct PlanarGraph {
     nodes: BTreeMap<HashedPoint, Node>,
 }
 
-type EdgeID = usize;
 type HashedPoint = (isize, isize);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct EdgeID(HashedPoint, HashedPoint);
 
 struct Node {
     // Sorted clockwise
@@ -73,7 +74,12 @@ impl PlanarGraph {
     }
 
     fn add_edge(&mut self, pl: PolyLine) {
-        let id = self.edges.len();
+        let id = EdgeID(hashify(pl.first_pt()), hashify(pl.last_pt()));
+
+        if self.edges.contains_key(&id) {
+            //info!("Already have {:?}, skipping duplicate edge", id);
+            return;
+        }
 
         let endpts = [pl.first_pt(), pl.last_pt()];
 
