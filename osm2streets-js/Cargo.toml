@@ -14,6 +14,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 console_error_panic_hook = "0.1.6"
 geo = "0.23.0"
+geojson = { version = "0.24.0", features = ["geo-types"] }
 geom = { git = "https://github.com/a-b-street/abstreet" }
 experimental = { path = "../experimental" }
 # TODO Upstream this in abstutil crate. WASM is missing some runtime dep otherwise.

@@ -1,6 +1,7 @@
 use std::collections::{BTreeMap, HashSet};
 
-use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Polygon, Pt2D, Ring};
+use geo::MapCoordsInPlace;
+use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Pt2D, Ring};
 
 use osm2streets::StreetNetwork;
 
@@ -301,21 +302,18 @@ impl PlanarGraph {
             info!("  - {:?}", x);
         }*/
 
-        if let Ok(ring) = Ring::deduping_new(pts) {
-            let mut sources = HashSet::new();
-            for e in &members {
-                sources.extend(self.edges[&e.edge].sources.clone());
-            }
+        pts.dedup();
+        let polygon = geo::Polygon::new(geo::LineString::from(pts), Vec::new());
 
-            Some(Face {
-                members,
-                polygon: ring.into_polygon(),
-                sources,
-            })
-        } else {
-            error!("Traced something, but then bad points");
-            None
+        let mut sources = HashSet::new();
+        for e in &members {
+            sources.extend(self.edges[&e.edge].sources.clone());
         }
+        Some(Face {
+            members,
+            polygon,
+            sources,
+        })
     }
 
     fn find_close_nodes(&self) -> HashSet<HashedPoint> {
@@ -333,7 +331,7 @@ impl PlanarGraph {
 }
 
 struct Face {
-    polygon: Polygon,
+    polygon: geo::Polygon<f64>,
     // Clockwise and first=last
     members: Vec<OrientedEdge>,
     sources: HashSet<String>,
@@ -427,7 +425,7 @@ pub fn to_geojson_network(streets: &StreetNetwork) -> String {
 pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
     let graph = streets_to_planar(streets);
     let mut pairs = Vec::new();
-    for face in graph.to_faces() {
+    for mut face in graph.to_faces() {
         // Classify the face
         let mut intersections = 0;
         let mut roads = 0;
@@ -452,13 +450,24 @@ pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
             "cyan"
         };
 
+        let mut geom: geo::Geometry = face.polygon.into();
+        geom.map_coords_in_place(|c| {
+            let gps = Pt2D::new(c.x, c.y).to_gps(&streets.gps_bounds);
+            (gps.x(), gps.y()).into()
+        });
+        let geometry = geojson::Geometry {
+            bbox: None,
+            value: geojson::Value::from(&geom),
+            foreign_members: None,
+        };
+
         let mut props = serde_json::Map::new();
         props.insert("fill".to_string(), true.into());
         props.insert("fillColor".to_string(), color.into());
         props.insert("fillOpacity".to_string(), 0.5.into());
         props.insert("id".to_string(), pairs.len().into());
         props.insert("sources".to_string(), format!("{:?}", face.sources).into());
-        pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
+        pairs.push((geometry, props));
     }
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
 }

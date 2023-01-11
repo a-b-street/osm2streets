@@ -698,6 +698,7 @@ dependencies = [
  "console_error_panic_hook",
  "experimental",
  "geo",
+ "geojson",
  "geom",
  "instant",
  "log",
