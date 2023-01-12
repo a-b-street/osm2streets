@@ -171,6 +171,13 @@ impl PlanarGraph {
                 }
             }
 
+            if sources.len() == 1 && sources.iter().next().unwrap() == "boundary" {
+                // Need to do this here, otherwise we'll mark a bunch of visited edges and skip
+                // smaller faces that we want
+                info!("Skipping a face that just covers the whole boundary");
+                return None;
+            }
+
             Some(Face {
                 members,
                 polygon: ring.into_polygon(),

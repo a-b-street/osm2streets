@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, HashSet};
 
-use geom::{Circle, Distance, GPSBounds, Line, Ring};
+use geom::{Circle, Distance, GPSBounds, Line, PolyLine, Polygon};
 
 use osm2streets::StreetNetwork;
 
@@ -8,30 +8,39 @@ use super::{hashify, unhashify, HashedPoint, PlanarGraph};
 
 pub fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
     let mut input = Vec::new();
-    for road in streets.roads.values() {
-        /*input.push(road.center_line.must_shift_left(road.half_width()));
-        input.push(road.center_line.must_shift_right(road.half_width()));*/
-        // Literally pass in rings, lol
-        input.push((
-            format!("{}", road.id),
-            road.center_line
-                .make_polygons(road.total_width())
-                .into_outer_ring(),
-        ));
+
+    if false {
+        // Road and intersection geometry as input
+        for road in streets.roads.values() {
+            input.push((
+                format!("{}", road.id),
+                polygon_to_lines(&road.center_line.make_polygons(road.total_width())),
+            ));
+        }
+        for i in streets.intersections.values() {
+            input.push((format!("{}", i.id), polygon_to_lines(&i.polygon)));
+        }
+    } else {
+        // Just road center lines
+        for road in streets.roads.values() {
+            input.push((format!("{}", road.id), road.reference_line.clone()));
+        }
     }
-    for i in streets.intersections.values() {
-        input.push((format!("{}", i.id), i.polygon.clone().into_outer_ring()));
-    }
+
     input.push((
         "boundary".to_string(),
-        streets.boundary_polygon.clone().into_outer_ring(),
+        polygon_to_lines(&streets.boundary_polygon),
     ));
 
-    PlanarGraph::from_rings(input)
+    PlanarGraph::new(input)
+}
+
+fn polygon_to_lines(polygon: &Polygon) -> PolyLine {
+    PolyLine::unchecked_new(polygon.get_outer_ring().clone().into_points())
 }
 
 impl PlanarGraph {
-    pub fn from_rings(input: Vec<(String, Ring)>) -> Self {
+    pub fn new(input: Vec<(String, PolyLine)>) -> Self {
         let line_segments: Vec<(String, Line)> = explode_lines(input);
 
         let mut graph = Self {
@@ -112,13 +121,13 @@ impl PlanarGraph {
     }
 }
 
-fn explode_lines(input: Vec<(String, Ring)>) -> Vec<(String, Line)> {
+fn explode_lines(input: Vec<(String, PolyLine)>) -> Vec<(String, Line)> {
     // First explode the input into line segments
     // TODO Rewrite as a geo operation!
     let mut line_segments: Vec<(String, Line)> = Vec::new();
     info!("{} input rings", input.len());
-    for (name, ring) in &input {
-        for pair in ring.points().windows(2) {
+    for (name, pl) in &input {
+        for pair in pl.points().windows(2) {
             if let Ok(line) = Line::new(pair[0], pair[1]) {
                 line_segments.push((name.clone(), line));
             }
