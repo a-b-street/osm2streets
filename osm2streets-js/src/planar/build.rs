@@ -9,7 +9,7 @@ use super::{hashify, unhashify, HashedPoint, PlanarGraph};
 pub fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
     let mut input = Vec::new();
 
-    if false {
+    if true {
         // Road and intersection geometry as input
         for road in streets.roads.values() {
             input.push((
@@ -63,13 +63,15 @@ impl PlanarGraph {
         let mut pairs = Vec::new();
 
         // Just show nodes and edges, to start
-        for (_, edge) in &self.edges {
+        for (id, edge) in &self.edges {
             let pl = &edge.geometry;
             let mut props = serde_json::Map::new();
             props.insert("stroke".to_string(), true.into());
             props.insert("weight".to_string(), 5.into());
             props.insert("color".to_string(), "cyan".into());
             props.insert("opacity".to_string(), 0.9.into());
+            props.insert("id".to_string(), format!("{:?}", id).into());
+            props.insert("sources".to_string(), format!("{:?}", edge.sources).into());
 
             // To emphasize edges that aren't split properly, trim lines from both ends a bit
             // TODO Not super helpful

@@ -39,6 +39,15 @@ export class LayerGroup {
     }
   }
 
+  isEnabled(name) {
+    for (const layer of this.layers) {
+      if (layer.name == name) {
+        return layer.enabled;
+      }
+    }
+    throw `Can't find layer ${name}`;
+  }
+
   addLazyLayer(name, lazilyMakeData) {
     const enabled = false;
     var layer = new Layer(name, enabled);

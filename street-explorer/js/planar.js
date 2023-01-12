@@ -58,40 +58,44 @@ export function addPlanar(group, network, map) {
   map.on({
     mousemove: (e) => {
       let pt = [e.latlng.lng, e.latlng.lat];
-      let points = 0;
-      let lines = 0;
+      let nodes = 0;
+      let edges = [];
       cursorPos.innerText = "hover on a node";
       for (let feature of networkJSON.features) {
         if (feature.geometry.type == "Polygon") {
           if (booleanPointInPolygon(pt, feature)) {
-            points++;
+            nodes++;
             cursorPos.innerText = feature.properties.id;
           }
         } else {
           if (pointToLineDistance(pt, feature, { units: "meters" }) < 1.0) {
-            lines++;
+            edges.push(
+              `${feature.properties.id} (${feature.properties.sources})`
+            );
           }
         }
       }
-      if (points > 1 || lines > 1) {
-        div.innerHTML = `<h1 style="color: red">${points} nodes, ${lines} edges by cursor</h1>`;
+      if (nodes > 1 || edges.length > 1) {
+        div.innerHTML = `<h1 style="color: red">${nodes} nodes, ${edges.length} edges by cursor</h1>`;
       } else {
-        div.innerHTML = `${points} nodes, ${lines} edges by cursor`;
+        div.innerHTML = `${nodes} nodes, ${edges.length} edges by cursor (${edges})`;
       }
 
-      let faces = 0;
-      someFaceId = null;
-      for (let feature of faceJson.features) {
-        if (booleanPointInPolygon(pt, feature)) {
-          faces++;
-          div.innerText = `Face: ${feature.properties.sources}`;
-          if (faces == 1) {
-            someFaceId = feature.properties.id;
+      if (group.isEnabled("Planar graph (faces)")) {
+        let faces = 0;
+        someFaceId = null;
+        for (let feature of faceJson.features) {
+          if (booleanPointInPolygon(pt, feature)) {
+            faces++;
+            div.innerText = `Face: ${feature.properties.sources}`;
+            if (faces == 1) {
+              someFaceId = feature.properties.id;
+            }
           }
         }
-      }
-      if (faces > 1) {
-        div.innerHTML = `<h1 style="color: red">${faces} faces</h1>`;
+        if (faces > 1) {
+          div.innerHTML = `<h1 style="color: red">${faces} faces</h1>`;
+        }
       }
     },
   });

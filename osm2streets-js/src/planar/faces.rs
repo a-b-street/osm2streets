@@ -153,31 +153,19 @@ impl PlanarGraph {
             return None;
         }
 
+        let mut sources = HashSet::new();
+        for e in &members {
+            sources.extend(self.edges[&e.edge].sources.clone());
+        }
+
+        if sources.len() == 1 && sources.iter().next().unwrap() == "boundary" {
+            // Need to do this here, otherwise we'll mark a bunch of visited edges and skip
+            // smaller faces that we want
+            info!("Skipping a face that just covers the whole boundary");
+            return None;
+        }
+
         if let Ok(ring) = Ring::deduping_new(pts) {
-            let mut sources = HashSet::new();
-            for e in &members {
-                sources.extend(self.edges[&e.edge].sources.clone());
-            }
-
-            if ring.points().len() == 3 {
-                info!(
-                    "trace_face found {} members, {} pts, {:?} sources",
-                    members.len(),
-                    ring.points().len(),
-                    sources
-                );
-                for x in &members {
-                    info!("  - {:?}", x);
-                }
-            }
-
-            if sources.len() == 1 && sources.iter().next().unwrap() == "boundary" {
-                // Need to do this here, otherwise we'll mark a bunch of visited edges and skip
-                // smaller faces that we want
-                info!("Skipping a face that just covers the whole boundary");
-                return None;
-            }
-
             Some(Face {
                 members,
                 polygon: ring.into_polygon(),
@@ -185,6 +173,15 @@ impl PlanarGraph {
             })
         } else {
             error!("Traced something, but then bad points");
+            info!(
+                "trace_face found {} members, {:?} sources",
+                members.len(),
+                sources
+            );
+            for x in &members {
+                info!("  - {:?}", x);
+            }
+
             None
         }
     }
