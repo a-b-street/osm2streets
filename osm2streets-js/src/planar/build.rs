@@ -9,7 +9,7 @@ use super::{hashify, unhashify, HashedPoint, PlanarGraph};
 pub fn streets_to_planar(streets: &StreetNetwork) -> PlanarGraph {
     let mut input = Vec::new();
 
-    if true {
+    if false {
         // Road and intersection geometry as input
         for road in streets.roads.values() {
             input.push((

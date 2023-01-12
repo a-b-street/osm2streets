@@ -123,34 +123,63 @@ impl PlanarGraph {
 
             node.edges = pointing_to_node.into_iter().map(|(id, _, _)| id).collect();
 
-            // and then calculate the oriented edges, trusting the above
-            // this is RoadEdge::calculate logic
-            node.oriented_edges.clear();
-            for e in &node.edges {
-                let mut left = OrientedEdge {
-                    edge: *e,
-                    side: Side::Left,
-                    // Tmp
-                    direction: Direction::Forwards,
-                };
-                let mut right = OrientedEdge {
-                    edge: *e,
-                    side: Side::Right,
-                    // Tmp
-                    direction: Direction::Forwards,
-                };
-                if hashify(self.edges[e].geometry.first_pt()) == endpt {
-                    left.direction = Direction::Backwards;
-                    right.direction = Direction::Backwards;
-                    node.oriented_edges.push(left);
-                    node.oriented_edges.push(right);
-                } else {
-                    assert_eq!(hashify(self.edges[e].geometry.last_pt()), endpt);
-                    node.oriented_edges.push(right);
-                    node.oriented_edges.push(left);
-                }
+            self.recalculate_oriented_edges(endpt);
+        }
+    }
+
+    fn recalculate_oriented_edges(&mut self, id: HashedPoint) {
+        let node = self.nodes.get_mut(&id).unwrap();
+
+        // trust the edge ordering
+        // this is RoadEdge::calculate logic
+        node.oriented_edges.clear();
+        for e in &node.edges {
+            let mut left = OrientedEdge {
+                edge: *e,
+                side: Side::Left,
+                // Tmp
+                direction: Direction::Forwards,
+            };
+            let mut right = OrientedEdge {
+                edge: *e,
+                side: Side::Right,
+                // Tmp
+                direction: Direction::Forwards,
+            };
+            if hashify(self.edges[e].geometry.first_pt()) == id {
+                left.direction = Direction::Backwards;
+                right.direction = Direction::Backwards;
+                node.oriented_edges.push(left);
+                node.oriented_edges.push(right);
+            } else {
+                assert_eq!(hashify(self.edges[e].geometry.last_pt()), id);
+                node.oriented_edges.push(right);
+                node.oriented_edges.push(left);
             }
         }
+    }
+
+    pub fn remove_all_deadends(&mut self) {
+        // Horrible fixpoint
+        loop {
+            if let Some((n, _)) = self.nodes.iter().find(|(_, node)| node.edges.len() == 1) {
+                self.remove_deadend(*n)
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn remove_deadend(&mut self, delete: HashedPoint) {
+        assert_eq!(self.nodes[&delete].edges.len(), 1);
+        let e = self.nodes.remove(&delete).unwrap().edges[0];
+        let keep = if e.0 == delete { e.1 } else { e.0 };
+
+        self.edges.remove(&e).unwrap();
+
+        // Clean up the other node
+        self.nodes.get_mut(&keep).unwrap().edges.retain(|x| *x != e);
+        self.recalculate_oriented_edges(keep);
     }
 }
 

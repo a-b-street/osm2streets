@@ -7,7 +7,9 @@ use osm2streets::StreetNetwork;
 use super::{hashify, Direction, EdgeID, OrientedEdge, PlanarGraph, Side};
 
 pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
-    let graph = super::build::streets_to_planar(streets);
+    let mut graph = super::build::streets_to_planar(streets);
+    graph.remove_all_deadends();
+
     let mut faces = graph.to_faces();
 
     // TODO Hack to remove the giant polygon that covers everything
