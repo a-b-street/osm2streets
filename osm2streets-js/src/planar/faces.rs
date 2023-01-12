@@ -8,7 +8,16 @@ use super::{hashify, Direction, EdgeID, OrientedEdge, PlanarGraph, Side};
 
 pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
     let graph = super::build::streets_to_planar(streets);
-    let faces = graph.to_faces();
+    let mut faces = graph.to_faces();
+
+    // TODO Hack to remove the giant polygon that covers everything
+    let n = faces.len();
+    let area_boundary = streets.boundary_polygon.area();
+    faces.retain(|f| f.polygon.area() < area_boundary);
+    if faces.len() != n {
+        error!("Removed {} gigantic faces", n - faces.len());
+    }
+
     // lol
     let colors = vec!["red", "green", "blue", "cyan", "orange"];
     let color_indices = four_coloring(&faces, colors.len());
