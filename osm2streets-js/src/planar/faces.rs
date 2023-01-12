@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use geom::{Polygon, Ring};
 
@@ -8,30 +8,17 @@ use super::{hashify, Direction, EdgeID, OrientedEdge, PlanarGraph, Side};
 
 pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
     let graph = super::build::streets_to_planar(streets);
-    let mut pairs = Vec::new();
-    for face in graph.to_faces() {
-        // Classify the face
-        let mut intersections = 0;
-        let mut roads = 0;
-        let mut boundary = false;
-        for x in &face.sources {
-            if x == "boundary" {
-                boundary = true;
-            } else if x.starts_with("Road") {
-                roads += 1;
-            } else if x.starts_with("Intersection") {
-                intersections += 1;
-            }
-        }
+    let faces = graph.to_faces();
+    // lol
+    let colors = vec!["red", "green", "blue", "cyan", "orange"];
+    let color_indices = four_coloring(&faces, colors.len());
 
-        let color = if intersections == 1 && roads > 0 && !boundary {
-            // an intersection
-            "black"
-        } else if intersections == 2 && roads == 1 && !boundary {
-            // a road
-            "black"
+    let mut pairs = Vec::new();
+    for (face, color_idx) in faces.into_iter().zip(color_indices.into_iter()) {
+        let color = if true {
+            colors[color_idx]
         } else {
-            "cyan"
+            color_by_classifying(&face)
         };
 
         let mut props = serde_json::Map::new();
@@ -43,6 +30,31 @@ pub fn to_geojson_faces(streets: &StreetNetwork) -> String {
         pairs.push((face.polygon.to_geojson(Some(&streets.gps_bounds)), props));
     }
     abstutil::to_json(&geom::geometries_with_properties_to_geojson(pairs))
+}
+
+fn color_by_classifying(face: &Face) -> &'static str {
+    let mut intersections = 0;
+    let mut roads = 0;
+    let mut boundary = false;
+    for x in &face.sources {
+        if x == "boundary" {
+            boundary = true;
+        } else if x.starts_with("Road") {
+            roads += 1;
+        } else if x.starts_with("Intersection") {
+            intersections += 1;
+        }
+    }
+
+    if intersections == 1 && roads > 0 && !boundary {
+        // an intersection
+        "black"
+    } else if intersections == 2 && roads == 1 && !boundary {
+        // a road
+        "black"
+    } else {
+        "cyan"
+    }
 }
 
 impl PlanarGraph {
@@ -155,4 +167,39 @@ struct Face {
     // Clockwise and first=last
     members: Vec<OrientedEdge>,
     sources: HashSet<String>,
+}
+
+fn four_coloring(input: &[Face], num_colors: usize) -> Vec<usize> {
+    let mut edge_to_faces: HashMap<EdgeID, Vec<usize>> = HashMap::new();
+    for (idx, face) in input.iter().enumerate() {
+        for id in &face.members {
+            edge_to_faces
+                .entry(id.edge)
+                .or_insert_with(Vec::new)
+                .push(idx);
+        }
+    }
+
+    // Greedily fill out a color for each face, in the same order as the input
+    let mut assigned_colors = Vec::new();
+    for (this_idx, face) in input.iter().enumerate() {
+        let mut available_colors: Vec<bool> = std::iter::repeat(true).take(num_colors).collect();
+        // Find all neighbors
+        for id in &face.members {
+            for other_idx in &edge_to_faces[&id.edge] {
+                // We assign colors in order, so any neighbor index smaller than us has been
+                // chosen
+                if *other_idx < this_idx {
+                    available_colors[assigned_colors[*other_idx]] = false;
+                }
+            }
+        }
+        if let Some(color) = available_colors.iter().position(|x| *x) {
+            assigned_colors.push(color);
+        } else {
+            // Too few colors?
+            return std::iter::repeat(0).take(input.len()).collect();
+        }
+    }
+    assigned_colors
 }
