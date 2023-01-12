@@ -144,19 +144,31 @@ impl PlanarGraph {
             }
         }
 
-        /*info!(
-            "trace_face found {} members, {} pts",
-            members.len(),
-            pts.len()
-        );
-        for x in &members {
-            info!("  - {:?}", x);
-        }*/
+        // There are cases that just loop back and forth over one edge. Maybe it's a bigger/real
+        // probem, but we can filter out easily
+        if members.len() == 3
+            && members[0].edge == members[1].edge
+            && members[1].edge == members[2].edge
+        {
+            return None;
+        }
 
         if let Ok(ring) = Ring::deduping_new(pts) {
             let mut sources = HashSet::new();
             for e in &members {
                 sources.extend(self.edges[&e.edge].sources.clone());
+            }
+
+            if ring.points().len() == 3 {
+                info!(
+                    "trace_face found {} members, {} pts, {:?} sources",
+                    members.len(),
+                    ring.points().len(),
+                    sources
+                );
+                for x in &members {
+                    info!("  - {:?}", x);
+                }
             }
 
             Some(Face {
