@@ -26,7 +26,7 @@ impl StreetNetwork {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_StreetNetwork_create(
+pub extern "system" fn Java_org_osm2streets_StreetNetwork_create(
     env: JNIEnv,
     _: JClass,
     osm_xml_input: JString,
@@ -35,7 +35,7 @@ pub extern "system" fn Java_StreetNetwork_create(
     let network = StreetNetwork::new(osm_xml_input);
 
     let pointer = Box::into_raw(Box::new(network)) as jlong;
-    let obj_class = env.find_class("StreetNetwork").unwrap();
+    let obj_class = env.find_class("org/osm2streets/StreetNetwork").unwrap();
     let obj = env
         .new_object(obj_class, "(J)V", &[JValue::Long(pointer)])
         .unwrap();
@@ -43,7 +43,7 @@ pub extern "system" fn Java_StreetNetwork_create(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_StreetNetwork_toGeojsonPlain(
+pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toGeojsonPlain(
     env: JNIEnv,
     java_pointer: JObject,
 ) -> jstring {
@@ -56,7 +56,7 @@ pub unsafe extern "system" fn Java_StreetNetwork_toGeojsonPlain(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_StreetNetwork_toLanePolygonsGeojson(
+pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLanePolygonsGeojson(
     env: JNIEnv,
     java_pointer: JObject,
 ) -> jstring {
@@ -69,7 +69,7 @@ pub unsafe extern "system" fn Java_StreetNetwork_toLanePolygonsGeojson(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_StreetNetwork_toLaneMarkingsGeojson(
+pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLaneMarkingsGeojson(
     env: JNIEnv,
     java_pointer: JObject,
 ) -> jstring {

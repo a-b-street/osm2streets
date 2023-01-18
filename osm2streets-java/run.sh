@@ -1,6 +1,5 @@
 #!/bin/bash
+set -ex
 
-set -e
-javac StreetNetwork.java
-cargo build
-java -Djava.library.path=../target/x86_64-unknown-linux-gnu/debug/ StreetNetwork
+./build.sh
+java -jar build/StreetNetwork.jar
