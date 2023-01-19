@@ -42,6 +42,7 @@ impl StreetNetwork {
                     ),
                     ("src_i", road.src_i.0.into()),
                     ("dst_i", road.dst_i.0.into()),
+                    ("layer", road.layer.into()),
                 ]),
             ));
         }
@@ -100,6 +101,7 @@ impl StreetNetwork {
                     make_props(&[
                         ("type", format!("{:?}", lane.lt).into()),
                         ("road", road.id.0.into()),
+                        ("layer", road.layer.into()),
                         ("index", idx.into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
@@ -153,7 +155,10 @@ impl StreetNetwork {
                     ) {
                         pairs.push((
                             poly.to_geojson(gps_bounds),
-                            make_props(&[("type", "center line".into())]),
+                            make_props(&[
+                                ("type", "center line".into()),
+                                ("layer", road.layer.into()),
+                            ]),
                         ));
                     }
                     continue;
@@ -169,7 +174,10 @@ impl StreetNetwork {
                     ) {
                         pairs.push((
                             poly.to_geojson(gps_bounds),
-                            make_props(&[("type", "lane separator".into())]),
+                            make_props(&[
+                                ("type", "lane separator".into()),
+                                ("layer", road.layer.into()),
+                            ]),
                         ));
                     }
                 }
@@ -202,7 +210,7 @@ impl StreetNetwork {
                     .to_outline(thickness / 2.0);
                     pairs.push((
                         arrow.to_geojson(gps_bounds),
-                        make_props(&[("type", "lane arrow".into())]),
+                        make_props(&[("type", "lane arrow".into()), ("layer", road.layer.into())]),
                     ));
                 }
             }
@@ -221,14 +229,14 @@ impl StreetNetwork {
                         .must_shift_right((lane.width - thickness) / 2.0)
                         .make_polygons(thickness)
                         .to_geojson(gps_bounds),
-                    make_props(&[("type", "buffer edge".into())]),
+                    make_props(&[("type", "buffer edge".into()), ("layer", road.layer.into())]),
                 ));
                 pairs.push((
                     center
                         .must_shift_left((lane.width - thickness) / 2.0)
                         .make_polygons(thickness)
                         .to_geojson(gps_bounds),
-                    make_props(&[("type", "buffer edge".into())]),
+                    make_props(&[("type", "buffer edge".into()), ("layer", road.layer.into())]),
                 ));
 
                 // Diagonal stripes along the lane
@@ -246,7 +254,10 @@ impl StreetNetwork {
                         Line::must_new(left, right)
                             .make_polygons(thickness)
                             .to_geojson(gps_bounds),
-                        make_props(&[("type", "buffer stripe".into())]),
+                        make_props(&[
+                            ("type", "buffer stripe".into()),
+                            ("layer", road.layer.into()),
+                        ]),
                     ));
                 }
             }
