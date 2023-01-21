@@ -144,34 +144,6 @@ impl StreetNetwork {
             .collect()
     }
 
-    /// This calculates a road's trimmed `center_line` early. TODO Remove entirely...
-    pub(crate) fn estimate_trimmed_geometry(&self, road_id: RoadID) -> Option<PolyLine> {
-        let orig_road = &self.roads[&road_id];
-        let untrimmed = orig_road.get_untrimmed_center_line(self.config.driving_side);
-
-        let mut trims = Vec::new();
-        for i in [orig_road.src_i, orig_road.dst_i] {
-            let mut input_roads = Vec::new();
-            for road in self.roads_per_intersection(i) {
-                input_roads.push(road.to_input_road(self.config.driving_side));
-            }
-            let results = intersection_polygon(
-                i,
-                input_roads,
-                // TODO Not sure if we should use this or not
-                &BTreeMap::new(),
-            )
-            .ok()?;
-            trims.push(if i == orig_road.src_i {
-                results.trim_starts[&road_id]
-            } else {
-                results.trim_ends[&road_id]
-            });
-        }
-
-        Road::trim_polyline_both_ends(untrimmed, trims[0], trims[1])
-    }
-
     pub(crate) fn start_debug_step<I: Into<String>>(&self, label: I) {
         let copy = DebugStreets {
             label: label.into(),
