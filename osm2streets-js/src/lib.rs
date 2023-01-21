@@ -212,11 +212,14 @@ impl JsStreetNetwork {
     /// Returns the XML string representing a way. Any OSM tags changed via
     /// `overwrite_osm_tags_for_way` are reflected.
     #[wasm_bindgen(js_name = wayToXml)]
-    pub fn way_to_xml(&mut self, id: i64) -> String {
+    pub fn way_to_xml(&mut self, id: i64, changeset_id: Option<String>) -> String {
         let way = &self.ways[&osm::WayID(id)];
         let mut out = format!(r#"<way id="{id}""#);
         if let Some(version) = way.version {
             out.push_str(&format!(r#" version="{version}""#));
+        }
+        if let Some(changeset) = changeset_id {
+            out.push_str(&format!(r#" changeset="{changeset}""#));
         }
         out.push_str(">\n");
         for node in &way.nodes {

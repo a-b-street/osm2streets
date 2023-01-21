@@ -35,7 +35,17 @@ export class LaneEditor {
     };
 
     document.getElementById("osc").onclick = () => {
-      this.downloadOsc();
+      downloadGeneratedFile("lane_edits.osc", this.toOsc(null));
+    };
+    document.getElementById("upload").onclick = async () => {
+      try {
+        let url = await this.uploadChangeset();
+        console.log(`Success! Check out ${url}`);
+        window.alert(`Success! Check out ${url}`);
+      } catch (err) {
+        window.alert(`Uploading changeset failed: ${err}`);
+      }
+      // TODO Clear state
     };
   }
 
@@ -245,17 +255,65 @@ export class LaneEditor {
     ).innerText = `${this.editedWays.size} edits`;
   }
 
-  downloadOsc() {
+  toOsc(changesetId) {
     var contents = `<osmChange version="0.6" generator="osm2streets">\n`;
     contents += `<create/>\n`;
     contents += `<modify>\n`;
     for (const id of this.editedWays) {
-      contents += this.network.wayToXml(id);
+      contents += this.network.wayToXml(id, changesetId);
       contents += "\n";
     }
     contents += `</modify>\n`;
     contents += `</osmChange>`;
+    return contents;
+  }
 
-    downloadGeneratedFile("lane_edits.osc", contents);
+  async uploadChangeset() {
+    let api = "https://master.apis.dev.openstreetmap.org";
+
+    // Create the changeset
+    let changesetBody = `<osm><changeset><tag k="created_by" v="osm2streets StreetExplorer"/>`;
+    let comment = document.getElementById("comment").value;
+    if (comment) {
+      // TODO Encode
+      changesetBody += `<tag k="comment" v="${comment}"/>`;
+    }
+    changesetBody += `</changeset></osm>`;
+
+    let resp1 = await fetch(`${api}/0.6/changeset/create`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/xml; charset=utf-8",
+      },
+      body: changesetBody,
+    });
+    if (!resp1.ok) {
+      throw new Error(`Creating changeset failed: ${await resp1.text()}`);
+    }
+    let changesetId = await resp1.text();
+
+    // Upload the OSC file
+    let resp2 = await fetch(`${api}/0.6/changeset/${changesetId}/upload`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/xml; charset=utf-8",
+      },
+      body: this.toOsc(changesetId),
+    });
+    if (!resp2.ok) {
+      throw new Error(
+        `Uploading OSC to changeset failed: ${await resp2.text()}`
+      );
+    }
+
+    // Close the changeset
+    let resp3 = await fetch(`${api}/0.6/changeset/${changesetId}/close`, {
+      method: "PUT",
+    });
+    if (!resp3.ok) {
+      throw new Error(`Closing changeset failed: ${await resp3.text()}`);
+    }
+
+    return `${api}/changeset/${changesetId}`;
   }
 }
