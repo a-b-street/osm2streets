@@ -1,3 +1,4 @@
+import { osmAuth } from "osm-auth";
 import { downloadGeneratedFile } from "./files.js";
 import {
   makeIntersectionMarkingsLayer,
@@ -220,7 +221,6 @@ export class LaneEditor {
       // Ahh Javascript...
       const ii = i;
       document.getElementById(`del-${ii}`).onclick = () => {
-        console.log(`lets remove row-${ii}`);
         document.getElementById(`row-${ii}`).remove();
       };
     }
@@ -269,7 +269,7 @@ export class LaneEditor {
   }
 
   async uploadChangeset() {
-    let api = "https://master.apis.dev.openstreetmap.org";
+    let auth = setupAuth();
 
     // Create the changeset
     let changesetBody = `<osm><changeset><tag k="created_by" v="osm2streets StreetExplorer"/>`;
@@ -280,40 +280,60 @@ export class LaneEditor {
     }
     changesetBody += `</changeset></osm>`;
 
-    let resp1 = await fetch(`${api}/0.6/changeset/create`, {
+    let changesetId = await osmXhr(auth, {
       method: "PUT",
-      headers: {
-        "content-type": "application/xml; charset=utf-8",
-      },
-      body: changesetBody,
+      path: "/api/0.6/changeset/create",
+      options: { header: { "Content-Type": "text/xml" } },
+      content: changesetBody,
     });
-    if (!resp1.ok) {
-      throw new Error(`Creating changeset failed: ${await resp1.text()}`);
-    }
-    let changesetId = await resp1.text();
 
     // Upload the OSC file
-    let resp2 = await fetch(`${api}/0.6/changeset/${changesetId}/upload`, {
+    let diffResult = await osmXhr(auth, {
       method: "POST",
-      headers: {
-        "content-type": "application/xml; charset=utf-8",
-      },
-      body: this.toOsc(changesetId),
+      path: `/api/0.6/changeset/${changesetId}/upload`,
+      options: { header: { "Content-Type": "text/xml" } },
+      content: this.toOsc(changesetId),
     });
-    if (!resp2.ok) {
-      throw new Error(
-        `Uploading OSC to changeset failed: ${await resp2.text()}`
-      );
-    }
+    console.log(`The diff from the OSC: ${diffResult}`);
 
     // Close the changeset
-    let resp3 = await fetch(`${api}/0.6/changeset/${changesetId}/close`, {
+    await osmXhr(auth, {
       method: "PUT",
+      path: `/api/0.6/changeset/${changesetId}/close`,
     });
-    if (!resp3.ok) {
-      throw new Error(`Closing changeset failed: ${await resp3.text()}`);
+
+    // TODO Prod
+    return `https://master.apis.dev.openstreetmap.org/changeset/${changesetId}`;
+  }
+}
+
+function setupAuth() {
+  let redirect =
+    window.location.origin +
+    window.location.pathname.replace("lane_editor.html", "land.html");
+  return osmAuth({
+    url: "https://master.apis.dev.openstreetmap.org",
+    // TODO Get real ones
+    client_id: "4En8zHBN2joZs7tbyvvsIXpZ7ZSpsihu5rZASqgUevQ",
+    client_secret: "3yQwhrwJq6gnpVd_0FhmA_pAR3iJso1lO2kfdRtA7ok ",
+    redirect_uri: redirect,
+    scope: "write_api",
+    auto: true,
+  });
+}
+
+function osmXhr(auth, options) {
+  return new Promise((resolve, reject) => {
+    if (auth === null) {
+      return;
     }
 
-    return `${api}/changeset/${changesetId}`;
-  }
+    return auth.xhr(options, (err, details) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(details);
+      }
+    });
+  });
 }
