@@ -794,12 +794,8 @@
         "type": "Polygon"
       },
       "properties": {
-<<<<<<< HEAD
-        "dst_i": 22,
-        "layer": 0,
-=======
         "dst_i": 19,
->>>>>>> Get rid of the transformation, and instead update geometry everywhere that's necessary. #136
+        "layer": 0,
         "osm_way_ids": [
           211780341,
           539540865
@@ -1247,48 +1243,6 @@
         "coordinates": [
           [
             [
-<<<<<<< HEAD
-              -0.09328985662431377,
-              51.50123626119595
-            ],
-            [
-              -0.09330136918289639,
-              51.50121802565286
-            ],
-            [
-              -0.09319546057834237,
-              51.501192114400325
-            ],
-            [
-              -0.09318394801975975,
-              51.50121034994342
-            ],
-            [
-              -0.09328985662431377,
-              51.50123626119595
-            ]
-          ]
-        ],
-        "type": "Polygon"
-      },
-      "properties": {
-        "dst_i": 22,
-        "layer": 0,
-        "osm_way_ids": [
-          380116492
-        ],
-        "src_i": 19,
-        "type": "road"
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "coordinates": [
-          [
-            [
-=======
->>>>>>> Get rid of the transformation, and instead update geometry everywhere that's necessary. #136
               -0.09294306264761487,
               51.50120000594694
             ],

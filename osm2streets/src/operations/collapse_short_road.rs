@@ -6,12 +6,6 @@ use crate::{
     IntersectionControl, IntersectionID, IntersectionKind, RestrictionType, RoadID, StreetNetwork,
 };
 
-// TODO After collapsing a road, trying to drag the surviving intersection in map_editor crashes. I
-// bet the underlying problem there would help debug automated transformations near merged roads
-// too.
-//
-// TODO Revisit this after opaque IDs are done. I bet it'll be solved.
-
 impl StreetNetwork {
     /// Collapses a road, merging the two intersections together. Returns (the surviving
     /// intersection, the deleted intersection). (Note these will be the same when the road's a
@@ -51,34 +45,15 @@ impl StreetNetwork {
             let mut trim_roads_for_merging = BTreeMap::new();
             for i in [keep_i, destroy_i] {
                 for road in self.roads_per_intersection(i) {
-                    // If we keep this in there, it might accidentally overwrite the
-                    // trim_roads_for_merging key for a surviving road!
-                    if road.id == short_r {
-                        continue;
-                    }
                     // If we're going to delete this later, don't bother!
                     if road.internal_junction_road {
                         continue;
                     }
 
-                    if let Some(pl) = self.estimate_trimmed_geometry(road.id) {
-                        if road.src_i == i {
-                            if trim_roads_for_merging.contains_key(&(road.id, true)) {
-                                panic!(
-                                    "trim_roads_for_merging has a src_i duplicate for {}",
-                                    road.id
-                                );
-                            }
-                            trim_roads_for_merging.insert((road.id, true), pl.first_pt());
-                        } else {
-                            if trim_roads_for_merging.contains_key(&(road.id, false)) {
-                                panic!(
-                                    "trim_roads_for_merging has a dst_i duplicate for {}",
-                                    road.id
-                                );
-                            }
-                            trim_roads_for_merging.insert((road.id, false), pl.last_pt());
-                        }
+                    if road.src_i == i {
+                        trim_roads_for_merging.insert((road.id, true), road.center_line.first_pt());
+                    } else {
+                        trim_roads_for_merging.insert((road.id, false), road.center_line.last_pt());
                     }
                 }
             }
