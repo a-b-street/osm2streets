@@ -251,7 +251,12 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     var group = new LayerGroup(groupName, app.map);
     group.addLayer("Boundary", makeBoundaryLayer(boundaryGeojson));
     if (addOSMLayer) {
-      group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
+      // TODO This is crashing at #18.37/-33.88071/151.21693 for unknown reasons. Don't break everything.
+      try {
+        group.addLayer("OSM", makeOsmLayer(osmXML), { enabled: false });
+      } catch (err) {
+        window.alert(`Warning: OSM layer not added: ${err}`);
+      }
     }
     group.addLayer("Geometry", makePlainGeoJsonLayer(network.toGeojsonPlain()));
     group.addLayer(
