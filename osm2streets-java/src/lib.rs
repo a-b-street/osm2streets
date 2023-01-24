@@ -1,5 +1,4 @@
 use abstutil::Timer;
-use ejni::{Class, List, Object};
 use jni::objects::{JClass, JObject, JString, JValue};
 use jni::sys::{jlong, jobject, jstring};
 use jni::JNIEnv;
@@ -40,52 +39,65 @@ pub extern "system" fn Java_org_osm2streets_StreetNetwork_create(
     let obj = env
         .new_object(obj_class, "(J)V", &[JValue::Long(pointer)])
         .unwrap();
-    obj.into_inner()
+    obj.into_raw()
 }
 
 #[no_mangle]
 #[allow(non_snake_case)]
 pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getRoadSurface(
     env: JNIEnv,
-    java_pointer: JObject,
+    j_self: JObject,
 ) -> jobject {
-    // TODO ditch ejni, use jni instead
-    let c_LatLon = Class::for_name(&env, "org/osm2streets/LatLon").unwrap();
-    let c_Object = Class::Object(&env).unwrap();
-
-    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
+    let inner_pointer = env.get_field(j_self, "pointer", "J").unwrap();
     let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
 
-    let geojson = streets.inner.to_road_surface();
+    let feature_collection = streets.inner.to_road_surface();
 
-    // let areas = List::arraylist(&env, c_Object.clone()).unwrap();
-    for feature in geojson.features {
-        let area_points = List::arraylist(&env, c_LatLon.clone()).unwrap();
+    // Cache the JNI stuff for performance.
+    let c_ArrayList = env.find_class("java/util/ArrayList").unwrap();
+    let c_LatLon = env.find_class("org/osm2streets/LatLon").unwrap();
+    let m_LatLon_init = env.get_method_id(c_LatLon, "<init>", "(DD)V").unwrap();
+    let m_ArrayList_init = env.get_method_id(c_ArrayList, "<init>", "()V").unwrap();
+    let m_ArrayList_add = env
+        .get_method_id(c_ArrayList, "add", "(Ljava/lang/Object;)Z")
+        .unwrap();
+    let t_Void = jni::signature::ReturnType::Primitive(jni::signature::Primitive::Void);
 
-        match feature.geometry.unwrap().value {
-            geojson::Value::Polygon(polygon) => {
-                for point in &polygon[0] {
-                    let ll = Object::new(
-                        &env,
-                        // TODO cache the typechecking steps of new_object outside the loop
-                        env.new_object(
-                            c_LatLon.clone(),
-                            "(DD)V",
-                            &[JValue::Double(point[0]), JValue::Double(point[1])],
-                        )
-                        .unwrap(),
-                        c_Object.clone(),
-                    );
-                    area_points.add(&ll).unwrap();
-                }
-                return area_points.into();
-                // areas.add(&area_points.inner).unwrap();
+    let areas = env
+        .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
+        .unwrap();
+    for feature in feature_collection.features {
+        let area_points = env
+            .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
+            .unwrap();
+        env.call_method_unchecked(
+            areas,
+            m_ArrayList_add,
+            t_Void.clone(),
+            &[JValue::Object(area_points).to_jni()],
+        )
+        .unwrap();
+
+        if let geojson::Value::Polygon(polygon) = feature.geometry.unwrap().value {
+            for point in &polygon[0] {
+                let ll = env
+                    .new_object_unchecked(
+                        c_LatLon,
+                        m_LatLon_init,
+                        &[point[1].into(), point[0].into()],
+                    )
+                    .unwrap();
+                env.call_method_unchecked(
+                    area_points,
+                    m_ArrayList_add,
+                    t_Void.clone(),
+                    &[JValue::Object(ll).to_jni()],
+                )
+                .unwrap();
             }
-            _ => {}
         }
     }
-    // FIXME this seems to return null when called from Java:
-    areas.inner.inner.into_inner()
+    areas.into_raw()
 }
 
 #[no_mangle]
@@ -98,7 +110,7 @@ pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLanePolygonsG
 
     let result = streets.inner.to_lane_polygons_geojson().unwrap();
     let output = env.new_string(result).unwrap();
-    output.into_inner()
+    output.into_raw()
 }
 
 #[no_mangle]
@@ -111,5 +123,5 @@ pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLaneMarkingsG
 
     let result = streets.inner.to_lane_markings_geojson().unwrap();
     let output = env.new_string(result).unwrap();
-    output.into_inner()
+    output.into_raw()
 }
