@@ -1,11 +1,14 @@
 package org.osm2streets;
 
+import org.osm2streets.LatLon;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class StreetNetwork {
 	long pointer;
@@ -33,7 +36,7 @@ public class StreetNetwork {
 
 	public static native StreetNetwork create(String osmXmlInput);
 
-	public native String toGeojsonPlain();
+	public native List<List<LatLon>> getRoadSurface();
 
 	public native String toLanePolygonsGeojson();
 
@@ -42,7 +45,6 @@ public class StreetNetwork {
 	public static void main(String[] args) throws Exception {
 		String osmXmlInput = new String(Files.readAllBytes(Paths.get("../tests/src/aurora_sausage_link/input.osm")));
 		StreetNetwork network = create(osmXmlInput);
-		System.out.println(network.toGeojsonPlain());
 		System.out.println(network.toLanePolygonsGeojson());
 		System.out.println(network.toLaneMarkingsGeojson());
 	}

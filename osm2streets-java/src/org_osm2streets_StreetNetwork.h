@@ -17,10 +17,10 @@ JNIEXPORT jobject JNICALL Java_org_osm2streets_StreetNetwork_create
 
 /*
  * Class:     org_osm2streets_StreetNetwork
- * Method:    toGeojsonPlain
- * Signature: ()Ljava/lang/String;
+ * Method:    getRoadSurface
+ * Signature: ()Ljava/util/List;
  */
-JNIEXPORT jstring JNICALL Java_org_osm2streets_StreetNetwork_toGeojsonPlain
+JNIEXPORT jobject JNICALL Java_org_osm2streets_StreetNetwork_getRoadSurface
   (JNIEnv *, jobject);
 
 /*

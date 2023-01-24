@@ -268,6 +268,69 @@ impl StreetNetwork {
         Ok(output)
     }
 
+    /// Generates polygons that cover the entire road area. One polygon per Road and Intersection.
+    /// TODO develop a principled API, this is just a copy-paste job to test the java bindings.
+    pub fn to_road_surface(&self) -> geojson::FeatureCollection {
+        let mut pairs = Vec::new();
+
+        // Add a polygon per road
+        for road in self.roads.values() {
+            pairs.push((
+                road.center_line
+                    .make_polygons(road.total_width())
+                    .to_geojson(Some(&self.gps_bounds)),
+                make_props(&[
+                    ("type", "road".into()),
+                    (
+                        "osm_way_ids",
+                        serde_json::Value::Array(
+                            road.osm_ids.iter().map(|id| id.0.into()).collect(),
+                        ),
+                    ),
+                    ("src_i", road.src_i.0.into()),
+                    ("dst_i", road.dst_i.0.into()),
+                ]),
+            ));
+        }
+
+        // Polygon per intersection
+        for intersection in self.intersections.values() {
+            pairs.push((
+                intersection.polygon.to_geojson(Some(&self.gps_bounds)),
+                make_props(&[
+                    ("id", intersection.id.0.into()),
+                    ("type", "intersection".into()),
+                    (
+                        "osm_node_ids",
+                        serde_json::Value::Array(
+                            intersection.osm_ids.iter().map(|id| id.0.into()).collect(),
+                        ),
+                    ),
+                    (
+                        "intersection_kind",
+                        format!("{:?}", intersection.kind).into(),
+                    ),
+                    ("control", format!("{:?}", intersection.control).into()),
+                    (
+                        "movements",
+                        serde_json::Value::Array(
+                            intersection
+                                .movements
+                                .iter()
+                                .map(|(a, b)| format!("{a} -> {b}").into())
+                                .collect(),
+                        ),
+                    ),
+                ]),
+            ));
+        }
+
+        match geom::geometries_with_properties_to_geojson(pairs) {
+            geojson::GeoJson::FeatureCollection(col) => col,
+            _ => unreachable!(),
+        }
+    }
+
     /// For an intersection, show the clockwise ordering of roads around it
     pub fn debug_clockwise_ordering_geojson(&self) -> Result<String> {
         let mut pairs = Vec::new();

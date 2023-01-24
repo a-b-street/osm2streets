@@ -8,6 +8,7 @@ edition = "2021"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = "1.0.38"
 geom = { git = "https://github.com/a-b-street/abstreet" }
+geojson = "*"
 log = "0.4.14"
 osm2lanes = { git = "https://github.com/a-b-street/osm2lanes" }
 osm-tags = { git = "https://github.com/a-b-street/osm2lanes" }
