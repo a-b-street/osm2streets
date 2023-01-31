@@ -62,6 +62,13 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
             continue;
         }
 
+        // Don't collapse roundabouts. Since we don't preserve the junction=roundabout tag, another
+        // heuristic is if the two roads came from the same original OSM way.
+        // https://www.openstreetmap.org/way/235499756 is an example.
+        if !road1.osm_ids.is_empty() && road1.osm_ids == road2.osm_ids {
+            continue;
+        }
+
         pairs.insert((road1.id, id2));
     }
 
