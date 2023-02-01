@@ -670,7 +670,6 @@ dependencies = [
  "abstutil",
  "anyhow",
  "geo",
- "geojson",
  "geom",
  "itertools",
  "log",
@@ -687,7 +686,6 @@ name = "osm2streets-java"
 version = "0.1.0"
 dependencies = [
  "abstutil",
- "geojson",
  "jni",
  "osm2streets",
  "streets_reader",

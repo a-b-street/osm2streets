@@ -8,7 +8,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
-geojson = "*"
 jni = "0.20.0"
 osm2streets = { path = "../osm2streets" }
 streets_reader = { path = "../streets_reader" }
