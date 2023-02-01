@@ -1,6 +1,7 @@
 package org.osm2streets;
 
 import org.osm2streets.LatLon;
+import org.osm2streets.Surface;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -36,7 +37,7 @@ public class StreetNetwork {
 
 	public static native StreetNetwork create(String osmXmlInput);
 
-	public native List<List<LatLon>> getRoadSurface();
+	public native List<Surface> getSurfaces();
 
 	public native String toLanePolygonsGeojson();
 

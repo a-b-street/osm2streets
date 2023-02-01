@@ -1,1 +1,1 @@
-To regenerate the `.h` file, run `javac -h . StreetNetwork.java`
+Build the `.jar` with `./build.sh` and include it in your project in the normal way.

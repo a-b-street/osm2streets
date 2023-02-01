@@ -44,60 +44,70 @@ pub extern "system" fn Java_org_osm2streets_StreetNetwork_create(
 
 #[no_mangle]
 #[allow(non_snake_case)]
-pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getRoadSurface(
+pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getSurfaces(
     env: JNIEnv,
     j_self: JObject,
 ) -> jobject {
+    // Calculate the road surface.
     let inner_pointer = env.get_field(j_self, "pointer", "J").unwrap();
     let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
-
-    let feature_collection = streets.inner.to_road_surface();
+    let surfaces = streets.inner.get_surfaces();
 
     // Cache the JNI stuff for performance.
     let c_ArrayList = env.find_class("java/util/ArrayList").unwrap();
     let c_LatLon = env.find_class("org/osm2streets/LatLon").unwrap();
+    let c_Surface = env.find_class("org/osm2streets/Surface").unwrap();
     let m_LatLon_init = env.get_method_id(c_LatLon, "<init>", "(DD)V").unwrap();
+    let m_Surface_init = env
+        .get_method_id(c_Surface, "<init>", "(Ljava/util/List;Ljava/lang/String;)V")
+        .unwrap();
     let m_ArrayList_init = env.get_method_id(c_ArrayList, "<init>", "()V").unwrap();
     let m_ArrayList_add = env
         .get_method_id(c_ArrayList, "add", "(Ljava/lang/Object;)Z")
         .unwrap();
     let t_Void = jni::signature::ReturnType::Primitive(jni::signature::Primitive::Void);
 
-    let areas = env
+    // Marshal the `Surface`s into java objects.
+    let j_surfaces = env
         .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
         .unwrap();
-    for feature in feature_collection.features {
-        let area_points = env
+    for surface in surfaces {
+        let j_area_points = env
             .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
             .unwrap();
+        for point in surface.area.exterior() {
+            let ll = env
+                .new_object_unchecked(c_LatLon, m_LatLon_init, &[point.y.into(), point.x.into()])
+                .unwrap();
+            env.call_method_unchecked(
+                j_area_points,
+                m_ArrayList_add,
+                t_Void.clone(),
+                &[JValue::Object(ll).to_jni()],
+            )
+            .unwrap();
+        }
+
+        let j_surface = env
+            .new_object_unchecked(
+                c_Surface,
+                m_Surface_init,
+                &[
+                    JValue::Object(j_area_points),
+                    env.new_string(surface.material.to_str()).unwrap().into(),
+                ],
+            )
+            .unwrap();
+
         env.call_method_unchecked(
-            areas,
+            j_surfaces,
             m_ArrayList_add,
             t_Void.clone(),
-            &[JValue::Object(area_points).to_jni()],
+            &[JValue::Object(j_surface).to_jni()],
         )
         .unwrap();
-
-        if let geojson::Value::Polygon(polygon) = feature.geometry.unwrap().value {
-            for point in &polygon[0] {
-                let ll = env
-                    .new_object_unchecked(
-                        c_LatLon,
-                        m_LatLon_init,
-                        &[point[1].into(), point[0].into()],
-                    )
-                    .unwrap();
-                env.call_method_unchecked(
-                    area_points,
-                    m_ArrayList_add,
-                    t_Void.clone(),
-                    &[JValue::Object(ll).to_jni()],
-                )
-                .unwrap();
-            }
-        }
     }
-    areas.into_raw()
+    j_surfaces.into_raw()
 }
 
 #[no_mangle]
