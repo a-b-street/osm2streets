@@ -1,6 +1,6 @@
 use abstutil::Timer;
 use jni::objects::{JClass, JObject, JString, JValue};
-use jni::sys::{jlong, jobject, jstring};
+use jni::sys::{jlong, jobject};
 use jni::JNIEnv;
 
 use osm2streets::{MapConfig, Transformation};
@@ -111,27 +111,73 @@ pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getSurfaces(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLanePolygonsGeojson(
+#[allow(non_snake_case)]
+pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getPaintAreas(
     env: JNIEnv,
-    java_pointer: JObject,
-) -> jstring {
-    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
+    j_self: JObject,
+) -> jobject {
+    // Calculate the paint areas.
+    let inner_pointer = env.get_field(j_self, "pointer", "J").unwrap();
     let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
+    let paint_areas = streets.inner.get_paint_areas();
 
-    let result = streets.inner.to_lane_polygons_geojson().unwrap();
-    let output = env.new_string(result).unwrap();
-    output.into_raw()
-}
+    // Cache the JNI stuff for performance.
+    let c_ArrayList = env.find_class("java/util/ArrayList").unwrap();
+    let c_LatLon = env.find_class("org/osm2streets/LatLon").unwrap();
+    let c_PaintArea = env.find_class("org/osm2streets/PaintArea").unwrap();
+    let m_LatLon_init = env.get_method_id(c_LatLon, "<init>", "(DD)V").unwrap();
+    let m_PaintArea_init = env
+        .get_method_id(
+            c_PaintArea,
+            "<init>",
+            "(Ljava/util/List;Ljava/lang/String;)V",
+        )
+        .unwrap();
+    let m_ArrayList_init = env.get_method_id(c_ArrayList, "<init>", "()V").unwrap();
+    let m_ArrayList_add = env
+        .get_method_id(c_ArrayList, "add", "(Ljava/lang/Object;)Z")
+        .unwrap();
+    let t_Void = jni::signature::ReturnType::Primitive(jni::signature::Primitive::Void);
 
-#[no_mangle]
-pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_toLaneMarkingsGeojson(
-    env: JNIEnv,
-    java_pointer: JObject,
-) -> jstring {
-    let inner_pointer = env.get_field(java_pointer, "pointer", "J").unwrap();
-    let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
+    // Marshal the `Surface`s into java objects.
+    let j_paint_areas = env
+        .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
+        .unwrap();
+    for paint_area in paint_areas {
+        let j_area_points = env
+            .new_object_unchecked(c_ArrayList, m_ArrayList_init, &[])
+            .unwrap();
+        for point in paint_area.area.exterior() {
+            let ll = env
+                .new_object_unchecked(c_LatLon, m_LatLon_init, &[point.y.into(), point.x.into()])
+                .unwrap();
+            env.call_method_unchecked(
+                j_area_points,
+                m_ArrayList_add,
+                t_Void.clone(),
+                &[JValue::Object(ll).to_jni()],
+            )
+            .unwrap();
+        }
 
-    let result = streets.inner.to_lane_markings_geojson().unwrap();
-    let output = env.new_string(result).unwrap();
-    output.into_raw()
+        let j_paint_area = env
+            .new_object_unchecked(
+                c_PaintArea,
+                m_PaintArea_init,
+                &[
+                    JValue::Object(j_area_points),
+                    env.new_string(paint_area.color.to_str()).unwrap().into(),
+                ],
+            )
+            .unwrap();
+
+        env.call_method_unchecked(
+            j_paint_areas,
+            m_ArrayList_add,
+            t_Void.clone(),
+            &[JValue::Object(j_paint_area).to_jni()],
+        )
+        .unwrap();
+    }
+    j_paint_areas.into_raw()
 }

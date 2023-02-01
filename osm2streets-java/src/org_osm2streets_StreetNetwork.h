@@ -25,18 +25,10 @@ JNIEXPORT jobject JNICALL Java_org_osm2streets_StreetNetwork_getSurfaces
 
 /*
  * Class:     org_osm2streets_StreetNetwork
- * Method:    toLanePolygonsGeojson
- * Signature: ()Ljava/lang/String;
+ * Method:    getPaintAreas
+ * Signature: ()Ljava/util/List;
  */
-JNIEXPORT jstring JNICALL Java_org_osm2streets_StreetNetwork_toLanePolygonsGeojson
-  (JNIEnv *, jobject);
-
-/*
- * Class:     org_osm2streets_StreetNetwork
- * Method:    toLaneMarkingsGeojson
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_org_osm2streets_StreetNetwork_toLaneMarkingsGeojson
+JNIEXPORT jobject JNICALL Java_org_osm2streets_StreetNetwork_getPaintAreas
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

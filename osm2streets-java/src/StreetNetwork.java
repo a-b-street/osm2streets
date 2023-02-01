@@ -2,6 +2,7 @@ package org.osm2streets;
 
 import org.osm2streets.LatLon;
 import org.osm2streets.Surface;
+import org.osm2streets.PaintArea;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -39,14 +40,12 @@ public class StreetNetwork {
 
 	public native List<Surface> getSurfaces();
 
-	public native String toLanePolygonsGeojson();
-
-	public native String toLaneMarkingsGeojson();
+	public native List<PaintArea> getPaintAreas();
 
 	public static void main(String[] args) throws Exception {
 		String osmXmlInput = new String(Files.readAllBytes(Paths.get("../tests/src/aurora_sausage_link/input.osm")));
 		StreetNetwork network = create(osmXmlInput);
-		System.out.println(network.toLanePolygonsGeojson());
-		System.out.println(network.toLaneMarkingsGeojson());
+		System.out.println(network.getSurfaces());
+		System.out.println(network.getPaintAreas());
 	}
 }
