@@ -32,6 +32,7 @@ mod intersection;
 mod lanes;
 mod operations;
 pub mod osm;
+mod output;
 mod pathfinding;
 mod render;
 mod road;
