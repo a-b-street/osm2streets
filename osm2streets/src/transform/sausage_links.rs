@@ -2,8 +2,10 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
-use crate::lanes::{Placement, RoadPosition};
-use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
+use crate::lanes::RoadPosition;
+use crate::{
+    BufferType, Direction, DrivingSide, LaneSpec, LaneType, Placement, RoadID, StreetNetwork,
+};
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
 /// Collapse them into one road with a barrier in the middle.

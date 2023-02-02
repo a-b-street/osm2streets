@@ -4,10 +4,11 @@ use serde::{Deserialize, Serialize};
 use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine};
 
-use crate::lanes::{Placement, RoadPosition};
+use crate::lanes::RoadPosition;
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, Direction, DrivingSide, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
+    LaneSpec, LaneType, MapConfig, Placement, RestrictionType, RoadID, RoadWithEndpoints,
+    StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
