@@ -113,10 +113,8 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = getDebugSteps)]
     pub fn get_debug_steps(&self) -> Vec<JsValue> {
-        // TODO Figure out how to borrow from the RefCell instead of cloning
         self.inner
             .debug_steps
-            .borrow()
             .iter()
             .map(|x| JsValue::from(JsDebugStreets { inner: x.clone() }))
             .collect()

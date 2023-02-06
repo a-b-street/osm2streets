@@ -37,7 +37,7 @@ struct Cycleway {
 }
 
 impl Cycleway {
-    fn debug(&self, streets: &StreetNetwork) {
+    fn debug(&self, streets: &mut StreetNetwork) {
         streets.debug_road(self.cycleway, format!("cycleway {}", self.debug_idx));
         streets.debug_intersection(self.main_road_src_i, format!("src_i of {}", self.debug_idx));
         streets.debug_intersection(self.main_road_dst_i, format!("dst_i of {}", self.debug_idx));
