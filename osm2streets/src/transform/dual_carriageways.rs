@@ -2,21 +2,21 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use geom::Distance;
 
-use crate::{IntersectionID, Road, RoadID, RoadWithEndpoints, StreetNetwork};
+use crate::{Debugger, IntersectionID, Road, RoadID, RoadWithEndpoints, StreetNetwork};
 
-pub fn merge(streets: &mut StreetNetwork) {
+pub fn merge(streets: &mut StreetNetwork, debugger: &mut Debugger) {
     for i in streets.intersections.keys() {
         // Progressively detect more stuff. Display the most detail possible.
         if let Some(mc) = MultiConnection::new(streets, *i) {
             // TODO Ignore opposite direction of one we've already found?
             if let Some(dc1) = DualCarriagewayPt1::new(streets, &mc) {
                 if let Some(dc2) = DualCarriagewayPt2::new(streets, &dc1) {
-                    dc2.debug(streets);
+                    dc2.debug(debugger);
                 } else {
-                    dc1.debug(streets);
+                    dc1.debug(debugger);
                 }
             } else {
-                mc.debug(streets);
+                mc.debug(debugger);
             }
 
             // TODO Just work on one right now
@@ -90,10 +90,10 @@ impl MultiConnection {
         None
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_intersection(self.i, "join/split that isnt DC");
-        streets.debug_road(self.side1, "side1 of failed DC");
-        streets.debug_road(self.side2, "side2 of failed DC");
+    fn debug(&self, debugger: &mut Debugger) {
+        debugger.debug_intersection(self.i, "join/split that isnt DC");
+        debugger.debug_road(self.side1, "side1 of failed DC");
+        debugger.debug_road(self.side2, "side2 of failed DC");
     }
 }
 
@@ -150,14 +150,14 @@ impl DualCarriagewayPt1 {
         None
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
-        streets.debug_intersection(self.dst_i, "end");
+    fn debug(&self, debugger: &mut Debugger) {
+        debugger.debug_intersection(self.src_i, format!("start of {}", self.road_name));
+        debugger.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {
-            streets.debug_road(r.road, format!("side1, {idx}"));
+            debugger.debug_road(r.road, format!("side1, {idx}"));
         }
         for (idx, r) in self.side2.iter().enumerate() {
-            streets.debug_road(r.road, format!("side2, {idx}"));
+            debugger.debug_road(r.road, format!("side2, {idx}"));
         }
     }
 
@@ -322,37 +322,37 @@ impl DualCarriagewayPt2 {
         (branches, bridges)
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
-        streets.debug_intersection(self.dst_i, "end");
+    fn debug(&self, debugger: &mut Debugger) {
+        debugger.debug_intersection(self.src_i, format!("start of {}", self.road_name));
+        debugger.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {
             if idx == 0 {
-                streets.debug_road(
+                debugger.debug_road(
                     r.road,
                     format!("side1, {}, total length {}", idx, self.side1_length),
                 );
             } else {
-                streets.debug_road(r.road, format!("side1, {}", idx));
+                debugger.debug_road(r.road, format!("side1, {}", idx));
             }
         }
         for (idx, r) in self.side2.iter().enumerate() {
             if idx == 0 {
-                streets.debug_road(
+                debugger.debug_road(
                     r.road,
                     format!("side2, {}, total length {}", idx, self.side2_length),
                 );
             } else {
-                streets.debug_road(r.road, format!("side2, {}", idx));
+                debugger.debug_road(r.road, format!("side2, {}", idx));
             }
         }
         for (r, dist) in &self.side1_branches {
-            streets.debug_road(*r, format!("side1 branch, {dist} from src_i"));
+            debugger.debug_road(*r, format!("side1 branch, {dist} from src_i"));
         }
         for (r, dist) in &self.side2_branches {
-            streets.debug_road(*r, format!("side2 branch, {dist} from dst_i"));
+            debugger.debug_road(*r, format!("side2 branch, {dist} from dst_i"));
         }
         for (r, dist) in &self.bridges {
-            streets.debug_road(*r, format!("bridge, {dist} from src_i"));
+            debugger.debug_road(*r, format!("bridge, {dist} from src_i"));
         }
     }
 }

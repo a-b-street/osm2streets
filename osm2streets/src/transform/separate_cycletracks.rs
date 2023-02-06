@@ -1,14 +1,16 @@
 use geom::{Distance, PolyLine};
 
-use crate::{BufferType, Direction, IntersectionID, LaneSpec, LaneType, RoadID, StreetNetwork};
+use crate::{
+    BufferType, Debugger, Direction, IntersectionID, LaneSpec, LaneType, RoadID, StreetNetwork,
+};
 
 /// Find cycleway segments that exist as separate objects, parallel to a main road. Merge (or
 /// "snap") them into the main road, inserting a buffer lane to represent the physical division.
-pub fn snap_cycleways(streets: &mut StreetNetwork) {
+pub fn snap_cycleways(streets: &mut StreetNetwork, debugger: &mut Debugger) {
     for cycleway in find_cycleways(streets) {
-        streets.maybe_start_debug_step(format!("snap cycleway {}", cycleway.debug_idx));
-        cycleway.debug(streets);
-        snap(streets, cycleway);
+        debugger.start_debug_step(streets, format!("snap cycleway {}", cycleway.debug_idx));
+        cycleway.debug(debugger);
+        snap(streets, debugger, cycleway);
     }
 }
 
@@ -37,12 +39,12 @@ struct Cycleway {
 }
 
 impl Cycleway {
-    fn debug(&self, streets: &StreetNetwork) {
-        streets.debug_road(self.cycleway, format!("cycleway {}", self.debug_idx));
-        streets.debug_intersection(self.main_road_src_i, format!("src_i of {}", self.debug_idx));
-        streets.debug_intersection(self.main_road_dst_i, format!("dst_i of {}", self.debug_idx));
+    fn debug(&self, debugger: &mut Debugger) {
+        debugger.debug_road(self.cycleway, format!("cycleway {}", self.debug_idx));
+        debugger.debug_intersection(self.main_road_src_i, format!("src_i of {}", self.debug_idx));
+        debugger.debug_intersection(self.main_road_dst_i, format!("dst_i of {}", self.debug_idx));
         for x in &self.main_roads {
-            streets.debug_road(*x, format!("main road along {}", self.debug_idx));
+            debugger.debug_road(*x, format!("main road along {}", self.debug_idx));
         }
     }
 }
@@ -96,7 +98,7 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
     cycleways
 }
 
-fn snap(streets: &mut StreetNetwork, input: Cycleway) {
+fn snap(streets: &mut StreetNetwork, debugger: &mut Debugger, input: Cycleway) {
     // This analysis shouldn't modify other cycleways when it works on one
     assert!(streets.roads.contains_key(&input.cycleway));
 
@@ -177,7 +179,7 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
             }
         };
 
-        streets.debug_road(r, format!("snap_to_left = {snap_to_left}, oriented_same_way = {oriented_same_way}, insert_idx = {insert_idx}"));
+        debugger.debug_road(r, format!("snap_to_left = {snap_to_left}, oriented_same_way = {oriented_same_way}, insert_idx = {insert_idx}"));
 
         // This logic thankfully doesn't depend on driving side at all!
         let mut insert_lanes = Vec::new();

@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, LaneID, MapConfig, Placement, RoadID, StreetNetwork, Transformation,
+    osm, DebugStreets, Debugger, LaneID, MapConfig, Placement, RoadID, StreetNetwork,
+    Transformation,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -21,6 +22,7 @@ pub struct ImportOptions {
 #[wasm_bindgen]
 pub struct JsStreetNetwork {
     inner: StreetNetwork,
+    debugger: Option<Debugger>,
     ways: BTreeMap<osm::WayID, streets_reader::osm_reader::Way>,
 }
 
@@ -73,14 +75,19 @@ impl JsStreetNetwork {
             transformations.push(Transformation::TrimDeadendCycleways);
             transformations.push(Transformation::CollapseDegenerateIntersections);
         }
-        if input.debug_each_step {
-            street_network.apply_transformations_stepwise_debugging(transformations, &mut timer);
+        let debugger = if input.debug_each_step {
+            Some(
+                street_network
+                    .apply_transformations_stepwise_debugging(transformations, &mut timer),
+            )
         } else {
             street_network.apply_transformations(transformations, &mut timer);
-        }
+            None
+        };
 
         Ok(Self {
             inner: street_network,
+            debugger,
             ways: doc.ways,
         })
     }
@@ -113,13 +120,15 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = getDebugSteps)]
     pub fn get_debug_steps(&self) -> Vec<JsValue> {
-        // TODO Figure out how to borrow from the RefCell instead of cloning
-        self.inner
-            .debug_steps
-            .borrow()
-            .iter()
-            .map(|x| JsValue::from(JsDebugStreets { inner: x.clone() }))
-            .collect()
+        if let Some(debugger) = self.debugger.clone() {
+            debugger
+                .debug_steps
+                .into_iter()
+                .map(|inner| JsValue::from(JsDebugStreets { inner }))
+                .collect()
+        } else {
+            Vec::new()
+        }
     }
 
     #[wasm_bindgen(js_name = debugClockwiseOrderingGeojson)]
@@ -260,6 +269,7 @@ impl JsDebugStreets {
     pub fn get_network(&self) -> JsValue {
         JsValue::from(JsStreetNetwork {
             inner: self.inner.streets.clone(),
+            debugger: None,
             ways: BTreeMap::new(),
         })
     }

@@ -3,14 +3,14 @@ extern crate anyhow;
 #[macro_use]
 extern crate log;
 
-use std::cell::RefCell;
 use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap};
-use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
+use geom::{GPSBounds, Polygon};
 
+pub use self::debug::{DebugStreets, Debugger};
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::ids::{CommonEndpoint, IntersectionID, LaneID, RoadID};
@@ -25,6 +25,7 @@ pub use self::road::Road;
 pub use self::transform::Transformation;
 pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
 
+mod debug;
 mod edit;
 mod geometry;
 mod ids;
@@ -57,23 +58,8 @@ pub struct StreetNetwork {
     pub gps_bounds: GPSBounds,
     pub config: MapConfig,
 
-    #[serde(skip_serializing, skip_deserializing)]
-    pub debug_steps: RefCell<Vec<DebugStreets>>,
-
     intersection_id_counter: usize,
     road_id_counter: usize,
-}
-
-#[derive(Clone, Debug)]
-pub struct DebugStreets {
-    pub label: String,
-    /// A full copy of an intermediate `StreetNetwork` that can be rendered. It doesn't recursively
-    /// contain any `debug_steps`.
-    pub streets: StreetNetwork,
-    /// Extra labelled points to debug
-    pub points: Vec<(Pt2D, String)>,
-    /// Extra labelled polylines to debug
-    pub polylines: Vec<(PolyLine, String)>,
 }
 
 impl StreetNetwork {
@@ -85,8 +71,6 @@ impl StreetNetwork {
             boundary_polygon: Polygon::rectangle(1.0, 1.0),
             gps_bounds: GPSBounds::new(),
             config: MapConfig::default(),
-
-            debug_steps: RefCell::new(Vec::new()),
 
             intersection_id_counter: 0,
             road_id_counter: 0,
@@ -144,54 +128,6 @@ impl StreetNetwork {
             .map(|r| &self.roads[r])
             .collect()
     }
-
-    pub(crate) fn start_debug_step<I: Into<String>>(&self, label: I) {
-        let copy = DebugStreets {
-            label: label.into(),
-            streets: StreetNetwork {
-                roads: self.roads.clone(),
-                intersections: self.intersections.clone(),
-                boundary_polygon: self.boundary_polygon.clone(),
-                gps_bounds: self.gps_bounds.clone(),
-                config: self.config.clone(),
-                debug_steps: RefCell::new(Vec::new()),
-                intersection_id_counter: self.intersection_id_counter,
-                road_id_counter: self.road_id_counter,
-            },
-            points: Vec::new(),
-            polylines: Vec::new(),
-        };
-        self.debug_steps.borrow_mut().push(copy);
-    }
-
-    /// Only start a new debug step if there's at least one already (indicating that debugging is
-    /// enabled).
-    pub(crate) fn maybe_start_debug_step<I: Into<String>>(&self, label: I) {
-        if self.debug_steps.borrow().is_empty() {
-            return;
-        }
-        self.start_debug_step(label);
-    }
-
-    pub(crate) fn debug_intersection<I: Into<String>>(&self, i: IntersectionID, label: I) {
-        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
-            step.points
-                .push((self.intersections[&i].polygon.center(), label.into()));
-        }
-    }
-
-    pub(crate) fn debug_road<I: Into<String>>(&self, r: RoadID, label: I) {
-        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
-            step.polylines
-                .push((self.roads[&r].center_line.clone(), label.into()));
-        }
-    }
-
-    pub(crate) fn debug_point<I: Into<String>>(&self, pt: Pt2D, label: I) {
-        if let Some(step) = self.debug_steps.borrow_mut().last_mut() {
-            step.points.push((pt, label.into()));
-        }
-    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -219,4 +155,16 @@ impl RestrictionType {
             None
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    // Check at compile-time if StreetNetwork can be shared across a thread. If a RefCell or
+    // something sneaks in anywhere, this'll fail.
+    #[test]
+    fn test_sync() {
+        must_be_sync(super::StreetNetwork::blank());
+    }
+
+    fn must_be_sync<T: Sync>(_x: T) {}
 }

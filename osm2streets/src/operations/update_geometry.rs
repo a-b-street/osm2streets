@@ -24,9 +24,7 @@ impl StreetNetwork {
                 for (r, dist) in results.trim_ends {
                     self.roads.get_mut(&r).unwrap().trim_end = dist;
                 }
-                for (pt, label) in results.debug {
-                    self.debug_point(pt, label);
-                }
+                // TODO Plumb through a Debugger so we can record results.debug?
             }
             Err(err) => {
                 error!("Can't make intersection geometry for {}: {}", i.id, err);

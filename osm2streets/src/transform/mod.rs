@@ -1,6 +1,6 @@
 use abstutil::Timer;
 
-use crate::StreetNetwork;
+use crate::{Debugger, StreetNetwork};
 
 mod collapse_intersections;
 mod collapse_short_road;
@@ -70,20 +70,20 @@ impl Transformation {
         }
     }
 
-    fn apply(&self, streets: &mut StreetNetwork, timer: &mut Timer) {
+    fn apply(&self, streets: &mut StreetNetwork, debugger: &mut Debugger, timer: &mut Timer) {
         timer.start(self.name());
         match self {
             Transformation::TrimDeadendCycleways => {
                 collapse_intersections::trim_deadends(streets);
             }
             Transformation::SnapCycleways => {
-                separate_cycletracks::snap_cycleways(streets);
+                separate_cycletracks::snap_cycleways(streets, debugger);
             }
             Transformation::RemoveDisconnectedRoads => {
                 remove_disconnected::remove_disconnected_roads(streets);
             }
             Transformation::CollapseShortRoads => {
-                collapse_short_road::collapse_all_junction_roads(streets);
+                collapse_short_road::collapse_all_junction_roads(streets, debugger);
             }
             Transformation::CollapseDegenerateIntersections => {
                 collapse_intersections::collapse(streets);
@@ -92,7 +92,7 @@ impl Transformation {
                 sausage_links::collapse_sausage_links(streets);
             }
             Transformation::MergeDualCarriageways => {
-                dual_carriageways::merge(streets);
+                dual_carriageways::merge(streets, debugger);
             }
         }
         timer.stop(self.name());
@@ -105,9 +105,10 @@ impl StreetNetwork {
         transformations: Vec<Transformation>,
         timer: &mut Timer,
     ) {
+        let mut debugger = Debugger::disabled();
         timer.start("simplify StreetNetwork");
         for transformation in transformations {
-            transformation.apply(self, timer);
+            transformation.apply(self, &mut debugger, timer);
         }
         timer.stop("simplify StreetNetwork");
     }
@@ -119,9 +120,10 @@ impl StreetNetwork {
         transformations: Vec<Transformation>,
         timer: &mut Timer,
     ) {
+        let mut debugger = Debugger::disabled();
         timer.start("simplify StreetNetwork");
         for transformation in transformations {
-            transformation.apply(self, timer);
+            transformation.apply(self, &mut debugger, timer);
             self.check_invariants();
         }
         timer.stop("simplify StreetNetwork");
@@ -133,16 +135,18 @@ impl StreetNetwork {
         &mut self,
         transformations: Vec<Transformation>,
         timer: &mut Timer,
-    ) {
-        self.start_debug_step("original");
+    ) -> Debugger {
+        let mut debugger = Debugger::enabled();
+        debugger.start_debug_step(self, "original");
 
         timer.start("simplify StreetNetwork");
         for transformation in transformations {
-            transformation.apply(self, timer);
+            transformation.apply(self, &mut debugger, timer);
             // Do this after, so any internal debug steps done by the transformation itself show up
             // first
-            self.start_debug_step(transformation.name());
+            debugger.start_debug_step(self, transformation.name());
         }
         timer.stop("simplify StreetNetwork");
+        debugger
     }
 }
