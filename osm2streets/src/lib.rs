@@ -25,11 +25,13 @@ pub use self::road::Road;
 pub use self::transform::Transformation;
 pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
 
+mod draw;
 mod edit;
 mod geometry;
 mod ids;
 mod intersection;
 mod lanes;
+mod marking;
 mod operations;
 pub mod osm;
 mod output;

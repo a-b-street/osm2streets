@@ -1,29 +1,45 @@
+use crate::LaneType;
+
+// We use geom and stay in map space. Output is done in latlon.
+use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
+
 pub enum Marking {
-    Longitudinal(geom::PolyLine, LongitudinalMarking),
-    Transverse(geom::Line, TransverseMarking),
-    Symbol(geom::Pt2D, geom::Angle,  SymbolMarking),
-    // Area(AreaMarking),
+    /// Lines along a lane.
+    Longitudinal(PolyLine, Longitudinal),
+    /// Lines across a lane.
+    Transverse(Line, Transverse),
+    /// Iconic or textual symbols displayed at some angle.
+    Symbol(Pt2D, Angle, Symbol),
+    /// Designated areas, like buffers, painted medians, keep clear, etc.
+    Area(Polygon, Area),
 }
 
-pub enum LongitudinalMarking {
-    Separation {
+pub struct Longitudinal {
+    pub kind: LaneEdgeKind,
+    /// The two lanes, ltr.
+    pub lanes: (LaneType, LaneType),
+}
+
+pub enum LaneEdgeKind {
+    OncomingSeparation {
         overtake_left: bool,
         overtake_right: bool,
     },
-    LaneDivider {
-        overtake: bool,
+    LaneSeparation {
+        merge_left: bool,
+        merge_right: bool,
     },
     RoadEdge,
-    /// Longitudinal marking that is interrupted by an intersection or merging traffic.
+    /// Longitudinal marking that is interrupted by other traffic.
     Continuity,
 }
 
-pub enum TransverseMarking {
+pub enum Transverse {
     StopLine,
     YieldLine,
 }
 
-pub enum SymbolMarking {
+pub enum Symbol {
     TrafficMode(TrafficMode),
     TurnArrow(TurnDirections),
 }
@@ -34,7 +50,7 @@ pub struct TurnDirections {
     right: bool,
     slight_left: bool,
     slight_right: bool,
-    u_turn: bool,
+    reverse: bool,
 }
 
 pub enum TrafficMode {
@@ -43,4 +59,10 @@ pub enum TrafficMode {
     Pedestrian,
     Bus,
     Taxi,
+}
+
+pub enum Area {
+    /// Generic no traffic areas.
+    OutOfBounds,
+    // KeepClear,
 }
