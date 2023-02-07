@@ -51,6 +51,8 @@ pub enum BufferType {
     JerseyBarrier,
     /// A raised curb
     Curb,
+    /// Non-road surface, between the road and footpath or within a median.
+    Verge,
 }
 
 impl LaneType {
@@ -123,6 +125,7 @@ impl LaneType {
             LaneType::Construction => true,
             LaneType::LightRail => true, // FIXME only for trams
             LaneType::Buffer(BufferType::Curb) => false,
+            LaneType::Buffer(BufferType::Verge) => false,
             LaneType::Buffer(_) => true,
             LaneType::Footway => false,
             LaneType::SharedUse => false,
@@ -152,6 +155,7 @@ impl LaneType {
             LaneType::Buffer(BufferType::Planters) => "planter barriers",
             LaneType::Buffer(BufferType::JerseyBarrier) => "a Jersey barrier",
             LaneType::Buffer(BufferType::Curb) => "a raised curb",
+            LaneType::Buffer(BufferType::Verge) => "a grassy verge",
             LaneType::Footway => "a footway",
             LaneType::SharedUse => "a shared-use walking/cycling path",
         }
@@ -173,6 +177,7 @@ impl LaneType {
             LaneType::Buffer(BufferType::Planters) => "planters",
             LaneType::Buffer(BufferType::JerseyBarrier) => "Jersey barrier",
             LaneType::Buffer(BufferType::Curb) => "curb",
+            LaneType::Buffer(BufferType::Verge) => "verge",
             LaneType::Footway => "footway",
             LaneType::SharedUse => "shared-use path",
         }
@@ -194,6 +199,7 @@ impl LaneType {
             "planters" => Some(LaneType::Buffer(BufferType::Planters)),
             "Jersey barrier" => Some(LaneType::Buffer(BufferType::JerseyBarrier)),
             "curb" => Some(LaneType::Buffer(BufferType::Curb)),
+            "verge" => Some(LaneType::Buffer(BufferType::Verge)),
             "footway" => Some(LaneType::Footway),
             "shared-use path" => Some(LaneType::SharedUse),
             _ => None,
@@ -316,6 +322,7 @@ impl LaneSpec {
                 vec![(Distance::meters(1.5), "default")]
             }
             LaneType::Buffer(BufferType::Curb) => vec![(Distance::meters(0.5), "default")],
+            LaneType::Buffer(BufferType::Verge) => vec![(Distance::meters(2.0), "default")],
             LaneType::Footway => vec![(Distance::meters(2.0), "default")],
             LaneType::SharedUse => vec![(Distance::meters(3.0), "default")],
         }
