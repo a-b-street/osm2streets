@@ -79,11 +79,8 @@ impl Paint<PolyLine> for marking::Longitudinal {
                 overtake_right,
             } => match self.lanes.map(|x| x.to_traffic_mode()) {
                 [Some(TrafficMode::Motor), _] | [_, Some(TrafficMode::Motor)] => {
-                    // TODO depends on the kind of road too.
                     if let Ok(right_line) = separator.shift_right(LINE_WIDTH) {
                         if overtake_left {
-                            rings.push(right_line.make_polygons(LINE_WIDTH).into_outer_ring());
-                        } else {
                             rings.append(
                                 &mut right_line
                                     .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
@@ -91,12 +88,12 @@ impl Paint<PolyLine> for marking::Longitudinal {
                                     .map(|x| x.into_outer_ring())
                                     .collect(),
                             );
+                        } else {
+                            rings.push(right_line.make_polygons(LINE_WIDTH).into_outer_ring());
                         }
                     }
                     if let Ok(left_line) = separator.shift_left(LINE_WIDTH) {
                         if overtake_right {
-                            rings.push(left_line.make_polygons(LINE_WIDTH).into_outer_ring());
-                        } else {
                             rings.append(
                                 &mut left_line
                                     .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
@@ -104,6 +101,8 @@ impl Paint<PolyLine> for marking::Longitudinal {
                                     .map(|x| x.into_outer_ring())
                                     .collect(),
                             );
+                        } else {
+                            rings.push(left_line.make_polygons(LINE_WIDTH).into_outer_ring());
                         }
                     }
                 }
