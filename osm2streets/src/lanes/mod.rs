@@ -139,6 +139,16 @@ impl LaneType {
         )
     }
 
+    pub fn to_traffic_mode(&self) -> Option<TrafficMode> {
+        use LaneType::*;
+        match self {
+            Bus | SharedLeftTurn | Driving => Some(TrafficMode::Motor),
+            SharedUse | Biking => Some(TrafficMode::Bike),
+            Footway | Sidewalk => Some(TrafficMode::Pedestrian),
+            LightRail | Buffer(_) | Shoulder | Construction | Parking => None,
+        }
+    }
+
     pub fn describe(self) -> &'static str {
         match self {
             LaneType::Driving => "a general-purpose driving lane",
@@ -381,6 +391,17 @@ impl LaneSpec {
         }
     }
 }
+
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum TrafficMode {
+    /// A (usually licensed) motor vehicle.
+    Motor,
+    /// A bicycle or similar ridden vehicle.
+    Bike,
+    /// All other commuters, on foot or otherwise.
+    Pedestrian,
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Direction {
     Fwd,

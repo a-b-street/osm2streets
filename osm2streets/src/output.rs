@@ -1,32 +1,19 @@
 use itertools::Itertools;
 
-use crate::{Direction, LaneType, StreetNetwork};
+use crate::{BufferType, Direction, LaneType, StreetNetwork};
 use geo::MapCoordsInPlace;
-use geom::{Distance, Line, PolyLine, Pt2D};
+use geom::{Distance, Line, Pt2D};
 
+use crate::draw::PaintArea;
+use crate::lanes::TrafficMode;
+use crate::marking::{LaneEdgeKind, Marking, TurnDirections};
 use LaneType::*;
 use SurfaceMaterial::*;
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Surface {
     pub area: geo::Polygon,
     pub material: SurfaceMaterial,
-}
-
-pub struct PaintArea {
-    pub area: geo::Polygon,
-    pub color: PaintColor,
-}
-
-impl PaintArea {
-    pub fn new(area: geo::Polygon) -> Self {
-        Self {
-            area,
-            color: PaintColor::White,
-        }
-    }
-    pub fn with_color(area: geo::Polygon, color: PaintColor) -> Self {
-        Self { area, color }
-    }
 }
 
 impl StreetNetwork {
@@ -89,52 +76,90 @@ impl StreetNetwork {
 
     // TODO get_designations -> Vec<Designation> {...} // travel areas, parking, etc.
 
-    // TODO pub fn get_markings -> Vec<Marking> {...}
-
-    /// Generate painted areas.
-    pub fn get_paint_areas(&self) -> Vec<PaintArea> {
-        // TODO generate semantic markings first in get_markings, then render them into areas here.
-
-        let mut output = Vec::new();
+    /// Generate markings, described semantically.
+    pub fn get_markings(&self) -> Vec<Marking> {
+        let mut markings = Vec::new();
 
         for road in self.roads.values() {
             // Always oriented in the direction of the road
             let mut lane_centers = road.get_lane_center_lines();
+            let guess_overtaking = match road.highway_type.as_str() {
+                "motorway" | "trunk" | "primary" => false,
+                _ => true,
+            };
 
+            // Add the left road edge.
+            if let Some(first_lane) = road.lane_specs_ltr.first() {
+                if matches!(
+                    first_lane.lt.to_traffic_mode(),
+                    Some(TrafficMode::Bike) | Some(TrafficMode::Motor)
+                ) {
+                    if let Ok(edge_line) = lane_centers[0].shift_left(first_lane.width / 2.0) {
+                        markings.push(Marking::longitudinal(
+                            edge_line,
+                            LaneEdgeKind::edge(),
+                            [LaneType::Buffer(BufferType::Verge), first_lane.lt],
+                        ));
+                    }
+                }
+            }
+            // Add longitudinal markings between lanes.
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
-                // Generate a "center line" between lanes of different directions
-                if pair[0].dir != pair[1].dir {
-                    if let Ok(separator) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
-                        if let Ok(right_line) = separator.shift_right(Distance::centimeters(16)) {
-                            output.push(PaintArea::with_color(
-                                right_line.make_polygons(Distance::centimeters(16)).into(),
-                                PaintColor::Yellow,
-                            ));
+                if let Ok(separation) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
+                    let kind = match (pair[0].lt.to_traffic_mode(), pair[1].lt.to_traffic_mode()) {
+                        (Some(TrafficMode::Motor), Some(TrafficMode::Motor)) => {
+                            if pair[0].dir != pair[1].dir {
+                                LaneEdgeKind::oncoming(guess_overtaking, guess_overtaking)
+                            } else {
+                                LaneEdgeKind::separation(true, true)
+                            }
                         }
-                        if let Ok(left_line) = separator.shift_left(Distance::centimeters(16)) {
-                            output.push(PaintArea::with_color(
-                                left_line.make_polygons(Distance::centimeters(16)).into(),
-                                PaintColor::Yellow,
-                            ));
+                        (Some(TrafficMode::Motor), Some(TrafficMode::Bike))
+                        | (Some(TrafficMode::Bike), Some(TrafficMode::Motor)) => {
+                            LaneEdgeKind::separation(false, false)
                         }
-                    }
-                    continue;
+                        (Some(TrafficMode::Motor), _) | (_, Some(TrafficMode::Motor)) => {
+                            LaneEdgeKind::edge()
+                        }
+                        (Some(TrafficMode::Bike), Some(TrafficMode::Bike)) => {
+                            if pair[0].dir != pair[1].dir {
+                                LaneEdgeKind::oncoming(guess_overtaking, guess_overtaking)
+                            } else {
+                                LaneEdgeKind::separation(true, true)
+                            }
+                        }
+                        (Some(TrafficMode::Bike), _) | (_, Some(TrafficMode::Bike)) => {
+                            LaneEdgeKind::edge()
+                        }
+                        _ => {
+                            continue;
+                        }
+                    };
+                    markings.push(Marking::longitudinal(
+                        separation,
+                        kind,
+                        [pair[0].lt, pair[1].lt],
+                    ));
                 }
-
-                // Generate a "lane separator" between driving lanes only.
-                if pair[0].lt == LaneType::Driving && pair[1].lt == LaneType::Driving {
-                    if let Ok(between) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
-                        for poly in between.dashed_lines(
-                            Distance::meters(0.16),
-                            Distance::meters(1.0),
-                            Distance::meters(1.5),
-                        ) {
-                            output.push(PaintArea::new(poly.into()));
-                        }
+            }
+            // Add the right road edge.
+            if let Some(last_lane) = road.lane_specs_ltr.last() {
+                if matches!(
+                    last_lane.lt.to_traffic_mode(),
+                    Some(TrafficMode::Bike) | Some(TrafficMode::Motor)
+                ) {
+                    if let Ok(edge_line) = lane_centers
+                        .last()
+                        .expect("lane_centers to have the same length as lane_specs_ltr")
+                        .shift_right(last_lane.width / 2.0)
+                    {
+                        markings.push(Marking::longitudinal(
+                            edge_line,
+                            LaneEdgeKind::edge(),
+                            [last_lane.lt, LaneType::Buffer(BufferType::Verge)],
+                        ));
                     }
                 }
-
-                // TODO other cases
             }
 
             // The renderings that follow need lane centers to point in the direction of the lane.
@@ -145,75 +170,56 @@ impl StreetNetwork {
             }
 
             // Draw arrows along oneway roads.
-            if road.oneway_for_driving().is_some() {
-                for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
-                    if !lane.lt.is_for_moving_vehicles() {
-                        continue;
-                    }
-
-                    let step_size = Distance::meters(20.0);
-                    let buffer_ends = Distance::meters(5.0);
-                    let arrow_len = Distance::meters(1.75);
-                    let thickness = Distance::meters(0.16);
-                    for (pt, angle) in center.step_along(step_size, buffer_ends) {
-                        let arrow = PolyLine::must_new(vec![
-                            pt.project_away(arrow_len / 2.0, angle.opposite()),
-                            pt.project_away(arrow_len / 2.0, angle),
-                        ])
-                        .make_arrow(thickness * 2.0, geom::ArrowCap::Triangle);
-                        output.push(PaintArea::new(arrow.into()));
-                    }
-                }
-            }
-
-            // Add stripes to show buffers. Ignore the type of the buffer for now -- we need to
-            // decide all the types and how to render them.
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
-                if !matches!(lane.lt, LaneType::Buffer(_)) {
+                if !lane.lt.is_for_moving_vehicles() {
                     continue;
                 }
 
-                // Mark the sides of the lane clearly
-                let thickness = Distance::meters(0.16);
-                output.push(PaintArea::new(
-                    center
-                        .must_shift_right((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .into(),
-                ));
-                output.push(PaintArea::new(
-                    center
-                        .must_shift_left((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .into(),
-                ));
-
-                // Diagonal stripes along the lane
-                let step_size = Distance::meters(3.0);
+                // Add arrows along the lane, starting at the end.
+                let step_size = Distance::meters(20.0);
                 let buffer_ends = Distance::meters(5.0);
-                for (center, angle) in center.step_along(step_size, buffer_ends) {
-                    // Extend the stripes into the side lines
-                    let left =
-                        center.project_away(lane.width / 2.0 + thickness, angle.rotate_degs(45.0));
-                    let right = center.project_away(
-                        lane.width / 2.0 + thickness,
-                        angle.rotate_degs(45.0).opposite(),
-                    );
-                    output.push(PaintArea::new(
-                        Line::must_new(left, right).make_polygons(thickness).into(),
-                    ));
+                for (pt, rev_angle) in center.reversed().step_along(step_size, buffer_ends) {
+                    markings.push(Marking::turn_arrow(
+                        pt,
+                        rev_angle.opposite(),
+                        // TODO use lane.turn_restrictions
+                        TurnDirections::through(),
+                    ))
+                }
+            }
+
+            // Add markings for painted buffers.
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if let LaneType::Buffer(buffer) = lane.lt {
+                    if matches!(
+                        buffer,
+                        BufferType::FlexPosts | BufferType::JerseyBarrier | BufferType::Stripes
+                    ) {
+                        markings.push(Marking::area(center.make_polygons(lane.width)))
+                    }
                 }
             }
         }
 
-        // Translate from map coords back to latlon before returning.
-        for paint in output.iter_mut() {
+        // TODO transverse markings
+        // TODO intersection markings
+
+        markings
+    }
+
+    pub fn get_paint_areas(&self) -> Vec<PaintArea> {
+        let markings = self.get_markings();
+        let mut areas: Vec<_> = markings.iter().flat_map(Marking::draw).collect();
+
+        // Translate from map coords back to lonlat before returning.
+        for paint in areas.iter_mut() {
             paint.area.map_coords_in_place(|c| {
                 let gps = Pt2D::new(c.x, c.y).to_gps(&self.gps_bounds);
                 (gps.x(), gps.y()).into()
             })
         }
-        output
+
+        areas
     }
 }
 
@@ -230,21 +236,6 @@ impl SurfaceMaterial {
             Asphalt => "asphalt",
             FineAsphalt => "fine_asphalt",
             Concrete => "concrete",
-        }
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PaintColor {
-    White,
-    Yellow,
-}
-
-impl PaintColor {
-    pub fn to_str(&self) -> &str {
-        match self {
-            Self::White => "white",
-            Self::Yellow => "yellow",
         }
     }
 }
