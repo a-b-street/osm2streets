@@ -25,7 +25,6 @@ pub use self::road::Road;
 pub use self::transform::Transformation;
 pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
 
-mod paint;
 mod edit;
 mod geometry;
 mod ids;
@@ -35,6 +34,7 @@ mod marking;
 mod operations;
 pub mod osm;
 mod output;
+mod paint;
 mod pathfinding;
 mod render;
 mod road;

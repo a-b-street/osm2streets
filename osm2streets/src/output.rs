@@ -4,9 +4,9 @@ use crate::{BufferType, Direction, LaneType, StreetNetwork};
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
-use crate::paint::PaintArea;
 use crate::lanes::TrafficMode;
 use crate::marking::{LaneEdgeKind, Marking, TurnDirections};
+use crate::paint::PaintArea;
 use LaneType::*;
 use SurfaceMaterial::*;
 
