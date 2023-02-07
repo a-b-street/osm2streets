@@ -53,7 +53,7 @@ impl Marking {
         match self {
             Marking::Longitudinal(g, m) => m.paint(g),
             Marking::Transverse(g, m) => m.paint(g),
-            Marking::Symbol(g0, g1, m) => m.paint(&(g0, g1)),
+            Marking::Symbol(g0, g1, m) => m.paint(&(*g0, *g1)),
             Marking::Area(g, m) => m.paint(g),
         }
     }
@@ -184,8 +184,8 @@ impl Paint<Line> for marking::Transverse {
     }
 }
 
-impl Paint<(&Pt2D, &Angle)> for marking::Symbol {
-    fn paint(&self, &(&pt, &a): &(&Pt2D, &Angle)) -> Vec<PaintArea> {
+impl Paint<(Pt2D, Angle)> for marking::Symbol {
+    fn paint(&self, &(pt, a): &(Pt2D, Angle)) -> Vec<PaintArea> {
         match self {
             marking::Symbol::TurnArrow(directions) => {
                 // TODO draw the specified direction
