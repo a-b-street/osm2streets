@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
-anyhow = "1.0.38"
+anyhow = { workspace = true }
 driving-side = { git = "https://github.com/a-b-street/osm2lanes" }
 geom = { git = "https://github.com/a-b-street/abstreet" }
 log = "0.4.14"

@@ -5,10 +5,10 @@ edition = "2021"
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
-anyhow = "1.0.38"
+anyhow = { workspace = true }
 geom = { git = "https://github.com/a-b-street/abstreet" }
 streets_reader = { path = "../streets_reader" }
-serde = "1.0.123"
-serde_json = "1.0.61"
+serde = { workspace = true }
+serde_json = { workspace = true }
 osm2streets = { path = "../osm2streets" }
 experimental = { path = "../experimental" }
