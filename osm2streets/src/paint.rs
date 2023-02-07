@@ -21,7 +21,7 @@ impl PaintArea {
         }
     }
 
-    pub fn from(area: Ring) -> Self {
+    pub fn white(area: Ring) -> Self {
         Self {
             area: area.into_polygon().into(),
             color: PaintColor::White,
@@ -157,7 +157,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
             }
         }
 
-        rings.into_iter().map(PaintArea::from).collect()
+        rings.into_iter().map(PaintArea::white).collect()
     }
 }
 
@@ -165,7 +165,7 @@ impl Paint<Line> for marking::Transverse {
     fn paint(&self, geometry: &Line) -> Vec<PaintArea> {
         match self {
             marking::Transverse::StopLine => {
-                vec![PaintArea::from(
+                vec![PaintArea::white(
                     geometry.make_polygons(LINE_WIDTH_THICK).into_outer_ring(),
                 )]
             }
@@ -178,7 +178,7 @@ impl Paint<Line> for marking::Transverse {
                 )
                 .into_iter()
                 .map(Polygon::into_outer_ring)
-                .map(PaintArea::from)
+                .map(PaintArea::white)
                 .collect(),
         }
     }
@@ -196,7 +196,7 @@ impl Paint<(Pt2D, Angle)> for marking::Symbol {
                     pt.project_away(arrow_len / 2.0, a),
                 ])
                 .make_arrow(thickness * 2.0, geom::ArrowCap::Triangle);
-                vec![PaintArea::from(arrow.into_outer_ring())]
+                vec![PaintArea::white(arrow.into_outer_ring())]
             }
             _ => {
                 todo!()
@@ -207,7 +207,7 @@ impl Paint<(Pt2D, Angle)> for marking::Symbol {
 
 impl Paint<Polygon> for marking::Area {
     fn paint(&self, geometry: &Polygon) -> Vec<PaintArea> {
-        vec![PaintArea::from(geometry.get_outer_ring().clone())]
+        vec![PaintArea::white(geometry.get_outer_ring().clone())]
         // let mut output: Vec<Ring> = Vec::new();
         // // Ring around the outside.
         // output.push(
