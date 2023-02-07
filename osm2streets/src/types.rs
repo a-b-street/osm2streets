@@ -80,7 +80,7 @@ impl MapConfig {
             // Just a dummy value that'll be set later
             driving_side: DrivingSide::Right,
             bikes_can_use_bus_lanes: true,
-            inferred_sidewalks: true,
+            inferred_sidewalks: false,
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
             osm2lanes: false,
