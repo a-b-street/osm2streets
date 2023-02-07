@@ -4,7 +4,7 @@ use crate::{BufferType, Direction, LaneType, StreetNetwork};
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
-use crate::draw::PaintArea;
+use crate::paint::PaintArea;
 use crate::lanes::TrafficMode;
 use crate::marking::{LaneEdgeKind, Marking, TurnDirections};
 use LaneType::*;
@@ -209,7 +209,7 @@ impl StreetNetwork {
 
     pub fn get_paint_areas(&self) -> Vec<PaintArea> {
         let markings = self.get_markings();
-        let mut areas: Vec<_> = markings.iter().flat_map(Marking::draw).collect();
+        let mut areas: Vec<_> = markings.iter().flat_map(Marking::paint).collect();
 
         // Translate from map coords back to lonlat before returning.
         for paint in areas.iter_mut() {

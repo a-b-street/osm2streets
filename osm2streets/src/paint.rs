@@ -44,17 +44,17 @@ impl PaintColor {
     }
 }
 
-trait Draw<T> {
-    fn draw(&self, geometry: &T) -> Vec<PaintArea>;
+trait Paint<T> {
+    fn paint(&self, geometry: &T) -> Vec<PaintArea>;
 }
 
 impl Marking {
-    pub fn draw(&self) -> Vec<PaintArea> {
+    pub fn paint(&self) -> Vec<PaintArea> {
         match self {
-            Marking::Longitudinal(g, m) => m.draw(g),
-            Marking::Transverse(g, m) => m.draw(g),
-            Marking::Symbol(g0, g1, m) => m.draw(&(g0, g1)),
-            Marking::Area(g, m) => m.draw(g),
+            Marking::Longitudinal(g, m) => m.paint(g),
+            Marking::Transverse(g, m) => m.paint(g),
+            Marking::Symbol(g0, g1, m) => m.paint(&(g0, g1)),
+            Marking::Area(g, m) => m.paint(g),
         }
     }
 }
@@ -68,8 +68,8 @@ const DASH_GAP_SHORT: Distance = Distance::const_meters(1.0);
 const DASH_LENGTH_LONG: Distance = Distance::const_meters(2.0);
 const DASH_GAP_LONG: Distance = Distance::const_meters(4.5);
 
-impl Draw<PolyLine> for marking::Longitudinal {
-    fn draw(&self, separator: &PolyLine) -> Vec<PaintArea> {
+impl Paint<PolyLine> for marking::Longitudinal {
+    fn paint(&self, separator: &PolyLine) -> Vec<PaintArea> {
         // TODO incorporate colors throughout instead of only collecting rings:
         let mut rings: Vec<Ring> = Vec::new();
 
@@ -162,8 +162,8 @@ impl Draw<PolyLine> for marking::Longitudinal {
     }
 }
 
-impl Draw<Line> for marking::Transverse {
-    fn draw(&self, geometry: &Line) -> Vec<PaintArea> {
+impl Paint<Line> for marking::Transverse {
+    fn paint(&self, geometry: &Line) -> Vec<PaintArea> {
         match self {
             marking::Transverse::StopLine => {
                 vec![PaintArea::from(
@@ -185,8 +185,8 @@ impl Draw<Line> for marking::Transverse {
     }
 }
 
-impl Draw<(&Pt2D, &Angle)> for marking::Symbol {
-    fn draw(&self, &(&pt, &a): &(&Pt2D, &Angle)) -> Vec<PaintArea> {
+impl Paint<(&Pt2D, &Angle)> for marking::Symbol {
+    fn paint(&self, &(&pt, &a): &(&Pt2D, &Angle)) -> Vec<PaintArea> {
         match self {
             marking::Symbol::TurnArrow(directions) => {
                 // TODO draw the specified direction
@@ -206,8 +206,8 @@ impl Draw<(&Pt2D, &Angle)> for marking::Symbol {
     }
 }
 
-impl Draw<Polygon> for marking::Area {
-    fn draw(&self, geometry: &Polygon) -> Vec<PaintArea> {
+impl Paint<Polygon> for marking::Area {
+    fn paint(&self, geometry: &Polygon) -> Vec<PaintArea> {
         vec![PaintArea::from(geometry.get_outer_ring().clone())]
         // let mut output: Vec<Ring> = Vec::new();
         // // Ring around the outside.
