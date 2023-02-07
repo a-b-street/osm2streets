@@ -90,7 +90,7 @@ impl MultiConnection {
         None
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
+    fn debug(&self, streets: &mut StreetNetwork) {
         streets.debug_intersection(self.i, "join/split that isnt DC");
         streets.debug_road(self.side1, "side1 of failed DC");
         streets.debug_road(self.side2, "side2 of failed DC");
@@ -150,7 +150,7 @@ impl DualCarriagewayPt1 {
         None
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
+    fn debug(&self, streets: &mut StreetNetwork) {
         streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
         streets.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {
@@ -322,7 +322,7 @@ impl DualCarriagewayPt2 {
         (branches, bridges)
     }
 
-    fn debug(&self, streets: &StreetNetwork) {
+    fn debug(&self, streets: &mut StreetNetwork) {
         streets.debug_intersection(self.src_i, format!("start of {}", self.road_name));
         streets.debug_intersection(self.dst_i, "end");
         for (idx, r) in self.side1.iter().enumerate() {

@@ -1,0 +1,12 @@
+digraph {
+    0 [ label = "Merge" ]
+    1 [ label = "Merge" ]
+    2 [ label = "MapEdge" ]
+    3 [ label = "MapEdge" ]
+    0 -> 1 [ label = "1 lanes" ]
+    1 -> 0 [ label = "1 lanes" ]
+    1 -> 2 [ label = "1 lanes" ]
+    2 -> 1 [ label = "1 lanes" ]
+    3 -> 0 [ label = "1 lanes" ]
+    0 -> 3 [ label = "1 lanes" ]
+}

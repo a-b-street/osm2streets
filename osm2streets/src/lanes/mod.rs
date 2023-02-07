@@ -13,8 +13,8 @@ use geom::Distance;
 use crate::DrivingSide;
 pub use classic::get_lane_specs_ltr;
 
-pub const NORMAL_LANE_THICKNESS: Distance = Distance::const_meters(2.5);
-const SERVICE_ROAD_LANE_THICKNESS: Distance = Distance::const_meters(1.5);
+pub const NORMAL_LANE_THICKNESS: Distance = Distance::const_meters(3.0);
+const SERVICE_ROAD_LANE_THICKNESS: Distance = Distance::const_meters(2.0);
 pub const SIDEWALK_THICKNESS: Distance = Distance::const_meters(1.5);
 const SHOULDER_THICKNESS: Distance = Distance::const_meters(0.5);
 
@@ -274,9 +274,9 @@ impl LaneSpec {
             // https://en.wikipedia.org/wiki/Lane#Lane_width
             LaneType::Driving => {
                 let mut choices = vec![
-                    (Distance::feet(8.0), "narrow"),
+                    (NORMAL_LANE_THICKNESS, "typical"),
                     (SERVICE_ROAD_LANE_THICKNESS, "alley"),
-                    (Distance::feet(10.0), "typical"),
+                    (Distance::feet(8.0), "narrow"),
                     (Distance::feet(12.0), "highway"),
                 ];
                 if highway_type == "service" {
@@ -287,20 +287,20 @@ impl LaneSpec {
             // https://www.gov.uk/government/publications/cycle-infrastructure-design-ltn-120 table
             // 5-2
             LaneType::Biking => vec![
-                (Distance::meters(2.0), "standard"),
                 (Distance::meters(1.5), "absolute minimum"),
+                (Distance::meters(2.0), "standard"),
             ],
             // https://nacto.org/publication/urban-street-design-guide/street-design-elements/transit-streets/dedicated-curbside-offset-bus-lanes/
             LaneType::Bus => vec![
-                (Distance::feet(12.0), "normal"),
                 (Distance::feet(10.0), "minimum"),
+                (Distance::feet(12.0), "normal"),
             ],
             // https://nacto.org/publication/urban-street-design-guide/street-design-elements/lane-width/
             LaneType::Parking => {
                 let mut choices = vec![
-                    (Distance::feet(7.0), "narrow"),
+                    (NORMAL_LANE_THICKNESS, "full lane"),
                     (SERVICE_ROAD_LANE_THICKNESS, "alley"),
-                    (Distance::feet(9.0), "wide"),
+                    (Distance::feet(7.0), "narrow"),
                     (Distance::feet(15.0), "loading zone"),
                 ];
                 if highway_type == "service" {
@@ -323,7 +323,7 @@ impl LaneSpec {
             // Pretty wild guesses
             LaneType::Buffer(BufferType::Stripes) => vec![(Distance::meters(1.5), "default")],
             LaneType::Buffer(BufferType::FlexPosts) => {
-                vec![(Distance::meters(1.5), "default")]
+                vec![(Distance::meters(0.5), "default")]
             }
             LaneType::Buffer(BufferType::Planters) => {
                 vec![(Distance::meters(2.0), "default")]
@@ -331,7 +331,7 @@ impl LaneSpec {
             LaneType::Buffer(BufferType::JerseyBarrier) => {
                 vec![(Distance::meters(1.5), "default")]
             }
-            LaneType::Buffer(BufferType::Curb) => vec![(Distance::meters(0.5), "default")],
+            LaneType::Buffer(BufferType::Curb) => vec![(Distance::meters(0.1), "default")],
             LaneType::Buffer(BufferType::Verge) => vec![(Distance::meters(2.0), "default")],
             LaneType::Footway => vec![(Distance::meters(2.0), "default")],
             LaneType::SharedUse => vec![(Distance::meters(3.0), "default")],

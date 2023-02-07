@@ -5,7 +5,9 @@ use geom::{Distance, LonLat, PolyLine, Polygon};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-use osm2streets::{osm, DebugStreets, LaneID, MapConfig, RoadID, StreetNetwork, Transformation};
+use osm2streets::{
+    osm, DebugStreets, LaneID, MapConfig, Placement, RoadID, StreetNetwork, Transformation,
+};
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -111,10 +113,8 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = getDebugSteps)]
     pub fn get_debug_steps(&self) -> Vec<JsValue> {
-        // TODO Figure out how to borrow from the RefCell instead of cloning
         self.inner
             .debug_steps
-            .borrow()
             .iter()
             .map(|x| JsValue::from(JsDebugStreets { inner: x.clone() }))
             .collect()
@@ -197,9 +197,18 @@ impl JsStreetNetwork {
         let mut intersections = BTreeSet::new();
         for road in self.inner.roads.values_mut() {
             if road.from_osm_way(id) {
+                // Repeat some of the work in Road::new
+
                 // TODO This could panic, for example if the user removes the highway tag
                 road.lane_specs_ltr = osm2streets::get_lane_specs_ltr(&tags, &self.inner.config);
                 intersections.extend(road.endpoints());
+
+                // Silently fail
+                if let Ok(p) = Placement::parse(&tags) {
+                    road.reference_line_placement = p;
+                }
+
+                road.update_center_line(self.inner.config.driving_side);
             }
         }
         for i in intersections {

@@ -4,10 +4,11 @@ use serde::{Deserialize, Serialize};
 use abstutil::Tags;
 use geom::{Angle, Distance, PolyLine};
 
-use crate::lanes::{Placement, RoadPosition};
+use crate::lanes::RoadPosition;
 use crate::{
     get_lane_specs_ltr, osm, CommonEndpoint, Direction, DrivingSide, InputRoad, IntersectionID,
-    LaneSpec, LaneType, MapConfig, RestrictionType, RoadID, RoadWithEndpoints, StreetNetwork,
+    LaneSpec, LaneType, MapConfig, Placement, RestrictionType, RoadID, RoadWithEndpoints,
+    StreetNetwork,
 };
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -356,13 +357,13 @@ impl Road {
                 let mut lanes_found = 0;
                 // Lanes are counted from the left in the direction of the named lane, so we
                 // iterate from the right when we're looking for a backward lane.
-                let lanes: Box<dyn Iterator<Item = _>> = if target_dir == Direction::Fwd {
+                let lanes: Box<dyn Iterator<Item = &LaneSpec>> = if target_dir == Direction::Fwd {
                     Box::new(self.lane_specs_ltr.iter())
                 } else {
                     Box::new(self.lane_specs_ltr.iter().rev())
                 };
                 for lane in lanes {
-                    if lane.dir == target_dir {
+                    if lane.dir == target_dir && lane.lt.is_tagged_by_lanes_suffix() {
                         lanes_found += 1;
                         if lanes_found == target_num {
                             // The side of the name lane is defined in the direction of the lane

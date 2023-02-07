@@ -4,8 +4,7 @@ use anyhow::Result;
 
 use geom::Distance;
 
-use crate::lanes::Placement;
-use crate::{IntersectionID, IntersectionKind, Road, StreetNetwork};
+use crate::{IntersectionID, IntersectionKind, Placement, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways

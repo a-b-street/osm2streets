@@ -2,8 +2,10 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
-use crate::lanes::{Placement, RoadPosition};
-use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, RoadID, StreetNetwork};
+use crate::lanes::RoadPosition;
+use crate::{
+    BufferType, Direction, DrivingSide, LaneSpec, LaneType, Placement, RoadID, StreetNetwork,
+};
 
 /// Find dual carriageways that split very briefly and then re-join, with no intermediate roads.
 /// Collapse them into one road with a barrier in the middle.
@@ -59,6 +61,13 @@ fn find_sausage_links(streets: &StreetNetwork) -> BTreeSet<(RoadID, RoadID)> {
         if streets.roads_per_intersection(road1.src_i).len() < 3
             || streets.roads_per_intersection(road1.dst_i).len() < 3
         {
+            continue;
+        }
+
+        // Don't collapse roundabouts. Since we don't preserve the junction=roundabout tag, another
+        // heuristic is if the two roads came from the same original OSM way.
+        // https://www.openstreetmap.org/way/235499756 is an example.
+        if !road1.osm_ids.is_empty() && road1.osm_ids == road2.osm_ids {
             continue;
         }
 
