@@ -54,6 +54,42 @@ pub struct Road {
     pub complicated_turn_restrictions: Vec<(RoadID, RoadID)>,
 
     pub lane_specs_ltr: Vec<LaneSpec>,
+
+    pub stop_line_start: StopLine,
+    pub stop_line_end: StopLine,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct StopLine {
+    /// Relative to the road's reference_line. Stop lines at the start of the road will have low
+    /// values, and at the end will have values closer to the reference_line's length. This is only
+    /// set when the stop line is explicitly specified; it's never inferred.
+    pub vehicle_distance: Option<Distance>,
+    /// If there is an advanced stop line for cyclists different than the vehicle position, this
+    /// specifies it. This must be farther along than the vehicle_distance (smaller for start,
+    /// larger for end). The bike box covers the interval between the two.
+    pub bike_distance: Option<Distance>,
+    pub interruption: TrafficInterruption,
+}
+
+/// How a lane of travel is interrupted, as it meets another or ends.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum TrafficInterruption {
+    Uninterrupted,
+    Yield,
+    Stop,
+    Signal,
+    DeadEnd,
+}
+
+impl StopLine {
+    pub fn dummy() -> Self {
+        Self {
+            vehicle_distance: None,
+            bike_distance: None,
+            interruption: TrafficInterruption::Uninterrupted,
+        }
+    }
 }
 
 impl Road {
@@ -107,8 +143,9 @@ impl Road {
             trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
-
             lane_specs_ltr,
+            stop_line_start: StopLine::dummy(),
+            stop_line_end: StopLine::dummy(),
         };
 
         result.update_center_line(config.driving_side); // TODO delay this until trim_start and trim_end are calculated

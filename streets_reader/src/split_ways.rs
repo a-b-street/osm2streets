@@ -4,6 +4,7 @@ use abstutil::{Counter, Timer};
 use geom::{HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
     Direction, IntersectionControl, IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork,
+    TrafficInterruption,
 };
 
 use super::OsmExtract;
@@ -48,6 +49,7 @@ pub fn split_up_roads(
                     let control = if osm_ids.is_empty() {
                         IntersectionControl::Uncontrolled
                     } else if input.traffic_signals.remove(&hash_pt).is_some() {
+                        // This is a node; don't expect a direction
                         IntersectionControl::Signalled
                     } else {
                         // TODO default to uncontrolled, guess StopSign as a transform
@@ -202,23 +204,85 @@ pub fn split_up_roads(
     for (pt, dir) in input.traffic_signals {
         if let Some(r) = pt_to_road.get(&pt) {
             // The road might've crossed the boundary and been clipped
-            if let Some(road) = streets.roads.get(r) {
-                // Example: https://www.openstreetmap.org/node/26734224
-                if road.highway_type != "construction" {
+            if let Some(road) = streets.roads.get_mut(r) {
+                // On a one-way road, specifying direction is redundant, so infer from there too
+                if let Some(dir) = dir.or_else(|| road.oneway_for_driving()) {
+                    // Update the intersection control type
                     let i = if dir == Direction::Fwd {
                         road.dst_i
                     } else {
                         road.src_i
                     };
                     let i = streets.intersections.get_mut(&i).unwrap();
+                    // TODO Maybe we should do this later, as a consequence of TrafficInterruption
+                    // on incoming roads?
                     if !i.is_map_edge() {
                         i.control = IntersectionControl::Signalled;
+                    }
+
+                    // Specify the explicit vehicle stop line
+                    if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
+                        let stop_line = if dir == Direction::Fwd {
+                            &mut road.stop_line_end
+                        } else {
+                            &mut road.stop_line_start
+                        };
+                        stop_line.vehicle_distance = Some(dist);
+                        stop_line.interruption = TrafficInterruption::Signal;
+                    }
+                    // TODO If dist_along_of_point fails, it's because we smoothed the line. This
+                    // is a great reason to instead just find the closest point on the line and
+                    // then the distance.
+                }
+                // TODO What should we do more generally with traffic signals on ways that don't
+                // specify a direction?
+            }
+        }
+    }
+    timer.stop("match traffic signals to intersections");
+
+    // Do the same for cycleway ASLs
+    for (pt, dir) in input.cycleway_stop_lines {
+        if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
+            if let Some(dir) = dir {
+                if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
+                    let stop_line = if dir == Direction::Fwd {
+                        &mut road.stop_line_end
+                    } else {
+                        &mut road.stop_line_start
+                    };
+                    stop_line.bike_distance = Some(dist);
+
+                    // Inherit the interruption type from the intersection
+                    let i = if dir == Direction::Fwd {
+                        road.dst_i
+                    } else {
+                        road.src_i
+                    };
+                    if streets.intersections[&i].control == IntersectionControl::Signalled {
+                        stop_line.interruption = TrafficInterruption::Signal;
                     }
                 }
             }
         }
     }
-    timer.stop("match traffic signals to intersections");
+
+    for pt in input.signalized_crossings {
+        if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
+            if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
+                // We don't know the direction. Arbitrarily snap to the start or end if it's within
+                // 30% of the length. If it's in the middle 40%, it might be a mid-block crossing?
+                let pct = dist / road.reference_line.length();
+                if pct < 0.3 {
+                    road.stop_line_start.vehicle_distance = Some(dist);
+                    road.stop_line_start.interruption = TrafficInterruption::Signal;
+                } else if pct > 0.7 {
+                    road.stop_line_end.vehicle_distance = Some(dist);
+                    road.stop_line_end.interruption = TrafficInterruption::Signal;
+                }
+            }
+        }
+    }
 
     timer.start("calculate intersection geometry and movements");
     let intersection_ids: Vec<_> = streets.intersections.keys().cloned().collect();
