@@ -13,23 +13,30 @@ pub struct OsmExtract {
     /// Note there may be multiple entries here with the same WayID. Effectively those have been
     /// partly pre-split.
     pub roads: Vec<(WayID, Vec<Pt2D>, Tags)>,
-    /// Traffic signals to the direction they apply
-    pub traffic_signals: HashMap<HashablePt2D, Direction>,
     pub osm_node_ids: HashMap<HashablePt2D, NodeID>,
     /// (ID, restriction type, from way ID, via node ID, to way ID)
     pub simple_turn_restrictions: Vec<(RestrictionType, WayID, NodeID, WayID)>,
     /// (relation ID, from way ID, via way ID, to way ID)
     pub complicated_turn_restrictions: Vec<(RelationID, WayID, WayID, WayID)>,
+
+    /// Traffic signals and bike stop lines, with an optional direction they apply to
+    pub traffic_signals: HashMap<HashablePt2D, Option<Direction>>,
+    pub cycleway_stop_lines: Vec<(HashablePt2D, Option<Direction>)>,
+    /// Pedestrian crossings with a traffic signal, with unknown direction
+    pub signalized_crossings: Vec<HashablePt2D>,
 }
 
 impl OsmExtract {
     pub fn new() -> Self {
         Self {
             roads: Vec::new(),
-            traffic_signals: HashMap::new(),
             osm_node_ids: HashMap::new(),
             simple_turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
+
+            traffic_signals: HashMap::new(),
+            cycleway_stop_lines: Vec::new(),
+            signalized_crossings: Vec::new(),
         }
     }
 
@@ -37,12 +44,19 @@ impl OsmExtract {
         self.osm_node_ids.insert(node.pt.to_hashable(), id);
 
         if node.tags.is(osm::HIGHWAY, "traffic_signals") {
-            let dir = if node.tags.is("traffic_signals:direction", "backward") {
-                Direction::Back
-            } else {
-                Direction::Fwd
-            };
+            let dir = parse_dir(node.tags.get("traffic_signals:direction"));
             self.traffic_signals.insert(node.pt.to_hashable(), dir);
+        }
+
+        if node.tags.is("cycleway", "asl") {
+            let dir = parse_dir(node.tags.get("direction"));
+            self.cycleway_stop_lines.push((node.pt.to_hashable(), dir));
+        }
+
+        // TODO Maybe restricting to traffic_signals is too much. But we definitely don't want to
+        // use crossing=unmarked to infer stop lines
+        if node.tags.is("highway", "crossing") && node.tags.is("crossing", "traffic_signals") {
+            self.signalized_crossings.push(node.pt.to_hashable());
         }
     }
 
@@ -187,5 +201,13 @@ impl OsmExtract {
         }
 
         true
+    }
+}
+
+fn parse_dir(x: Option<&String>) -> Option<Direction> {
+    match x.map(|x| x.as_str()) {
+        Some("forward") => Some(Direction::Fwd),
+        Some("backward") => Some(Direction::Back),
+        _ => None,
     }
 }

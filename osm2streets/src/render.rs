@@ -8,8 +8,8 @@ use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 
 use crate::road::RoadEdge;
 use crate::{
-    DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneType, Movement,
-    StreetNetwork,
+    DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneSpec, LaneType,
+    Movement, Road, StreetNetwork,
 };
 
 impl StreetNetwork {
@@ -180,6 +180,16 @@ impl StreetNetwork {
                             ]),
                         ));
                     }
+                }
+            }
+
+            // Stop line distances are relative to the direction of the road, not the lane!
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                for (polygon, kind) in draw_stop_lines(lane, center, road) {
+                    pairs.push((
+                        polygon.to_geojson(gps_bounds),
+                        make_props(&[("type", kind.into())]),
+                    ));
                 }
             }
 
@@ -500,5 +510,58 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
             results.push(ring.into_polygon());
         }
     }
+    results
+}
+
+fn draw_stop_lines(
+    lane: &LaneSpec,
+    center: &PolyLine,
+    road: &Road,
+) -> Vec<(Polygon, &'static str)> {
+    let mut results = Vec::new();
+
+    if !matches!(
+        lane.lt,
+        LaneType::Driving | LaneType::Bus | LaneType::Biking
+    ) {
+        return results;
+    }
+    let thickness = Distance::meters(0.5);
+
+    let stop_line = if lane.dir == Direction::Fwd {
+        &road.stop_line_end
+    } else {
+        &road.stop_line_start
+    };
+
+    // The vehicle line
+    if let Some(dist) = stop_line.vehicle_distance {
+        if let Ok((pt, angle)) = center.dist_along(dist) {
+            results.push((
+                Line::must_new(
+                    pt.project_away(lane.width / 2.0, angle.rotate_degs(90.0)),
+                    pt.project_away(lane.width / 2.0, angle.rotate_degs(-90.0)),
+                )
+                .make_polygons(thickness),
+                "vehicle stop line",
+            ));
+        }
+    }
+
+    if let Some(dist) = stop_line.bike_distance {
+        if let Ok((pt, angle)) = center.dist_along(dist) {
+            results.push((
+                Line::must_new(
+                    pt.project_away(lane.width / 2.0, angle.rotate_degs(90.0)),
+                    pt.project_away(lane.width / 2.0, angle.rotate_degs(-90.0)),
+                )
+                .make_polygons(thickness),
+                "bike stop line",
+            ));
+        }
+    }
+
+    // TODO Change the rendering based on interruption too
+
     results
 }

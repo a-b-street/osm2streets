@@ -94,13 +94,3 @@ pub enum DrivingSide {
     Right,
     Left,
 }
-
-/// How a lane of travel is interrupted, as it meets another or ends.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
-pub enum TrafficInterruption {
-    Uninterrupted,
-    Yield,
-    Stop,
-    Signal,
-    DeadEnd,
-}
