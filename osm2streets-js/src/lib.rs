@@ -31,15 +31,13 @@ impl JsStreetNetwork {
     pub fn new(
         osm_xml_input: &str,
         clip_pts_geojson: &str,
-        input: &JsValue,
+        input: JsValue,
     ) -> Result<JsStreetNetwork, JsValue> {
         abstutil::logger::setup();
         // Panics shouldn't happen, but if they do, console.log them.
         console_error_panic_hook::set_once();
 
-        let input: ImportOptions = input
-            .into_serde()
-            .map_err(|err| JsValue::from_str(&err.to_string()))?;
+        let input: ImportOptions = serde_wasm_bindgen::from_value(input)?;
 
         let clip_pts = if clip_pts_geojson.is_empty() {
             None

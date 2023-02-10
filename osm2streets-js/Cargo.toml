@@ -20,6 +20,5 @@ instant = { version = "0.1.12", features = ["wasm-bindgen"] }
 osm2streets = { path = "../osm2streets" }
 serde = { workspace = true }
 streets_reader = { path = "../streets_reader" }
-wasm-bindgen = { version = "0.2.84", features = [
-    "serde-serialize",
-] }
+wasm-bindgen = "0.2.84"
+serde-wasm-bindgen = "0.4.5"
