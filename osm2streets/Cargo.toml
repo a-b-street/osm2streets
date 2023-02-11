@@ -3,6 +3,7 @@ name = "osm2streets"
 version = "0.1.0"
 authors = ["Dustin Carlino <dabreegster@gmail.com>"]
 edition = "2021"
+rust-version = "1.66"
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
