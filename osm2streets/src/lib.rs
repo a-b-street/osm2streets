@@ -20,7 +20,7 @@ pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, Placement,
     NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
 };
-pub use self::road::Road;
+pub use self::road::{Road, StopLine, TrafficInterruption};
 pub use self::transform::Transformation;
 pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
 

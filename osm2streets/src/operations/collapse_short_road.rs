@@ -71,6 +71,7 @@ impl StreetNetwork {
         // If the intersection types differ, upgrade the surviving interesting.
         if destroy_i.control == IntersectionControl::Signalled {
             self.intersections.get_mut(&keep_i).unwrap().control = IntersectionControl::Signalled;
+            // TODO Propagate to stop lines
         }
 
         // Remember the merge

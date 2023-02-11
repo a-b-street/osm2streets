@@ -20,7 +20,7 @@ use anyhow::Result;
 use geom::{Distance, PolyLine, Polygon, Pt2D, Ring};
 
 use crate::road::RoadEdge;
-use crate::{IntersectionID, RoadID};
+use crate::{IntersectionID, RoadID, StopLine};
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
 // two intersections at a time in A/B Street's edit mode. Within just this repo, it does seem
@@ -75,6 +75,8 @@ impl InputRoad {
             trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),
             complicated_turn_restrictions: Vec::new(),
+            stop_line_start: StopLine::dummy(),
+            stop_line_end: StopLine::dummy(),
         }
     }
 }

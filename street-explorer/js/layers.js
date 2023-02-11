@@ -149,6 +149,8 @@ export const makeLaneMarkingsLayer = (text) => {
     "lane arrow": "white",
     "buffer edge": "white",
     "buffer stripe": "white",
+    "vehicle stop line": "white",
+    "bike stop line": "green",
   };
 
   return new L.geoJSON(JSON.parse(text), {
