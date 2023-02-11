@@ -3,7 +3,7 @@ use crate::{marking, marking::RoadMarking};
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Distance, Line, PolyLine, Polygon, Pt2D, Ring};
 
-use crate::lanes::TrafficMode;
+use crate::lanes::TrafficClass;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct PaintArea {
@@ -77,8 +77,8 @@ impl Paint<PolyLine> for marking::Longitudinal {
             marking::LongitudinalLine::Dividing {
                 overtake_left,
                 overtake_right,
-            } => match self.lanes.map(|x| x.to_traffic_mode()) {
-                [Some(TrafficMode::Motor), _] | [_, Some(TrafficMode::Motor)] => {
+            } => match self.lanes.map(|x| x.traffic_class()) {
+                [Some(TrafficClass::Motor), _] | [_, Some(TrafficClass::Motor)] => {
                     if let Ok(right_line) = separator.shift_right(LINE_WIDTH) {
                         if overtake_left {
                             rings.append(
@@ -106,7 +106,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
                         }
                     }
                 }
-                [Some(TrafficMode::Bike), _] | [_, Some(TrafficMode::Bike)] => {
+                [Some(TrafficClass::Bicycle), _] | [_, Some(TrafficClass::Bicycle)] => {
                     if overtake_left || overtake_right {
                         rings.append(
                             &mut separator
@@ -124,8 +124,8 @@ impl Paint<PolyLine> for marking::Longitudinal {
             marking::LongitudinalLine::Lane {
                 merge_left,
                 merge_right,
-            } => match self.lanes.map(|x| x.to_traffic_mode()) {
-                [Some(TrafficMode::Motor), Some(TrafficMode::Motor)] => {
+            } => match self.lanes.map(|x| x.traffic_class()) {
+                [Some(TrafficClass::Motor), Some(TrafficClass::Motor)] => {
                     if merge_left || merge_right {
                         rings.append(
                             &mut separator
@@ -138,9 +138,10 @@ impl Paint<PolyLine> for marking::Longitudinal {
                         rings.push(separator.make_polygons(LINE_WIDTH).into_outer_ring())
                     }
                 }
-                [Some(TrafficMode::Motor), _] | [_, Some(TrafficMode::Motor)] => {
+                [Some(TrafficClass::Motor), _] | [_, Some(TrafficClass::Motor)] => {
                     rings.push(separator.make_polygons(LINE_WIDTH).into_outer_ring())
                 }
+                // TODO: Bike lanes, tram lanes.
                 _ => {}
             },
             marking::LongitudinalLine::Edge => {

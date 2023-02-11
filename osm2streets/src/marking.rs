@@ -13,7 +13,7 @@
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
 
-use crate::lanes::TrafficMode;
+use crate::lanes::TrafficClass;
 use crate::LaneType;
 
 /// A marking painted on the road surface to direct traffic.
@@ -60,7 +60,7 @@ pub enum Transverse {
 
 pub enum Symbol {
     /// A marking indicating a mode of traffic that is allowed.
-    TrafficMode(TrafficMode),
+    TrafficMode(TrafficClass),
     /// A marking indicating which turns may be performed.
     TurnArrow(TurnDirections),
 }

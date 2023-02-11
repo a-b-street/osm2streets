@@ -4,7 +4,7 @@ use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficIn
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
-use crate::lanes::{RoadPosition, TrafficMode};
+use crate::lanes::{RoadPosition, TrafficClass};
 use crate::marking::{LongitudinalLine, RoadMarking, Transverse, TurnDirections};
 use crate::paint::PaintArea;
 
@@ -72,7 +72,7 @@ impl StreetNetwork {
         output
     }
 
-    // TODO get_designations -> Vec<Designation> {...} // travel areas, parking, etc.
+    // TODO calculate_designations -> Vec<Designation> {...} // travel areas, parking, etc.
 
     /// Generate markings, described semantically.
     pub fn calculate_markings(&self) -> Vec<RoadMarking> {
@@ -89,8 +89,8 @@ impl StreetNetwork {
             // Add the left road edge.
             if let Some(first_lane) = road.lane_specs_ltr.first() {
                 if matches!(
-                    first_lane.lt.to_traffic_mode(),
-                    Some(TrafficMode::Bike) | Some(TrafficMode::Motor)
+                    first_lane.lt.traffic_class(),
+                    Some(TrafficClass::Bicycle) | Some(TrafficClass::Motor)
                 ) {
                     if let Ok(edge_line) = lane_centers[0].shift_left(first_lane.width / 2.0) {
                         markings.push(RoadMarking::longitudinal(
@@ -104,30 +104,30 @@ impl StreetNetwork {
             // Add longitudinal markings between lanes.
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
                 if let Ok(separation) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
-                    let kind = match (pair[0].lt.to_traffic_mode(), pair[1].lt.to_traffic_mode()) {
-                        (Some(TrafficMode::Motor), Some(TrafficMode::Motor)) => {
+                    let kind = match (pair[0].lt.traffic_class(), pair[1].lt.traffic_class()) {
+                        (Some(TrafficClass::Motor), Some(TrafficClass::Motor)) => {
                             if pair[0].dir != pair[1].dir {
                                 LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
                             } else {
                                 LongitudinalLine::lane(true, true)
                             }
                         }
-                        (Some(TrafficMode::Motor), Some(TrafficMode::Bike))
-                        | (Some(TrafficMode::Bike), Some(TrafficMode::Motor)) => {
+                        (Some(TrafficClass::Motor), Some(TrafficClass::Bicycle))
+                        | (Some(TrafficClass::Bicycle), Some(TrafficClass::Motor)) => {
                             // AU specifies the use of an "edge line" in this case...
                             LongitudinalLine::lane(false, false)
                         }
-                        (Some(TrafficMode::Motor), _) | (_, Some(TrafficMode::Motor)) => {
+                        (Some(TrafficClass::Motor), _) | (_, Some(TrafficClass::Motor)) => {
                             LongitudinalLine::edge()
                         }
-                        (Some(TrafficMode::Bike), Some(TrafficMode::Bike)) => {
+                        (Some(TrafficClass::Bicycle), Some(TrafficClass::Bicycle)) => {
                             if pair[0].dir != pair[1].dir {
                                 LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
                             } else {
                                 LongitudinalLine::lane(true, true)
                             }
                         }
-                        (Some(TrafficMode::Bike), _) | (_, Some(TrafficMode::Bike)) => {
+                        (Some(TrafficClass::Bicycle), _) | (_, Some(TrafficClass::Bicycle)) => {
                             LongitudinalLine::edge()
                         }
                         _ => {
@@ -144,8 +144,8 @@ impl StreetNetwork {
             // Add the right road edge.
             if let Some(last_lane) = road.lane_specs_ltr.last() {
                 if matches!(
-                    last_lane.lt.to_traffic_mode(),
-                    Some(TrafficMode::Bike) | Some(TrafficMode::Motor)
+                    last_lane.lt.traffic_class(),
+                    Some(TrafficClass::Bicycle) | Some(TrafficClass::Motor)
                 ) {
                     if let Ok(edge_line) = lane_centers
                         .last()

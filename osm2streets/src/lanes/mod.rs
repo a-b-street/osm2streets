@@ -139,13 +139,16 @@ impl LaneType {
         )
     }
 
-    pub fn to_traffic_mode(&self) -> Option<TrafficMode> {
+    /// The most significant class of traffic that travels in this lane.
+    // I don't know about parking lanes yet...
+    pub fn traffic_class(&self) -> Option<TrafficClass> {
         use LaneType::*;
         match self {
-            Bus | SharedLeftTurn | Driving => Some(TrafficMode::Motor),
-            SharedUse | Biking => Some(TrafficMode::Bike),
-            Footway | Sidewalk => Some(TrafficMode::Pedestrian),
-            LightRail | Buffer(_) | Shoulder | Construction | Parking => None,
+            Footway | Sidewalk => Some(TrafficClass::Pedestrian),
+            SharedUse | Biking => Some(TrafficClass::Bicycle),
+            Bus | SharedLeftTurn | Driving => Some(TrafficClass::Motor),
+            LightRail => Some(TrafficClass::Rail),
+            Buffer(_) | Shoulder | Construction | Parking => None,
         }
     }
 
@@ -392,14 +395,19 @@ impl LaneSpec {
     }
 }
 
+/// A broad categorisation of traffic by the kind of infrastructure it requires.
+///
+/// Look elsewhere for the "mode" of traffic, distinguishing busses, taxis, etc.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
-pub enum TrafficMode {
-    /// A (usually licensed) motor vehicle.
-    Motor,
-    /// A bicycle or similar ridden vehicle.
-    Bike,
-    /// All other commuters, on foot or otherwise.
+pub enum TrafficClass {
+    /// Pedestrians, wheelchair users, etc.
     Pedestrian,
+    /// Bicycles or similar small ridden vehicles.
+    Bicycle,
+    /// Licenced motor vehicles, including motorbikes, cars, busses and trucks.
+    Motor,
+    /// Trains and trams that run on rails.
+    Rail,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
