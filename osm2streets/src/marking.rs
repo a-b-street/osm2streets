@@ -36,6 +36,7 @@ pub enum LaneEdgeKind {
     Continuity,
 }
 
+#[derive(Clone, Copy)]
 pub enum Transverse {
     StopLine,
     YieldLine,
@@ -79,11 +80,8 @@ impl Marking {
         Marking::Longitudinal(geometry, Longitudinal { kind, lanes })
     }
 
-    pub fn stop_line(geometry: Line) -> Self {
-        Marking::Transverse(geometry, Transverse::StopLine)
-    }
-    pub fn yield_line(geometry: Line) -> Self {
-        Marking::Transverse(geometry, Transverse::YieldLine)
+    pub fn transverse(geometry: Line, kind: Transverse) -> Self {
+        Marking::Transverse(geometry, kind)
     }
 
     pub fn turn_arrow(geometry: Pt2D, angle: Angle, turns: TurnDirections) -> Self {

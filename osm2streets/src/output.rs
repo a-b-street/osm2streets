@@ -1,14 +1,12 @@
 use itertools::Itertools;
 
-use crate::{BufferType, Direction, LaneType, StreetNetwork};
+use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficInterruption};
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
-use crate::lanes::TrafficMode;
-use crate::marking::{LaneEdgeKind, Marking, TurnDirections};
+use crate::lanes::{RoadPosition, TrafficMode};
+use crate::marking::{LaneEdgeKind, Marking, Transverse, TurnDirections};
 use crate::paint::PaintArea;
-use LaneType::*;
-use SurfaceMaterial::*;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Surface {
@@ -162,6 +160,92 @@ impl StreetNetwork {
                 }
             }
 
+            // Add stop and yield lines.
+            // While stop lines are measured against the reference line, we need the reference line
+            // offset. Not bothering to support complicated positioning yet.
+            let ref_offset = road.left_edge_offset_of(
+                if let Placement::Consistent(p) = road.reference_line_placement {
+                    p
+                } else {
+                    RoadPosition::Center
+                },
+                self.config.driving_side,
+            );
+            // Calculate the left edge offset of each lane to position the stop lines.
+            let mut dist_so_far = Distance::ZERO;
+            let lane_offsets = road.lane_specs_ltr.iter().map(|lane| {
+                let offset = dist_so_far;
+                dist_so_far += lane.width;
+                offset
+            });
+            // Generate one line per contiguous block of traffic lanes in the same direction.
+            for (dir, mut lanes_and_offsets) in road
+                .lane_specs_ltr
+                .iter()
+                .zip(lane_offsets)
+                .group_by(|(l, _)| {
+                    if l.lt.is_for_moving_vehicles() {
+                        Some(l.dir)
+                    } else {
+                        None
+                    }
+                })
+                .into_iter()
+            {
+                if let Some(dir) = dir {
+                    let stop_line = if dir == Direction::Fwd {
+                        &road.stop_line_end
+                    } else {
+                        &road.stop_line_start
+                    };
+
+                    let stop_kind = match stop_line.interruption {
+                        TrafficInterruption::Stop | TrafficInterruption::Signal => {
+                            Transverse::YieldLine
+                        }
+                        TrafficInterruption::Yield => Transverse::YieldLine,
+                        TrafficInterruption::Uninterrupted | TrafficInterruption::DeadEnd => {
+                            continue;
+                        }
+                    };
+
+                    // Calculate the distance from the ref_line to the left and right edge of the group.
+                    let (first_lane, first_offset) =
+                        lanes_and_offsets.next().expect("non-empty group");
+                    let (last_lane, last_offset) = lanes_and_offsets
+                        .last()
+                        .unwrap_or((first_lane, first_offset));
+                    let left_dist = first_offset - ref_offset;
+                    let right_dist = ref_offset - (last_offset + last_lane.width);
+
+                    // Add the vehicle line.
+                    if let Some(dist) = stop_line.vehicle_distance {
+                        if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
+                            markings.push(Marking::transverse(
+                                Line::must_new(
+                                    pt.project_away(left_dist, angle.rotate_degs(90.0)),
+                                    pt.project_away(right_dist, angle.rotate_degs(-90.0)),
+                                ),
+                                stop_kind,
+                            ));
+                        }
+                    }
+
+                    // Add the bike line, aka "Advanced Stop Line".
+                    if let Some(dist) = stop_line.bike_distance {
+                        if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
+                            markings.push(Marking::transverse(
+                                Line::must_new(
+                                    pt.project_away(left_dist, angle.rotate_degs(90.0)),
+                                    pt.project_away(right_dist, angle.rotate_degs(-90.0)),
+                                ),
+                                stop_kind, // We could add another variant for this.
+                            ));
+                        }
+                    }
+                }
+            }
+
             // The renderings that follow need lane centers to point in the direction of the lane.
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter_mut()) {
                 if lane.dir == Direction::Back {
@@ -201,7 +285,6 @@ impl StreetNetwork {
             }
         }
 
-        // TODO transverse markings
         // TODO intersection markings
 
         markings
@@ -233,22 +316,23 @@ pub enum SurfaceMaterial {
 impl SurfaceMaterial {
     pub fn to_str(&self) -> &str {
         match self {
-            Asphalt => "asphalt",
-            FineAsphalt => "fine_asphalt",
-            Concrete => "concrete",
+            Self::Asphalt => "asphalt",
+            Self::FineAsphalt => "fine_asphalt",
+            Self::Concrete => "concrete",
         }
     }
 }
 
 fn material_from_lane_type(lt: LaneType) -> Option<SurfaceMaterial> {
+    use LaneType::*;
     match lt {
-        Sidewalk | Footway => Some(Concrete),
+        Sidewalk | Footway => Some(SurfaceMaterial::Concrete),
 
         Driving | Parking | Shoulder | SharedLeftTurn | Construction | Buffer(_) | Bus => {
-            Some(Asphalt)
+            Some(SurfaceMaterial::Asphalt)
         }
 
-        Biking | SharedUse => Some(FineAsphalt),
+        Biking | SharedUse => Some(SurfaceMaterial::FineAsphalt),
 
         LightRail => None,
     }

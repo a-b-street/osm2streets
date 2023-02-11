@@ -171,7 +171,7 @@ impl Paint<Line> for marking::Transverse {
             }
             marking::Transverse::YieldLine => geometry
                 .to_polyline()
-                .dashed_lines(
+                .exact_dashed_polygons(
                     LINE_WIDTH_THICK,
                     Distance::meters(0.6),
                     Distance::meters(0.6),
