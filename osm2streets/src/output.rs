@@ -5,7 +5,7 @@ use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
 use crate::lanes::{RoadPosition, TrafficMode};
-use crate::marking::{LaneEdgeKind, Marking, Transverse, TurnDirections};
+use crate::marking::{LongitudinalLine, RoadMarking, Transverse, TurnDirections};
 use crate::paint::PaintArea;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -75,7 +75,7 @@ impl StreetNetwork {
     // TODO get_designations -> Vec<Designation> {...} // travel areas, parking, etc.
 
     /// Generate markings, described semantically.
-    pub fn calculate_markings(&self) -> Vec<Marking> {
+    pub fn calculate_markings(&self) -> Vec<RoadMarking> {
         let mut markings = Vec::new();
 
         for road in self.roads.values() {
@@ -93,9 +93,9 @@ impl StreetNetwork {
                     Some(TrafficMode::Bike) | Some(TrafficMode::Motor)
                 ) {
                     if let Ok(edge_line) = lane_centers[0].shift_left(first_lane.width / 2.0) {
-                        markings.push(Marking::longitudinal(
+                        markings.push(RoadMarking::longitudinal(
                             edge_line,
-                            LaneEdgeKind::edge(),
+                            LongitudinalLine::edge(),
                             [LaneType::Buffer(BufferType::Verge), first_lane.lt],
                         ));
                     }
@@ -107,33 +107,34 @@ impl StreetNetwork {
                     let kind = match (pair[0].lt.to_traffic_mode(), pair[1].lt.to_traffic_mode()) {
                         (Some(TrafficMode::Motor), Some(TrafficMode::Motor)) => {
                             if pair[0].dir != pair[1].dir {
-                                LaneEdgeKind::oncoming(guess_overtaking, guess_overtaking)
+                                LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
                             } else {
-                                LaneEdgeKind::separation(true, true)
+                                LongitudinalLine::lane(true, true)
                             }
                         }
                         (Some(TrafficMode::Motor), Some(TrafficMode::Bike))
                         | (Some(TrafficMode::Bike), Some(TrafficMode::Motor)) => {
-                            LaneEdgeKind::separation(false, false)
+                            // AU specifies the use of an "edge line" in this case...
+                            LongitudinalLine::lane(false, false)
                         }
                         (Some(TrafficMode::Motor), _) | (_, Some(TrafficMode::Motor)) => {
-                            LaneEdgeKind::edge()
+                            LongitudinalLine::edge()
                         }
                         (Some(TrafficMode::Bike), Some(TrafficMode::Bike)) => {
                             if pair[0].dir != pair[1].dir {
-                                LaneEdgeKind::oncoming(guess_overtaking, guess_overtaking)
+                                LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
                             } else {
-                                LaneEdgeKind::separation(true, true)
+                                LongitudinalLine::lane(true, true)
                             }
                         }
                         (Some(TrafficMode::Bike), _) | (_, Some(TrafficMode::Bike)) => {
-                            LaneEdgeKind::edge()
+                            LongitudinalLine::edge()
                         }
                         _ => {
                             continue;
                         }
                     };
-                    markings.push(Marking::longitudinal(
+                    markings.push(RoadMarking::longitudinal(
                         separation,
                         kind,
                         [pair[0].lt, pair[1].lt],
@@ -151,9 +152,9 @@ impl StreetNetwork {
                         .expect("lane_centers to have the same length as lane_specs_ltr")
                         .shift_right(last_lane.width / 2.0)
                     {
-                        markings.push(Marking::longitudinal(
+                        markings.push(RoadMarking::longitudinal(
                             edge_line,
-                            LaneEdgeKind::edge(),
+                            LongitudinalLine::edge(),
                             [last_lane.lt, LaneType::Buffer(BufferType::Verge)],
                         ));
                     }
@@ -221,7 +222,7 @@ impl StreetNetwork {
                     // Add the vehicle line.
                     if let Some(dist) = stop_line.vehicle_distance {
                         if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
-                            markings.push(Marking::transverse(
+                            markings.push(RoadMarking::transverse(
                                 Line::must_new(
                                     pt.project_away(left_dist, angle.rotate_degs(90.0)),
                                     pt.project_away(right_dist, angle.rotate_degs(-90.0)),
@@ -234,7 +235,7 @@ impl StreetNetwork {
                     // Add the bike line, aka "Advanced Stop Line".
                     if let Some(dist) = stop_line.bike_distance {
                         if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
-                            markings.push(Marking::transverse(
+                            markings.push(RoadMarking::transverse(
                                 Line::must_new(
                                     pt.project_away(left_dist, angle.rotate_degs(90.0)),
                                     pt.project_away(right_dist, angle.rotate_degs(-90.0)),
@@ -263,7 +264,7 @@ impl StreetNetwork {
                 let step_size = Distance::meters(20.0);
                 let buffer_ends = Distance::meters(5.0);
                 for (pt, rev_angle) in center.reversed().step_along(step_size, buffer_ends) {
-                    markings.push(Marking::turn_arrow(
+                    markings.push(RoadMarking::turn_arrow(
                         pt,
                         rev_angle.opposite(),
                         // TODO use lane.turn_restrictions
@@ -279,7 +280,7 @@ impl StreetNetwork {
                         buffer,
                         BufferType::FlexPosts | BufferType::JerseyBarrier | BufferType::Stripes
                     ) {
-                        markings.push(Marking::area(center.make_polygons(lane.width)))
+                        markings.push(RoadMarking::area(center.make_polygons(lane.width)))
                     }
                 }
             }
@@ -291,8 +292,8 @@ impl StreetNetwork {
     }
 
     pub fn calculate_paint_areas(&self) -> Vec<PaintArea> {
-        let markings = self.get_markings();
-        let mut areas: Vec<_> = markings.iter().flat_map(Marking::paint).collect();
+        let markings = self.calculate_markings();
+        let mut areas: Vec<_> = markings.iter().flat_map(RoadMarking::paint).collect();
 
         // Translate from map coords back to lonlat before returning.
         for paint in areas.iter_mut() {

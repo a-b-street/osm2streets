@@ -1,4 +1,4 @@
-use crate::{marking, marking::Marking};
+use crate::{marking, marking::RoadMarking};
 
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Distance, Line, PolyLine, Polygon, Pt2D, Ring};
@@ -48,13 +48,13 @@ trait Paint<T> {
     fn paint(&self, geometry: &T) -> Vec<PaintArea>;
 }
 
-impl Marking {
+impl RoadMarking {
     pub fn paint(&self) -> Vec<PaintArea> {
         match self {
-            Marking::Longitudinal(g, m) => m.paint(g),
-            Marking::Transverse(g, m) => m.paint(g),
-            Marking::Symbol(g0, g1, m) => m.paint(&(*g0, *g1)),
-            Marking::Area(g, m) => m.paint(g),
+            RoadMarking::Longitudinal(g, m) => m.paint(g),
+            RoadMarking::Transverse(g, m) => m.paint(g),
+            RoadMarking::Symbol(g0, g1, m) => m.paint(&(*g0, *g1)),
+            RoadMarking::Area(g, m) => m.paint(g),
         }
     }
 }
@@ -74,7 +74,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
         let mut rings: Vec<Ring> = Vec::new();
 
         match self.kind {
-            marking::LaneEdgeKind::OncomingSeparation {
+            marking::LongitudinalLine::Dividing {
                 overtake_left,
                 overtake_right,
             } => match self.lanes.map(|x| x.to_traffic_mode()) {
@@ -121,7 +121,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
                 }
                 _ => {}
             },
-            marking::LaneEdgeKind::LaneSeparation {
+            marking::LongitudinalLine::Lane {
                 merge_left,
                 merge_right,
             } => match self.lanes.map(|x| x.to_traffic_mode()) {
@@ -143,13 +143,22 @@ impl Paint<PolyLine> for marking::Longitudinal {
                 }
                 _ => {}
             },
-            marking::LaneEdgeKind::RoadEdge => {
+            marking::LongitudinalLine::Edge => {
                 rings.push(separator.make_polygons(LINE_WIDTH).into_outer_ring())
             }
-            marking::LaneEdgeKind::Continuity => {
+            marking::LongitudinalLine::Continuity => {
                 rings.append(
                     &mut separator
                         .dashed_lines(LINE_WIDTH, DASH_LENGTH_SHORT, DASH_GAP_SHORT)
+                        .into_iter()
+                        .map(|x| x.into_outer_ring())
+                        .collect(),
+                );
+            }
+            marking::LongitudinalLine::Turn => {
+                rings.append(
+                    &mut separator
+                        .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_SHORT)
                         .into_iter()
                         .map(|x| x.into_outer_ring())
                         .collect(),

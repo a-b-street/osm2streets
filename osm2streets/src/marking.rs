@@ -1,39 +1,55 @@
+//! Semantic definitions of the road markings used to control traffic.
+//!
+//! These types describe the *meaning* of the markings, in a locale-independent way, not necessarily
+//! how they look. See [`crate::paint`] for generating locale-dependant renderings of these markings.
+//!
+//! This initial version of these types is based on, and takes its nomenclature from, the Australian
+//! Manual of Uniform Traffic Control Devices (MUTCD). As such, the distinctions between different
+//! kinds of markings that are represented as variants are tailored to support the marking scheme
+//! used in Australia, not necessarily in other parts of the world. The intention is to expand these
+//! definitions so that they can distinguish all the distinct situations that OSM represents around
+//! the world that have distinct markings in one of the supported locales.
+
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
 
 use crate::lanes::TrafficMode;
-use crate::marking::Area::OutOfBounds;
 use crate::LaneType;
 
-pub enum Marking {
-    /// Lines along a lane.
+/// A marking painted on the road surface to direct traffic.
+pub enum RoadMarking {
+    /// Markings along a lane.
     Longitudinal(PolyLine, Longitudinal),
-    /// Lines across a lane.
+    /// Markings across one or more lanes.
     Transverse(Line, Transverse),
-    /// Iconic or textual symbols displayed at some angle.
+    /// Symbolic markings, iconic or textual, oriented at a given angle.
     Symbol(Pt2D, Angle, Symbol),
-    /// Designated areas, like buffers, painted medians, keep clear, etc.
+    /// Area markings.
+    // TODO: Add an optional center line for orienting certain features, such as medians and "splayed approaches".
     Area(Polygon, Area),
 }
 
 pub struct Longitudinal {
-    pub kind: LaneEdgeKind,
-    /// The two lanes, ltr.
+    pub kind: LongitudinalLine,
+    /// The two lanes, ltr. At least one will be a traffic lane, and the other might be a buffer.
     pub lanes: [LaneType; 2],
 }
 
-pub enum LaneEdgeKind {
-    OncomingSeparation {
+pub enum LongitudinalLine {
+    /// A line separating opposing directions of traffic.
+    Dividing {
         overtake_left: bool,
         overtake_right: bool,
     },
-    LaneSeparation {
-        merge_left: bool,
-        merge_right: bool,
-    },
-    RoadEdge,
-    /// Longitudinal marking that is interrupted by other traffic.
+    /// A line separating lanes of traffic travelling in the same direction.
+    Lane { merge_left: bool, merge_right: bool },
+    /// A line at the edge of a lane that is also the edge of the road.
+    Edge,
+    /// A line at the edge of a lane that is intended to be crossed by other traffic crossing,
+    /// entering or exiting the lane.
     Continuity,
+    /// A line guiding traffic turning through an intersection.
+    Turn,
 }
 
 #[derive(Clone, Copy)]
@@ -43,11 +59,14 @@ pub enum Transverse {
 }
 
 pub enum Symbol {
+    /// A marking indicating a mode of traffic that is allowed.
     TrafficMode(TrafficMode),
+    /// A marking indicating which turns may be performed.
     TurnArrow(TurnDirections),
 }
 
-// TODO move to lanes/mod.rs
+/// A set of turn directions that are allowed.
+// TODO: move to lanes/mod.rs
 pub struct TurnDirections {
     through: bool,
     left: bool,
@@ -75,41 +94,41 @@ pub enum Area {
     // KeepClear,
 }
 
-impl Marking {
-    pub fn longitudinal(geometry: PolyLine, kind: LaneEdgeKind, lanes: [LaneType; 2]) -> Self {
-        Marking::Longitudinal(geometry, Longitudinal { kind, lanes })
+impl RoadMarking {
+    pub fn longitudinal(geometry: PolyLine, kind: LongitudinalLine, lanes: [LaneType; 2]) -> Self {
+        RoadMarking::Longitudinal(geometry, Longitudinal { kind, lanes })
     }
 
     pub fn transverse(geometry: Line, kind: Transverse) -> Self {
-        Marking::Transverse(geometry, kind)
+        RoadMarking::Transverse(geometry, kind)
     }
 
     pub fn turn_arrow(geometry: Pt2D, angle: Angle, turns: TurnDirections) -> Self {
-        Marking::Symbol(geometry, angle, Symbol::TurnArrow(turns))
+        RoadMarking::Symbol(geometry, angle, Symbol::TurnArrow(turns))
     }
 
     pub fn area(geometry: Polygon) -> Self {
-        Marking::Area(geometry, OutOfBounds)
+        RoadMarking::Area(geometry, Area::OutOfBounds)
     }
 }
 
-impl LaneEdgeKind {
-    pub fn oncoming(overtake_left: bool, overtake_right: bool) -> Self {
-        LaneEdgeKind::OncomingSeparation {
+impl LongitudinalLine {
+    pub fn dividing(overtake_left: bool, overtake_right: bool) -> Self {
+        LongitudinalLine::Dividing {
             overtake_left,
             overtake_right,
         }
     }
-    pub fn separation(merge_left: bool, merge_right: bool) -> Self {
-        LaneEdgeKind::LaneSeparation {
+    pub fn lane(merge_left: bool, merge_right: bool) -> Self {
+        LongitudinalLine::Lane {
             merge_left,
             merge_right,
         }
     }
     pub fn edge() -> Self {
-        LaneEdgeKind::RoadEdge
+        LongitudinalLine::Edge
     }
     pub fn continuity() -> Self {
-        LaneEdgeKind::Continuity
+        LongitudinalLine::Continuity
     }
 }
