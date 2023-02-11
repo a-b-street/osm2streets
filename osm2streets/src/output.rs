@@ -16,7 +16,7 @@ pub struct Surface {
 
 impl StreetNetwork {
     /// Generates polygons covering the road, cycle and footpath areas.
-    pub fn get_surfaces(&self) -> Vec<Surface> {
+    pub fn calculate_surfaces(&self) -> Vec<Surface> {
         let mut output = Vec::new();
 
         // Add polygons for road surfaces.
@@ -75,7 +75,7 @@ impl StreetNetwork {
     // TODO get_designations -> Vec<Designation> {...} // travel areas, parking, etc.
 
     /// Generate markings, described semantically.
-    pub fn get_markings(&self) -> Vec<Marking> {
+    pub fn calculate_markings(&self) -> Vec<Marking> {
         let mut markings = Vec::new();
 
         for road in self.roads.values() {
@@ -290,7 +290,7 @@ impl StreetNetwork {
         markings
     }
 
-    pub fn get_paint_areas(&self) -> Vec<PaintArea> {
+    pub fn calculate_paint_areas(&self) -> Vec<PaintArea> {
         let markings = self.get_markings();
         let mut areas: Vec<_> = markings.iter().flat_map(Marking::paint).collect();
 
