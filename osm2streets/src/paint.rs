@@ -198,21 +198,53 @@ impl Paint<(Pt2D, Angle)> for marking::Symbol {
     fn paint(&self, &(pt, a): &(Pt2D, Angle)) -> Vec<PaintArea> {
         match self {
             marking::Symbol::TurnArrow(directions) => {
-                // TODO draw the specified direction
-                let arrow_len = Distance::meters(1.75);
-                let thickness = LINE_WIDTH_THICK;
-                let arrow = PolyLine::must_new(vec![
-                    pt.project_away(arrow_len / 2.0, a.opposite()),
-                    pt.project_away(arrow_len / 2.0, a),
-                ])
-                .make_arrow(thickness * 2.0, geom::ArrowCap::Triangle);
-                vec![PaintArea::white(arrow.into_outer_ring())]
+                if directions.is_empty() {
+                    // Draw the outline of an arrow to show the driving direction.
+                    let arrow_len = Distance::meters(2.0);
+                    let thickness = LINE_WIDTH_THICK;
+                    let arrow = PolyLine::must_new(vec![
+                        pt.project_away(arrow_len / 2.0, a.opposite()),
+                        pt.project_away(arrow_len / 2.0, a),
+                    ])
+                    .dashed_arrow(
+                        thickness,
+                        thickness * 2.0,
+                        thickness * 0.8,
+                        geom::ArrowCap::Triangle,
+                    );
+                    arrow
+                        .into_iter()
+                        .map(|p| PaintArea::white(p.into_outer_ring()))
+                        .collect()
+                } else {
+                    directions
+                        .iter()
+                        .map(|dir| {
+                            PaintArea::white(angled_arrow(pt, a, dir.turn_angle(), !dir.is_merge()))
+                        })
+                        .collect()
+                }
             }
             _ => {
                 todo!()
             }
         }
     }
+}
+
+fn angled_arrow(pt: Pt2D, base_angle: Angle, turn_angle: Angle, kinked: bool) -> Ring {
+    let arrow_len = Distance::meters(2.0);
+    let thickness = LINE_WIDTH_THICK;
+
+    let mut points = vec![pt.project_away(arrow_len / 2.0, base_angle.opposite())];
+    if kinked {
+        points.push(pt)
+    }
+    points.push(pt.project_away(arrow_len / 2.0, base_angle + turn_angle));
+
+    PolyLine::must_new(points)
+        .make_arrow(thickness, geom::ArrowCap::Triangle)
+        .into_outer_ring()
 }
 
 impl Paint<Polygon> for marking::Area {

@@ -1,10 +1,30 @@
 use anyhow::Result;
 use enumset::EnumSet;
+use geom::Angle;
 
 use super::{TurnDirection, TurnDirection::*};
 
 impl TurnDirection {
-    pub fn tag_value(self) -> &'static str {
+    pub fn turn_angle(&self) -> Angle {
+        match self {
+            Through => Angle::degrees(0.),
+            SlightRight => Angle::degrees(45.),
+            SlightLeft => Angle::degrees(-45.),
+            MergeRight => Angle::degrees(45.),
+            MergeLeft => Angle::degrees(-45.),
+            Right => Angle::degrees(90.),
+            Left => Angle::degrees(-90.),
+            SharpRight => Angle::degrees(135.),
+            SharpLeft => Angle::degrees(-135.),
+            Reverse => Angle::degrees(180.),
+        }
+    }
+
+    pub fn is_merge(&self) -> bool {
+        matches!(self, MergeLeft | MergeRight)
+    }
+
+    pub fn tag_value(&self) -> &'static str {
         match self {
             Through => "through",
             Left => "left",
