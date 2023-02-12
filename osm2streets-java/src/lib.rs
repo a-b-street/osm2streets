@@ -51,7 +51,7 @@ pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getSurfaces(
     // Calculate the road surface.
     let inner_pointer = env.get_field(j_self, "pointer", "J").unwrap();
     let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
-    let surfaces = streets.inner.get_surfaces();
+    let surfaces = streets.inner.calculate_surfaces();
 
     // Cache the JNI stuff for performance.
     let c_ArrayList = env.find_class("java/util/ArrayList").unwrap();
@@ -119,7 +119,7 @@ pub unsafe extern "system" fn Java_org_osm2streets_StreetNetwork_getPaintAreas(
     // Calculate the paint areas.
     let inner_pointer = env.get_field(j_self, "pointer", "J").unwrap();
     let streets = &mut *(inner_pointer.j().unwrap() as *mut StreetNetwork);
-    let paint_areas = streets.inner.get_paint_areas();
+    let paint_areas = streets.inner.calculate_paint_areas();
 
     // Cache the JNI stuff for performance.
     let c_ArrayList = env.find_class("java/util/ArrayList").unwrap();

@@ -1,37 +1,22 @@
 use itertools::Itertools;
 
-use crate::{Direction, LaneType, StreetNetwork};
+use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficInterruption};
 use geo::MapCoordsInPlace;
-use geom::{Distance, Line, PolyLine, Pt2D};
+use geom::{Distance, Line, Pt2D};
 
-use LaneType::*;
-use SurfaceMaterial::*;
+use crate::lanes::{RoadPosition, TrafficClass};
+use crate::marking::{LongitudinalLine, RoadMarking, Transverse, TurnDirections};
+use crate::paint::PaintArea;
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Surface {
     pub area: geo::Polygon,
     pub material: SurfaceMaterial,
 }
 
-pub struct PaintArea {
-    pub area: geo::Polygon,
-    pub color: PaintColor,
-}
-
-impl PaintArea {
-    pub fn new(area: geo::Polygon) -> Self {
-        Self {
-            area,
-            color: PaintColor::White,
-        }
-    }
-    pub fn with_color(area: geo::Polygon, color: PaintColor) -> Self {
-        Self { area, color }
-    }
-}
-
 impl StreetNetwork {
     /// Generates polygons covering the road, cycle and footpath areas.
-    pub fn get_surfaces(&self) -> Vec<Surface> {
+    pub fn calculate_surfaces(&self) -> Vec<Surface> {
         let mut output = Vec::new();
 
         // Add polygons for road surfaces.
@@ -87,54 +72,179 @@ impl StreetNetwork {
         output
     }
 
-    // TODO get_designations -> Vec<Designation> {...} // travel areas, parking, etc.
+    // TODO calculate_designations -> Vec<Designation> {...} // travel areas, parking, etc.
 
-    // TODO pub fn get_markings -> Vec<Marking> {...}
-
-    /// Generate painted areas.
-    pub fn get_paint_areas(&self) -> Vec<PaintArea> {
-        // TODO generate semantic markings first in get_markings, then render them into areas here.
-
-        let mut output = Vec::new();
+    /// Generate markings, described semantically.
+    pub fn calculate_markings(&self) -> Vec<RoadMarking> {
+        let mut markings = Vec::new();
 
         for road in self.roads.values() {
             // Always oriented in the direction of the road
             let mut lane_centers = road.get_lane_center_lines();
+            let guess_overtaking = match road.highway_type.as_str() {
+                "motorway" | "trunk" | "primary" => false,
+                _ => true,
+            };
 
+            // Add the left road edge.
+            if let Some(first_lane) = road.lane_specs_ltr.first() {
+                if matches!(
+                    first_lane.lt.traffic_class(),
+                    Some(TrafficClass::Bicycle) | Some(TrafficClass::Motor)
+                ) {
+                    if let Ok(edge_line) = lane_centers[0].shift_left(first_lane.width / 2.0) {
+                        markings.push(RoadMarking::longitudinal(
+                            edge_line,
+                            LongitudinalLine::edge(),
+                            [LaneType::Buffer(BufferType::Verge), first_lane.lt],
+                        ));
+                    }
+                }
+            }
+            // Add longitudinal markings between lanes.
             for (idx, pair) in road.lane_specs_ltr.windows(2).enumerate() {
-                // Generate a "center line" between lanes of different directions
-                if pair[0].dir != pair[1].dir {
-                    if let Ok(separator) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
-                        if let Ok(right_line) = separator.shift_right(Distance::centimeters(16)) {
-                            output.push(PaintArea::with_color(
-                                right_line.make_polygons(Distance::centimeters(16)).into(),
-                                PaintColor::Yellow,
-                            ));
+                if let Ok(separation) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
+                    let kind = match (pair[0].lt.traffic_class(), pair[1].lt.traffic_class()) {
+                        (Some(TrafficClass::Motor), Some(TrafficClass::Motor)) => {
+                            if pair[0].dir != pair[1].dir {
+                                LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
+                            } else {
+                                LongitudinalLine::lane(true, true)
+                            }
                         }
-                        if let Ok(left_line) = separator.shift_left(Distance::centimeters(16)) {
-                            output.push(PaintArea::with_color(
-                                left_line.make_polygons(Distance::centimeters(16)).into(),
-                                PaintColor::Yellow,
+                        (Some(TrafficClass::Motor), Some(TrafficClass::Bicycle))
+                        | (Some(TrafficClass::Bicycle), Some(TrafficClass::Motor)) => {
+                            // AU specifies the use of an "edge line" in this case...
+                            LongitudinalLine::lane(false, false)
+                        }
+                        (Some(TrafficClass::Motor), _) | (_, Some(TrafficClass::Motor)) => {
+                            LongitudinalLine::edge()
+                        }
+                        (Some(TrafficClass::Bicycle), Some(TrafficClass::Bicycle)) => {
+                            if pair[0].dir != pair[1].dir {
+                                LongitudinalLine::dividing(guess_overtaking, guess_overtaking)
+                            } else {
+                                LongitudinalLine::lane(true, true)
+                            }
+                        }
+                        (Some(TrafficClass::Bicycle), _) | (_, Some(TrafficClass::Bicycle)) => {
+                            LongitudinalLine::edge()
+                        }
+                        _ => {
+                            continue;
+                        }
+                    };
+                    markings.push(RoadMarking::longitudinal(
+                        separation,
+                        kind,
+                        [pair[0].lt, pair[1].lt],
+                    ));
+                }
+            }
+            // Add the right road edge.
+            if let Some(last_lane) = road.lane_specs_ltr.last() {
+                if matches!(
+                    last_lane.lt.traffic_class(),
+                    Some(TrafficClass::Bicycle) | Some(TrafficClass::Motor)
+                ) {
+                    if let Ok(edge_line) = lane_centers
+                        .last()
+                        .expect("lane_centers to have the same length as lane_specs_ltr")
+                        .shift_right(last_lane.width / 2.0)
+                    {
+                        markings.push(RoadMarking::longitudinal(
+                            edge_line,
+                            LongitudinalLine::edge(),
+                            [last_lane.lt, LaneType::Buffer(BufferType::Verge)],
+                        ));
+                    }
+                }
+            }
+
+            // Add stop and yield lines.
+            // While stop lines are measured against the reference line, we need the reference line
+            // offset. Not bothering to support complicated positioning yet.
+            let ref_offset = road.left_edge_offset_of(
+                if let Placement::Consistent(p) = road.reference_line_placement {
+                    p
+                } else {
+                    RoadPosition::Center
+                },
+                self.config.driving_side,
+            );
+            // Calculate the left edge offset of each lane to position the stop lines.
+            let mut dist_so_far = Distance::ZERO;
+            let lane_offsets = road.lane_specs_ltr.iter().map(|lane| {
+                let offset = dist_so_far;
+                dist_so_far += lane.width;
+                offset
+            });
+            // Generate one line per contiguous block of traffic lanes in the same direction.
+            for (dir, mut lanes_and_offsets) in road
+                .lane_specs_ltr
+                .iter()
+                .zip(lane_offsets)
+                .group_by(|(l, _)| {
+                    if l.lt.is_for_moving_vehicles() {
+                        Some(l.dir)
+                    } else {
+                        None
+                    }
+                })
+                .into_iter()
+            {
+                if let Some(dir) = dir {
+                    let stop_line = if dir == Direction::Fwd {
+                        &road.stop_line_end
+                    } else {
+                        &road.stop_line_start
+                    };
+
+                    let stop_kind = match stop_line.interruption {
+                        TrafficInterruption::Stop | TrafficInterruption::Signal => {
+                            Transverse::YieldLine
+                        }
+                        TrafficInterruption::Yield => Transverse::YieldLine,
+                        TrafficInterruption::Uninterrupted | TrafficInterruption::DeadEnd => {
+                            continue;
+                        }
+                    };
+
+                    // Calculate the distance from the ref_line to the left and right edge of the group.
+                    let (first_lane, first_offset) =
+                        lanes_and_offsets.next().expect("non-empty group");
+                    let (last_lane, last_offset) = lanes_and_offsets
+                        .last()
+                        .unwrap_or((first_lane, first_offset));
+                    let left_dist = first_offset - ref_offset;
+                    let right_dist = ref_offset - (last_offset + last_lane.width);
+
+                    // Add the vehicle line.
+                    if let Some(dist) = stop_line.vehicle_distance {
+                        if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
+                            markings.push(RoadMarking::transverse(
+                                Line::must_new(
+                                    pt.project_away(left_dist, angle.rotate_degs(90.0)),
+                                    pt.project_away(right_dist, angle.rotate_degs(-90.0)),
+                                ),
+                                stop_kind,
                             ));
                         }
                     }
-                    continue;
-                }
 
-                // Generate a "lane separator" between driving lanes only.
-                if pair[0].lt == LaneType::Driving && pair[1].lt == LaneType::Driving {
-                    if let Ok(between) = lane_centers[idx].shift_right(pair[0].width / 2.0) {
-                        for poly in between.dashed_lines(
-                            Distance::meters(0.16),
-                            Distance::meters(1.0),
-                            Distance::meters(1.5),
-                        ) {
-                            output.push(PaintArea::new(poly.into()));
+                    // Add the bike line, aka "Advanced Stop Line".
+                    if let Some(dist) = stop_line.bike_distance {
+                        if let Ok((pt, angle)) = road.reference_line.dist_along(dist) {
+                            markings.push(RoadMarking::transverse(
+                                Line::must_new(
+                                    pt.project_away(left_dist, angle.rotate_degs(90.0)),
+                                    pt.project_away(right_dist, angle.rotate_degs(-90.0)),
+                                ),
+                                stop_kind, // We could add another variant for this.
+                            ));
                         }
                     }
                 }
-
-                // TODO other cases
             }
 
             // The renderings that follow need lane centers to point in the direction of the lane.
@@ -145,75 +255,55 @@ impl StreetNetwork {
             }
 
             // Draw arrows along oneway roads.
-            if road.oneway_for_driving().is_some() {
-                for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
-                    if !lane.lt.is_for_moving_vehicles() {
-                        continue;
-                    }
-
-                    let step_size = Distance::meters(20.0);
-                    let buffer_ends = Distance::meters(5.0);
-                    let arrow_len = Distance::meters(1.75);
-                    let thickness = Distance::meters(0.16);
-                    for (pt, angle) in center.step_along(step_size, buffer_ends) {
-                        let arrow = PolyLine::must_new(vec![
-                            pt.project_away(arrow_len / 2.0, angle.opposite()),
-                            pt.project_away(arrow_len / 2.0, angle),
-                        ])
-                        .make_arrow(thickness * 2.0, geom::ArrowCap::Triangle);
-                        output.push(PaintArea::new(arrow.into()));
-                    }
-                }
-            }
-
-            // Add stripes to show buffers. Ignore the type of the buffer for now -- we need to
-            // decide all the types and how to render them.
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
-                if !matches!(lane.lt, LaneType::Buffer(_)) {
+                if !lane.lt.is_for_moving_vehicles() {
                     continue;
                 }
 
-                // Mark the sides of the lane clearly
-                let thickness = Distance::meters(0.16);
-                output.push(PaintArea::new(
-                    center
-                        .must_shift_right((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .into(),
-                ));
-                output.push(PaintArea::new(
-                    center
-                        .must_shift_left((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .into(),
-                ));
-
-                // Diagonal stripes along the lane
-                let step_size = Distance::meters(3.0);
+                // Add arrows along the lane, starting at the end.
+                let step_size = Distance::meters(20.0);
                 let buffer_ends = Distance::meters(5.0);
-                for (center, angle) in center.step_along(step_size, buffer_ends) {
-                    // Extend the stripes into the side lines
-                    let left =
-                        center.project_away(lane.width / 2.0 + thickness, angle.rotate_degs(45.0));
-                    let right = center.project_away(
-                        lane.width / 2.0 + thickness,
-                        angle.rotate_degs(45.0).opposite(),
-                    );
-                    output.push(PaintArea::new(
-                        Line::must_new(left, right).make_polygons(thickness).into(),
-                    ));
+                for (pt, rev_angle) in center.reversed().step_along(step_size, buffer_ends) {
+                    markings.push(RoadMarking::turn_arrow(
+                        pt,
+                        rev_angle.opposite(),
+                        // TODO use lane.turn_restrictions
+                        TurnDirections::through(),
+                    ))
+                }
+            }
+
+            // Add markings for painted buffers.
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if let LaneType::Buffer(buffer) = lane.lt {
+                    if matches!(
+                        buffer,
+                        BufferType::FlexPosts | BufferType::JerseyBarrier | BufferType::Stripes
+                    ) {
+                        markings.push(RoadMarking::area(center.make_polygons(lane.width)))
+                    }
                 }
             }
         }
 
-        // Translate from map coords back to latlon before returning.
-        for paint in output.iter_mut() {
+        // TODO intersection markings
+
+        markings
+    }
+
+    pub fn calculate_paint_areas(&self) -> Vec<PaintArea> {
+        let markings = self.calculate_markings();
+        let mut areas: Vec<_> = markings.iter().flat_map(RoadMarking::paint).collect();
+
+        // Translate from map coords back to lonlat before returning.
+        for paint in areas.iter_mut() {
             paint.area.map_coords_in_place(|c| {
                 let gps = Pt2D::new(c.x, c.y).to_gps(&self.gps_bounds);
                 (gps.x(), gps.y()).into()
             })
         }
-        output
+
+        areas
     }
 }
 
@@ -227,37 +317,23 @@ pub enum SurfaceMaterial {
 impl SurfaceMaterial {
     pub fn to_str(&self) -> &str {
         match self {
-            Asphalt => "asphalt",
-            FineAsphalt => "fine_asphalt",
-            Concrete => "concrete",
-        }
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum PaintColor {
-    White,
-    Yellow,
-}
-
-impl PaintColor {
-    pub fn to_str(&self) -> &str {
-        match self {
-            Self::White => "white",
-            Self::Yellow => "yellow",
+            Self::Asphalt => "asphalt",
+            Self::FineAsphalt => "fine_asphalt",
+            Self::Concrete => "concrete",
         }
     }
 }
 
 fn material_from_lane_type(lt: LaneType) -> Option<SurfaceMaterial> {
+    use LaneType::*;
     match lt {
-        Sidewalk | Footway => Some(Concrete),
+        Sidewalk | Footway => Some(SurfaceMaterial::Concrete),
 
         Driving | Parking | Shoulder | SharedLeftTurn | Construction | Buffer(_) | Bus => {
-            Some(Asphalt)
+            Some(SurfaceMaterial::Asphalt)
         }
 
-        Biking | SharedUse => Some(FineAsphalt),
+        Biking | SharedUse => Some(SurfaceMaterial::FineAsphalt),
 
         LightRail => None,
     }

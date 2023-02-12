@@ -594,7 +594,8 @@ fn osm_separation_type(x: &String) -> Option<BufferType> {
     match x.as_ref() {
         "bollard" | "vertical_panel" => Some(BufferType::FlexPosts),
         "kerb" | "separation_kerb" => Some(BufferType::Curb),
-        "grass_verge" | "planter" | "tree_row" => Some(BufferType::Planters),
+        "planter" | "tree_row" => Some(BufferType::Planters),
+        "grass_verge" => Some(BufferType::Verge),
         "guard_rail" | "jersey_barrier" | "railing" => Some(BufferType::JerseyBarrier),
         // TODO Make sure there's a parking lane on that side... also mapped? Any flex posts in
         // between?

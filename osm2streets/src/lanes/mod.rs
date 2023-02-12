@@ -51,6 +51,8 @@ pub enum BufferType {
     JerseyBarrier,
     /// A raised curb
     Curb,
+    /// Non-road surface, between the road and footpath or within a median.
+    Verge,
 }
 
 impl LaneType {
@@ -123,6 +125,7 @@ impl LaneType {
             LaneType::Construction => true,
             LaneType::LightRail => true, // FIXME only for trams
             LaneType::Buffer(BufferType::Curb) => false,
+            LaneType::Buffer(BufferType::Verge) => false,
             LaneType::Buffer(_) => true,
             LaneType::Footway => false,
             LaneType::SharedUse => false,
@@ -134,6 +137,19 @@ impl LaneType {
             self,
             LaneType::Sidewalk | LaneType::Shoulder | LaneType::Footway | LaneType::SharedUse
         )
+    }
+
+    /// The most significant class of traffic that travels in this lane.
+    // I don't know about parking lanes yet...
+    pub fn traffic_class(&self) -> Option<TrafficClass> {
+        use LaneType::*;
+        match self {
+            Footway | Sidewalk => Some(TrafficClass::Pedestrian),
+            SharedUse | Biking => Some(TrafficClass::Bicycle),
+            Bus | SharedLeftTurn | Driving => Some(TrafficClass::Motor),
+            LightRail => Some(TrafficClass::Rail),
+            Buffer(_) | Shoulder | Construction | Parking => None,
+        }
     }
 
     pub fn describe(self) -> &'static str {
@@ -152,6 +168,7 @@ impl LaneType {
             LaneType::Buffer(BufferType::Planters) => "planter barriers",
             LaneType::Buffer(BufferType::JerseyBarrier) => "a Jersey barrier",
             LaneType::Buffer(BufferType::Curb) => "a raised curb",
+            LaneType::Buffer(BufferType::Verge) => "a grassy verge",
             LaneType::Footway => "a footway",
             LaneType::SharedUse => "a shared-use walking/cycling path",
         }
@@ -173,6 +190,7 @@ impl LaneType {
             LaneType::Buffer(BufferType::Planters) => "planters",
             LaneType::Buffer(BufferType::JerseyBarrier) => "Jersey barrier",
             LaneType::Buffer(BufferType::Curb) => "curb",
+            LaneType::Buffer(BufferType::Verge) => "verge",
             LaneType::Footway => "footway",
             LaneType::SharedUse => "shared-use path",
         }
@@ -194,6 +212,7 @@ impl LaneType {
             "planters" => Some(LaneType::Buffer(BufferType::Planters)),
             "Jersey barrier" => Some(LaneType::Buffer(BufferType::JerseyBarrier)),
             "curb" => Some(LaneType::Buffer(BufferType::Curb)),
+            "verge" => Some(LaneType::Buffer(BufferType::Verge)),
             "footway" => Some(LaneType::Footway),
             "shared-use path" => Some(LaneType::SharedUse),
             _ => None,
@@ -316,6 +335,7 @@ impl LaneSpec {
                 vec![(Distance::meters(1.5), "default")]
             }
             LaneType::Buffer(BufferType::Curb) => vec![(Distance::meters(0.1), "default")],
+            LaneType::Buffer(BufferType::Verge) => vec![(Distance::meters(2.0), "default")],
             LaneType::Footway => vec![(Distance::meters(2.0), "default")],
             LaneType::SharedUse => vec![(Distance::meters(3.0), "default")],
         }
@@ -374,6 +394,22 @@ impl LaneSpec {
         }
     }
 }
+
+/// A broad categorisation of traffic by the kind of infrastructure it requires.
+///
+/// Look elsewhere for the "mode" of traffic, distinguishing busses, taxis, etc.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum TrafficClass {
+    /// Pedestrians, wheelchair users, etc.
+    Pedestrian,
+    /// Bicycles or similar small ridden vehicles.
+    Bicycle,
+    /// Licenced motor vehicles, including motorbikes, cars, busses and trucks.
+    Motor,
+    /// Trains and trams that run on rails.
+    Rail,
+}
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Direction {
     Fwd,
