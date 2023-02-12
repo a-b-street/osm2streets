@@ -202,7 +202,7 @@ impl StreetNetwork {
 
                     let stop_kind = match stop_line.interruption {
                         TrafficInterruption::Stop | TrafficInterruption::Signal => {
-                            Transverse::YieldLine
+                            Transverse::StopLine
                         }
                         TrafficInterruption::Yield => Transverse::YieldLine,
                         TrafficInterruption::Uninterrupted | TrafficInterruption::DeadEnd => {
