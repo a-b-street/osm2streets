@@ -3,6 +3,7 @@ use std::iter;
 use abstutil::Tags;
 use geom::Distance;
 
+use crate::lanes::TurnDirection;
 use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig};
 
 /// Purely from OSM tags, determine the lanes that a road segment has. This is the "classic"
@@ -77,7 +78,7 @@ fn fwd(lt: LaneType) -> LaneSpec {
         dir: Direction::Fwd,
         // Fill out later
         width: Distance::ZERO,
-        turn_restrictions: Vec::new(),
+        allowed_turns: Default::default(),
     }
 }
 fn back(lt: LaneType) -> LaneSpec {
@@ -85,7 +86,7 @@ fn back(lt: LaneType) -> LaneSpec {
         lt,
         dir: Direction::Back,
         width: Distance::ZERO,
-        turn_restrictions: Vec::new(),
+        allowed_turns: Default::default(),
     }
 }
 
@@ -575,12 +576,8 @@ fn apply_turn_restrictions(list: &mut Vec<LaneSpec>, value: &str) {
         let mut parts = parts.into_iter();
         for spec in list {
             if applicable(spec) {
-                spec.turn_restrictions = parts
-                    .next()
-                    .unwrap()
-                    .split(";")
-                    .map(|x| x.to_string())
-                    .collect();
+                spec.allowed_turns = TurnDirection::parse_set(parts.next().unwrap())
+                    .unwrap_or(enumset::EnumSet::all()); // Indicate an error by returning a silly value.
             }
         }
         assert!(parts.next().is_none());

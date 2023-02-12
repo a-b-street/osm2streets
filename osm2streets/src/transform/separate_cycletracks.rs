@@ -123,7 +123,7 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
         lt: LaneType::Buffer(BufferType::Planters),
         dir: Direction::Fwd,
         width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Planters)),
-        turn_restrictions: Vec::new(),
+        allowed_turns: Default::default(),
     };
 
     // For every main road segment corresponding to the cycleway, we need to insert these

@@ -61,7 +61,7 @@ impl InputRoad {
                 lt: crate::LaneType::Driving,
                 dir: crate::Direction::Fwd,
                 width: self.total_width,
-                turn_restrictions: Vec::new(),
+                allowed_turns: Default::default(),
             }],
             // Mostly dummy values, except for what selfEdge::calculate needs
             osm_ids: Vec::new(),

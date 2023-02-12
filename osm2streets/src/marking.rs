@@ -13,7 +13,7 @@
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
 
-use crate::lanes::TrafficClass;
+use crate::lanes::{TrafficClass, TurnDirections};
 use crate::LaneType;
 
 /// A marking painted on the road surface to direct traffic.
@@ -63,29 +63,6 @@ pub enum Symbol {
     TrafficMode(TrafficClass),
     /// A marking indicating which turns may be performed.
     TurnArrow(TurnDirections),
-}
-
-/// A set of turn directions that are allowed.
-// TODO: move to lanes/mod.rs
-pub struct TurnDirections {
-    through: bool,
-    left: bool,
-    right: bool,
-    slight_left: bool,
-    slight_right: bool,
-    reverse: bool,
-}
-impl TurnDirections {
-    pub fn through() -> Self {
-        TurnDirections {
-            through: true,
-            left: false,
-            right: false,
-            slight_left: false,
-            slight_right: false,
-            reverse: false,
-        }
-    }
 }
 
 pub enum Area {

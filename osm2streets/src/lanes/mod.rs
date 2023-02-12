@@ -3,7 +3,9 @@ mod osm2lanes;
 mod placement;
 #[cfg(test)]
 mod tests;
+mod turns;
 
+use enumset::EnumSet;
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
@@ -262,10 +264,9 @@ pub struct LaneSpec {
     pub lt: LaneType,
     pub dir: Direction,
     pub width: Distance,
-    /// Turn indications specific to this lane, from
-    /// <https://wiki.openstreetmap.org/wiki/Key:turn>. Turns for specific vehicle types
-    /// (`turn:bus:lanes` and such) are not yet captured.
-    pub turn_restrictions: Vec<String>,
+    /// Turn restrictions for this lane. An empty set indicates no indicated restrictions (though
+    /// Turns for specific vehicle types (`turn:bus:lanes` and such) are not yet captured.
+    pub allowed_turns: EnumSet<TurnDirection>,
 }
 
 impl LaneSpec {
@@ -432,6 +433,23 @@ impl fmt::Display for Direction {
             Direction::Back => write!(f, "backwards"),
         }
     }
+}
+
+pub type TurnDirections = EnumSet<TurnDirection>;
+
+/// A turn direction as defined by <https://wiki.openstreetmap.org/wiki/Key:turn>.
+#[derive(Debug, enumset::EnumSetType)]
+pub enum TurnDirection {
+    Through,
+    Left,
+    Right,
+    SlightLeft,
+    SlightRight,
+    SharpLeft,
+    SharpRight,
+    MergeLeft,
+    MergeRight,
+    Reverse,
 }
 
 /// Refers to a lane by its left-to-right position among all lanes in that direction. Backward

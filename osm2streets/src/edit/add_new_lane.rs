@@ -101,7 +101,7 @@ impl LaneSpec {
                 lt,
                 dir,
                 width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
-                turn_restrictions: Vec::new(),
+                allowed_turns: Default::default(),
             },
         );
         idx
