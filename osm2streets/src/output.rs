@@ -5,7 +5,7 @@ use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
 use crate::lanes::{RoadPosition, TrafficClass};
-use crate::marking::{LongitudinalLine, RoadMarking, Transverse, TurnDirections};
+use crate::marking::{LongitudinalLine, RoadMarking, Transverse};
 use crate::paint::PaintArea;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -267,8 +267,7 @@ impl StreetNetwork {
                     markings.push(RoadMarking::turn_arrow(
                         pt,
                         rev_angle.opposite(),
-                        // TODO use lane.turn_restrictions
-                        TurnDirections::through(),
+                        lane.allowed_turns.clone(),
                     ))
                 }
             }

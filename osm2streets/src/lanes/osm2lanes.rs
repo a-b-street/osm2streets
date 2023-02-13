@@ -17,7 +17,7 @@ pub fn get_lane_specs_ltr_experimental(orig_tags: &Tags, cfg: &MapConfig) -> Vec
             lt: LaneType::LightRail,
             dir: Direction::Fwd,
             width: LaneSpec::typical_lane_width(LaneType::LightRail),
-            turn_restrictions: Vec::new(),
+            allowed_turns: Default::default(),
         }];
     }
 
@@ -33,7 +33,7 @@ pub fn get_lane_specs_ltr_experimental(orig_tags: &Tags, cfg: &MapConfig) -> Vec
                 lt: LaneType::Driving,
                 dir: Direction::Fwd,
                 width: Distance::meters(1.0),
-                turn_restrictions: Vec::new(),
+                allowed_turns: Default::default(),
             }]
         }
     }
@@ -205,7 +205,7 @@ fn transform_lane(
             lt,
             dir,
             width,
-            turn_restrictions: Vec::new(),
+            allowed_turns: Default::default(),
         }])
     };
 
@@ -283,13 +283,13 @@ fn bidirectional_lane(lt: LaneType, total_width: Distance, cfg: &MapConfig) -> V
             lt,
             dir: dir1,
             width: total_width / 2.0,
-            turn_restrictions: Vec::new(),
+            allowed_turns: Default::default(),
         },
         LaneSpec {
             lt,
             dir: dir2,
             width: total_width / 2.0,
-            turn_restrictions: Vec::new(),
+            allowed_turns: Default::default(),
         },
     ]
 }

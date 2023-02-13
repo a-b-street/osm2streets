@@ -10,10 +10,11 @@
 //! definitions so that they can distinguish all the distinct situations that OSM represents around
 //! the world that have distinct markings in one of the supported locales.
 
+use enumset::EnumSet;
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
 
-use crate::lanes::TrafficClass;
+use crate::lanes::{TrafficClass, TurnDirection};
 use crate::LaneType;
 
 /// A marking painted on the road surface to direct traffic.
@@ -62,30 +63,7 @@ pub enum Symbol {
     /// A marking indicating a mode of traffic that is allowed.
     TrafficMode(TrafficClass),
     /// A marking indicating which turns may be performed.
-    TurnArrow(TurnDirections),
-}
-
-/// A set of turn directions that are allowed.
-// TODO: move to lanes/mod.rs
-pub struct TurnDirections {
-    through: bool,
-    left: bool,
-    right: bool,
-    slight_left: bool,
-    slight_right: bool,
-    reverse: bool,
-}
-impl TurnDirections {
-    pub fn through() -> Self {
-        TurnDirections {
-            through: true,
-            left: false,
-            right: false,
-            slight_left: false,
-            slight_right: false,
-            reverse: false,
-        }
-    }
+    TurnArrow(EnumSet<TurnDirection>),
 }
 
 pub enum Area {
@@ -103,7 +81,7 @@ impl RoadMarking {
         RoadMarking::Transverse(geometry, kind)
     }
 
-    pub fn turn_arrow(geometry: Pt2D, angle: Angle, turns: TurnDirections) -> Self {
+    pub fn turn_arrow(geometry: Pt2D, angle: Angle, turns: EnumSet<TurnDirection>) -> Self {
         RoadMarking::Symbol(geometry, angle, Symbol::TurnArrow(turns))
     }
 

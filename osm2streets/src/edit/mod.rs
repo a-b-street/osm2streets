@@ -26,7 +26,7 @@ impl LaneSpec {
                 },
                 // Dummy
                 width: Distance::ZERO,
-                turn_restrictions: Vec::new(),
+                allowed_turns: Default::default(),
             })
             .collect()
     }

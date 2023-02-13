@@ -106,12 +106,11 @@ impl StreetNetwork {
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),
                         (
-                            "turn_restrictions",
+                            "allowed_turns",
                             serde_json::Value::Array(
-                                lane.turn_restrictions
+                                lane.allowed_turns
                                     .iter()
-                                    .cloned()
-                                    .map(|x| x.into())
+                                    .map(|d| d.tag_value().into())
                                     .collect(),
                             ),
                         ),
