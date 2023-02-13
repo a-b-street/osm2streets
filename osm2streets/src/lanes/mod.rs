@@ -5,7 +5,7 @@ mod placement;
 mod tests;
 mod turns;
 
-use enumset::EnumSet;
+use enumset::{EnumSet, EnumSetType};
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
@@ -264,7 +264,8 @@ pub struct LaneSpec {
     pub lt: LaneType,
     pub dir: Direction,
     pub width: Distance,
-    /// Turn restrictions for this lane. An empty set indicates no indicated restrictions (though
+    /// Turn restrictions for this lane. An empty set represents that no restrictions are indicated
+    /// (though local rules might still dictate restrictions).
     /// Turns for specific vehicle types (`turn:bus:lanes` and such) are not yet captured.
     pub allowed_turns: EnumSet<TurnDirection>,
 }
@@ -435,20 +436,23 @@ impl fmt::Display for Direction {
     }
 }
 
-pub type TurnDirections = EnumSet<TurnDirection>;
-
 /// A turn direction as defined by <https://wiki.openstreetmap.org/wiki/Key:turn>.
-#[derive(Debug, enumset::EnumSetType)]
+#[derive(Debug, EnumSetType)]
 pub enum TurnDirection {
     Through,
     Left,
     Right,
+    /// A turn to the left of less than 90 degrees. Not to be confused with a merge or a highway exit.
     SlightLeft,
+    /// A turn to the right of less than 90 degrees. Not to be confused with a merge or a highway exit.
     SlightRight,
     SharpLeft,
     SharpRight,
+    /// A merge one lane to the left, or a highway exit on the left.
     MergeLeft,
+    /// A merge one lane to the right, or a highway exit on the right.
     MergeRight,
+    /// A full 180 degree turn, aka a U-turn.
     Reverse,
 }
 
