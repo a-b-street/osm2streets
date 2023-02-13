@@ -208,8 +208,8 @@ impl Paint<(Pt2D, Angle)> for marking::Symbol {
                     ])
                     .dashed_arrow(
                         thickness,
-                        thickness * 2.0,
-                        thickness * 0.8,
+                        Distance::meters(0.5),
+                        Distance::meters(0.25),
                         geom::ArrowCap::Triangle,
                     );
                     arrow
