@@ -1,4 +1,4 @@
-use crate::StreetNetwork;
+use crate::{StreetNetwork, Turn};
 
 impl StreetNetwork {
     /// Validates various things are true about the StreetNetwork, panicking if not.
@@ -33,18 +33,18 @@ impl StreetNetwork {
                 );
             }
 
-            for (r1, r2) in &i.movements {
+            for Turn { from, to, .. } in &i.turns {
                 assert!(
-                    i.roads.contains(r1),
-                    "{} has a movement for the wrong road {}",
+                    i.roads.contains(from),
+                    "{} has a turn for the wrong road {}",
                     i.describe(),
-                    r1
+                    from
                 );
                 assert!(
-                    i.roads.contains(r2),
-                    "{} has a movement for the wrong road {}",
+                    i.roads.contains(to),
+                    "{} has a turn for the wrong road {}",
                     i.describe(),
-                    r2
+                    to
                 );
             }
         }

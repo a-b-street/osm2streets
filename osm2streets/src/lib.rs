@@ -14,7 +14,7 @@ pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::ids::{CommonEndpoint, IntersectionID, LaneID, RoadID};
 pub use self::intersection::{
-    Intersection, IntersectionControl, IntersectionKind, Movement, TrafficConflict,
+    Intersection, IntersectionControl, IntersectionKind, Turn, TrafficConflict,
 };
 pub use self::lanes::{
     get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, Placement,

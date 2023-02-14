@@ -9,7 +9,7 @@ use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 use crate::road::RoadEdge;
 use crate::{
     DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneSpec, LaneType,
-    Movement, Road, StreetNetwork,
+    Road, RoadID, StreetNetwork, Turn,
 };
 
 impl StreetNetwork {
@@ -66,12 +66,12 @@ impl StreetNetwork {
                     ),
                     ("control", format!("{:?}", intersection.control).into()),
                     (
-                        "movements",
+                        "turns",
                         serde_json::Value::Array(
                             intersection
-                                .movements
+                                .turns
                                 .iter()
-                                .map(|(a, b)| format!("{a} -> {b}").into())
+                                .map(|Turn { from, to, .. }| format!("{from} -> {to}").into())
                                 .collect(),
                         ),
                     ),
@@ -304,8 +304,8 @@ impl StreetNetwork {
         Ok(output)
     }
 
-    fn movements_for_intersection(&self, i: IntersectionID) -> Vec<(Movement, Polygon)> {
-        // Each movement is represented as an arrow from the end of one road to the beginning of
+    fn turns_for_intersection(&self, i: IntersectionID) -> Vec<((RoadID, RoadID), Polygon)> {
+        // Each turn is represented as an arrow from the end of one road to the beginning of
         // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
         // the center to the appropriate driving side.
         let arrow_fwd_offset_dist = if self.config.driving_side == DrivingSide::Right {
@@ -345,11 +345,11 @@ impl StreetNetwork {
             .collect();
 
         let mut result = Vec::new();
-        for (a, b) in &self.intersections[&i].movements {
-            if a != b {
-                if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
+        for Turn { from, to, .. } in &self.intersections[&i].turns {
+            if from != to {
+                if let Ok(line) = Line::new(road_points[from].0, road_points[to].1) {
                     result.push((
-                        (*a, *b),
+                        (*from, *to),
                         line.to_polyline()
                             .make_arrow(Distance::meters(0.5), ArrowCap::Triangle),
                     ));
@@ -368,7 +368,7 @@ impl StreetNetwork {
         };
 
         let mut pairs = Vec::new();
-        for ((from, _), polygon) in self.movements_for_intersection(i) {
+        for ((from, _), polygon) in self.turns_for_intersection(i) {
             if from == road.id {
                 pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
             }
