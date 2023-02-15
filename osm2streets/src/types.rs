@@ -56,6 +56,12 @@ pub struct MapConfig {
     /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
     /// to set it.
     pub driving_side: DrivingSide,
+    /// The [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) where
+    /// this network exists. Note osm2streets doesn't support areas that cross country boundaries.
+    ///
+    /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
+    /// to set it.
+    pub country_code: String,
     pub bikes_can_use_bus_lanes: bool,
     /// If true, roads without explicitly tagged sidewalks may be assigned sidewalks or shoulders.
     /// If false, no inference will occur and separate sidewalks and crossings will be included.
@@ -79,6 +85,7 @@ impl MapConfig {
         Self {
             // Just a dummy value that'll be set later
             driving_side: DrivingSide::Right,
+            country_code: String::new(),
             bikes_can_use_bus_lanes: true,
             inferred_sidewalks: false,
             street_parking_spot_length: Distance::meters(8.0),

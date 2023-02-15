@@ -79,8 +79,15 @@ impl StreetNetwork {
             ));
         }
 
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
+        let mut geojson = geom::geometries_with_properties_to_geojson(pairs);
+        // Plumb along the country code, so this value shows up in unit tests
+        if let geojson::GeoJson::FeatureCollection(ref mut fc) = geojson {
+            fc.foreign_members = Some(make_props(&[(
+                "country_code",
+                self.config.country_code.clone().into(),
+            )]));
+        }
+        let output = serde_json::to_string_pretty(&geojson)?;
         Ok(output)
     }
 

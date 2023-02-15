@@ -19,3 +19,4 @@ osm-tag-schemes = { git = "https://github.com/a-b-street/osm2lanes" }
 petgraph = { version = "0.6.3" }
 serde = { workspace = true }
 serde_json = { workspace = true }
+geojson = "0.24.0"
