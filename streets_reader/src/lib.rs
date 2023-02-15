@@ -43,6 +43,24 @@ pub fn osm_to_street_network(
     Ok((streets, doc))
 }
 
+/// Set up country code and driving side, using an arbitrary point. This must be called after
+/// `gps_bounds` is set.
+pub fn detect_country_code(streets: &mut StreetNetwork) {
+    let geocoder = country_geocoder::CountryGeocoder::new();
+    let pt = streets.gps_bounds.get_rectangle()[0].into();
+
+    if let (Some(code), Some(left_handed)) = (geocoder.iso_a2(pt), geocoder.drives_on_left(pt)) {
+        streets.config.driving_side = if left_handed {
+            DrivingSide::Left
+        } else {
+            DrivingSide::Right
+        };
+        streets.config.country_code = code.to_string();
+    } else {
+        error!("detect_country_code failed -- {:?} didn't match to any country. Driving side may be wrong!", pt);
+    }
+}
+
 fn extract_osm(
     streets: &mut StreetNetwork,
     osm_xml_input: &str,
@@ -66,13 +84,7 @@ fn extract_osm(
         // No need to clip the Document in this case.
     }
 
-    // Calculate DrivingSide from some arbitrary point
-    streets.config.driving_side =
-        if driving_side::is_left_handed(streets.gps_bounds.get_rectangle()[0].into()) {
-            DrivingSide::Left
-        } else {
-            DrivingSide::Right
-        };
+    detect_country_code(streets);
 
     let mut out = OsmExtract::new();
 

@@ -192,6 +192,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "country-geocoder"
+version = "0.1.0"
+source = "git+https://github.com/a-b-street/country-geocoder#a71c0e3f925c4824b55cc90e8c0f234baf1ca285"
+dependencies = [
+ "geo",
+ "geojson",
+ "serde",
+]
+
+[[package]]
 name = "critical-section"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -235,15 +245,6 @@ dependencies = [
  "darling_core",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "driving-side"
-version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm2lanes#997d5ed09c4ec5775111d3dcd306d83aaf50696a"
-dependencies = [
- "geo",
- "geojson",
 ]
 
 [[package]]
@@ -777,6 +778,7 @@ dependencies = [
  "anyhow",
  "enumset",
  "geo",
+ "geojson",
  "geom",
  "itertools",
  "log",
@@ -1089,7 +1091,7 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
- "driving-side",
+ "country-geocoder",
  "geom",
  "log",
  "osm2streets",

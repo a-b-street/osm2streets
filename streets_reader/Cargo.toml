@@ -7,7 +7,7 @@ edition = "2021"
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
-driving-side = { git = "https://github.com/a-b-street/osm2lanes" }
+country-geocoder = { git = "https://github.com/a-b-street/country-geocoder" }
 geom = { git = "https://github.com/a-b-street/abstreet" }
 log = "0.4.14"
 osm2streets = { path = "../osm2streets" }
