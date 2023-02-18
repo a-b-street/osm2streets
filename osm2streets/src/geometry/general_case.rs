@@ -5,7 +5,7 @@ use geom::{InfiniteLine, PolyLine, Pt2D};
 
 use super::{polygon_from_corners, Results};
 use crate::road::RoadEdge;
-use crate::{InputRoad, RoadID};
+use crate::{CommonEndpoint, InputRoad, RoadID};
 
 /// Handles intersections with at least 3 roads.
 pub fn trim_to_corners(
@@ -16,10 +16,18 @@ pub fn trim_to_corners(
     // TODO Take Road instead of InputRoad to avoid this
     let mut sorted_roads = Vec::new();
     let mut orig_centers = BTreeMap::new();
+    let mut intersection_endpoints = BTreeMap::new();
     for id in &sorted_road_ids {
         let road = &roads[id];
         sorted_roads.push(road.to_road());
         orig_centers.insert(*id, road.center_line.clone());
+
+        // The input is untrimmed, so these are approximate locations where each intersection
+        // exists. We'll blindly overwrite the exact location based on arbitrary order -- since
+        // we're using center lines, not reference lines. This is fine; this is only used as a
+        // heuristic later.
+        intersection_endpoints.insert(road.src_i, road.center_line.first_pt());
+        intersection_endpoints.insert(road.dst_i, road.center_line.last_pt());
     }
 
     // Look at every adjacent pair of edges
@@ -41,6 +49,29 @@ pub fn trim_to_corners(
             // Fix upstream.
             if one.pl.last_pt() == two.pl.last_pt() {
                 pt = one.pl.last_pt();
+            }
+
+            // A special case happens when two roads share both endpoints, pointing in a loop. We
+            // may find a hit point on the wrong end, because there's no actual hit on the end
+            // we're currently looking.
+            let road1 = &roads[&one.road];
+            let road2 = &roads[&two.road];
+            if CommonEndpoint::new((road1.src_i, road1.dst_i), (road2.src_i, road2.dst_i))
+                == CommonEndpoint::Both
+            {
+                let other_i = if road1.src_i == results.intersection_id {
+                    road1.dst_i
+                } else {
+                    road1.src_i
+                };
+
+                let dist_to_this_intersection =
+                    intersection_endpoints[&results.intersection_id].dist_to(pt);
+                let dist_to_other_intersection = intersection_endpoints[&other_i].dist_to(pt);
+                if dist_to_other_intersection < dist_to_this_intersection {
+                    warn!("The collision between loop roads at {} looks like it's on the wrong side; skipping", results.intersection_id);
+                    continue;
+                }
             }
 
             // For both edges, project perpendicularly back to the original center, and trim back

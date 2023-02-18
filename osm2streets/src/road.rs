@@ -564,6 +564,9 @@ pub(crate) struct RoadEdge {
     /// Pointed into the intersection
     pub pl: PolyLine,
     pub lane: LaneSpec,
+    /// Which edge of a road? Note this is an abuse of DrivingSide; this just means the left or
+    /// right side
+    pub _side: DrivingSide,
 }
 
 impl RoadEdge {
@@ -578,12 +581,15 @@ impl RoadEdge {
                 road: road.id,
                 pl: road.center_line.must_shift_left(road.half_width()),
                 lane: road.lane_specs_ltr[0].clone(),
+                _side: DrivingSide::Left,
             };
             let mut right = RoadEdge {
                 road: road.id,
                 pl: road.center_line.must_shift_right(road.half_width()),
                 lane: road.lane_specs_ltr.last().unwrap().clone(),
+                _side: DrivingSide::Right,
             };
+            // TODO Think about loop roads (road.src_i == road.dst_i == i) carefully
             if road.dst_i == i {
                 edges.push(right);
                 edges.push(left);
