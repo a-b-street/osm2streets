@@ -93,6 +93,7 @@ pub struct Results {
     pub trim_ends: BTreeMap<RoadID, Distance>,
     /// Extra points with labels to debug the algorithm
     pub debug: Vec<(Pt2D, String)>,
+    pub debug_pl: Vec<(PolyLine, String)>,
 }
 
 /// Trims back all roads connected to the intersection, and generates a polygon for the
@@ -115,6 +116,7 @@ pub fn intersection_polygon(
         intersection_id,
         intersection_polygon: Polygon::dummy(),
         debug: Vec::new(),
+        debug_pl: Vec::new(),
         trimmed_center_pts: BTreeMap::new(),
         trim_starts: BTreeMap::new(),
         trim_ends: BTreeMap::new(),

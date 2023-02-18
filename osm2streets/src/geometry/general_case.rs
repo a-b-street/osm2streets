@@ -5,7 +5,7 @@ use geom::{InfiniteLine, PolyLine, Pt2D};
 
 use super::{polygon_from_corners, Results};
 use crate::road::RoadEdge;
-use crate::{InputRoad, RoadID};
+use crate::{InputRoad, RoadID, CommonEndpoint};
 
 /// Handles intersections with at least 3 roads.
 pub fn trim_to_corners(
@@ -16,10 +16,19 @@ pub fn trim_to_corners(
     // TODO Take Road instead of InputRoad to avoid this
     let mut sorted_roads = Vec::new();
     let mut orig_centers = BTreeMap::new();
+    let mut intersection_endpoints = BTreeMap::new();
     for id in &sorted_road_ids {
         let road = &roads[id];
         sorted_roads.push(road.to_road());
         orig_centers.insert(*id, road.center_line.clone());
+
+        if results.intersection_id.0 == 5 {
+            //info!("one of sorted input roads is {id}");
+        }
+
+        // What does overwriting mean?
+        intersection_endpoints.insert(road.src_i, road.center_line.first_pt());
+        intersection_endpoints.insert(road.dst_i, road.center_line.last_pt());
     }
 
     // Look at every adjacent pair of edges
@@ -41,6 +50,33 @@ pub fn trim_to_corners(
             // Fix upstream.
             if one.pl.last_pt() == two.pl.last_pt() {
                 pt = one.pl.last_pt();
+                error!("the weird case!!! {}, {}, {}", one.road, two.road, results.intersection_id);
+            }
+
+
+            // Do the roads form a loop?
+            if CommonEndpoint::new((roads[&one.road].src_i, roads[&one.road].dst_i), (roads[&two.road].src_i, roads[&two.road].dst_i)) == CommonEndpoint::Both {
+                let should_be_small = intersection_endpoints[&results.intersection_id].dist_to(pt);
+                // The other intersection
+                let other_i = if roads[&one.road].src_i == results.intersection_id {
+                    roads[&one.road].dst_i
+                } else {
+                    roads[&one.road].src_i
+                };
+                let should_be_large = intersection_endpoints[&other_i].dist_to(pt);
+
+                error!("WARNING! we have a loop. this side {should_be_small}, other side {should_be_large}");
+
+                // hit point closer to the wrong side
+                if should_be_small > should_be_large {
+                    continue;
+                }
+            }
+
+
+            results.debug.push((pt, format!("X from {} and {} at {}", one.road, two.road, results.intersection_id)));
+            if results.intersection_id.0 == 5 || results.intersection_id.0 == 9 {
+                info!("X from {} {:?} and {} {:?} at {}... {}", one.road, one.side, two.road, two.side, results.intersection_id, pt);
             }
 
             // For both edges, project perpendicularly back to the original center, and trim back
@@ -61,10 +97,20 @@ pub fn trim_to_corners(
                     for trim_to in all_intersection_infinite(&center_away, &perp) {
                         trim_candidates.extend(center_away.get_slice_starting_at(trim_to));
                     }
+
+                    if results.intersection_id.0 == 5 {
+                        //info!("btwn {} {:?} and {} {:?} for {}, we have trim candidates {:?}", one.road, one.side, two.road, two.side, side.road, trim_candidates.iter().map(|pl| pl.length()).collect::<Vec<_>>());
+                        for x in &trim_candidates {
+                            //results.debug_pl.push((x.clone(), "trimcan".to_string()));
+                        }
+                    }
+
+
                     // Find the candidate producing the minimal trim, aka, the hit closest to the
                     // intersection.
                     if let Some(mut trimmed) =
                         trim_candidates.into_iter().max_by_key(|pl| pl.length())
+                        //trim_candidates.into_iter().min_by_key(|pl| pl.first_pt().dist_to(pt))
                     {
                         // Every road has two sides, so we'll generate two potential trims. Take
                         // the shortest.
@@ -72,6 +118,9 @@ pub fn trim_to_corners(
                             // Don't forget to match orientation!
                             if roads[&side.road].dst_i == results.intersection_id {
                                 trimmed = trimmed.reversed();
+                            }
+                            if results.intersection_id.0 == 5 || results.intersection_id.0 == 9 {
+                                info!("trimming {} from {} to {}, due to hit btwn {} {:?} and {} {:?} at {}", side.road, roads[&side.road].center_line.length(), trimmed.length(), one.road, one.side, two.road, two.side, results.intersection_id);
                             }
                             roads.get_mut(&side.road).unwrap().center_line = trimmed;
                         }

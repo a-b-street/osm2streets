@@ -147,8 +147,10 @@ impl StreetNetwork {
     }
 
     pub(crate) fn start_debug_step<I: Into<String>>(&mut self, label: I) {
+        let label = label.into();
+        info!("debug step {label} ----------");
         let copy = DebugStreets {
-            label: label.into(),
+            label,
             streets: StreetNetwork {
                 roads: self.roads.clone(),
                 intersections: self.intersections.clone(),
@@ -191,6 +193,12 @@ impl StreetNetwork {
     pub(crate) fn debug_point<I: Into<String>>(&mut self, pt: Pt2D, label: I) {
         if let Some(step) = self.debug_steps.last_mut() {
             step.points.push((pt, label.into()));
+        }
+    }
+
+    pub(crate) fn debug_pl<I: Into<String>>(&mut self, pl: PolyLine, label: I) {
+        if let Some(step) = self.debug_steps.last_mut() {
+            step.polylines.push((pl, label.into()));
         }
     }
 }

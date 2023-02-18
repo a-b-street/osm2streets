@@ -564,6 +564,8 @@ pub(crate) struct RoadEdge {
     /// Pointed into the intersection
     pub pl: PolyLine,
     pub lane: LaneSpec,
+    // TODO abusing the type
+    pub side: DrivingSide,
 }
 
 impl RoadEdge {
@@ -578,13 +580,19 @@ impl RoadEdge {
                 road: road.id,
                 pl: road.center_line.must_shift_left(road.half_width()),
                 lane: road.lane_specs_ltr[0].clone(),
+                side: DrivingSide::Left,
             };
             let mut right = RoadEdge {
                 road: road.id,
                 pl: road.center_line.must_shift_right(road.half_width()),
                 lane: road.lane_specs_ltr.last().unwrap().clone(),
+                side: DrivingSide::Right,
             };
+            // TODO If road.src_i == road.dst_i == i, what happens?
             if road.dst_i == i {
+                if road.src_i == i {
+                    error!("!!!!!!! RoadEdge found road {}, loop on {}", road.id, i);
+                }
                 edges.push(right);
                 edges.push(left);
             } else {

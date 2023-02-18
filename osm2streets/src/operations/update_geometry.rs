@@ -27,6 +27,9 @@ impl StreetNetwork {
                 for (pt, label) in results.debug {
                     self.debug_point(pt, label);
                 }
+                for (pl, label) in results.debug_pl {
+                    self.debug_pl(pl, label);
+                }
             }
             Err(err) => {
                 error!("Can't make intersection geometry for {}: {}", i.id, err);
