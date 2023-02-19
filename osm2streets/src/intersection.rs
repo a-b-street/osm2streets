@@ -3,8 +3,7 @@ use std::collections::BTreeMap;
 use geom::{Circle, Distance, PolyLine, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
-use crate::lanes::LtrLaneNum;
-use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
+use crate::{movements, osm, DrivingSide, IntersectionID, LaneID, RoadID, StreetNetwork};
 use TrafficConflict::*;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -99,11 +98,11 @@ pub struct Turn {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TurnMovement {
     /// The lane of the "from" road that the movement starts in.
-    pub from: LtrLaneNum,
+    pub from: LaneID,
     /// The lane of the "to" road that the movement ends in.
-    pub to: LtrLaneNum,
+    pub to: LaneID,
     /// The path of travel.
-    pub center_line: PolyLine,
+    pub path: PolyLine,
 }
 
 impl Intersection {
@@ -218,11 +217,12 @@ impl StreetNetwork {
         intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
     }
 
-    /// Updates an intersection's derived properties -- geometry (and attached roads) and
+    /// Updates an intersection's derived properties -- geometry (and attached roads), turns and
     /// movements.
     pub fn update_i(&mut self, i: IntersectionID) {
         self.update_geometry(i);
         self.update_turns(i);
+        self.update_movements(i);
     }
 
     /// The kind and turns of a `MapEdge` are handled independently, so this method skips them.
@@ -316,6 +316,39 @@ impl StreetNetwork {
                 Cross => IntersectionKind::Intersection,
             },
         )
+    }
+
+    /// Calculates and fills in the turn movements for an intersection.
+    fn update_movements(&mut self, i: IntersectionID) {
+        let intersection = self.intersections.get_mut(&i).unwrap();
+
+        match intersection.kind {
+            IntersectionKind::Connection => {
+                for turn in intersection.turns.iter_mut() {
+                    let src_road = self.roads.get(&turn.from).unwrap();
+                    let src_end = src_road.end_of(i).unwrap();
+                    let dst_road = self.roads.get(&turn.to).unwrap();
+                    let dst_end = dst_road.end_of(i).unwrap();
+
+                    // 1. TODO If a connectivity relation exists, use that.
+
+                    if let Some(movements) =
+                        movements::from_placement((src_road, src_end), (dst_road, dst_end))
+                    {
+                        turn.movements = Some(movements);
+                    } else if let Some(movements) = movements::default(
+                        (src_road, src_end),
+                        (dst_road, dst_end),
+                        self.config.driving_side,
+                    ) {
+                        turn.movements = Some(movements);
+                    }
+                }
+            }
+            _ => {
+                // Not implemented yet
+            }
+        }
     }
 }
 

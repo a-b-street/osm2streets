@@ -6,6 +6,7 @@ use std::path::Path;
 use anyhow::Result;
 use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
 
+use crate::intersection::TurnMovement;
 use crate::road::RoadEdge;
 use crate::{
     DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneSpec, LaneType,
@@ -359,6 +360,25 @@ impl StreetNetwork {
         result
     }
 
+    /// Returns all movements that are defined for the intersection.
+    pub fn movements_for_intersection(
+        &self,
+        i: IntersectionID,
+    ) -> Vec<((LaneID, LaneID), Polygon)> {
+        let mut result = Vec::new();
+        for turn in &self.intersections[&i].turns {
+            if let Some(movements) = &turn.movements {
+                for TurnMovement { from, to, path, .. } in movements {
+                    result.push((
+                        (*from, *to),
+                        path.make_arrow(Distance::meters(0.3), ArrowCap::Triangle),
+                    ));
+                }
+            }
+        }
+        result
+    }
+
     pub fn debug_movements_from_lane_geojson(&self, id: LaneID) -> Result<String> {
         let road = &self.roads[&id.road];
         let i = if road.lane_specs_ltr[id.index].dir == Direction::Fwd {
@@ -368,9 +388,16 @@ impl StreetNetwork {
         };
 
         let mut pairs = Vec::new();
-        for ((from, _), polygon) in self.turns_for_intersection(i) {
-            if from == road.id {
+        for ((from, _), polygon) in self.movements_for_intersection(i) {
+            if from == id {
                 pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
+            }
+        }
+        if pairs.is_empty() {
+            for ((from, _), polygon) in self.turns_for_intersection(i) {
+                if from == road.id {
+                    pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
+                }
             }
         }
 
