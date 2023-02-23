@@ -2,18 +2,12 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 
-use crate::{
-    IntersectionControl, IntersectionID, IntersectionKind, RestrictionType, RoadID, StreetNetwork,
-};
+use crate::{IntersectionControl, IntersectionKind, RestrictionType, RoadID, StreetNetwork};
 
 impl StreetNetwork {
-    /// Collapses a road, merging the two intersections together. Returns (the surviving
-    /// intersection, the deleted intersection). (Note these will be the same when the road's a
-    /// loop.)
-    pub fn collapse_short_road(
-        &mut self,
-        short_r: RoadID,
-    ) -> Result<(IntersectionID, IntersectionID)> {
+    /// Collapses a road, merging the two intersections together. This may also delete other roads
+    /// connected two the merged intersection, if they become a loop on that intersection.
+    pub fn collapse_short_road(&mut self, short_r: RoadID) -> Result<()> {
         // Arbitrarily keep src_i and destroy dst_i.
         let (keep_i, destroy_i) = {
             let r = &self.roads[&short_r];
@@ -31,7 +25,7 @@ impl StreetNetwork {
         // to collapse this, all we need to do is remove it.
         if keep_i == destroy_i {
             self.remove_road(short_r);
-            return Ok((keep_i, keep_i));
+            return Ok(());
         }
 
         // Remember the original roads attached to each intersection before we merge.
@@ -86,6 +80,7 @@ impl StreetNetwork {
             self.intersections.get_mut(&keep_i).unwrap().roads.push(r);
 
             let road = self.roads.get_mut(&r).unwrap();
+            let loop_before = road.src_i == road.dst_i;
             if road.src_i == destroy_i.id {
                 road.src_i = keep_i;
             } else {
@@ -93,8 +88,13 @@ impl StreetNetwork {
                 road.dst_i = keep_i;
             }
             // Consider when two dual carriageways intersect. After collapsing 3 of the short
-            // roads, the last short road will wind up with src_i == dst_i. We could consider
-            // removing the road here, or revisiting the special case above of collapsing a loop.
+            // roads, the last short road will wind up with src_i == dst_i. It's easiest to remove
+            // the loop immediately.
+            let loop_after = road.src_i == road.dst_i;
+            if !loop_before && loop_after {
+                let r = road.id;
+                self.remove_road(r);
+            }
         }
 
         // We just connected a bunch of things to keep_i. Fix ordering and movements.
@@ -149,6 +149,6 @@ impl StreetNetwork {
             road.turn_restrictions.extend(add);
         }
 
-        Ok((keep_i, destroy_i.id))
+        Ok(())
     }
 }

@@ -119,7 +119,6 @@ digraph {
     32 -> 40 [ label = "3 lanes" ]
     35 -> 34 [ label = "1 lanes" ]
     39 -> 35 [ label = "1 lanes" ]
-    39 -> 39 [ label = "1 lanes" ]
     36 -> 39 [ label = "1 lanes" ]
     45 -> 36 [ label = "1 lanes" ]
     37 -> 45 [ label = "1 lanes" ]

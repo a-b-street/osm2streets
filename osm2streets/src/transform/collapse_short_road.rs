@@ -15,6 +15,9 @@ pub fn collapse_all_junction_roads(streets: &mut StreetNetwork) {
     while !queue.is_empty() {
         let id = queue.pop_front().unwrap();
         i += 1;
+        if !streets.roads.contains_key(&id) {
+            continue;
+        }
         streets.maybe_start_debug_step(format!("collapse road {i}"));
         streets.debug_road(id, "collapse");
         if let Err(err) = streets.collapse_short_road(id) {
