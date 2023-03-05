@@ -1,9 +1,13 @@
 use itertools::Itertools;
 
-use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficInterruption};
+use crate::{
+    BufferType, Direction, DrivingSide, LaneID, LaneSpec, LaneType, Placement, StreetNetwork,
+    TrafficInterruption,
+};
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
+use crate::intersection::Turn;
 use crate::lanes::{RoadPosition, TrafficClass};
 use crate::marking::{LongitudinalLine, RoadMarking, Transverse};
 use crate::paint::PaintArea;
@@ -161,6 +165,33 @@ impl StreetNetwork {
                 }
             }
 
+            // Lanes through intersections
+            for inter in self.intersections.values() {
+                for Turn { movements, .. } in &inter.turns {
+                    let Some(movements) = movements else { continue };
+                    for movement in movements {
+                        let lane: &LaneSpec = self.lane(movement.from).unwrap();
+                        let half_width = lane.width / 2.0; // TODO transition to movement.from lane
+                        let inside_offset = if self.config.driving_side == DrivingSide::Left {
+                            half_width
+                        } else {
+                            -half_width
+                        };
+
+                        // Draw turn markings on the inside edge of the lanes.
+                        // TODO Check TurnKind::{Lanes, Turn, Cross } for alternatives.
+                        markings.push(RoadMarking::longitudinal(
+                            movement
+                                .path
+                                .shift_either_direction(inside_offset)
+                                .unwrap_or_else(|_| movement.path.clone()),
+                            LongitudinalLine::Turn,
+                            [LaneType::Driving, LaneType::Driving], // TODO
+                        ));
+                    }
+                }
+            }
+
             // Add stop and yield lines.
             // While stop lines are measured against the reference line, we need the reference line
             // offset. Not bothering to support complicated positioning yet.
@@ -303,6 +334,10 @@ impl StreetNetwork {
         }
 
         areas
+    }
+
+    fn lane(&self, lane: LaneID) -> Option<&LaneSpec> {
+        self.roads.get(&lane.road)?.lane_specs_ltr.get(lane.index)
     }
 }
 

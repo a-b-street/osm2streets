@@ -83,7 +83,11 @@ impl Paint<PolyLine> for marking::Longitudinal {
                         if overtake_left {
                             rings.append(
                                 &mut right_line
-                                    .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
+                                    .exact_dashed_polygons(
+                                        LINE_WIDTH,
+                                        DASH_LENGTH_LONG,
+                                        DASH_GAP_LONG,
+                                    )
                                     .into_iter()
                                     .map(|x| x.into_outer_ring())
                                     .collect(),
@@ -96,7 +100,11 @@ impl Paint<PolyLine> for marking::Longitudinal {
                         if overtake_right {
                             rings.append(
                                 &mut left_line
-                                    .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
+                                    .exact_dashed_polygons(
+                                        LINE_WIDTH,
+                                        DASH_LENGTH_LONG,
+                                        DASH_GAP_LONG,
+                                    )
                                     .into_iter()
                                     .map(|x| x.into_outer_ring())
                                     .collect(),
@@ -110,7 +118,11 @@ impl Paint<PolyLine> for marking::Longitudinal {
                     if overtake_left || overtake_right {
                         rings.append(
                             &mut separator
-                                .dashed_lines(LINE_WIDTH_THIN, DASH_LENGTH_LONG, DASH_GAP_LONG)
+                                .exact_dashed_polygons(
+                                    LINE_WIDTH_THIN,
+                                    DASH_LENGTH_LONG,
+                                    DASH_GAP_LONG,
+                                )
                                 .into_iter()
                                 .map(|x| x.into_outer_ring())
                                 .collect(),
@@ -129,7 +141,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
                     if merge_left || merge_right {
                         rings.append(
                             &mut separator
-                                .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
+                                .exact_dashed_polygons(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_LONG)
                                 .into_iter()
                                 .map(|x| x.into_outer_ring())
                                 .collect(),
@@ -150,7 +162,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
             marking::LongitudinalLine::Continuity => {
                 rings.append(
                     &mut separator
-                        .dashed_lines(LINE_WIDTH, DASH_LENGTH_SHORT, DASH_GAP_SHORT)
+                        .exact_dashed_polygons(LINE_WIDTH, DASH_LENGTH_SHORT, DASH_GAP_SHORT)
                         .into_iter()
                         .map(|x| x.into_outer_ring())
                         .collect(),
@@ -159,7 +171,7 @@ impl Paint<PolyLine> for marking::Longitudinal {
             marking::LongitudinalLine::Turn => {
                 rings.append(
                     &mut separator
-                        .dashed_lines(LINE_WIDTH, DASH_LENGTH_LONG, DASH_GAP_SHORT)
+                        .exact_dashed_polygons(LINE_WIDTH, DASH_LENGTH_SHORT, DASH_GAP_SHORT / 2.0)
                         .into_iter()
                         .map(|x| x.into_outer_ring())
                         .collect(),
