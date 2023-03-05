@@ -25,7 +25,9 @@ pub fn split_up_roads(
     // road.
     let mut counts_per_pt = Counter::new();
     let mut pt_to_intersection_id: HashMap<HashablePt2D, IntersectionID> = HashMap::new();
+    timer.start_iter("look for common points", input.roads.len());
     for (_, pts, _) in &input.roads {
+        timer.next();
         for (idx, pt) in pts.iter().enumerate() {
             let hash_pt = pt.to_hashable();
             let count = counts_per_pt.inc(hash_pt);
@@ -117,7 +119,12 @@ pub fn split_up_roads(
 
     // Resolve simple turn restrictions (via a node)
     let mut restrictions = Vec::new();
+    timer.start_iter(
+        "resolve simple turn restrictions",
+        input.simple_turn_restrictions.len(),
+    );
     for (restriction, from_osm, via_osm, to_osm) in input.simple_turn_restrictions {
+        timer.next();
         // A via node might not be an intersection
         let via_id = if let Some(i) = streets
             .intersections
@@ -153,7 +160,12 @@ pub fn split_up_roads(
     // Resolve complicated turn restrictions (via a way). TODO Only handle via ways immediately
     // connected to both roads, for now
     let mut complicated_restrictions = Vec::new();
+    timer.start_iter(
+        "resolve complicated turn restrictions",
+        input.complicated_turn_restrictions.len(),
+    );
     for (rel_osm, from_osm, via_osm, to_osm) in input.complicated_turn_restrictions {
+        timer.next();
         let via_candidates: Vec<&Road> = streets
             .roads
             .values()
@@ -198,10 +210,14 @@ pub fn split_up_roads(
             .push((via, to));
     }
 
-    timer.start("match traffic signals to intersections");
+    timer.start_iter(
+        "match traffic signals to intersections",
+        input.traffic_signals.len(),
+    );
     // Handle traffic signals tagged on incoming ways and not at intersections
     // (https://wiki.openstreetmap.org/wiki/Tag:highway=traffic%20signals?uselang=en#Tag_all_incoming_ways).
     for (pt, dir) in input.traffic_signals {
+        timer.next();
         if let Some(r) = pt_to_road.get(&pt) {
             // The road might've crossed the boundary and been clipped
             if let Some(road) = streets.roads.get_mut(r) {
@@ -239,10 +255,11 @@ pub fn split_up_roads(
             }
         }
     }
-    timer.stop("match traffic signals to intersections");
 
     // Do the same for cycleway ASLs
+    timer.start_iter("match cycleway stop lines", input.cycleway_stop_lines.len());
     for (pt, dir) in input.cycleway_stop_lines {
+        timer.next();
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             if let Some(dir) = dir {
                 if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
@@ -267,7 +284,12 @@ pub fn split_up_roads(
         }
     }
 
+    timer.start_iter(
+        "match signalized crossings",
+        input.signalized_crossings.len(),
+    );
     for pt in input.signalized_crossings {
+        timer.next();
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
                 // We don't know the direction. Arbitrarily snap to the start or end if it's within
@@ -284,13 +306,16 @@ pub fn split_up_roads(
         }
     }
 
-    timer.start("calculate intersection geometry and movements");
     let intersection_ids: Vec<_> = streets.intersections.keys().cloned().collect();
+    timer.start_iter(
+        "calculate intersection geometry and movements",
+        intersection_ids.len(),
+    );
     for i in intersection_ids {
+        timer.next();
         streets.sort_roads(i);
         streets.update_i(i);
     }
-    timer.stop("calculate intersection geometry and movements");
 
     timer.stop("splitting up roads");
     pt_to_road
