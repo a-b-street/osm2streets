@@ -1,3 +1,4 @@
+use abstutil::Timer;
 use geom::{Distance, PolyLine, Polygon};
 
 use osm2streets::osm;
@@ -9,21 +10,28 @@ impl Document {
     // TODO This destroys the guarantee that the Document represents raw OSM. Do we need to be
     // careful with lane_editor? Since it just uses node IDs and we don't filter those, it should
     // be OK...
-    pub fn clip(&mut self, boundary_polygon: &Polygon) {
+    pub fn clip(&mut self, boundary_polygon: &Polygon, timer: &mut Timer) {
         // Remove all nodes that're out-of-bounds. Don't fix up ways and relations referring to
         // these.
-        self.nodes
-            .retain(|_, node| boundary_polygon.contains_pt(node.pt));
+        self.nodes =
+            timer.retain_parallelized("filter nodes", std::mem::take(&mut self.nodes), |node| {
+                boundary_polygon.contains_pt(node.pt)
+            });
 
         // Remove ways that have no nodes within bounds.
         // TODO If there's a way that geometrically crosses the boundary but only has nodes outside
         // it, this'll remove it. Is that desirable?
-        self.ways
-            .retain(|_, way| way.nodes.iter().any(|node| self.nodes.contains_key(node)));
+        self.ways =
+            timer.retain_parallelized("filter ways", std::mem::take(&mut self.ways), |way| {
+                way.nodes.iter().any(|node| self.nodes.contains_key(node))
+            });
 
         // For line-string ways (not areas), clip them to the boundary. way.pts and way.nodes
         // become out-of-sync.
+        // TODO Parallelize
+        timer.start_iter("clip ways", self.ways.len());
         for (id, way) in &mut self.ways {
+            timer.next();
             // Only clip roads. Areas need more work.
             if !way.tags.has_any(vec![osm::HIGHWAY, "railway"]) {
                 continue;
