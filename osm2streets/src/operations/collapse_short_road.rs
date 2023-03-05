@@ -8,6 +8,10 @@ impl StreetNetwork {
     /// Collapses a road, merging the two intersections together. This may also delete other roads
     /// connected two the merged intersection, if they become a loop on that intersection.
     pub fn collapse_short_road(&mut self, short_r: RoadID) -> Result<()> {
+        // complicated_turn_restrictions currently only handle one intermediate way, so we don't
+        // need to search very far for roads to repair later
+        let mut fix_turn_restrictions_near = self.find_nearby_roads(short_r, 3);
+
         // Arbitrarily keep src_i and destroy dst_i.
         let (keep_i, destroy_i) = {
             let r = &self.roads[&short_r];
@@ -35,28 +39,26 @@ impl StreetNetwork {
         connected_to_destroy_i.retain(|x| *x != short_r);
 
         // Retain some geometry...
-        {
-            let mut trim_roads_for_merging = BTreeMap::new();
-            for i in [keep_i, destroy_i] {
-                for road in self.roads_per_intersection(i) {
-                    // If we're going to delete this later, don't bother!
-                    if road.internal_junction_road {
-                        continue;
-                    }
+        let mut trim_roads_for_merging = BTreeMap::new();
+        for i in [keep_i, destroy_i] {
+            for road in self.roads_per_intersection(i) {
+                // If we're going to delete this later, don't bother!
+                if road.internal_junction_road {
+                    continue;
+                }
 
-                    if road.src_i == i {
-                        trim_roads_for_merging.insert((road.id, true), road.center_line.first_pt());
-                    } else {
-                        trim_roads_for_merging.insert((road.id, false), road.center_line.last_pt());
-                    }
+                if road.src_i == i {
+                    trim_roads_for_merging.insert((road.id, true), road.center_line.first_pt());
+                } else {
+                    trim_roads_for_merging.insert((road.id, false), road.center_line.last_pt());
                 }
             }
-            self.intersections
-                .get_mut(&keep_i)
-                .unwrap()
-                .trim_roads_for_merging
-                .extend(trim_roads_for_merging);
         }
+        self.intersections
+            .get_mut(&keep_i)
+            .unwrap()
+            .trim_roads_for_merging
+            .extend(trim_roads_for_merging);
 
         self.remove_road(short_r);
 
@@ -110,14 +112,17 @@ impl StreetNetwork {
         // [X] road we're deleting is the 'via' of a complicated restriction
         // [ ] road we're deleting has turn lanes that wind up orphaning something
 
-        // If we're deleting the target of a simple restriction somewhere, update it.
-        for road in self.roads.values_mut() {
+        fix_turn_restrictions_near.retain(|r| self.roads.contains_key(r));
+        for r in fix_turn_restrictions_near {
+            let road = self.roads.get_mut(&r).unwrap();
+
+            // Update simple restrictions
             let mut fix_trs = Vec::new();
             for (rt, to) in road.turn_restrictions.drain(..) {
                 if to == short_r && rt == RestrictionType::BanTurns {
                     // Remove this restriction, and replace it with a new one to each of the
-                    // successors of the deleted road. Depending if the intersection we kept is the
-                    // one connecting these two roads, the successors differ.
+                    // successors of the deleted road. Depending if the intersection we kept is
+                    // the one connecting these two roads, the successors differ.
                     if connected_to_keep_i.contains(&road.id) {
                         for x in &connected_to_destroy_i {
                             fix_trs.push((rt, *x));
@@ -132,11 +137,9 @@ impl StreetNetwork {
                 }
             }
             road.turn_restrictions = fix_trs;
-        }
 
-        // If we're deleting the 'via' of a complicated restriction somewhere, change it to a
-        // simple restriction.
-        for road in self.roads.values_mut() {
+            // If we're deleting the 'via' of a complicated restriction somewhere, change it to a
+            // simple restriction.
             let mut add = Vec::new();
             road.complicated_turn_restrictions.retain(|(via, to)| {
                 if *via == short_r {

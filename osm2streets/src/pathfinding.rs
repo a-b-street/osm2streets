@@ -1,3 +1,5 @@
+use std::collections::BTreeSet;
+
 use geom::Distance;
 use petgraph::graphmap::DiGraphMap;
 
@@ -64,5 +66,29 @@ impl StreetNetwork {
             .map(|pair| *graph.edge_weight(pair[0], pair[1]).unwrap())
             .collect();
         Some(roads)
+    }
+
+    /// Find all roads reachable from `start` up to `rounds` hops away
+    pub fn find_nearby_roads(&self, start: RoadID, rounds: usize) -> BTreeSet<RoadID> {
+        let mut found = BTreeSet::new();
+        found.insert(start);
+
+        let mut queue = vec![start];
+        for _ in 0..rounds {
+            let mut next_queue = Vec::new();
+            for r in queue {
+                for i in self.roads[&r].endpoints() {
+                    for next in &self.intersections[&i].roads {
+                        if !found.contains(next) {
+                            next_queue.push(*next);
+                            found.insert(*next);
+                        }
+                    }
+                }
+            }
+            queue = next_queue;
+        }
+
+        found
     }
 }
