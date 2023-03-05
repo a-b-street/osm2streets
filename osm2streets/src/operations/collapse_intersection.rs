@@ -16,6 +16,10 @@ impl StreetNetwork {
         let destroy_r = roads[1];
         assert_ne!(keep_r, destroy_r);
 
+        // complicated_turn_restrictions currently only handle one intermediate way, so we don't
+        // need to search very far for roads to repair later
+        let mut fix_turn_restrictions_near = self.find_nearby_roads(destroy_r, 3);
+
         // Skip loops; they break. Easiest way to detect is see how many total vertices we've got.
         {
             let mut endpts = BTreeSet::new();
@@ -76,12 +80,14 @@ impl StreetNetwork {
         self.insert_road(keep_road);
 
         // We may need to fix up turn restrictions. destroy_r becomes keep_r.
+        fix_turn_restrictions_near.retain(|r| self.roads.contains_key(r));
         let rewrite = |x: &mut RoadID| {
             if *x == destroy_r {
                 *x = keep_r;
             }
         };
-        for road in self.roads.values_mut() {
+        for r in fix_turn_restrictions_near {
+            let road = self.roads.get_mut(&r).unwrap();
             for (_, id) in &mut road.turn_restrictions {
                 rewrite(id);
             }

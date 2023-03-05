@@ -83,7 +83,7 @@ impl Transformation {
                 remove_disconnected::remove_disconnected_roads(streets);
             }
             Transformation::CollapseShortRoads => {
-                collapse_short_road::collapse_all_junction_roads(streets);
+                collapse_short_road::collapse_all_junction_roads(streets, timer);
             }
             Transformation::CollapseDegenerateIntersections => {
                 collapse_intersections::collapse(streets);
