@@ -66,6 +66,22 @@ pub enum RoadEnd {
     End,
 }
 
+impl RoadEnd {
+    pub fn direction_from(&self) -> Direction {
+        match self {
+            Self::Start => Direction::Fwd,
+            Self::End => Direction::Back,
+        }
+    }
+
+    pub fn direction_towards(&self) -> Direction {
+        match self {
+            Self::Start => Direction::Back,
+            Self::End => Direction::Fwd,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StopLine {
     /// Relative to the road's reference_line. Stop lines at the start of the road will have low

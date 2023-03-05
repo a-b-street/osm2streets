@@ -32,16 +32,69 @@ fn with_matched_lanes(
     (src_road, src_end, src_lane): (&Road, RoadEnd, LtrLaneNum),
     (dst_road, dst_end, dst_lane): (&Road, RoadEnd, LtrLaneNum),
 ) -> Option<Vec<TurnMovement>> {
-    None
-    // match (src_end, src_lane, dst_end, dst_lane) {
-    //     (RoadEnd::End, LtrLaneNum::Forward(s), RoadEnd::Start, LtrLaneNum::Forward(d)) => {
-    //         Some(Vec::new())
-    //     },
-    //     (RoadEnd::Start, LtrLaneNum::Backward(s), RoadEnd::End, LtrLaneNum::Backward(d)) => {
-    //         Some(Vec::new())
-    //     },
-    //     _ => None
-    // }
+    if src_end.direction_towards() != src_lane.direction()
+        || dst_end.direction_from() != dst_lane.direction()
+    {
+        return None;
+    }
+
+    // Figure out which lanes (left-to-right) are involved in driving from src to dst.
+    let src_lanes = match src_end {
+        RoadEnd::End => driving_lane_endpoints(src_road, Direction::Fwd, RoadEnd::End),
+        RoadEnd::Start => driving_lane_endpoints(src_road, Direction::Back, RoadEnd::Start),
+    };
+    let dst_lanes = match dst_end {
+        RoadEnd::Start => driving_lane_endpoints(dst_road, Direction::Fwd, RoadEnd::Start),
+        RoadEnd::End => driving_lane_endpoints(dst_road, Direction::Back, RoadEnd::End),
+    };
+
+    if src_lanes.is_empty() || dst_lanes.is_empty() {
+        return Some(Vec::new());
+    }
+
+    let src_len = src_lanes.len();
+    let dst_len = dst_lanes.len();
+    let mut lanes_offset = (src_lane.number() as isize) - (dst_lane.number() as isize);
+    let mut src_i: usize = 0;
+    let mut dst_i: usize = 0;
+
+    // Pair up the lanes, offsetting one side so the match lanes line up.
+    let mut result = Vec::new();
+    loop {
+        let (src_lane, src_pt) = src_lanes[src_i];
+        let (dst_lane, dst_pt) = dst_lanes[dst_i];
+        result.push(TurnMovement {
+            from: src_lane,
+            to: dst_lane,
+            path: PolyLine::new(vec![src_pt, dst_pt])
+                .unwrap_or_else(|_| PolyLine::must_new(vec![src_pt, Pt2D::new(0.0, 0.0), dst_pt])),
+        });
+
+        // Increment the appropriate road until the offset is reached...
+        if lanes_offset > 0 {
+            src_i += 1;
+            lanes_offset -= 1;
+        } else if lanes_offset < 0 {
+            dst_i += 1;
+            lanes_offset += 1;
+        }
+        // ...otherwise increment both that haven't run out of lanes.
+        else {
+            let mut advanced = false;
+            if src_i + 1 < src_len {
+                src_i += 1;
+                advanced = true;
+            }
+            if dst_i + 1 < dst_len {
+                dst_i += 1;
+                advanced = true;
+            }
+            if !advanced {
+                break;
+            }
+        }
+    }
+    Some(result)
 }
 
 /// Limitations: ignores both ways lanes
@@ -74,8 +127,8 @@ pub fn default(
 
     let src_len = src_lanes.len();
     let dst_len = dst_lanes.len();
-    let mut dst_i: usize = 0;
     let mut src_i: usize = 0;
+    let mut dst_i: usize = 0;
 
     // Pair up the lanes, matching the inside lanes to each other.
     loop {
