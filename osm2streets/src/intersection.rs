@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 
-use geom::{Circle, Distance, Polygon, Pt2D};
+use geom::{Circle, Distance, PolyLine, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
-use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
+use crate::{movements, osm, DrivingSide, IntersectionID, LaneID, RoadID, StreetNetwork};
 use TrafficConflict::*;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -24,7 +24,7 @@ pub struct Intersection {
     /// All roads connected to this intersection. They may be incoming or outgoing relative to this
     /// intersection. They're ordered clockwise around the intersection.
     pub roads: Vec<RoadID>,
-    pub movements: Vec<Movement>,
+    pub turns: Vec<Turn>,
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     // TODO Store start/end trim distance on _every_ road
@@ -81,8 +81,29 @@ pub enum IntersectionControl {
     Construction,
 }
 
-/// The path that some group of adjacent lanes of traffic can take through an intersection.
-pub type Movement = (RoadID, RoadID);
+/// A manoeuvre that traffic can make through an intersection, from one road to another.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Turn {
+    pub from: RoadID,
+    pub to: RoadID,
+    pub via: IntersectionID,
+    // direction: TurnDirection,
+    /// The lane level movements, if they have been calculated.
+    pub movements: Option<Vec<TurnMovement>>,
+}
+
+/// A specific path that a vehicle can take through a turn.
+///
+/// Lane numbers are counted from the perspective of the direction of the turn.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct TurnMovement {
+    /// The lane of the "from" road that the movement starts in.
+    pub from: LaneID,
+    /// The lane of the "to" road that the movement ends in.
+    pub to: LaneID,
+    /// The path of travel.
+    pub path: PolyLine,
+}
 
 impl Intersection {
     pub fn is_map_edge(&self) -> bool {
@@ -132,7 +153,7 @@ impl StreetNetwork {
                 control,
                 // Filled out later
                 roads: Vec::new(),
-                movements: Vec::new(),
+                turns: Vec::new(),
                 trim_roads_for_merging: BTreeMap::new(),
             },
         );
@@ -196,26 +217,27 @@ impl StreetNetwork {
         intersection.roads = road_centers.into_iter().map(|(r, _, _)| r).collect();
     }
 
-    /// Updates an intersection's derived properties -- geometry (and attached roads) and
+    /// Updates an intersection's derived properties -- geometry (and attached roads), turns and
     /// movements.
     pub fn update_i(&mut self, i: IntersectionID) {
         self.update_geometry(i);
+        self.update_turns(i);
         self.update_movements(i);
     }
 
-    /// The kind and movements of a `MapEdge` are handled independently, so this method skips them.
-    pub(crate) fn update_movements(&mut self, i: IntersectionID) {
+    /// The kind and turns of a `MapEdge` are handled independently, so this method skips them.
+    pub(crate) fn update_turns(&mut self, i: IntersectionID) {
         if self.intersections[&i].kind == IntersectionKind::MapEdge {
             return;
         }
 
-        let (movements, kind) = self.calculate_movements_and_kind(i);
+        let (turns, kind) = self.calculate_turns_and_kind(i);
         let intersection = self.intersections.get_mut(&i).unwrap();
-        intersection.movements = movements;
+        intersection.turns = turns;
         intersection.kind = kind;
     }
 
-    fn calculate_movements_and_kind(&self, i: IntersectionID) -> (Vec<Movement>, IntersectionKind) {
+    fn calculate_turns_and_kind(&self, i: IntersectionID) -> (Vec<Turn>, IntersectionKind) {
         let roads: Vec<_> = self
             .roads_per_intersection(i)
             .into_iter()
@@ -227,7 +249,7 @@ impl StreetNetwork {
             return (Vec::new(), IntersectionKind::Terminus);
         }
 
-        // Calculate all the possible movements, (except U-turns, for now).
+        // Calculate all the possible turns, (except U-turns, for now).
         let mut connections = Vec::new();
         // Consider all pairs of roads, from s to d.
         // Identify them using their index in the list - which
@@ -250,7 +272,7 @@ impl StreetNetwork {
                     continue;
                 }
 
-                // TODO detect U-Turns that should be assumed forbidden.
+                // TODO detect U-Turns that should be assumed forbidden (though probably not here)
                 // if src and dst are oneway and
                 // adjacent on the intersection and
                 // ordered with the "insides" touching and
@@ -263,7 +285,7 @@ impl StreetNetwork {
             }
         }
 
-        // Calculate the highest level of conflict between movements.
+        // Calculate the highest level of conflict between turns.
         let mut worst_conflict = Uncontested;
         // Compare every unordered pair of connections. Use the order of the roads around the
         // intersection to detect if they diverge, merge, or cross.
@@ -285,7 +307,7 @@ impl StreetNetwork {
         (
             connections
                 .iter()
-                .map(|(s, d)| (roads[*s].id, roads[*d].id))
+                .map(|(s, d)| Turn::new(roads[*s].id, roads[*d].id, i))
                 .collect(),
             match worst_conflict {
                 Uncontested => IntersectionKind::Connection,
@@ -294,6 +316,39 @@ impl StreetNetwork {
                 Cross => IntersectionKind::Intersection,
             },
         )
+    }
+
+    /// Calculates and fills in the turn movements for an intersection.
+    fn update_movements(&mut self, i: IntersectionID) {
+        let intersection = self.intersections.get_mut(&i).unwrap();
+
+        match intersection.kind {
+            IntersectionKind::Connection => {
+                for turn in intersection.turns.iter_mut() {
+                    let src_road = self.roads.get(&turn.from).unwrap();
+                    let src_end = src_road.end_of(i).unwrap();
+                    let dst_road = self.roads.get(&turn.to).unwrap();
+                    let dst_end = dst_road.end_of(i).unwrap();
+
+                    // 1. TODO If a connectivity relation exists, use that.
+
+                    if let Some(movements) =
+                        movements::from_placement((src_road, src_end), (dst_road, dst_end))
+                    {
+                        turn.movements = Some(movements);
+                    } else if let Some(movements) = movements::default(
+                        (src_road, src_end),
+                        (dst_road, dst_end),
+                        self.config.driving_side,
+                    ) {
+                        turn.movements = Some(movements);
+                    }
+                }
+            }
+            _ => {
+                // Not implemented yet
+            }
+        }
     }
 }
 
@@ -365,4 +420,15 @@ fn is_between(num: usize, range: &(usize, usize)) -> bool {
     let bot = std::cmp::min(range.0, range.1);
     let top = std::cmp::max(range.0, range.1);
     return bot < num && num < top;
+}
+
+impl Turn {
+    pub fn new(from: RoadID, to: RoadID, via: IntersectionID) -> Self {
+        Self {
+            from,
+            to,
+            via,
+            movements: None,
+        }
+    }
 }

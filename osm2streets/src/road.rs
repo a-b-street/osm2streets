@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use abstutil::Tags;
-use geom::{Angle, Distance, PolyLine};
+use geom::{Angle, Distance, PolyLine, Pt2D};
 
 use crate::lanes::RoadPosition;
 use crate::{
@@ -57,6 +57,29 @@ pub struct Road {
 
     pub stop_line_start: StopLine,
     pub stop_line_end: StopLine,
+}
+
+/// Identifies one end of a road.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum RoadEnd {
+    Start,
+    End,
+}
+
+impl RoadEnd {
+    pub fn direction_from(&self) -> Direction {
+        match self {
+            Self::Start => Direction::Fwd,
+            Self::End => Direction::Back,
+        }
+    }
+
+    pub fn direction_towards(&self) -> Direction {
+        match self {
+            Self::Start => Direction::Back,
+            Self::End => Direction::Fwd,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -447,6 +470,31 @@ impl Road {
         output
     }
 
+    /// Returns a list of lane center line endpoints at the requested end.
+    pub(crate) fn get_lane_end_points(&self, end: RoadEnd) -> Vec<Pt2D> {
+        let (pt, angle) = match end {
+            RoadEnd::Start => (
+                self.center_line.first_pt(),
+                self.center_line.first_line().angle(),
+            ),
+            RoadEnd::End => (
+                self.center_line.last_pt(),
+                self.center_line.last_line().angle(),
+            ),
+        };
+        let half_width = self.total_width() / 2.0;
+        let project_angle = angle.rotate_degs(90.0);
+
+        let mut width_so_far = Distance::ZERO;
+        let mut output = Vec::new();
+        for lane in &self.lane_specs_ltr {
+            width_so_far += lane.width / 2.0;
+            output.push(pt.project_away(width_so_far - half_width, project_angle));
+            width_so_far += lane.width / 2.0;
+        }
+        output
+    }
+
     /// Returns the untrimmed left and right side of the road, oriented in the same direction of
     /// the road
     pub fn get_untrimmed_sides(&self, driving_side: DrivingSide) -> Result<(PolyLine, PolyLine)> {
@@ -465,6 +513,23 @@ impl Road {
             .reference_line
             .shift_from_center(total_width, total_width - ref_offset)?;
         Ok((left, right))
+    }
+
+    pub fn intersection_at(&self, end: RoadEnd) -> IntersectionID {
+        match end {
+            RoadEnd::Start => self.src_i,
+            RoadEnd::End => self.dst_i,
+        }
+    }
+
+    pub fn end_of(&self, i: IntersectionID) -> Option<RoadEnd> {
+        if i == self.src_i {
+            Some(RoadEnd::Start)
+        } else if i == self.dst_i {
+            Some(RoadEnd::End)
+        } else {
+            None
+        }
     }
 
     pub fn endpoints(&self) -> Vec<IntersectionID> {

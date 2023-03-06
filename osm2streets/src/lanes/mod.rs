@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 
 use geom::Distance;
 
+use crate::road::RoadEnd;
 use crate::DrivingSide;
 pub use classic::get_lane_specs_ltr;
 
@@ -489,10 +490,24 @@ impl LtrLaneNum {
             Backward(n) => Forward(*n),
         }
     }
+
+    pub fn right(&self) -> Self {
+        match self {
+            Self::Forward(n) => Self::Forward(n + 1),
+            Self::Backward(n) => Self::Backward(n + 1),
+        }
+    }
+
+    pub fn left(&self) -> Self {
+        match self {
+            Self::Forward(n) => Self::Forward(n - 1),
+            Self::Backward(n) => Self::Backward(n - 1),
+        }
+    }
 }
 
 /// Identifies a position within the width of a roadway. Lanes are identified by their left-to-right
-/// position, as per the OSM convention.
+/// position in the specified direction, as per the OSM convention.
 ///
 /// Most commonly seen as a value of the placement tag, e.g.
 /// `placement=right_of:1` means that the OSM way is drawn along the right edge of lane 1.
@@ -526,6 +541,14 @@ impl RoadPosition {
             RightOf(n) => RightOf(n.reverse()),
         }
     }
+
+    pub fn left_of_lane(self) -> Option<LtrLaneNum> {
+        match self {
+            Self::LeftOf(l) => Some(l),
+            Self::RightOf(l) => Some(l.right()),
+            _ => None,
+        }
+    }
 }
 
 /// Describes the placement of a line (such as the OSM Way) along a road.
@@ -537,4 +560,17 @@ pub enum Placement {
     Varying(RoadPosition, RoadPosition),
     /// Varying linearly from some unspecified position at the start, to a different one at the end.
     Transition,
+}
+
+impl Placement {
+    pub fn road_position_at(&self, end: RoadEnd) -> Option<RoadPosition> {
+        match self {
+            Placement::Consistent(pos) => Some(pos.clone()),
+            Placement::Varying(start_pos, end_pos) => match end {
+                RoadEnd::Start => Some(start_pos.clone()),
+                RoadEnd::End => Some(end_pos.clone()),
+            },
+            Placement::Transition => None,
+        }
+    }
 }
