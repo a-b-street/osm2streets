@@ -153,15 +153,15 @@ fn test_osm_to_specs() {
             "https://www.openstreetmap.org/way/898731283",
             vec!["lanes=5", "sidewalk=none"],
             DrivingSide::Right,
-            "SdddddS",
-            "vvv^^^^",
+            "ddddd",
+            "vv^^^",
         ),
         (
             "https://www.openstreetmap.org/way/335668924",
             vec!["lanes=1", "sidewalk=none"],
             DrivingSide::Right,
-            "SddS",
-            "vv^^",
+            "dd",
+            "v^",
         ),
         (
             "https://www.openstreetmap.org/way/632329263",
@@ -174,22 +174,22 @@ fn test_osm_to_specs() {
                 "psv=yes",
             ],
             DrivingSide::Left,
-            "sddBs",
-            "^^vvv",
+            "ddB",
+            "^vv",
         ),
         (
             "https://www.openstreetmap.org/way/4013378",
             vec!["busway:left=lane", "cycleway:left=lane", "oneway=yes"],
             DrivingSide::Left,
-            "sbBds",
-            "^^^^v",
+            "bBd",
+            "^^^",
         ),
         (
             "https://www.openstreetmap.org/way/312855494",
             vec!["busway:right=lane"],
             DrivingSide::Left,
-            "sddBs",
-            "^^vvv",
+            "ddB",
+            "^vv",
         ),
         (
             "https://www.openstreetmap.org/way/228767989",
@@ -201,7 +201,9 @@ fn test_osm_to_specs() {
     ] {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;
-        input.push("highway=residential");
+        if input.iter().all(|x| !x.starts_with("highway=")) {
+            input.push("highway=residential");
+        }
         let actual = get_lane_specs_ltr(&tags(input.clone()), &cfg);
         let actual_lt: String = actual.iter().map(|s| s.lt.to_char()).collect();
         let actual_dir: String = actual
