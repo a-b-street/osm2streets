@@ -161,6 +161,6 @@ digraph {
     56 -> 57 [ label = "1 lanes" ]
     32 -> 58 [ label = "1 lanes" ]
     58 -> 39 [ label = "1 lanes" ]
-    43 -> 62 [ label = "2 lanes" ]
+    43 -> 62 [ label = "1 lanes" ]
     47 -> 49 [ label = "3 lanes" ]
 }
