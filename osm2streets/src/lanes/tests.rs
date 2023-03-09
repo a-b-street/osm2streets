@@ -198,6 +198,51 @@ fn test_osm_to_specs() {
             "sBddBs",
             "^^^vvv",
         ),
+        (
+            "https://www.openstreetmap.org/way/905830125",
+            vec!["highway=cycleway", "oneway=yes"],
+            DrivingSide::Left,
+            "b",
+            "^",
+        ),
+        (
+            "https://www.openstreetmap.org/way/414489468",
+            vec![
+                "highway=cycleway",
+                "oneway=no",
+                "segregated=yes",
+                "sidewalk=right",
+            ],
+            DrivingSide::Left,
+            "bbs",
+            "^vv",
+        ),
+        (
+            "https://www.openstreetmap.org/way/705809125",
+            vec![
+                "highway=cycleway",
+                "oneway=yes",
+                "segregated=yes",
+                "sidewalk=left",
+            ],
+            DrivingSide::Left,
+            "sb",
+            "^^",
+        ),
+        (
+            "https://www.openstreetmap.org/way/539534598",
+            vec!["highway=cycleway", "oneway=no", "segregated=no"],
+            DrivingSide::Left,
+            "F",
+            "^",
+        ),
+        (
+            "https://www.openstreetmap.org/way/280732115",
+            vec!["highway=cycleway", "foot=yes", "segregated=no"],
+            DrivingSide::Left,
+            "F",
+            "^",
+        ),
     ] {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;

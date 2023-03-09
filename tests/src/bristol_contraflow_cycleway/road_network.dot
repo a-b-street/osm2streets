@@ -52,7 +52,7 @@ digraph {
     13 -> 3 [ label = "2 lanes" ]
     14 -> 15 [ label = "1 lanes" ]
     15 -> 14 [ label = "1 lanes" ]
-    16 -> 12 [ label = "2 lanes" ]
+    16 -> 12 [ label = "1 lanes" ]
     12 -> 11 [ label = "4 lanes" ]
     11 -> 8 [ label = "4 lanes" ]
     8 -> 22 [ label = "4 lanes" ]
