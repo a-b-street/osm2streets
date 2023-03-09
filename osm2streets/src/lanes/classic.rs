@@ -25,7 +25,9 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         return apply_width(vec![fwd(LaneType::LightRail)], &tags);
     }
 
-    if let Some(lanes) = non_motorized_road(&tags, cfg) {
+    if let Some((mut fwd_side, mut back_side)) = non_motorized_road(&tags) {
+        add_sidewalks_and_shoulders(&mut fwd_side, &mut back_side, &tags, cfg);
+        let lanes = LaneSpec::assemble_ltr(fwd_side, back_side, cfg.driving_side);
         return apply_width(lanes, &tags);
     }
 
@@ -101,54 +103,51 @@ fn apply_width(mut lanes: Vec<LaneSpec>, tags: &Tags) -> Vec<LaneSpec> {
     lanes
 }
 
-fn non_motorized_road(tags: &Tags, cfg: &MapConfig) -> Option<Vec<LaneSpec>> {
-    // If it's a primarily cycleway, have directional bike lanes and add a shoulder for walking
-    // TODO Consider variations of SharedUse that specify the priority is cyclists over pedestrians
-    // in this case?
-    if tags.is(osm::HIGHWAY, "cycleway") {
-        let mut fwd_side = vec![fwd(LaneType::Biking)];
-        let mut back_side = if tags.is("oneway", "yes") {
-            vec![]
-        } else {
-            vec![back(LaneType::Biking)]
-        };
+fn non_motorized_road(tags: &Tags) -> Option<(Vec<LaneSpec>, Vec<LaneSpec>)> {
+    let mut fwd_side = Vec::new();
+    let mut back_side = Vec::new();
 
-        // TODO If this cycleway is parallel to a main road, we might end up with double sidewalks.
-        // Once snapping works well, this problem will improve
-        if !tags.is("foot", "no") {
-            fwd_side.push(fwd(LaneType::Shoulder));
-            if !back_side.is_empty() {
-                back_side.push(back(LaneType::Shoulder));
+    // Primarily cyclist-oriented space
+    if tags.is(osm::HIGHWAY, "cycleway") {
+        // Use https://wiki.openstreetmap.org/wiki/Key:segregated to determine if foot traffic is
+        // also present
+        if tags.is("segregated", "no") {
+            // TODO Bidirectional
+            fwd_side.push(fwd(LaneType::SharedUse));
+        } else {
+            fwd_side.push(fwd(LaneType::Biking));
+            if !tags.is("oneway", "yes") {
+                back_side.push(back(LaneType::Biking));
             }
+            // Let add_sidewalks_and_shoulders later add sidewalks.
+            // TODO Handle segregated=yes, but no sidewalk= tag
         }
-        return Some(LaneSpec::assemble_ltr(
-            fwd_side,
-            back_side,
-            cfg.driving_side,
-        ));
     }
 
     // These roads will only exist if cfg.inferred_sidewalks is false
     if tags.is(osm::HIGHWAY, "footway") && tags.is_any("footway", vec!["crossing", "sidewalk"]) {
         // Treating a crossing as a sidewalk for now. Eventually crossings need to be dealt with
         // completely differently.
-        return Some(vec![fwd(LaneType::Sidewalk)]);
-    }
-
+        fwd_side.push(fwd(LaneType::Sidewalk));
     // Handle pedestrian-oriented spaces
-    if tags.is_any(
+    } else if tags.is_any(
         osm::HIGHWAY,
         vec!["footway", "path", "pedestrian", "steps", "track"],
     ) {
         // Assume no bikes unless they're explicitly allowed
         if tags.is_any("bicycle", vec!["designated", "yes", "dismount"]) {
-            return Some(vec![fwd(LaneType::SharedUse)]);
+            // TODO Bidirectional
+            fwd_side.push(fwd(LaneType::SharedUse));
+        } else {
+            fwd_side.push(fwd(LaneType::Footway));
         }
-
-        return Some(vec![fwd(LaneType::Footway)]);
     }
 
-    None
+    if fwd_side.is_empty() {
+        None
+    } else {
+        Some((fwd_side, back_side))
+    }
 }
 
 fn create_driving_lanes(
