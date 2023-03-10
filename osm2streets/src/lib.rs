@@ -177,15 +177,19 @@ impl StreetNetwork {
 
     pub(crate) fn debug_intersection<I: Into<String>>(&mut self, i: IntersectionID, label: I) {
         if let Some(step) = self.debug_steps.last_mut() {
-            step.points
-                .push((self.intersections[&i].polygon.center(), label.into()));
+            if let Some(intersection) = self.intersections.get(&i) {
+                step.points
+                    .push((intersection.polygon.center(), label.into()));
+            }
         }
     }
 
     pub(crate) fn debug_road<I: Into<String>>(&mut self, r: RoadID, label: I) {
         if let Some(step) = self.debug_steps.last_mut() {
-            step.polylines
-                .push((self.roads[&r].center_line.clone(), label.into()));
+            if let Some(road) = self.roads.get(&r) {
+                step.polylines
+                    .push((road.center_line.clone(), label.into()));
+            }
         }
     }
 
