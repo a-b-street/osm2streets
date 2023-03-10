@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, LaneID, MapConfig, Placement, RoadID, StreetNetwork, Transformation,
+    osm, DebugStreets, IntersectionID, LaneID, MapConfig, Placement, RoadID, StreetNetwork,
+    Transformation,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -186,6 +187,32 @@ impl JsStreetNetwork {
         abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
     }
 
+    /// Returns the XML string representing a way. Any OSM tags changed via
+    /// `overwrite_osm_tags_for_way` are reflected.
+    #[wasm_bindgen(js_name = wayToXml)]
+    pub fn way_to_xml(&self, id: i64) -> String {
+        let way = &self.ways[&osm::WayID(id)];
+        let mut out = format!(r#"<way id="{id}""#);
+        if let Some(version) = way.version {
+            out.push_str(&format!(r#" version="{version}""#));
+        }
+        out.push_str(">\n");
+        for node in &way.nodes {
+            out.push_str(&format!(r#"  <nd ref="{}"/>"#, node.0));
+            out.push('\n');
+        }
+        for (k, v) in way.tags.inner() {
+            out.push_str(&format!(r#"  <tag k="{k}" v="{v}"/>"#));
+            out.push('\n');
+        }
+        out.push_str("</way>");
+        out
+    }
+}
+
+// Mutations
+#[wasm_bindgen]
+impl JsStreetNetwork {
     /// Modifies all affected roads
     #[wasm_bindgen(js_name = overwriteOsmTagsForWay)]
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: String) {
@@ -216,26 +243,18 @@ impl JsStreetNetwork {
         self.ways.get_mut(&id).unwrap().tags = tags;
     }
 
-    /// Returns the XML string representing a way. Any OSM tags changed via
-    /// `overwrite_osm_tags_for_way` are reflected.
-    #[wasm_bindgen(js_name = wayToXml)]
-    pub fn way_to_xml(&mut self, id: i64) -> String {
-        let way = &self.ways[&osm::WayID(id)];
-        let mut out = format!(r#"<way id="{id}""#);
-        if let Some(version) = way.version {
-            out.push_str(&format!(r#" version="{version}""#));
+    #[wasm_bindgen(js_name = collapseShortRoad)]
+    pub fn collapse_short_road(&mut self, road: usize) {
+        // TODO Handle errors how?
+        self.inner.collapse_short_road(RoadID(road)).unwrap()
+    }
+
+    #[wasm_bindgen(js_name = collapseIntersection)]
+    pub fn collapse_intersection(&mut self, intersection: usize) {
+        let i = IntersectionID(intersection);
+        if self.inner.intersections[&i].roads.len() == 2 {
+            self.inner.collapse_intersection(i);
         }
-        out.push_str(">\n");
-        for node in &way.nodes {
-            out.push_str(&format!(r#"  <nd ref="{}"/>"#, node.0));
-            out.push('\n');
-        }
-        for (k, v) in way.tags.inner() {
-            out.push_str(&format!(r#"  <tag k="{k}" v="{v}"/>"#));
-            out.push('\n');
-        }
-        out.push_str("</way>");
-        out
     }
 }
 

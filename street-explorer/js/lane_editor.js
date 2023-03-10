@@ -2,7 +2,6 @@ import { downloadGeneratedFile } from "./files.js";
 import {
   makeIntersectionMarkingsLayer,
   makeLaneMarkingsLayer,
-  makePlainGeoJsonLayer,
   lanePolygonStyle,
 } from "./layers.js";
 import { setupLeafletMap } from "./leaflet.js";
