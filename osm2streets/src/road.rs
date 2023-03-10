@@ -198,7 +198,7 @@ impl Road {
         for spec in &self.lane_specs_ltr {
             if spec.lt == LaneType::Biking {
                 bike = true;
-            } else if spec.lt != LaneType::Shoulder {
+            } else if !spec.lt.is_walkable() {
                 return false;
             }
         }
