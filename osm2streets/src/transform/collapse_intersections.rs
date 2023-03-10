@@ -80,10 +80,6 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
         _ => bail!("one of the placements isn't consistent"),
     }
 
-    if road1.is_cycleway() && road2.is_cycleway() {
-        return Ok(());
-    }
-
     Ok(())
 }
 
