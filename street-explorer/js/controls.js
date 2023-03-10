@@ -128,16 +128,20 @@ export class SequentialLayerGroup {
     }
   }
 
+  changeCurrent(newIdx) {
+    this.groups[this.current].setEnabled(false);
+    this.current = newIdx;
+    this.groups[this.current].setEnabled(true);
+
+    // Rerender
+    document.getElementById(this.name).replaceWith(this.renderControls());
+  }
+
   renderControls() {
     const prev = makeButton("Previous");
     prev.disabled = this.current == 0;
     prev.onclick = () => {
-      this.groups[this.current].setEnabled(false);
-      this.current -= 1;
-      this.groups[this.current].setEnabled(true);
-
-      // Rerender
-      document.getElementById(this.name).replaceWith(this.renderControls());
+      this.changeCurrent(this.current - 1);
     };
 
     const label = document.createTextNode(
@@ -147,12 +151,21 @@ export class SequentialLayerGroup {
     const next = makeButton("Next");
     next.disabled = this.current == this.groups.length - 1;
     next.onclick = () => {
-      this.groups[this.current].setEnabled(false);
-      this.current += 1;
-      this.groups[this.current].setEnabled(true);
+      this.changeCurrent(this.current + 1);
+    };
 
-      // Rerender
-      document.getElementById(this.name).replaceWith(this.renderControls());
+    const dropdown = L.DomUtil.create("select");
+    var i = 0;
+    for (let group of this.groups) {
+      const option = L.DomUtil.create("option");
+      option.value = i;
+      option.textContent = `${group.name}`;
+      dropdown.appendChild(option);
+      i++;
+    }
+    dropdown.value = this.current;
+    dropdown.onchange = () => {
+      this.changeCurrent(parseInt(dropdown.value));
     };
 
     var row1 = L.DomUtil.create("u");
@@ -161,6 +174,7 @@ export class SequentialLayerGroup {
     const column = makeDiv([
       row1,
       row2,
+      dropdown,
       this.groups[this.current].renderControls(),
     ]);
     column.id = this.name;
