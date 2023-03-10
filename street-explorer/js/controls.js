@@ -46,6 +46,26 @@ export class LayerGroup {
     this.layers.push(layer);
   }
 
+  replaceLayer(name, layerData, { lazy = false } = {}) {
+    for (const layer of this.layers) {
+      if (layer.name == name) {
+        if (layer.enabled && layer.data != null) {
+          this.map.removeLayer(layer.data);
+        }
+        if (lazy) {
+          layer.data = null;
+          layer.lazilyMakeData = layerData;
+        } else {
+          layer.data = layerData;
+        }
+        if (layer.enabled) {
+          this.map.addLayer(layer.getData());
+        }
+        break;
+      }
+    }
+  }
+
   // Updates the map, but doesn't re-render any controls
   setEnabled(enabled) {
     this.enabled = enabled;

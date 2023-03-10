@@ -1,7 +1,12 @@
 import L from "leaflet";
 import "leaflet-osm";
 
-export const makePlainGeoJsonLayer = (text) => {
+export const makePlainGeoJsonLayer = (
+  network,
+  dynamicMovementLayer,
+  map,
+  maybeGroup
+) => {
   // TODO Update for new types
   const intersectionColours = {
     Connection: "#666",
@@ -9,8 +14,7 @@ export const makePlainGeoJsonLayer = (text) => {
     Terminus: "#999",
     MapEdge: "#696",
   };
-
-  return new L.geoJSON(JSON.parse(text), {
+  return new L.geoJSON(JSON.parse(network.toGeojsonPlain()), {
     style: function (feature) {
       if (feature.properties.type == "intersection") {
         return {
@@ -42,12 +46,43 @@ export const makePlainGeoJsonLayer = (text) => {
 
       const nodes = feature.properties.osm_node_ids;
       delete feature.properties.osm_node_ids;
-      var popup = `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`;
-      popup += `<br/>OSM nodes: `;
+
+      let popup = document.createElement("div");
+
+      // Show JSON properties
+      let pre = document.createElement("pre");
+      pre.textContent = JSON.stringify(feature.properties, null, 2);
+      popup.appendChild(pre);
+
+      popup.appendChild(document.createElement("br"));
+
+      // Link to original OSM nodes
+      popup.appendChild(document.createTextNode("OSM nodes: "));
       for (const id of nodes) {
-        popup += `<a href="https://www.openstreetmap.org/node/${id}" target="_blank">${id}</a>, `;
+        let a = document.createElement("a");
+        a.href = `https://www.openstreetmap.org/node/${id}`;
+        a.target = "_blank";
+        a.textContent = id;
+        popup.appendChild(a);
+        popup.appendChild(document.createTextNode(", "));
       }
-      popup = popup.slice(0, -2);
+      // Remove the trailing comma
+      if (nodes.length != 0) {
+        popup.removeChild(popup.lastChild);
+      }
+
+      // Buttons to operate on the road
+      if (maybeGroup) {
+        let buttons = document.createElement("div");
+        buttons.appendChild(
+          makeButton("Collapse intersection", () => {
+            network.collapseIntersection(feature.properties.id);
+            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+          })
+        );
+        popup.appendChild(buttons);
+      }
+
       layer.bindPopup(popup);
     },
   });
@@ -96,7 +131,12 @@ export const lanePolygonStyle = (feature) => {
   };
 };
 
-export const makeLanePolygonLayer = (network, dynamicMovementLayer, map) => {
+export const makeLanePolygonLayer = (
+  network,
+  dynamicMovementLayer,
+  map,
+  maybeGroup
+) => {
   return new L.geoJSON(JSON.parse(network.toLanePolygonsGeojson()), {
     style: lanePolygonStyle,
     onEachFeature: function (feature, layer) {
@@ -130,12 +170,43 @@ export const makeLanePolygonLayer = (network, dynamicMovementLayer, map) => {
 
       const ways = feature.properties.osm_way_ids;
       delete feature.properties.osm_way_ids;
-      var popup = `<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`;
-      popup += `<br/>OSM ways: `;
+
+      let popup = document.createElement("div");
+
+      // Show JSON properties
+      let pre = document.createElement("pre");
+      pre.textContent = JSON.stringify(feature.properties, null, 2);
+      popup.appendChild(pre);
+
+      popup.appendChild(document.createElement("br"));
+
+      // Link to original OSM ways
+      popup.appendChild(document.createTextNode("OSM ways: "));
       for (const id of ways) {
-        popup += `<a href="https://www.openstreetmap.org/way/${id}" target="_blank">${id}</a>, `;
+        let a = document.createElement("a");
+        a.href = `https://www.openstreetmap.org/way/${id}`;
+        a.target = "_blank";
+        a.textContent = id;
+        popup.appendChild(a);
+        popup.appendChild(document.createTextNode(", "));
       }
-      popup = popup.slice(0, -2);
+      // Remove the trailing comma
+      if (ways.length != 0) {
+        popup.removeChild(popup.lastChild);
+      }
+
+      // Buttons to operate on the road
+      if (maybeGroup) {
+        let buttons = document.createElement("div");
+        buttons.appendChild(
+          makeButton("Collapse short road", () => {
+            network.collapseShortRoad(feature.properties.road);
+            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+          })
+        );
+        popup.appendChild(buttons);
+      }
+
       layer.bindPopup(popup);
     },
   });
@@ -204,3 +275,35 @@ export const makeDebugLayer = (text) => {
 export const makeBoundaryLayer = (geojson) => {
   return new L.geoJSON(geojson, { interactive: false });
 };
+
+function rerenderNetwork(network, dynamicMovementLayer, map, group) {
+  group.replaceLayer(
+    "Geometry",
+    makePlainGeoJsonLayer(network, dynamicMovementLayer, map, group)
+  );
+  group.replaceLayer(
+    "Lane polygons",
+    makeLanePolygonLayer(network, dynamicMovementLayer, map, group)
+  );
+  group.replaceLayer(
+    "Lane markings",
+    makeLaneMarkingsLayer(network.toLaneMarkingsGeojson())
+  );
+  group.replaceLayer(
+    "Intersection markings",
+    makeIntersectionMarkingsLayer(network.toIntersectionMarkingsGeojson())
+  );
+  group.replaceLayer(
+    "Debug road ordering",
+    () => makeDebugLayer(network.debugClockwiseOrderingGeojson()),
+    { lazy: true }
+  );
+}
+
+function makeButton(label, onclick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.innerText = label;
+  button.onclick = onclick;
+  return button;
+}

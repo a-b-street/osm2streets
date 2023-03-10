@@ -133,13 +133,14 @@ class TestCase {
     const geometry = await loadFile(prefix + "geometry.json");
     const boundary = JSON.parse(await loadFile(prefix + "boundary.json"));
 
-    const geometryLayer = makePlainGeoJsonLayer(geometry);
+    // TODO The geometry layer is vastly simplified from makePlainGeoJsonLayer, because we don't have the network to plumb in.
+    const geometryLayer = L.geoJSON(JSON.parse(geometry));
     const bounds = geometryLayer.getBounds();
 
     var group = new LayerGroup("built-in test case", app.map);
     group.addLayer("Boundary", makeBoundaryLayer(boundary));
     group.addLayer("OSM", makeOsmLayer(osmInput), { enabled: false });
-    group.addLayer("Geometry", geometryLayer);
+    group.addLayer("Overview", geometryLayer);
     app.layers.addGroup(group);
 
     return new TestCase(app, name, osmInput, bounds, boundary);
@@ -258,10 +259,13 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
         window.alert(`Warning: OSM layer not added: ${err}`);
       }
     }
-    group.addLayer("Geometry", makePlainGeoJsonLayer(network.toGeojsonPlain()));
+    group.addLayer(
+      "Geometry",
+      makePlainGeoJsonLayer(network, app.dynamicMovementLayer, app.map, group)
+    );
     group.addLayer(
       "Lane polygons",
-      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map)
+      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map, group)
     );
     group.addLayer(
       "Lane markings",
@@ -288,13 +292,19 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       i++;
       var group = new LayerGroup(`Step ${i}: ${step.getLabel()}`, app.map);
       group.addLazyLayer("Geometry", () =>
-        makePlainGeoJsonLayer(step.getNetwork().toGeojsonPlain())
+        makePlainGeoJsonLayer(
+          step.getNetwork(),
+          app.dynamicMovementLayer,
+          app.map,
+          null
+        )
       );
       group.addLazyLayer("Lane polygons", () =>
         makeLanePolygonLayer(
           step.getNetwork(),
           app.dynamicMovementLayer,
-          app.map
+          app.map,
+          null
         )
       );
       group.addLazyLayer("Lane markings", () =>
