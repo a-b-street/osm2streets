@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, IntersectionID, LaneID, MapConfig, Placement, RoadID, StreetNetwork,
-    Transformation,
+    osm, DebugStreets, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
+    StreetNetwork, Transformation,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -254,6 +254,13 @@ impl JsStreetNetwork {
         let i = IntersectionID(intersection);
         if self.inner.intersections[&i].roads.len() == 2 {
             self.inner.collapse_intersection(i);
+        }
+    }
+
+    #[wasm_bindgen(js_name = zipSidepath)]
+    pub fn zip_sidepath(&mut self, road: usize) {
+        if let Some(sidepath) = Sidepath::new(&self.inner, RoadID(road)) {
+            sidepath.zip(&mut self.inner);
         }
     }
 }

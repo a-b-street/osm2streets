@@ -204,6 +204,12 @@ export const makeLanePolygonLayer = (
             rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
           })
         );
+        buttons.appendChild(
+          makeButton("Zip sidepath", () => {
+            network.zipSidepath(feature.properties.road);
+            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+          })
+        );
         popup.appendChild(buttons);
       }
 
