@@ -75,7 +75,7 @@ export class LaneEditor {
       this.network = new JsStreetNetwork(osmXML, clipPts, {
         debug_each_step: false,
         dual_carriageway_experiment: false,
-        cycletrack_snapping_experiment: false,
+        sidepath_zipping_experiment: false,
         inferred_sidewalks: false,
         osm2lanes: false,
       });

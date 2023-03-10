@@ -243,8 +243,7 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       {
         debug_each_step: !!importSettings.debugEachStep,
         dual_carriageway_experiment: !!importSettings.dualCarriagewayExperiment,
-        cycletrack_snapping_experiment:
-          !!importSettings.cycletrackSnappingExperiment,
+        sidepath_zipping_experiment: !!importSettings.sidepathZippingExperiment,
         inferred_sidewalks: importSettings.sidewalks === "infer",
         osm2lanes: !!importSettings.osm2lanes,
       }

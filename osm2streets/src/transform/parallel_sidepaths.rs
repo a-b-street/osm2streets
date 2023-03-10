@@ -2,43 +2,43 @@ use geom::{Distance, PolyLine};
 
 use crate::{BufferType, Direction, IntersectionID, LaneSpec, LaneType, RoadID, StreetNetwork};
 
-/// Find cycleway segments that exist as separate objects, parallel to a main road. Merge (or
-/// "snap") them into the main road, inserting a buffer lane to represent the physical division.
-pub fn snap_cycleways(streets: &mut StreetNetwork) {
-    for cycleway in find_cycleways(streets) {
-        streets.maybe_start_debug_step(format!("snap cycleway {}", cycleway.debug_idx));
-        cycleway.debug(streets);
-        snap(streets, cycleway);
+/// Find sidepath segments that exist as separate objects, parallel to a main road. Zip (or "snap")
+/// them into the main road, inserting a buffer lane to represent the physical division.
+pub fn zip_sidepaths(streets: &mut StreetNetwork) {
+    for sidepath in find_sidepaths(streets) {
+        streets.maybe_start_debug_step(format!("snap sidepath {}", sidepath.debug_idx));
+        sidepath.debug(streets);
+        snap(streets, sidepath);
     }
 }
 
-// We're only pattern matching on one type of separate cycleway right now. This represents a single
+// We're only pattern matching on one type of separate sidepath right now. This represents a single
 // Road that's parallel to one or more main_roads.
 //
 // X--X
-// C  M
-// C  M
-// C  M
-// C  X
-// C  M
-// C  M
+// S  M
+// S  M
+// S  M
+// S  X
+// S  M
+// S  M
 // X--X
 //
-// C is the cycleway segment. X are intersections. M are main roads -- note there are two matching
-// up to this one cycleway. The '-'s are short connector roads between the two.
-struct Cycleway {
-    cycleway: RoadID,
-    cycleway_center: PolyLine,
-    // Just to distinguish different cycleways when debugging
+// S is the sidepath segment. X are intersections. M are main roads -- note there are two matching
+// up to this one sidepath. The '-'s are short connector roads between the two.
+struct Sidepath {
+    sidepath: RoadID,
+    sidepath_center: PolyLine,
+    // Just to distinguish different sidepaths when debugging
     debug_idx: usize,
     main_road_src_i: IntersectionID,
     main_road_dst_i: IntersectionID,
     main_roads: Vec<RoadID>,
 }
 
-impl Cycleway {
+impl Sidepath {
     fn debug(&self, streets: &mut StreetNetwork) {
-        streets.debug_road(self.cycleway, format!("cycleway {}", self.debug_idx));
+        streets.debug_road(self.sidepath, format!("sidepath {}", self.debug_idx));
         streets.debug_intersection(self.main_road_src_i, format!("src_i of {}", self.debug_idx));
         streets.debug_intersection(self.main_road_dst_i, format!("dst_i of {}", self.debug_idx));
         for x in &self.main_roads {
@@ -47,15 +47,15 @@ impl Cycleway {
     }
 }
 
-fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
+fn find_sidepaths(streets: &StreetNetwork) -> Vec<Sidepath> {
     const SHORT_ROAD_THRESHOLD: Distance = Distance::const_meters(10.0);
 
-    let mut cycleways = Vec::new();
-    for cycleway_road in streets.roads.values() {
-        if cycleway_road.is_cycleway() {
+    let mut sidepaths = Vec::new();
+    for sidepath_road in streets.roads.values() {
+        if sidepath_road.is_cycleway() {
             // Look at other roads connected to both endpoints. One of them should be "very short."
             let mut main_road_endpoints = Vec::new();
-            for i in cycleway_road.endpoints() {
+            for i in sidepath_road.endpoints() {
                 let mut candidates = Vec::new();
                 for road in streets.roads_per_intersection(i) {
                     if road.untrimmed_length() < SHORT_ROAD_THRESHOLD {
@@ -68,11 +68,11 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
             }
 
             if main_road_endpoints.len() == 2 {
-                // Often the main road parallel to this cycleway segment is just one road, but it
+                // Often the main road parallel to this sidepath segment is just one road, but it
                 // might be more.
                 let main_road_src_i = main_road_endpoints[0];
                 let main_road_dst_i = main_road_endpoints[1];
-                // Find all main road segments "parallel to" this cycleway, by pathfinding between
+                // Find all main road segments "parallel to" this sidepath, by pathfinding between
                 // the main road intersections. We don't care about the order, but simple_path
                 // does. In case it's one-way for driving, try both.
                 if let Some(path) = streets
@@ -81,10 +81,10 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
                         streets.simple_path(main_road_dst_i, main_road_src_i, &[LaneType::Driving])
                     })
                 {
-                    cycleways.push(Cycleway {
-                        cycleway: cycleway_road.id,
-                        cycleway_center: cycleway_road.center_line.clone(),
-                        debug_idx: cycleways.len(),
+                    sidepaths.push(Sidepath {
+                        sidepath: sidepath_road.id,
+                        sidepath_center: sidepath_road.center_line.clone(),
+                        debug_idx: sidepaths.len(),
                         main_road_src_i,
                         main_road_dst_i,
                         main_roads: path.into_iter().map(|(r, _)| r).collect(),
@@ -93,67 +93,66 @@ fn find_cycleways(streets: &StreetNetwork) -> Vec<Cycleway> {
             }
         }
     }
-    cycleways
+    sidepaths
 }
 
-fn snap(streets: &mut StreetNetwork, input: Cycleway) {
-    // This analysis shouldn't modify other cycleways when it works on one
-    assert!(streets.roads.contains_key(&input.cycleway));
+fn snap(streets: &mut StreetNetwork, input: Sidepath) {
+    // This analysis shouldn't modify other sidepaths when it works on one
+    assert!(streets.roads.contains_key(&input.sidepath));
 
-    // Remove the cycleway, but remember the lanes it contained
-    let mut cycleway_lanes = streets.remove_road(input.cycleway).lane_specs_ltr;
+    // Remove the sidepath, but remember the lanes it contained
+    let mut sidepath_lanes = streets.remove_road(input.sidepath).lane_specs_ltr;
 
     // TODO Preserve osm_ids
 
-    // The cycleway likely had shoulder lanes assigned to it by get_lane_specs_ltr, because we have
+    // The sidepath likely had shoulder lanes assigned to it by get_lane_specs_ltr, because we have
     // many partially competing strategies for representing shared walking/cycling roads. Remove
     // those.
-    if cycleway_lanes[0].lt == LaneType::Shoulder {
-        cycleway_lanes.remove(0);
+    if sidepath_lanes[0].lt == LaneType::Shoulder {
+        sidepath_lanes.remove(0);
     }
-    if cycleway_lanes.last().as_ref().unwrap().lt == LaneType::Shoulder {
-        cycleway_lanes.pop();
+    if sidepath_lanes.last().as_ref().unwrap().lt == LaneType::Shoulder {
+        sidepath_lanes.pop();
     }
 
-    // The cycleway was tagged as a separate way due to some kind of physical separation. We'll
+    // The sidepath was tagged as a separate way due to some kind of physical separation. We'll
     // represent that with a buffer lane.
     let buffer = LaneSpec {
-        // TODO Use https://wiki.openstreetmap.org/wiki/Proposed_features/cycleway:separation if
-        // available
+        // TODO Use https://wiki.openstreetmap.org/wiki/Proposed_features/separation if available
         lt: LaneType::Buffer(BufferType::Planters),
         dir: Direction::Fwd,
         width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Planters)),
         allowed_turns: Default::default(),
     };
 
-    // For every main road segment corresponding to the cycleway, we need to insert these
-    // cycleway_lanes somewhere.
+    // For every main road segment corresponding to the sidepath, we need to insert these
+    // sidepath_lanes somewhere.
     //
     // - Fixing the direction of the lanes
     // - Appending them on the left or right side (and "inside" the inferred sidewalk on the road)
     // - Inserting the buffer
     for r in input.main_roads {
         let main_road = &streets.roads[&r];
-        // Which side is closer to the cycleway?
+        // Which side is closer to the sidepath?
         let (left, right) = main_road
             .get_untrimmed_sides(streets.config.driving_side)
             .unwrap();
         // TODO georust has a way to check distance of linestrings. But for now, just check the
         // middles
-        let snap_to_left = input.cycleway_center.middle().dist_to(left.middle())
-            < input.cycleway_center.middle().dist_to(right.middle());
+        let snap_to_left = input.sidepath_center.middle().dist_to(left.middle())
+            < input.sidepath_center.middle().dist_to(right.middle());
 
-        // Does the cycleway point the same direction as this main road? We can use the left or
+        // Does the sidepath point the same direction as this main road? We can use the left or
         // right side, doesn't matter.
         // TODO Check this logic very carefully; angles always lead to bugs. 90 is a very generous
         // definition of parallel. But we have a binary decision to make, so maybe we should even
         // use 180.
         let oriented_same_way = input
-            .cycleway_center
+            .sidepath_center
             .overall_angle()
             .approx_eq(left.overall_angle(), 90.0);
 
-        // Where should we insert the cycleway lanes? If the main road already has a sidewalk,
+        // Where should we insert the sidepath lanes? If the main road already has a sidewalk,
         // let's assume it should stay at the outermost part of the road. (That isn't always true,
         // but it's an assumption we'll take for now.)
         let insert_idx = if snap_to_left {
@@ -181,7 +180,7 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
 
         // This logic thankfully doesn't depend on driving side at all!
         let mut insert_lanes = Vec::new();
-        for mut lane in cycleway_lanes.clone() {
+        for mut lane in sidepath_lanes.clone() {
             if !oriented_same_way {
                 lane.dir = lane.dir.opposite();
             }
@@ -204,7 +203,7 @@ fn snap(streets: &mut StreetNetwork, input: Cycleway) {
     }
 
     // After this transformation, we should run CollapseDegenerateIntersections to handle the
-    // intersection where the side road originally crossed the cycleway, and TrimDeadendCycleways
+    // intersection where the side road originally crossed the sidepath, and TrimDeadendCycleways
     // to clean up any small cycle connection roads.
 }
 
