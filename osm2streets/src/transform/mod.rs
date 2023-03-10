@@ -5,14 +5,14 @@ use crate::StreetNetwork;
 mod collapse_intersections;
 mod collapse_short_road;
 mod dual_carriageways;
+mod parallel_sidepaths;
 mod remove_disconnected;
 mod sausage_links;
-mod separate_cycletracks;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
     TrimDeadendCycleways,
-    SnapCycleways,
+    ZipSidepaths,
     RemoveDisconnectedRoads,
     CollapseShortRoads,
     CollapseDegenerateIntersections,
@@ -43,8 +43,8 @@ impl Transformation {
         // Not working yet
         if false {
             let mut prepend = vec![
-                Transformation::SnapCycleways,
-                // More dead-ends can be created after snapping cycleways. But also, snapping can be
+                Transformation::ZipSidepaths,
+                // More dead-ends can be created after zipping sidepaths. But also, zipping can be
                 // easier to do after trimming some dead-ends. So... just run it twice.
                 Transformation::TrimDeadendCycleways,
                 Transformation::RemoveDisconnectedRoads,
@@ -61,7 +61,7 @@ impl Transformation {
     fn name(&self) -> &'static str {
         match self {
             Transformation::TrimDeadendCycleways => "trim dead-end cycleways",
-            Transformation::SnapCycleways => "snap separate cycleways",
+            Transformation::ZipSidepaths => "zip parallel sidepaths",
             Transformation::RemoveDisconnectedRoads => "remove disconnected roads",
             Transformation::CollapseShortRoads => "collapse short roads",
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
@@ -76,8 +76,8 @@ impl Transformation {
             Transformation::TrimDeadendCycleways => {
                 collapse_intersections::trim_deadends(streets);
             }
-            Transformation::SnapCycleways => {
-                separate_cycletracks::snap_cycleways(streets);
+            Transformation::ZipSidepaths => {
+                parallel_sidepaths::zip_sidepaths(streets);
             }
             Transformation::RemoveDisconnectedRoads => {
                 remove_disconnected::remove_disconnected_roads(streets);

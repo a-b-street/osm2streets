@@ -14,7 +14,7 @@ use osm2streets::{
 pub struct ImportOptions {
     debug_each_step: bool,
     dual_carriageway_experiment: bool,
-    cycletrack_snapping_experiment: bool,
+    sidepath_zipping_experiment: bool,
     inferred_sidewalks: bool,
     osm2lanes: bool,
 }
@@ -67,8 +67,8 @@ impl JsStreetNetwork {
             transformations.retain(|t| !matches!(t, Transformation::CollapseShortRoads));
             transformations.push(Transformation::MergeDualCarriageways);
         }
-        if input.cycletrack_snapping_experiment {
-            transformations.push(Transformation::SnapCycleways);
+        if input.sidepath_zipping_experiment {
+            transformations.push(Transformation::ZipSidepaths);
             transformations.push(Transformation::TrimDeadendCycleways);
             transformations.push(Transformation::CollapseDegenerateIntersections);
         }
