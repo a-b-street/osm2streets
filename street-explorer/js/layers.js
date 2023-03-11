@@ -3,7 +3,7 @@ import "leaflet-osm";
 
 export const makePlainGeoJsonLayer = (
   network,
-  dynamicMovementLayer,
+  dynamicMouseoverLayer,
   map,
   maybeGroup
 ) => {
@@ -36,11 +36,28 @@ export const makePlainGeoJsonLayer = (
           layer.setStyle({
             fillOpacity: 0.5,
           });
+
+          if (dynamicMouseoverLayer) {
+            map.removeLayer(dynamicMouseoverLayer);
+          }
+          dynamicMouseoverLayer = L.geoJSON(
+            JSON.parse(
+              network.debugRoadsConnectedToIntersectionGeojson(
+                feature.properties.id
+              )
+            )
+          );
+          dynamicMouseoverLayer.addTo(map);
         },
         mouseout: function (ev) {
           layer.setStyle({
             fillOpacity: 0.7,
           });
+
+          if (dynamicMouseoverLayer) {
+            map.removeLayer(dynamicMouseoverLayer);
+            dynamicMouseoverLayer = null;
+          }
         },
       });
 
@@ -77,7 +94,7 @@ export const makePlainGeoJsonLayer = (
         buttons.appendChild(
           makeButton("Collapse intersection", () => {
             network.collapseIntersection(feature.properties.id);
-            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+            rerenderNetwork(network, dynamicMouseoverLayer, map, maybeGroup);
           })
         );
         popup.appendChild(buttons);
@@ -133,7 +150,7 @@ export const lanePolygonStyle = (feature) => {
 
 export const makeLanePolygonLayer = (
   network,
-  dynamicMovementLayer,
+  dynamicMouseoverLayer,
   map,
   maybeGroup
 ) => {
@@ -147,23 +164,27 @@ export const makeLanePolygonLayer = (
             fillOpacity: 0.5,
           });
 
-          if (dynamicMovementLayer) {
-            map.removeLayer(dynamicMovementLayer);
+          if (dynamicMouseoverLayer) {
+            map.removeLayer(dynamicMouseoverLayer);
           }
-          const movements = network.debugMovementsFromLaneGeojson(
-            feature.properties.road,
-            feature.properties.index
+          dynamicMouseoverLayer = L.geoJSON(
+            JSON.parse(
+              network.debugMovementsFromLaneGeojson(
+                feature.properties.road,
+                feature.properties.index
+              )
+            )
           );
-          dynamicMovementLayer = L.geoJSON(JSON.parse(movements));
-          dynamicMovementLayer.addTo(map);
+          dynamicMouseoverLayer.addTo(map);
         },
         mouseout: function (ev) {
           layer.setStyle({
             fillOpacity: 0.9,
           });
 
-          if (dynamicMovementLayer) {
-            map.removeLayer(dynamicMovementLayer);
+          if (dynamicMouseoverLayer) {
+            map.removeLayer(dynamicMouseoverLayer);
+            dynamicMouseoverLayer = null;
           }
         },
       });
@@ -201,13 +222,13 @@ export const makeLanePolygonLayer = (
         buttons.appendChild(
           makeButton("Collapse short road", () => {
             network.collapseShortRoad(feature.properties.road);
-            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+            rerenderNetwork(network, dynamicMouseoverLayer, map, maybeGroup);
           })
         );
         buttons.appendChild(
           makeButton("Zip sidepath", () => {
             network.zipSidepath(feature.properties.road);
-            rerenderNetwork(network, dynamicMovementLayer, map, maybeGroup);
+            rerenderNetwork(network, dynamicMouseoverLayer, map, maybeGroup);
           })
         );
         popup.appendChild(buttons);
@@ -258,6 +279,7 @@ export const makeIntersectionMarkingsLayer = (text) => {
         stroke: false,
       };
     },
+    interactive: false,
   });
 };
 
@@ -282,14 +304,14 @@ export const makeBoundaryLayer = (geojson) => {
   return new L.geoJSON(geojson, { interactive: false });
 };
 
-function rerenderNetwork(network, dynamicMovementLayer, map, group) {
+function rerenderNetwork(network, dynamicMouseoverLayer, map, group) {
   group.replaceLayer(
     "Geometry",
-    makePlainGeoJsonLayer(network, dynamicMovementLayer, map, group)
+    makePlainGeoJsonLayer(network, dynamicMouseoverLayer, map, group)
   );
   group.replaceLayer(
     "Lane polygons",
-    makeLanePolygonLayer(network, dynamicMovementLayer, map, group)
+    makeLanePolygonLayer(network, dynamicMouseoverLayer, map, group)
   );
   group.replaceLayer(
     "Lane markings",

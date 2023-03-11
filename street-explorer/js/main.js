@@ -29,7 +29,7 @@ export class StreetExplorer {
     this.currentTest = null;
     this.layers = makeLayerControl(this).addTo(this.map);
     this.settingsControl = null;
-    this.dynamicMovementLayer = null;
+    this.dynamicMouseoverLayer = null;
 
     // Add all tests to the sidebar
     loadTests();
@@ -260,11 +260,11 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
     }
     group.addLayer(
       "Geometry",
-      makePlainGeoJsonLayer(network, app.dynamicMovementLayer, app.map, group)
+      makePlainGeoJsonLayer(network, app.dynamicMouseoverLayer, app.map, group)
     );
     group.addLayer(
       "Lane polygons",
-      makeLanePolygonLayer(network, app.dynamicMovementLayer, app.map, group)
+      makeLanePolygonLayer(network, app.dynamicMouseoverLayer, app.map, group)
     );
     group.addLayer(
       "Lane markings",
@@ -293,7 +293,7 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       group.addLazyLayer("Geometry", () =>
         makePlainGeoJsonLayer(
           step.getNetwork(),
-          app.dynamicMovementLayer,
+          app.dynamicMouseoverLayer,
           app.map,
           null
         )
@@ -301,7 +301,7 @@ function importOSM(groupName, app, osmXML, addOSMLayer, boundaryGeojson) {
       group.addLazyLayer("Lane polygons", () =>
         makeLanePolygonLayer(
           step.getNetwork(),
-          app.dynamicMovementLayer,
+          app.dynamicMouseoverLayer,
           app.map,
           null
         )

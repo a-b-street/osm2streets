@@ -134,6 +134,20 @@ impl JsStreetNetwork {
             .unwrap()
     }
 
+    #[wasm_bindgen(js_name = debugRoadsConnectedToIntersectionGeojson)]
+    pub fn debug_roads_connected_to_intersection_geojson(&self, i: usize) -> String {
+        let mut polygons = Vec::new();
+        for r in &self.inner.intersections[&IntersectionID(i)].roads {
+            let road = &self.inner.roads[r];
+            polygons.push(
+                road.center_line
+                    .make_polygons(road.total_width())
+                    .to_geojson(Some(&self.inner.gps_bounds)),
+            );
+        }
+        abstutil::to_json(&geom::geometries_to_geojson(polygons))
+    }
+
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a
     // HashMap
     #[wasm_bindgen(js_name = getOsmTagsForWay)]
