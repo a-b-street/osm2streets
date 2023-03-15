@@ -549,6 +549,17 @@ fn add_sidewalks_and_shoulders(
         need_back_shoulder = false;
     }
 
+    // If it's a non-motorized road and we already have some walkable lane, we don't need
+    // shoulders
+    if fwd_side
+        .iter()
+        .chain(back_side.iter())
+        .any(|spec| spec.lt.is_walkable())
+    {
+        need_fwd_shoulder = false;
+        need_back_shoulder = false;
+    }
+
     // For living streets in Krakow, there aren't separate footways. People can walk in the street.
     // For now, model that by putting shoulders.
     if cfg.inferred_sidewalks || tags.is(osm::HIGHWAY, "living_street") {
@@ -604,7 +615,18 @@ fn osm_separation_type(x: &String) -> Option<BufferType> {
 // If sidewalks aren't explicitly tagged on a road, fill them in. This only happens when the map is
 // configured to have this inference.
 pub(crate) fn infer_sidewalk_tags(tags: &mut Tags, cfg: &MapConfig) {
-    if tags.contains_key("sidewalk") || !cfg.inferred_sidewalks {
+    if !cfg.inferred_sidewalks {
+        return;
+    }
+    // Already explicitly mapped
+    if tags.contains_key("sidewalk") {
+        return;
+    }
+    // A non-motorized road
+    if tags.is_any(
+        osm::HIGHWAY,
+        vec!["footway", "path", "pedestrian", "steps", "track"],
+    ) {
         return;
     }
 
