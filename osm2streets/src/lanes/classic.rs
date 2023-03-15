@@ -480,6 +480,15 @@ fn add_sidewalks_and_shoulders(
     tags: &Tags,
     cfg: &MapConfig,
 ) {
+    // Workaround broken things like https://www.openstreetmap.org/way/523882355. Sidewalks on a
+    // footway don't make sense.
+    if back_side.is_empty()
+        && fwd_side.len() == 1
+        && matches!(fwd_side[0].lt, LaneType::SharedUse | LaneType::Footway)
+    {
+        return;
+    }
+
     if tags.is("sidewalk", "both") {
         fwd_side.push(fwd(LaneType::Sidewalk));
         back_side.push(back(LaneType::Sidewalk));

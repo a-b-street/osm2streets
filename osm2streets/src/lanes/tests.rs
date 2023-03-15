@@ -243,6 +243,19 @@ fn test_osm_to_specs() {
             "F",
             "^",
         ),
+        (
+            // Sidewalks tagged on highway=footway are invalid
+            "https://www.openstreetmap.org/way/523882355",
+            vec![
+                "bicycle=yes",
+                "foot=yes",
+                "highway=footway",
+                "sidewalk=both",
+            ],
+            DrivingSide::Right,
+            "F",
+            "^",
+        ),
     ] {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;
