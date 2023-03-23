@@ -18,5 +18,5 @@ osm2streets = { path = "../osm2streets" }
 
 # boilerplate
 anyhow = { workspace = true }
-enum-map = "2.4.2"
+enum-map = "2.5.0"
 serde = { workspace = true }
