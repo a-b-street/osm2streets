@@ -155,6 +155,13 @@ impl JsStreetNetwork {
         abstutil::to_json(&self.ways[&osm::WayID(id)].tags)
     }
 
+    /// Returns the entire StreetNetwork as JSON. The API doesn't have guarantees about backwards
+    /// compatibility.
+    #[wasm_bindgen(js_name = toJson)]
+    pub fn to_json(&self) -> String {
+        abstutil::to_json(&self.inner)
+    }
+
     /// Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
     #[wasm_bindgen(js_name = getGeometryForWay)]
     pub fn get_geometry_for_way(&self, id: i64) -> String {

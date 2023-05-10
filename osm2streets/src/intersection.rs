@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{Circle, Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
@@ -28,6 +29,10 @@ pub struct Intersection {
 
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     // TODO Store start/end trim distance on _every_ road
+    #[serde(
+        serialize_with = "serialize_btreemap",
+        deserialize_with = "deserialize_btreemap"
+    )]
     pub trim_roads_for_merging: BTreeMap<(RoadID, bool), Pt2D>,
 }
 
