@@ -31,6 +31,7 @@
       },
       "properties": {
         "dst_i": 36,
+        "id": 0,
         "layer": 0,
         "osm_way_ids": [
           7978644
@@ -70,6 +71,7 @@
       },
       "properties": {
         "dst_i": 1,
+        "id": 1,
         "layer": 0,
         "osm_way_ids": [
           7978644
@@ -109,6 +111,7 @@
       },
       "properties": {
         "dst_i": 30,
+        "id": 3,
         "layer": 0,
         "osm_way_ids": [
           7978646,
@@ -149,6 +152,7 @@
       },
       "properties": {
         "dst_i": 3,
+        "id": 4,
         "layer": 0,
         "osm_way_ids": [
           7978646
@@ -188,6 +192,7 @@
       },
       "properties": {
         "dst_i": 80,
+        "id": 6,
         "layer": 0,
         "osm_way_ids": [
           331771747
@@ -227,6 +232,7 @@
       },
       "properties": {
         "dst_i": 1,
+        "id": 7,
         "layer": 0,
         "osm_way_ids": [
           331771747
@@ -266,6 +272,7 @@
       },
       "properties": {
         "dst_i": 8,
+        "id": 10,
         "layer": 0,
         "osm_way_ids": [
           363224303
@@ -305,6 +312,7 @@
       },
       "properties": {
         "dst_i": 10,
+        "id": 11,
         "layer": 0,
         "osm_way_ids": [
           428097444
@@ -352,6 +360,7 @@
       },
       "properties": {
         "dst_i": 62,
+        "id": 12,
         "layer": 0,
         "osm_way_ids": [
           428097445
@@ -391,6 +400,7 @@
       },
       "properties": {
         "dst_i": 9,
+        "id": 14,
         "layer": 0,
         "osm_way_ids": [
           428097447
@@ -430,6 +440,7 @@
       },
       "properties": {
         "dst_i": 83,
+        "id": 15,
         "layer": 0,
         "osm_way_ids": [
           428098916
@@ -469,6 +480,7 @@
       },
       "properties": {
         "dst_i": 13,
+        "id": 16,
         "layer": 0,
         "osm_way_ids": [
           428098916
@@ -508,6 +520,7 @@
       },
       "properties": {
         "dst_i": 21,
+        "id": 17,
         "layer": 0,
         "osm_way_ids": [
           456889627
@@ -555,6 +568,7 @@
       },
       "properties": {
         "dst_i": 79,
+        "id": 18,
         "layer": 0,
         "osm_way_ids": [
           456889627,
@@ -596,6 +610,7 @@
       },
       "properties": {
         "dst_i": 77,
+        "id": 19,
         "layer": 0,
         "osm_way_ids": [
           475713731
@@ -635,6 +650,7 @@
       },
       "properties": {
         "dst_i": 23,
+        "id": 20,
         "layer": 0,
         "osm_way_ids": [
           475713731
@@ -674,6 +690,7 @@
       },
       "properties": {
         "dst_i": 16,
+        "id": 21,
         "layer": 0,
         "osm_way_ids": [
           475713731
@@ -713,6 +730,7 @@
       },
       "properties": {
         "dst_i": 24,
+        "id": 22,
         "layer": 0,
         "osm_way_ids": [
           475713732,
@@ -753,6 +771,7 @@
       },
       "properties": {
         "dst_i": 45,
+        "id": 23,
         "layer": 0,
         "osm_way_ids": [
           475713732
@@ -792,6 +811,7 @@
       },
       "properties": {
         "dst_i": 68,
+        "id": 24,
         "layer": 0,
         "osm_way_ids": [
           475713733
@@ -831,6 +851,7 @@
       },
       "properties": {
         "dst_i": 19,
+        "id": 25,
         "layer": 0,
         "osm_way_ids": [
           475713733
@@ -870,6 +891,7 @@
       },
       "properties": {
         "dst_i": 56,
+        "id": 26,
         "layer": 0,
         "osm_way_ids": [
           475713735,
@@ -910,6 +932,7 @@
       },
       "properties": {
         "dst_i": 21,
+        "id": 27,
         "layer": 0,
         "osm_way_ids": [
           475713735
@@ -949,6 +972,7 @@
       },
       "properties": {
         "dst_i": 54,
+        "id": 31,
         "layer": 0,
         "osm_way_ids": [
           486283205
@@ -988,6 +1012,7 @@
       },
       "properties": {
         "dst_i": 34,
+        "id": 32,
         "layer": 0,
         "osm_way_ids": [
           486283205
@@ -1035,6 +1060,7 @@
       },
       "properties": {
         "dst_i": 24,
+        "id": 33,
         "layer": 0,
         "osm_way_ids": [
           486283205
@@ -1074,6 +1100,7 @@
       },
       "properties": {
         "dst_i": 21,
+        "id": 35,
         "layer": 0,
         "osm_way_ids": [
           490783259,
@@ -1114,6 +1141,7 @@
       },
       "properties": {
         "dst_i": 62,
+        "id": 36,
         "layer": 0,
         "osm_way_ids": [
           490783266
@@ -1153,6 +1181,7 @@
       },
       "properties": {
         "dst_i": 25,
+        "id": 37,
         "layer": 0,
         "osm_way_ids": [
           490783266,
@@ -1201,6 +1230,7 @@
       },
       "properties": {
         "dst_i": 84,
+        "id": 38,
         "layer": 0,
         "osm_way_ids": [
           490783267
@@ -1240,6 +1270,7 @@
       },
       "properties": {
         "dst_i": 81,
+        "id": 39,
         "layer": 0,
         "osm_way_ids": [
           490783267
@@ -1279,6 +1310,7 @@
       },
       "properties": {
         "dst_i": 30,
+        "id": 40,
         "layer": 0,
         "osm_way_ids": [
           490783267
@@ -1318,6 +1350,7 @@
       },
       "properties": {
         "dst_i": 25,
+        "id": 41,
         "layer": 0,
         "osm_way_ids": [
           490783267
@@ -1357,6 +1390,7 @@
       },
       "properties": {
         "dst_i": 27,
+        "id": 42,
         "layer": 0,
         "osm_way_ids": [
           490783267,
@@ -1405,6 +1439,7 @@
       },
       "properties": {
         "dst_i": 32,
+        "id": 44,
         "layer": 0,
         "osm_way_ids": [
           490783269
@@ -1444,6 +1479,7 @@
       },
       "properties": {
         "dst_i": 62,
+        "id": 45,
         "layer": 0,
         "osm_way_ids": [
           490785295
@@ -1483,6 +1519,7 @@
       },
       "properties": {
         "dst_i": 34,
+        "id": 47,
         "layer": 0,
         "osm_way_ids": [
           490785295
@@ -1522,6 +1559,7 @@
       },
       "properties": {
         "dst_i": 39,
+        "id": 49,
         "layer": 0,
         "osm_way_ids": [
           490785306
@@ -1561,6 +1599,7 @@
       },
       "properties": {
         "dst_i": 36,
+        "id": 50,
         "layer": 0,
         "osm_way_ids": [
           490785306
@@ -1608,6 +1647,7 @@
       },
       "properties": {
         "dst_i": 37,
+        "id": 51,
         "layer": 0,
         "osm_way_ids": [
           490785306
@@ -1655,6 +1695,7 @@
       },
       "properties": {
         "dst_i": 39,
+        "id": 52,
         "layer": 0,
         "osm_way_ids": [
           490785308
@@ -1710,6 +1751,7 @@
       },
       "properties": {
         "dst_i": 41,
+        "id": 53,
         "layer": 0,
         "osm_way_ids": [
           490785825,
@@ -1751,6 +1793,7 @@
       },
       "properties": {
         "dst_i": 47,
+        "id": 55,
         "layer": 0,
         "osm_way_ids": [
           490785830,
@@ -1791,6 +1834,7 @@
       },
       "properties": {
         "dst_i": 34,
+        "id": 57,
         "layer": 0,
         "osm_way_ids": [
           490785832,
@@ -1831,6 +1875,7 @@
       },
       "properties": {
         "dst_i": 43,
+        "id": 59,
         "layer": 0,
         "osm_way_ids": [
           490785837
@@ -1878,6 +1923,7 @@
       },
       "properties": {
         "dst_i": 45,
+        "id": 60,
         "layer": 0,
         "osm_way_ids": [
           490785837,
@@ -1918,6 +1964,7 @@
       },
       "properties": {
         "dst_i": 46,
+        "id": 61,
         "layer": 0,
         "osm_way_ids": [
           490785839
@@ -1957,6 +2004,7 @@
       },
       "properties": {
         "dst_i": 3,
+        "id": 65,
         "layer": 0,
         "osm_way_ids": [
           621646780,
@@ -1997,6 +2045,7 @@
       },
       "properties": {
         "dst_i": 24,
+        "id": 66,
         "layer": 0,
         "osm_way_ids": [
           670796677
@@ -2036,6 +2085,7 @@
       },
       "properties": {
         "dst_i": 67,
+        "id": 67,
         "layer": 0,
         "osm_way_ids": [
           687885754
@@ -2075,6 +2125,7 @@
       },
       "properties": {
         "dst_i": 51,
+        "id": 68,
         "layer": 0,
         "osm_way_ids": [
           687885754
@@ -2122,6 +2173,7 @@
       },
       "properties": {
         "dst_i": 54,
+        "id": 69,
         "layer": 0,
         "osm_way_ids": [
           712316019
@@ -2169,6 +2221,7 @@
       },
       "properties": {
         "dst_i": 62,
+        "id": 70,
         "layer": 0,
         "osm_way_ids": [
           712316019
@@ -2208,6 +2261,7 @@
       },
       "properties": {
         "dst_i": 56,
+        "id": 72,
         "layer": 0,
         "osm_way_ids": [
           712316019
@@ -2255,6 +2309,7 @@
       },
       "properties": {
         "dst_i": 78,
+        "id": 73,
         "layer": 0,
         "osm_way_ids": [
           712316019
@@ -2294,6 +2349,7 @@
       },
       "properties": {
         "dst_i": 57,
+        "id": 74,
         "layer": 0,
         "osm_way_ids": [
           712316019
@@ -2349,6 +2405,7 @@
       },
       "properties": {
         "dst_i": 96,
+        "id": 76,
         "layer": 0,
         "osm_way_ids": [
           735238605,
@@ -2392,6 +2449,7 @@
       },
       "properties": {
         "dst_i": 92,
+        "id": 77,
         "layer": 0,
         "osm_way_ids": [
           735238605
@@ -2431,6 +2489,7 @@
       },
       "properties": {
         "dst_i": 60,
+        "id": 78,
         "layer": 0,
         "osm_way_ids": [
           735238605
@@ -2470,6 +2529,7 @@
       },
       "properties": {
         "dst_i": 62,
+        "id": 81,
         "layer": 0,
         "osm_way_ids": [
           754995508
@@ -2509,6 +2569,7 @@
       },
       "properties": {
         "dst_i": 68,
+        "id": 86,
         "layer": 0,
         "osm_way_ids": [
           894958714
@@ -2548,6 +2609,7 @@
       },
       "properties": {
         "dst_i": 69,
+        "id": 87,
         "layer": 0,
         "osm_way_ids": [
           894958714
@@ -2603,6 +2665,7 @@
       },
       "properties": {
         "dst_i": 74,
+        "id": 89,
         "layer": 0,
         "osm_way_ids": [
           894958716,
@@ -2644,6 +2707,7 @@
       },
       "properties": {
         "dst_i": 74,
+        "id": 90,
         "layer": 0,
         "osm_way_ids": [
           894958717,
@@ -2693,6 +2757,7 @@
       },
       "properties": {
         "dst_i": 77,
+        "id": 95,
         "layer": 0,
         "osm_way_ids": [
           894958722
@@ -2732,6 +2797,7 @@
       },
       "properties": {
         "dst_i": 78,
+        "id": 96,
         "layer": 0,
         "osm_way_ids": [
           894958722
@@ -2771,6 +2837,7 @@
       },
       "properties": {
         "dst_i": 79,
+        "id": 97,
         "layer": 0,
         "osm_way_ids": [
           894958722
@@ -2826,6 +2893,7 @@
       },
       "properties": {
         "dst_i": 74,
+        "id": 98,
         "layer": 0,
         "osm_way_ids": [
           894958723,
@@ -2867,6 +2935,7 @@
       },
       "properties": {
         "dst_i": 81,
+        "id": 100,
         "layer": 0,
         "osm_way_ids": [
           1058899922
@@ -2914,6 +2983,7 @@
       },
       "properties": {
         "dst_i": 91,
+        "id": 101,
         "layer": 0,
         "osm_way_ids": [
           1058899922
@@ -2953,6 +3023,7 @@
       },
       "properties": {
         "dst_i": 85,
+        "id": 102,
         "layer": 0,
         "osm_way_ids": [
           1058899922
@@ -2992,6 +3063,7 @@
       },
       "properties": {
         "dst_i": 84,
+        "id": 105,
         "layer": 0,
         "osm_way_ids": [
           1058899923
@@ -3031,6 +3103,7 @@
       },
       "properties": {
         "dst_i": 85,
+        "id": 106,
         "layer": 0,
         "osm_way_ids": [
           1058899923
@@ -3070,6 +3143,7 @@
       },
       "properties": {
         "dst_i": 96,
+        "id": 107,
         "layer": 0,
         "osm_way_ids": [
           1058899923,
@@ -3111,6 +3185,7 @@
       },
       "properties": {
         "dst_i": 92,
+        "id": 110,
         "layer": 0,
         "osm_way_ids": [
           1058899926,
