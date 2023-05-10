@@ -33,6 +33,7 @@ impl StreetNetwork {
                     .make_polygons(road.total_width())
                     .to_geojson(Some(&self.gps_bounds)),
                 make_props(&[
+                    ("id", road.id.0.into()),
                     ("type", "road".into()),
                     (
                         "osm_way_ids",
