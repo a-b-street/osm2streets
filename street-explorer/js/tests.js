@@ -15,6 +15,7 @@ export function loadTests() {
     "montlake_roundabout",
     "northgate_dual_carriageway",
     "oneway_loop",
+    "overlapping_service_roads",
     "perth_peanut_roundabout",
     "perth_stretched_lights",
     "quad_intersection",

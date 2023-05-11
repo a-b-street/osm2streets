@@ -8,7 +8,7 @@ impl StreetNetwork {
     pub(crate) fn update_geometry(&mut self, id: IntersectionID) {
         let i = &self.intersections[&id];
 
-        // Update the polygon and Set trim distances for roads
+        // Update the polygon and set trim distances for roads
         let input_roads = i
             .roads
             .iter()
