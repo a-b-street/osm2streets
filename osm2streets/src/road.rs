@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use abstutil::Tags;
-use geom::{Angle, Distance, PolyLine};
+use geom::{Angle, Distance, PolyLine, Speed};
 
 use crate::lanes::RoadPosition;
 use crate::{
@@ -34,6 +34,9 @@ pub struct Road {
     /// The vertical layer of the road, with 0 the default and negative values lower down. See
     /// <https://wiki.openstreetmap.org/wiki/Key:layer>.
     pub layer: isize,
+    /// The max legal speed limit, if specified. See
+    /// <https://wiki.openstreetmap.org/wiki/Key:maxspeed>.
+    pub speed_limit: Option<Speed>,
 
     /// The original OSM geometry (slightly smoothed). This will extend beyond the extent of the
     /// resulting trimmed road, be positioned somewhere within the road according to the placement
@@ -117,6 +120,10 @@ impl Road {
             0
         };
 
+        let speed_limit = osm_tags
+            .get("maxspeed")
+            .and_then(|x| parse_maxspeed(x.as_ref()));
+
         // Ignoring errors for now.
         let placement = Placement::parse(&osm_tags).unwrap_or_else(|e| {
             warn!("bad placement value (using default): {e}");
@@ -136,6 +143,7 @@ impl Road {
             name: osm_tags.get("name").cloned(),
             internal_junction_road: osm_tags.is("junction", "intersection"),
             layer,
+            speed_limit,
             reference_line,
             reference_line_placement: placement,
             center_line: PolyLine::dummy(),
@@ -601,5 +609,35 @@ impl RoadEdge {
             }
         }
         edges
+    }
+}
+
+fn parse_maxspeed(maxspeed: &str) -> Option<Speed> {
+    if let Ok(kmph) = maxspeed.parse::<f64>() {
+        Some(Speed::km_per_hour(kmph))
+    } else if let Some(mph) = maxspeed
+        .strip_suffix(" mph")
+        .and_then(|x| x.parse::<f64>().ok())
+    {
+        Some(Speed::miles_per_hour(mph))
+    } else {
+        // TODO Fallback to https://github.com/westnordost/osm-legal-default-speeds
+        None
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_maxspeed() {
+        assert_eq!(Some(Speed::ZERO), parse_maxspeed("0"));
+        assert_eq!(Some(Speed::km_per_hour(30.5)), parse_maxspeed("30.5"));
+        assert_eq!(
+            Some(Speed::miles_per_hour(30.5)),
+            parse_maxspeed("30.5 mph")
+        );
+        assert_eq!(None, parse_maxspeed("30.5 mysteryunits"));
     }
 }

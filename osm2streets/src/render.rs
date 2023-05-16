@@ -110,6 +110,7 @@ impl StreetNetwork {
                         ("type", format!("{:?}", lane.lt).into()),
                         ("road", road.id.0.into()),
                         ("layer", road.layer.into()),
+                        ("speed_limit", format!("{:?}", road.speed_limit).into()),
                         ("index", idx.into()),
                         ("width", lane.width.inner_meters().into()),
                         ("direction", format!("{:?}", lane.dir).into()),

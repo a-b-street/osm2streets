@@ -69,6 +69,7 @@ impl InputRoad {
             name: None,
             internal_junction_road: false,
             layer: 0,
+            speed_limit: None,
             reference_line: PolyLine::dummy(),
             reference_line_placement: crate::lanes::Placement::Transition,
             trim_start: Distance::ZERO,
