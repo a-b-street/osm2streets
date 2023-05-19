@@ -8,9 +8,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "fmt": "prettier --write *.html js/* css/*"
+    "fmt": "prettier --write *.html src/* css/*",
+    "check": "tsc"
   },
   "devDependencies": {
+    "typescript": "^5.0.4",
     "vite": "^4.0.0",
     "vite-plugin-top-level-await": "^1.2.2",
     "vite-plugin-wasm-pack": "0.1.11"

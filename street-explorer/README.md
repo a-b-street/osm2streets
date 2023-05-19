@@ -13,6 +13,8 @@ npm run wasm
 npm run dev
 # To rebuild the Rust library and launch the local server
 npm run wasm && npm run dev
+# To just run type-checking
+npm run check
 ```
 
 You can edit HTML, CSS, and JS and just refresh the page immediately. If you
