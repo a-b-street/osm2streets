@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
+    osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
     StreetNetwork, Transformation,
 };
 
@@ -85,22 +85,24 @@ impl JsStreetNetwork {
     }
     #[wasm_bindgen(js_name = toGeojsonPlain)]
     pub fn to_geojson_plain(&self) -> String {
-        self.inner.to_geojson().unwrap()
+        self.inner.to_geojson(&Filter::All).unwrap()
     }
 
     #[wasm_bindgen(js_name = toLanePolygonsGeojson)]
     pub fn to_lane_polygons_geojson(&self) -> String {
-        self.inner.to_lane_polygons_geojson().unwrap()
+        self.inner.to_lane_polygons_geojson(&Filter::All).unwrap()
     }
 
     #[wasm_bindgen(js_name = toLaneMarkingsGeojson)]
     pub fn to_lane_markings_geojson(&self) -> String {
-        self.inner.to_lane_markings_geojson().unwrap()
+        self.inner.to_lane_markings_geojson(&Filter::All).unwrap()
     }
 
     #[wasm_bindgen(js_name = toIntersectionMarkingsGeojson)]
     pub fn to_intersection_markings_geojson(&self) -> String {
-        self.inner.to_intersection_markings_geojson().unwrap()
+        self.inner
+            .to_intersection_markings_geojson(&Filter::All)
+            .unwrap()
     }
 
     #[wasm_bindgen(js_name = toGraphviz)]
@@ -121,7 +123,9 @@ impl JsStreetNetwork {
 
     #[wasm_bindgen(js_name = debugClockwiseOrderingGeojson)]
     pub fn debug_clockwise_ordering_geojson(&self) -> String {
-        self.inner.debug_clockwise_ordering_geojson().unwrap()
+        self.inner
+            .debug_clockwise_ordering_geojson(&Filter::All)
+            .unwrap()
     }
 
     #[wasm_bindgen(js_name = debugMovementsFromLaneGeojson)]

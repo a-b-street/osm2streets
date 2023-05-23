@@ -21,6 +21,7 @@ pub use self::lanes::{
     NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
 };
 pub use self::operations::zip_sidepath::Sidepath;
+pub use self::render::Filter;
 pub use self::road::{Road, StopLine, TrafficInterruption};
 pub use self::transform::Transformation;
 pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};

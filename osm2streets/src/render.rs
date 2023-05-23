@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
@@ -11,13 +11,40 @@ use serde_json::Value;
 use crate::road::RoadEdge;
 use crate::{
     DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneSpec, LaneType,
-    Movement, Road, StreetNetwork,
+    Movement, Road, RoadID, StreetNetwork,
 };
+
+/// Specifies what roads and intersections to render.
+pub enum Filter {
+    All,
+    Filtered(BTreeSet<RoadID>, BTreeSet<IntersectionID>),
+}
+
+impl Filter {
+    fn roads<'a>(&'a self, streets: &'a StreetNetwork) -> Box<dyn Iterator<Item = &Road> + 'a> {
+        match self {
+            Filter::All => Box::new(streets.roads.values()),
+            Filter::Filtered(ref roads, _) => Box::new(roads.iter().map(|r| &streets.roads[r])),
+        }
+    }
+
+    fn intersections<'a>(
+        &'a self,
+        streets: &'a StreetNetwork,
+    ) -> Box<dyn Iterator<Item = &Intersection> + 'a> {
+        match self {
+            Filter::All => Box::new(streets.intersections.values()),
+            Filter::Filtered(_, ref intersections) => {
+                Box::new(intersections.iter().map(|i| &streets.intersections[i]))
+            }
+        }
+    }
+}
 
 impl StreetNetwork {
     /// Saves the plain GeoJSON rendering to a file.
     pub fn save_to_geojson(&self, output_path: String) -> Result<()> {
-        let json_output = self.to_geojson()?;
+        let json_output = self.to_geojson(&Filter::All)?;
         std::fs::create_dir_all(Path::new(&output_path).parent().unwrap())?;
         let mut file = File::create(output_path)?;
         file.write_all(json_output.as_bytes())?;
@@ -25,11 +52,11 @@ impl StreetNetwork {
     }
 
     /// Generates a plain GeoJSON rendering with one polygon per road and intersection.
-    pub fn to_geojson(&self) -> Result<String> {
+    pub fn to_geojson(&self, filter: &Filter) -> Result<String> {
         let mut features = Vec::new();
 
         // Add a polygon per road
-        for road in self.roads.values() {
+        for road in filter.roads(self) {
             let mut f = Feature::from(
                 road.center_line
                     .make_polygons(road.total_width())
@@ -48,7 +75,7 @@ impl StreetNetwork {
         }
 
         // Polygon per intersection
-        for intersection in self.intersections.values() {
+        for intersection in filter.intersections(self) {
             let mut f = Feature::from(intersection.polygon.to_geojson(Some(&self.gps_bounds)));
             f.set_property("id", intersection.id.0);
             f.set_property("type", "intersection");
@@ -87,10 +114,10 @@ impl StreetNetwork {
     }
 
     /// Generates a polygon per lane, with a property indicating type.
-    pub fn to_lane_polygons_geojson(&self) -> Result<String> {
+    pub fn to_lane_polygons_geojson(&self, filter: &Filter) -> Result<String> {
         let mut features = Vec::new();
 
-        for road in self.roads.values() {
+        for road in filter.roads(self) {
             for (idx, (lane, pl)) in road
                 .lane_specs_ltr
                 .iter()
@@ -129,11 +156,11 @@ impl StreetNetwork {
     }
 
     /// Generate polygons representing lane markings, with a property indicating type.
-    pub fn to_lane_markings_geojson(&self) -> Result<String> {
+    pub fn to_lane_markings_geojson(&self, filter: &Filter) -> Result<String> {
         let gps_bounds = Some(&self.gps_bounds);
         let mut features = Vec::new();
 
-        for road in self.roads.values() {
+        for road in filter.roads(self) {
             // Always oriented in the direction of the road
             let mut lane_centers = road.get_lane_center_lines();
 
@@ -263,13 +290,13 @@ impl StreetNetwork {
     }
 
     /// For an intersection, show the clockwise ordering of roads around it
-    pub fn debug_clockwise_ordering_geojson(&self) -> Result<String> {
+    pub fn debug_clockwise_ordering_geojson(&self, filter: &Filter) -> Result<String> {
         let mut features = Vec::new();
 
-        for (i, intersection) in &self.intersections {
+        for intersection in filter.intersections(self) {
             for (idx, r) in intersection.roads.iter().enumerate() {
                 let road = &self.roads[r];
-                let pt = if road.src_i == *i {
+                let pt = if road.src_i == intersection.id {
                     road.center_line.first_pt()
                 } else {
                     road.center_line.last_pt()
@@ -303,9 +330,9 @@ impl StreetNetwork {
         serialize_features(features)
     }
 
-    pub fn to_intersection_markings_geojson(&self) -> Result<String> {
+    pub fn to_intersection_markings_geojson(&self, filter: &Filter) -> Result<String> {
         let mut features = Vec::new();
-        for intersection in self.intersections.values() {
+        for intersection in filter.intersections(self) {
             for polygon in make_sidewalk_corners(self, intersection) {
                 let mut f = Feature::from(polygon.to_geojson(Some(&self.gps_bounds)));
                 f.set_property("type", "sidewalk corner");
