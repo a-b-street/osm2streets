@@ -4,7 +4,9 @@ use std::io::Write;
 use std::path::Path;
 
 use anyhow::Result;
+use geojson::Feature;
 use geom::{ArrowCap, Distance, Line, PolyLine, Polygon, Ring};
+use serde_json::Value;
 
 use crate::road::RoadEdge;
 use crate::{
@@ -24,77 +26,69 @@ impl StreetNetwork {
 
     /// Generates a plain GeoJSON rendering with one polygon per road and intersection.
     pub fn to_geojson(&self) -> Result<String> {
-        let mut pairs = Vec::new();
+        let mut features = Vec::new();
 
         // Add a polygon per road
         for road in self.roads.values() {
-            pairs.push((
+            let mut f = Feature::from(
                 road.center_line
                     .make_polygons(road.total_width())
                     .to_geojson(Some(&self.gps_bounds)),
-                make_props(&[
-                    ("id", road.id.0.into()),
-                    ("type", "road".into()),
-                    (
-                        "osm_way_ids",
-                        serde_json::Value::Array(
-                            road.osm_ids.iter().map(|id| id.0.into()).collect(),
-                        ),
-                    ),
-                    ("src_i", road.src_i.0.into()),
-                    ("dst_i", road.dst_i.0.into()),
-                    ("layer", road.layer.into()),
-                ]),
-            ));
+            );
+            f.set_property("id", road.id.0);
+            f.set_property("type", "road");
+            f.set_property(
+                "osm_way_ids",
+                Value::Array(road.osm_ids.iter().map(|id| id.0.into()).collect()),
+            );
+            f.set_property("src_i", road.src_i.0);
+            f.set_property("dst_i", road.dst_i.0);
+            f.set_property("layer", road.layer);
+            features.push(f);
         }
 
         // Polygon per intersection
         for intersection in self.intersections.values() {
-            pairs.push((
-                intersection.polygon.to_geojson(Some(&self.gps_bounds)),
-                make_props(&[
-                    ("id", intersection.id.0.into()),
-                    ("type", "intersection".into()),
-                    (
-                        "osm_node_ids",
-                        serde_json::Value::Array(
-                            intersection.osm_ids.iter().map(|id| id.0.into()).collect(),
-                        ),
-                    ),
-                    (
-                        "intersection_kind",
-                        format!("{:?}", intersection.kind).into(),
-                    ),
-                    ("control", format!("{:?}", intersection.control).into()),
-                    (
-                        "movements",
-                        serde_json::Value::Array(
-                            intersection
-                                .movements
-                                .iter()
-                                .map(|(a, b)| format!("{a} -> {b}").into())
-                                .collect(),
-                        ),
-                    ),
-                ]),
-            ));
+            let mut f = Feature::from(intersection.polygon.to_geojson(Some(&self.gps_bounds)));
+            f.set_property("id", intersection.id.0);
+            f.set_property("type", "intersection");
+            f.set_property(
+                "osm_node_ids",
+                Value::Array(intersection.osm_ids.iter().map(|id| id.0.into()).collect()),
+            );
+            f.set_property("intersection_kind", format!("{:?}", intersection.kind));
+            f.set_property("control", format!("{:?}", intersection.control));
+            f.set_property(
+                "movements",
+                Value::Array(
+                    intersection
+                        .movements
+                        .iter()
+                        .map(|(a, b)| format!("{a} -> {b}").into())
+                        .collect(),
+                ),
+            );
+            features.push(f);
         }
 
-        let mut geojson = geom::geometries_with_properties_to_geojson(pairs);
         // Plumb along the country code, so this value shows up in unit tests
-        if let geojson::GeoJson::FeatureCollection(ref mut fc) = geojson {
-            fc.foreign_members = Some(make_props(&[(
-                "country_code",
-                self.config.country_code.clone().into(),
-            )]));
-        }
-        let output = serde_json::to_string_pretty(&geojson)?;
+        let mut foreign_members = serde_json::Map::new();
+        foreign_members.insert(
+            "country_code".to_string(),
+            self.config.country_code.clone().into(),
+        );
+        let gj = geojson::GeoJson::from(geojson::FeatureCollection {
+            bbox: None,
+            features,
+            foreign_members: Some(foreign_members),
+        });
+        let output = serde_json::to_string_pretty(&gj)?;
         Ok(output)
     }
 
     /// Generates a polygon per lane, with a property indicating type.
     pub fn to_lane_polygons_geojson(&self) -> Result<String> {
-        let mut pairs = Vec::new();
+        let mut features = Vec::new();
 
         for road in self.roads.values() {
             for (idx, (lane, pl)) in road
@@ -103,47 +97,41 @@ impl StreetNetwork {
                 .zip(road.get_lane_center_lines().into_iter())
                 .enumerate()
             {
-                pairs.push((
+                let mut f = Feature::from(
                     pl.make_polygons(lane.width)
                         .to_geojson(Some(&self.gps_bounds)),
-                    make_props(&[
-                        ("type", format!("{:?}", lane.lt).into()),
-                        ("road", road.id.0.into()),
-                        ("layer", road.layer.into()),
-                        ("speed_limit", format!("{:?}", road.speed_limit).into()),
-                        ("index", idx.into()),
-                        ("width", lane.width.inner_meters().into()),
-                        ("direction", format!("{:?}", lane.dir).into()),
-                        (
-                            "allowed_turns",
-                            serde_json::Value::Array(
-                                lane.allowed_turns
-                                    .iter()
-                                    .map(|d| d.tag_value().into())
-                                    .collect(),
-                            ),
-                        ),
-                        (
-                            "osm_way_ids",
-                            serde_json::Value::Array(
-                                road.osm_ids.iter().map(|id| id.0.into()).collect(),
-                            ),
-                        ),
-                    ]),
-                ));
+                );
+                f.set_property("type", format!("{:?}", lane.lt));
+                f.set_property("road", road.id.0);
+                f.set_property("layer", road.layer);
+                f.set_property("speed_limit", format!("{:?}", road.speed_limit));
+                f.set_property("index", idx);
+                f.set_property("width", lane.width.inner_meters());
+                f.set_property("direction", format!("{:?}", lane.dir));
+                f.set_property(
+                    "allowed_turns",
+                    Value::Array(
+                        lane.allowed_turns
+                            .iter()
+                            .map(|d| d.tag_value().into())
+                            .collect(),
+                    ),
+                );
+                f.set_property(
+                    "osm_way_ids",
+                    Value::Array(road.osm_ids.iter().map(|id| id.0.into()).collect()),
+                );
+                features.push(f);
             }
         }
 
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
+        serialize_features(features)
     }
 
     /// Generate polygons representing lane markings, with a property indicating type.
     pub fn to_lane_markings_geojson(&self) -> Result<String> {
         let gps_bounds = Some(&self.gps_bounds);
-
-        let mut pairs = Vec::new();
+        let mut features = Vec::new();
 
         for road in self.roads.values() {
             // Always oriented in the direction of the road
@@ -161,13 +149,10 @@ impl StreetNetwork {
                         Distance::meters(2.0),
                         Distance::meters(1.0),
                     ) {
-                        pairs.push((
-                            poly.to_geojson(gps_bounds),
-                            make_props(&[
-                                ("type", "center line".into()),
-                                ("layer", road.layer.into()),
-                            ]),
-                        ));
+                        let mut f = Feature::from(poly.to_geojson(gps_bounds));
+                        f.set_property("type", "center line");
+                        f.set_property("layer", road.layer);
+                        features.push(f);
                     }
                     continue;
                 }
@@ -180,13 +165,10 @@ impl StreetNetwork {
                         Distance::meters(1.0),
                         Distance::meters(1.5),
                     ) {
-                        pairs.push((
-                            poly.to_geojson(gps_bounds),
-                            make_props(&[
-                                ("type", "lane separator".into()),
-                                ("layer", road.layer.into()),
-                            ]),
-                        ));
+                        let mut f = Feature::from(poly.to_geojson(gps_bounds));
+                        f.set_property("type", "lane separator");
+                        f.set_property("layer", road.layer);
+                        features.push(f);
                     }
                 }
             }
@@ -194,10 +176,9 @@ impl StreetNetwork {
             // Stop line distances are relative to the direction of the road, not the lane!
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
                 for (polygon, kind) in draw_stop_lines(lane, center, road) {
-                    pairs.push((
-                        polygon.to_geojson(gps_bounds),
-                        make_props(&[("type", kind.into())]),
-                    ));
+                    let mut f = Feature::from(polygon.to_geojson(gps_bounds));
+                    f.set_property("type", kind);
+                    features.push(f);
                 }
             }
 
@@ -226,10 +207,10 @@ impl StreetNetwork {
                     .make_arrow(thickness * 2.0, ArrowCap::Triangle)
                     .get_outer_ring()
                     .to_outline(thickness / 2.0);
-                    pairs.push((
-                        arrow.to_geojson(gps_bounds),
-                        make_props(&[("type", "lane arrow".into()), ("layer", road.layer.into())]),
-                    ));
+                    let mut f = Feature::from(arrow.to_geojson(gps_bounds));
+                    f.set_property("type", "lane arrow");
+                    f.set_property("layer", road.layer);
+                    features.push(f);
                 }
             }
 
@@ -242,20 +223,18 @@ impl StreetNetwork {
 
                 // Mark the sides of the lane clearly
                 let thickness = Distance::meters(0.25);
-                pairs.push((
-                    center
-                        .must_shift_right((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .to_geojson(gps_bounds),
-                    make_props(&[("type", "buffer edge".into()), ("layer", road.layer.into())]),
-                ));
-                pairs.push((
-                    center
-                        .must_shift_left((lane.width - thickness) / 2.0)
-                        .make_polygons(thickness)
-                        .to_geojson(gps_bounds),
-                    make_props(&[("type", "buffer edge".into()), ("layer", road.layer.into())]),
-                ));
+                for dir in [-1.0, 1.0] {
+                    let mut f = Feature::from(
+                        center
+                            .shift_either_direction(dir * (lane.width - thickness) / 2.0)
+                            .unwrap()
+                            .make_polygons(thickness)
+                            .to_geojson(gps_bounds),
+                    );
+                    f.set_property("type", "buffer edge");
+                    f.set_property("layer", road.layer);
+                    features.push(f);
+                }
 
                 // Diagonal stripes along the lane
                 let step_size = Distance::meters(3.0);
@@ -268,27 +247,24 @@ impl StreetNetwork {
                         lane.width / 2.0 + thickness,
                         angle.rotate_degs(45.0).opposite(),
                     );
-                    pairs.push((
+                    let mut f = Feature::from(
                         Line::must_new(left, right)
                             .make_polygons(thickness)
                             .to_geojson(gps_bounds),
-                        make_props(&[
-                            ("type", "buffer stripe".into()),
-                            ("layer", road.layer.into()),
-                        ]),
-                    ));
+                    );
+                    f.set_property("type", "buffer stripe");
+                    f.set_property("layer", road.layer);
+                    features.push(f);
                 }
             }
         }
 
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
+        serialize_features(features)
     }
 
     /// For an intersection, show the clockwise ordering of roads around it
     pub fn debug_clockwise_ordering_geojson(&self) -> Result<String> {
-        let mut pairs = Vec::new();
+        let mut features = Vec::new();
 
         for (i, intersection) in &self.intersections {
             for (idx, r) in intersection.roads.iter().enumerate() {
@@ -298,74 +274,16 @@ impl StreetNetwork {
                 } else {
                     road.center_line.last_pt()
                 };
-                pairs.push((
-                    pt.to_geojson(Some(&self.gps_bounds)),
-                    make_props(&[(
-                        "label",
-                        format!("{} / {}", idx + 1, intersection.roads.len()).into(),
-                    )]),
-                ));
+                let mut f = Feature::from(pt.to_geojson(Some(&self.gps_bounds)));
+                f.set_property(
+                    "label",
+                    format!("{} / {}", idx + 1, intersection.roads.len()),
+                );
+                features.push(f);
             }
         }
 
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
-    }
-
-    fn movements_for_intersection(&self, i: IntersectionID) -> Vec<(Movement, Polygon)> {
-        // Each movement is represented as an arrow from the end of one road to the beginning of
-        // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
-        // the center to the appropriate driving side.
-        let arrow_fwd_offset_dist = if self.config.driving_side == DrivingSide::Right {
-            Distance::meters(-1.3)
-        } else {
-            Distance::meters(1.3)
-        };
-
-        // Find the points where the arrows should (leave, enter) the roads.
-        let road_points: BTreeMap<_, _> = self.intersections[&i]
-            .roads
-            .iter()
-            .map(|r| {
-                let road = &self.roads[r];
-                let first_road_segment = if road.src_i == i {
-                    road.center_line.first_line()
-                } else {
-                    road.center_line.last_line().reversed()
-                };
-                // Offset the arrow start/end points if it is bidirectional.
-                (
-                    r,
-                    if road.oneway_for_driving().is_some() {
-                        (first_road_segment.pt1(), first_road_segment.pt1())
-                    } else {
-                        (
-                            first_road_segment
-                                .shift_either_direction(arrow_fwd_offset_dist)
-                                .pt1(),
-                            first_road_segment
-                                .shift_either_direction(-arrow_fwd_offset_dist)
-                                .pt1(),
-                        )
-                    },
-                )
-            })
-            .collect();
-
-        let mut result = Vec::new();
-        for (a, b) in &self.intersections[&i].movements {
-            if a != b {
-                if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
-                    result.push((
-                        (*a, *b),
-                        line.to_polyline()
-                            .make_arrow(Distance::meters(0.5), ArrowCap::Triangle),
-                    ));
-                }
-            }
-        }
-        result
+        serialize_features(features)
     }
 
     pub fn debug_movements_from_lane_geojson(&self, id: LaneID) -> Result<String> {
@@ -376,65 +294,105 @@ impl StreetNetwork {
             road.src_i
         };
 
-        let mut pairs = Vec::new();
-        for ((from, _), polygon) in self.movements_for_intersection(i) {
+        let mut features = Vec::new();
+        for ((from, _), polygon) in movements_for_intersection(self, i) {
             if from == road.id {
-                pairs.push((polygon.to_geojson(Some(&self.gps_bounds)), make_props(&[])));
+                features.push(Feature::from(polygon.to_geojson(Some(&self.gps_bounds))));
             }
         }
-
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
+        serialize_features(features)
     }
 
     pub fn to_intersection_markings_geojson(&self) -> Result<String> {
-        let mut pairs = Vec::new();
-
+        let mut features = Vec::new();
         for intersection in self.intersections.values() {
             for polygon in make_sidewalk_corners(self, intersection) {
-                pairs.push((
-                    polygon.to_geojson(Some(&self.gps_bounds)),
-                    make_props(&[("type", "sidewalk corner".into())]),
-                ));
+                let mut f = Feature::from(polygon.to_geojson(Some(&self.gps_bounds)));
+                f.set_property("type", "sidewalk corner");
+                features.push(f);
             }
         }
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        let output = serde_json::to_string_pretty(&obj)?;
-        Ok(output)
+        serialize_features(features)
     }
 }
 
 impl DebugStreets {
     /// None if there's nothing labelled
     pub fn to_debug_geojson(&self) -> Option<String> {
-        let mut pairs = Vec::new();
+        let mut features = Vec::new();
         for (pt, label) in &self.points {
-            pairs.push((
-                pt.to_geojson(Some(&self.streets.gps_bounds)),
-                make_props(&[("label", label.to_string().into())]),
-            ));
+            let mut f = Feature::from(pt.to_geojson(Some(&self.streets.gps_bounds)));
+            f.set_property("label", label.to_string());
+            features.push(f);
         }
         for (pl, label) in &self.polylines {
-            pairs.push((
-                pl.to_geojson(Some(&self.streets.gps_bounds)),
-                make_props(&[("label", label.to_string().into())]),
-            ));
+            let mut f = Feature::from(pl.to_geojson(Some(&self.streets.gps_bounds)));
+            f.set_property("label", label.to_string());
+            features.push(f);
         }
-        if pairs.is_empty() {
+        if features.is_empty() {
             return None;
         }
-        let obj = geom::geometries_with_properties_to_geojson(pairs);
-        Some(serde_json::to_string_pretty(&obj).unwrap())
+        Some(serialize_features(features).unwrap())
     }
 }
 
-fn make_props(list: &[(&str, serde_json::Value)]) -> serde_json::Map<String, serde_json::Value> {
-    let mut props = serde_json::Map::new();
-    for (x, y) in list {
-        props.insert(x.to_string(), y.clone());
+fn movements_for_intersection(
+    streets: &StreetNetwork,
+    i: IntersectionID,
+) -> Vec<(Movement, Polygon)> {
+    // Each movement is represented as an arrow from the end of one road to the beginning of
+    // another. To stop arrows overlapping, arrows to/from bidirectional roads are offset from
+    // the center to the appropriate driving side.
+    let arrow_fwd_offset_dist = if streets.config.driving_side == DrivingSide::Right {
+        Distance::meters(-1.3)
+    } else {
+        Distance::meters(1.3)
+    };
+
+    // Find the points where the arrows should (leave, enter) the roads.
+    let road_points: BTreeMap<_, _> = streets.intersections[&i]
+        .roads
+        .iter()
+        .map(|r| {
+            let road = &streets.roads[r];
+            let first_road_segment = if road.src_i == i {
+                road.center_line.first_line()
+            } else {
+                road.center_line.last_line().reversed()
+            };
+            // Offset the arrow start/end points if it is bidirectional.
+            (
+                r,
+                if road.oneway_for_driving().is_some() {
+                    (first_road_segment.pt1(), first_road_segment.pt1())
+                } else {
+                    (
+                        first_road_segment
+                            .shift_either_direction(arrow_fwd_offset_dist)
+                            .pt1(),
+                        first_road_segment
+                            .shift_either_direction(-arrow_fwd_offset_dist)
+                            .pt1(),
+                    )
+                },
+            )
+        })
+        .collect();
+
+    let mut result = Vec::new();
+    for (a, b) in &streets.intersections[&i].movements {
+        if a != b {
+            if let Ok(line) = Line::new(road_points[a].0, road_points[b].1) {
+                result.push((
+                    (*a, *b),
+                    line.to_polyline()
+                        .make_arrow(Distance::meters(0.5), ArrowCap::Triangle),
+                ));
+            }
+        }
     }
-    props
+    result
 }
 
 // TODO Where should this live?
@@ -572,4 +530,14 @@ fn draw_stop_lines(
     // TODO Change the rendering based on interruption too
 
     results
+}
+
+fn serialize_features(features: Vec<Feature>) -> Result<String> {
+    let gj = geojson::GeoJson::from(geojson::FeatureCollection {
+        bbox: None,
+        features,
+        foreign_members: None,
+    });
+    let output = serde_json::to_string_pretty(&gj)?;
+    Ok(output)
 }
