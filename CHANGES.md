@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.1.4
+
+- Add `debugClockwiseOrderingForIntersectionGeojson`
+- Add speed limit to roads
+- Bugfixes
+
 ## 0.1.3
 
 - New API calls to dump the entire StreetNetwork as JSON
