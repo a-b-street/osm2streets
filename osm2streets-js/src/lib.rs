@@ -128,6 +128,16 @@ impl JsStreetNetwork {
             .unwrap()
     }
 
+    // TODO Can we take Filter as input here?
+    #[wasm_bindgen(js_name = debugClockwiseOrderingForIntersectionGeojson)]
+    pub fn debug_clockwise_ordering_for_intersection_geojson(&self, intersection: usize) -> String {
+        let mut intersections = BTreeSet::new();
+        intersections.insert(IntersectionID(intersection));
+        self.inner
+            .debug_clockwise_ordering_geojson(&Filter::Filtered(BTreeSet::new(), intersections))
+            .unwrap()
+    }
+
     #[wasm_bindgen(js_name = debugMovementsFromLaneGeojson)]
     pub fn debug_movements_from_lane_geojson(&self, road: usize, index: usize) -> String {
         self.inner
