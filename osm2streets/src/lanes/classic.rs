@@ -462,10 +462,15 @@ fn add_bike_lanes(
 
 fn add_parking_lanes(fwd_side: &mut Vec<LaneSpec>, back_side: &mut Vec<LaneSpec>, tags: &Tags) {
     let has_parking = vec!["parallel", "diagonal", "perpendicular"];
-    let parking_lane_fwd = tags.is_any("parking:lane:right", has_parking.clone())
-        || tags.is_any("parking:lane:both", has_parking.clone());
-    let parking_lane_back = tags.is_any("parking:lane:left", has_parking.clone())
-        || tags.is_any("parking:lane:both", has_parking);
+    let parking_lane_both =
+        tags.is("parking:both", "lane") || tags.is_any("parking:lane:both", has_parking.clone());
+    let parking_lane_fwd = parking_lane_both
+        || tags.is("parking:right", "lane")
+        || tags.is_any("parking:lane:right", has_parking.clone());
+    let parking_lane_back = parking_lane_both
+        || tags.is("parking:left", "lane")
+        || tags.is_any("parking:lane:left", has_parking);
+
     if parking_lane_fwd {
         fwd_side.push(fwd(LaneType::Parking));
     }
