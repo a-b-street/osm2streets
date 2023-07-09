@@ -14,4 +14,4 @@ Read [how it works](docs/how_it_works.md)
 
 See the `tests` crate [(docs)](tests/README.md) for a collection of interesting example scenarios.
 
-See `street-explorer` crate [(docs)](street-explorer/README.md) for a *Street Explorer* test browsing interface.
+See the [web app](web/README.md) for a test browsing interface.
