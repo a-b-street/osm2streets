@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "wasm": "wasm-pack build --dev --target web ../osm2streets-js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -28,7 +29,6 @@
     "@mapbox/mapbox-gl-draw": "^1.4.1",
     "@turf/bbox": "^6.5.0",
     "maplibre-gl": "^3.1.0",
-    "osm2streets-js": "^0.1.4",
     "svelte-maplibre": "^0.3.1"
   }
 }
