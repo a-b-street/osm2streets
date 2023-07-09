@@ -12,7 +12,9 @@
   import { bbox, downloadGeneratedFile } from "../utils";
   import Osm2streetsSettings from "./Osm2streetsSettings.svelte";
 
-  // This component sets the global network and boundaryGj stores
+  // This component manages a state machine for importing OSM data (from
+  // Overpass or built-in files) and letting the user change import settings. It
+  // sets the global network and boundaryGj stores.
 
   interface Settings {
     debug_each_step: boolean;

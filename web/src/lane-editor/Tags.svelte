@@ -7,7 +7,7 @@
   }>();
 
   // Immutable; use https://svelte.dev/tutorial/key-blocks around this entire
-  // compoenent to change
+  // component to change
   export let way: bigint;
 
   interface Tag {
