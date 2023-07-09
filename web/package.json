@@ -1,0 +1,33 @@
+{
+  "name": "osm2streets-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "fmt": "npx prettier --write *.html src/**"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tsconfig/svelte": "^4.0.1",
+    "prettier": "^2.8.8",
+    "prettier-plugin-svelte": "^2.10.1",
+    "svelte": "^4.0.0",
+    "svelte-check": "^3.4.4",
+    "tslib": "^2.6.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9",
+    "vite-plugin-wasm-pack": "0.1.11"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.4.1",
+    "@turf/bbox": "^6.5.0",
+    "maplibre-gl": "^3.1.0",
+    "osm2streets-js": "^0.1.4",
+    "svelte-maplibre": "^0.3.1"
+  }
+}
