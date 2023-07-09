@@ -8,12 +8,12 @@
   delete props.osm_way_ids;
 
   function collapse() {
-    $network.collapseShortRoad(lane.properties.rod);
+    $network.collapseShortRoad(lane.properties.road);
     $network = $network;
   }
 
   function zip() {
-    $network.zipSidepath(lane.properties.rod);
+    $network.zipSidepath(lane.properties.road);
     $network = $network;
   }
 </script>

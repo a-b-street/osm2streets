@@ -48,8 +48,6 @@
   // Also exported for callers to trigger manually
   export async function importPolygon(boundaryGj: Feature<Polygon>) {
     try {
-      // TODO We could plumb through events for "loading" if the UI wants to be
-      // more detailed
       dispatch("loading", "Loading from Overpass");
       let resp = await fetch(overpassQueryForPolygon(boundaryGj));
       let osmXml = await resp.text();
