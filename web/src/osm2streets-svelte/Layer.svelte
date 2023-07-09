@@ -9,6 +9,8 @@
   import { map } from "./store";
   import { emptyGeojson, getLayerZorder } from "./utils";
 
+  // This component manages a GeoJSON source with exactly one MapLibre layer attached to it.
+
   // Input
   export let source: string;
   export let show = true;

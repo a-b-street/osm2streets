@@ -3,7 +3,9 @@ import type { Map } from "maplibre-gl";
 import type { JsStreetNetwork } from "osm2streets-js";
 import { writable, type Writable } from "svelte/store";
 
-// Global singletons. If they're non-null, then they're loaded and ready to use
+// These are all global singleton values, available anywhere in the code. When
+// they're non-null, then they're loaded and ready to use.
+
 export const map: Writable<Map | null> = writable(null);
 export const network: Writable<JsStreetNetwork | null> = writable(null);
 export const boundaryGj: Writable<Feature<Polygon> | null> = writable(null);

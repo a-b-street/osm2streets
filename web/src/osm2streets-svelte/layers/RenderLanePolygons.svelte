@@ -18,7 +18,7 @@
     paint: {
       "fill-color": caseHelper(
         "type",
-        // TODO Could we be type-safe here?!
+        // TODO Could we express the Rust enum in TS and be type-safe here?
         {
           Driving: "black",
           Parking: "#333333",

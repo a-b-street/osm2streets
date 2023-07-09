@@ -20,8 +20,9 @@
   });
 
   $: {
-    // TODO Not sure if we can get the DOM contents of a component by doing this
     if ($clickedLane) {
+      // Instantiate the Svelte component manually, so we can then put the DOM
+      // it creates into the popup
       let container = document.createElement("div");
       new LanePopup({
         target: container,
