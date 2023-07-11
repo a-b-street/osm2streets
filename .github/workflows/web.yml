@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Build web app
         run: |
