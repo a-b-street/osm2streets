@@ -1,84 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>street explorer</title>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-
-    
-    
-
-    
-    <script type="module" crossorigin src="/osm2streets/assets/main-5e4a7914.js"></script>
-    <link rel="modulepreload" crossorigin href="/osm2streets/assets/@vite-plugin-wasm-pack@osm2streets-js-934b91af.js">
-    <link rel="stylesheet" href="/osm2streets/assets/@vite-plugin-wasm-pack@osm2streets-js-7fefe251.css">
-    <link rel="stylesheet" href="/osm2streets/assets/index-a2eba77a.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StreetExplorer</title>
+    <script type="module" crossorigin src="/osm2svelte/assets/main-b149a9b5.js"></script>
+    <link rel="modulepreload" crossorigin href="/osm2svelte/assets/Map-4025d0a0.js">
+    <link rel="stylesheet" href="/osm2svelte/assets/Map-b53b118c.css">
+    <link rel="stylesheet" href="/osm2svelte/assets/index-aeae64ea.css">
   </head>
   <body>
-    <aside>
-      <header>
-        <h1>StreetExplorer</h1>
-        <p>
-          Understanding OSM streets &amp; intersections with
-          <a href="https://github.com/a-b-street/osm2streets" target="_blank"
-            >osm2streets</a
-          >
-          &amp;
-          <a href="https://github.com/a-b-street/osm2lanes" target="_blank"
-            >osm2lanes</a
-          >.
-        </p>
-      </header>
-
-      <form id="import-settings">
-        <details class="fieldset">
-          <summary>Processing Options</summary>
-          <label>
-            <input name="debugEachStep" type="checkbox" />Debug each
-            transformation step
-          </label>
-          <label>
-            <input name="dualCarriagewayExperiment" type="checkbox" />Enable
-            dual carriageway experiment
-          </label>
-          <label>
-            <input name="sidepathZippingExperiment" type="checkbox" />Enable
-            sidepath zipping experiment
-          </label>
-          <label>
-            <input name="osm2lanes" type="checkbox" />Enable osm2lanes
-            experiment
-          </label>
-          <div>
-            Sidewalks:
-            <label>
-              <input name="sidewalks" type="radio" value="mapped" checked />use
-              mapped footways
-            </label>
-            <label>
-              <input name="sidewalks" type="radio" value="infer" />infer on
-              roads
-            </label>
-          </div>
-        </details>
-      </form>
-
-      <fieldset>
-        <legend>
-          <select id="test-list">
-            <option value="">No test case</option>
-            <option value="dynamic" hidden>Custom imported area</option>
-          </select>
-        </legend>
-        <div id="view-controls">
-          <button type="button" id="import-view">import current view</button>
-        </div>
-      </fieldset>
-    </aside>
-    <div id="map"></div>
+    <div id="app"></div>
+    
   </body>
 </html>
