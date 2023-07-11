@@ -9,6 +9,7 @@
   div {
     float: left;
     padding: 8px;
+    box-sizing: border-box;
   }
 
   .left {
@@ -17,7 +18,6 @@
     overflow: scroll;
   }
   .main {
-    /* TODO 75% wraps?! */
-    width: 73%;
+    width: 75%;
   }
 </style>
