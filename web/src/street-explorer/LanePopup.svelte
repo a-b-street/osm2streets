@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Feature } from "geojson";
-  import { network } from "../osm2streets-svelte/store";
+  import { network } from "../osm2streets-svelte";
 
   export let lane: Feature;
 

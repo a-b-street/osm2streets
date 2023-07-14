@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { network } from "../osm2streets-svelte/store";
+  import { network } from "../osm2streets-svelte";
 
   const dispatch = createEventDispatcher<{
     editedWay: bigint;

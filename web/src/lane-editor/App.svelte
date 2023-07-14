@@ -2,10 +2,9 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
+  import { Layout, Map } from "../osm2streets-svelte";
   import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
   import MainLayers from "../osm2streets-svelte/layers/MainLayers.svelte";
-  import Layout from "../osm2streets-svelte/Layout.svelte";
-  import Map from "../osm2streets-svelte/Map.svelte";
   import EditWayControls from "./EditWayControls.svelte";
 
   onMount(async () => {
