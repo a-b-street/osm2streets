@@ -4,7 +4,7 @@
 
   let editedWays: Set<bigint> = new Set();
 
-  export function handleEditedWay(e) {
+  export function handleEditedWay(e: CustomEvent<bigint>) {
     editedWays.add(e.detail);
     editedWays = editedWays;
   }
@@ -14,7 +14,7 @@
     contents += `<create/>\n`;
     contents += `<modify>\n`;
     for (let id of editedWays) {
-      contents += $network.wayToXml(id);
+      contents += $network!.wayToXml(id);
       contents += "\n";
     }
     contents += `</modify>\n`;

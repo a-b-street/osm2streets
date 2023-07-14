@@ -26,7 +26,7 @@
       });
       // TODO Not sure what point to base the popup at. Use turf centroid at least, maybe
       let center = $clickedLane.geometry.coordinates[0][0] as [number, number];
-      popup.setLngLat(center).setDOMContent(container).addTo($map);
+      popup.setLngLat(center).setDOMContent(container).addTo($map!);
     } else if ($clickedIntersection) {
       let container = document.createElement("div");
       new IntersectionPopup({
@@ -37,7 +37,7 @@
         number,
         number
       ];
-      popup.setLngLat(center).setDOMContent(container).addTo($map);
+      popup.setLngLat(center).setDOMContent(container).addTo($map!);
     } else {
       popup.remove();
     }

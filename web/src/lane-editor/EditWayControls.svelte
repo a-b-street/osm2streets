@@ -8,7 +8,7 @@
   let allEdits: AllEdits;
 
   let way: bigint | null = null;
-  let gj: GeoJSON | null = null;
+  let gj: GeoJSON | undefined = undefined;
 
   let layerStyle = {
     type: "fill",
@@ -20,7 +20,7 @@
 
   $: {
     way = null;
-    gj = null;
+    gj = undefined;
 
     if ($clickedLane) {
       if ($clickedLane.properties.osm_way_ids.length != 1) {

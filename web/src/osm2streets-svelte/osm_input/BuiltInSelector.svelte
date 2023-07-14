@@ -9,7 +9,7 @@
     error: string;
   }>();
 
-  export let testCase;
+  export let testCase: string;
   let list: string[] = [];
 
   onMount(async () => {
@@ -47,7 +47,7 @@
         boundaryGj,
         osmXml,
       });
-    } catch (err) {
+    } catch (err: any) {
       dispatch("error", err.toString());
     }
   }

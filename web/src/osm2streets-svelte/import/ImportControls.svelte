@@ -38,7 +38,7 @@
   let imported: Imported = { kind: "nothing" };
 
   let settings: Settings;
-  let overpassSelector;
+  let overpassSelector: OverpassSelector;
   let testCase =
     new URLSearchParams(window.location.search).get("test") || "none";
 
@@ -79,7 +79,7 @@
 
       networkStore.set(imported.network);
       boundaryGjStore.set(imported.boundaryGj);
-    } catch (err) {
+    } catch (err: any) {
       imported = { kind: "error", msg: err.toString() };
     }
   }
@@ -125,11 +125,13 @@
   function loading(e: CustomEvent<string>) {
     imported = { kind: "loading", msg: e.detail };
   }
+
+  let mustMap = $map!;
 </script>
 
 <OverpassSelector
   bind:this={overpassSelector}
-  map={$map}
+  map={mustMap}
   on:loading={loading}
   on:load={load}
   on:resetToNone={resetToNone}

@@ -1,7 +1,7 @@
 <script lang="ts">
   import MapboxDraw from "@mapbox/mapbox-gl-draw";
   import type { Feature, Polygon } from "geojson";
-  import type { IControl, Map } from "maplibre-gl";
+  import type { IControl, LngLat, Map } from "maplibre-gl";
   import { createEventDispatcher, onDestroy } from "svelte";
   import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
   import type { OsmSelection } from "./types";
@@ -19,8 +19,11 @@
   $: if (map && !drawControls) {
     // TODO Hack from https://github.com/maplibre/maplibre-gl-js/issues/2601.
     // Remove dependency on this entirely.
+    // @ts-ignore
     MapboxDraw.constants.classes.CONTROL_BASE = "maplibregl-ctrl";
+    // @ts-ignore
     MapboxDraw.constants.classes.CONTROL_PREFIX = "maplibregl-ctrl-";
+    // @ts-ignore
     MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
 
     drawControls = new MapboxDraw({
@@ -34,7 +37,7 @@
 
     map.on("draw.create", async (e) => {
       let boundaryGj = e.features[0];
-      drawControls.deleteAll();
+      drawControls!.deleteAll();
       await importPolygon(boundaryGj);
     });
   }
@@ -57,7 +60,7 @@
         boundaryGj,
         osmXml,
       });
-    } catch (err) {
+    } catch (err: any) {
       dispatch("error", err.toString());
     }
   }
@@ -74,7 +77,7 @@
     return `https://overpass-api.de/api/interpreter?data=${query}`;
   }
 
-  function latLngToGeojson(pt): [number, number] {
+  function latLngToGeojson(pt: LngLat): [number, number] {
     return [pt.lng, pt.lat];
   }
 

@@ -1,14 +1,15 @@
 <script lang="ts">
-  import type { Feature } from "geojson";
+  import type { Polygon } from "geojson";
   import { network } from "../osm2streets-svelte";
+  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
 
-  export let intersection: Feature;
+  export let intersection: FeatureWithProps<Polygon>;
 
   let props = structuredClone(intersection.properties);
   delete props.osm_node_ids;
 
   function collapse() {
-    $network.collapseIntersection(intersection.properties.id);
+    $network!.collapseIntersection(intersection.properties.id);
     $network = $network;
   }
 </script>

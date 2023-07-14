@@ -1,5 +1,5 @@
 import turfBbox from "@turf/bbox";
-import type { FeatureCollection, GeoJSON } from "geojson";
+import type { Feature, FeatureCollection, GeoJSON, Geometry } from "geojson";
 import { get } from "svelte/store";
 import { map as mapStore } from "./store";
 
@@ -56,8 +56,13 @@ export function bbox(gj: GeoJSON): [number, number, number, number] {
   return turfBbox(gj) as [number, number, number, number];
 }
 
+// Properties are guaranteed to exist
+export type FeatureWithProps<G extends Geometry> = Feature<G> & {
+  properties: { [name: string]: any };
+};
+
 export function getLayerZorder(layer: string): string | undefined {
-  let map = get(mapStore);
+  let map = get(mapStore)!;
   // layerZorder lists all layers in the desired z-order. map.addLayer takes an
   // optional beforeId, placing the new layer beneath this beforeId. Due to
   // hot-module reloading and Svelte component initialization being

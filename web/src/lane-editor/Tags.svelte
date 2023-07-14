@@ -45,7 +45,7 @@
   }
 
   function recalculate() {
-    let obj = {};
+    let obj: { [name: string]: string } = {};
     for (let tag of tags) {
       // Skip empty keys and values
       if (tag.key && tag.value) {

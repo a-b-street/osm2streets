@@ -88,7 +88,7 @@
   }
 
   $: {
-    let sourceObj = $map.getSource(source);
+    let sourceObj = $map!.getSource(source);
     if (sourceObj) {
       console.log(`GeoJSON data for ${source} changed, updating`);
       fixIDs();
@@ -109,17 +109,18 @@
   }
 
   function onMouseMove(e: MapLayerMouseEvent) {
-    if (e.features.length > 0 && hoverId != e.features[0].id) {
+    let features = e.features ?? [];
+    if (features.length > 0 && hoverId != features[0].id) {
       unhover();
       // generateId means this'll be a number
-      hoverId = e.features[0].id as number;
+      hoverId = features[0].id as number;
       $map!.setFeatureState({ source, id: hoverId }, { hover: true });
 
       // Per
       // https://maplibre.org/maplibre-gl-js-docs/api/map/#map#queryrenderedfeatures,
       // array and object properties aren't returned. So find the original
       // object in the source.
-      if ("features" in gj) {
+      if (gj && "features" in gj) {
         hoveredFeature = gj.features.find((f) => f.id == hoverId)!;
       }
     }
@@ -141,7 +142,7 @@
       clickedId = features[0].id as number;
       $map!.setFeatureState({ source, id: clickedId }, { clicked: true });
 
-      if ("features" in gj) {
+      if (gj && "features" in gj) {
         clickedFeature = gj.features.find((f) => f.id == clickedId)!;
       }
     } else {
