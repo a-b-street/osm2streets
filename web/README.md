@@ -13,6 +13,7 @@ To run locally you'll need:
 
 - `npm install` to install dependencies
 - `npm run wasm` to rebuild the `osm2streets-js` Rust library
+  - or `npm run wasm-release` to compile more slowly, but run faster in the browser
 - `npm run dev` to work locally
   - If you're modifying the Rust code, a handy command is `npm run wasm && npm run dev`
 - `npm run fmt` to auto-format code

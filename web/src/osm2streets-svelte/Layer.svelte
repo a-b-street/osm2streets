@@ -2,6 +2,7 @@
   import type { Feature, GeoJSON } from "geojson";
   import type {
     GeoJSONSource,
+    LngLat,
     MapLayerMouseEvent,
     MapMouseEvent,
   } from "maplibre-gl";
@@ -24,6 +25,7 @@
   // Output
   export let hoveredFeature: Feature | null = null;
   export let clickedFeature: Feature | null = null;
+  export let clickedFeaturePosition: LngLat | null = null;
 
   // An opaque ID assigned by this component
   let hoverId: number | undefined;
@@ -97,6 +99,7 @@
       hoveredFeature = null;
       hoverId = undefined;
       clickedFeature = null;
+      clickedFeaturePosition = null;
       clickedId = undefined;
     }
   }
@@ -144,9 +147,11 @@
 
       if (gj && "features" in gj) {
         clickedFeature = gj.features.find((f) => f.id == clickedId)!;
+        clickedFeaturePosition = e.lngLat;
       }
     } else {
       clickedFeature = null;
+      clickedFeaturePosition = null;
       clickedId = undefined;
     }
   }

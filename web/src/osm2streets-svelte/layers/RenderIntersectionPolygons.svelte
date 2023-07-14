@@ -2,7 +2,12 @@
   import type { GeoJSON } from "geojson";
   import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
-  import { clickedIntersection, hoveredIntersection, network } from "../store";
+  import {
+    clickedIntersection,
+    clickedIntersectionPosition,
+    hoveredIntersection,
+    network,
+  } from "../store";
   import { caseHelper, featureStateToggle } from "../utils";
 
   let gj: GeoJSON | undefined = undefined;
@@ -39,6 +44,7 @@
   interactive
   bind:hoveredFeature={$hoveredIntersection}
   bind:clickedFeature={$clickedIntersection}
+  bind:clickedFeaturePosition={$clickedIntersectionPosition}
   {show}
 />
 <LayerControls {gj} name="Intersection polygons" bind:show />

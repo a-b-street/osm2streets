@@ -29,7 +29,7 @@ jobs:
       - name: Build web app
         run: |
           cd web
-          wasm-pack build --release --target web ../osm2streets-js
+          npm run wasm-release
           npm ci
           npm run build --if-present
 

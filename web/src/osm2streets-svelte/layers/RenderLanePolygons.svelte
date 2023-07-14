@@ -2,7 +2,12 @@
   import type { GeoJSON } from "geojson";
   import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
-  import { clickedLane, hoveredLane, network } from "../store";
+  import {
+    clickedLane,
+    clickedLanePosition,
+    hoveredLane,
+    network,
+  } from "../store";
   import { caseHelper, featureStateToggle } from "../utils";
 
   let gj: GeoJSON | undefined = undefined;
@@ -48,6 +53,7 @@
   interactive
   bind:clickedFeature={$clickedLane}
   bind:hoveredFeature={$hoveredLane}
+  bind:clickedFeaturePosition={$clickedLanePosition}
   {show}
 />
 <LayerControls {gj} name="Lane polygons" bind:show />

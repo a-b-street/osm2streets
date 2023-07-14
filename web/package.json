@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "wasm": "wasm-pack build --dev --target web ../osm2streets-js",
+    "wasm-release": "wasm-pack build --release --target web ../osm2streets-js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
