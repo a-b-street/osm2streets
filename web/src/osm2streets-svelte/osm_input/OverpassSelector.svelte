@@ -6,7 +6,7 @@
   import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
   import type { OsmSelection } from "./types";
 
-  export let map: Map;
+  export let map: Map | null;
 
   const dispatch = createEventDispatcher<{
     loading: string;
@@ -82,8 +82,8 @@
   }
 
   // Turn the current viewport into a rectangular boundary
-  function mapBoundsToGeojson(map: Map): Feature<Polygon> {
-    let b = map.getBounds();
+  function mapBoundsToGeojson(): Feature<Polygon> {
+    let b = map!.getBounds();
     return {
       type: "Feature",
       properties: {},
@@ -103,11 +103,14 @@
   }
 
   async function importCurrentView() {
+    if (!map) {
+      return;
+    }
     if (map.getZoom() < 15) {
       dispatch("error", "Zoom in more to import");
       return;
     }
-    await importPolygon(mapBoundsToGeojson(map));
+    await importPolygon(mapBoundsToGeojson());
   }
 </script>
 

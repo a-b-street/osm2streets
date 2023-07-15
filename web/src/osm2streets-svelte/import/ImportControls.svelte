@@ -125,13 +125,11 @@
   function loading(e: CustomEvent<string>) {
     imported = { kind: "loading", msg: e.detail };
   }
-
-  let mustMap = $map!;
 </script>
 
 <OverpassSelector
   bind:this={overpassSelector}
-  map={mustMap}
+  map={$map}
   on:loading={loading}
   on:load={load}
   on:resetToNone={resetToNone}
