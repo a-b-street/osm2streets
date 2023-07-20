@@ -9,7 +9,8 @@ rust-version = "1.66"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 enumset = { version = "1.0.12", features=["serde"] }
-geo = "0.24.0"
+geo = "0.26.0"
+geojson = "0.24.1"
 geom = { git = "https://github.com/a-b-street/abstreet" }
 itertools = "0.10.5"
 log = "0.4.14"
@@ -19,4 +20,3 @@ osm-tag-schemes = { git = "https://github.com/a-b-street/osm2lanes" }
 petgraph = { version = "0.6.3" }
 serde = { workspace = true }
 serde_json = { workspace = true }
-geojson = "0.24.0"
