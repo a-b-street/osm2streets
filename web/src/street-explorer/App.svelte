@@ -17,6 +17,12 @@
   <div slot="left">
     <h1>osm2streets Street Explorer</h1>
     <AppSwitcher />
+    <p>
+      Understanding OSM streets &amp; intersections with
+      <a href="https://github.com/a-b-street/osm2streets" target="_blank"
+        >osm2streets</a
+      >.
+    </p>
     <hr />
 
     <ImportControls />

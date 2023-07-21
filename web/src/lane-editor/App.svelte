@@ -16,6 +16,12 @@
   <div slot="left">
     <h1>osm2streets lane editor</h1>
     <AppSwitcher />
+    <p>
+      Improve OSM lane tagging with
+      <a href="https://github.com/a-b-street/osm2streets" target="_blank"
+        >osm2streets</a
+      >.
+    </p>
     <hr />
 
     <ImportControls />
