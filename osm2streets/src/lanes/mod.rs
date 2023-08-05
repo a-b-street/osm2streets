@@ -1,5 +1,4 @@
-mod classic;
-mod osm2lanes;
+mod algorithm;
 mod placement;
 #[cfg(test)]
 mod tests;
@@ -13,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use geom::Distance;
 
 use crate::DrivingSide;
-pub use classic::get_lane_specs_ltr;
+pub use algorithm::get_lane_specs_ltr;
 
 pub const NORMAL_LANE_THICKNESS: Distance = Distance::const_meters(3.0);
 const SERVICE_ROAD_LANE_THICKNESS: Distance = Distance::const_meters(2.0);

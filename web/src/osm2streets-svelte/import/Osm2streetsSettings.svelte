@@ -4,7 +4,6 @@
     dual_carriageway_experiment: false,
     sidepath_zipping_experiment: false,
     inferred_sidewalks: false,
-    osm2lanes: false,
   };
 </script>
 
@@ -27,10 +26,6 @@
       bind:checked={settings.sidepath_zipping_experiment}
     />
     Enable sidepath zipping experiment
-  </label>
-  <label>
-    <input type="checkbox" bind:checked={settings.osm2lanes} />
-    Enable osm2lanes experiment
   </label>
   <div>
     Sidewalks:

@@ -16,7 +16,6 @@ pub struct ImportOptions {
     dual_carriageway_experiment: bool,
     sidepath_zipping_experiment: bool,
     inferred_sidewalks: bool,
-    osm2lanes: bool,
 }
 
 #[wasm_bindgen]
@@ -55,7 +54,6 @@ impl JsStreetNetwork {
 
         let mut cfg = MapConfig::default();
         cfg.inferred_sidewalks = input.inferred_sidewalks;
-        cfg.osm2lanes = input.osm2lanes;
 
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =

@@ -6,13 +6,8 @@ use geom::Distance;
 use crate::lanes::TurnDirection;
 use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig};
 
-/// Purely from OSM tags, determine the lanes that a road segment has. This is the "classic"
-/// implementation -- the default, but on its way out.
+/// Purely from OSM tags, determine the lanes that a road segment has.
 pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
-    if cfg.osm2lanes {
-        return super::osm2lanes::get_lane_specs_ltr_experimental(tags, cfg);
-    }
-
     // TODO This hides a potentially expensive (on a hot-path) clone
     let mut tags = tags.clone();
     // This'll do weird things for the special cases of railways and cycleways/footways, but the

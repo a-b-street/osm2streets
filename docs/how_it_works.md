@@ -6,7 +6,7 @@ As of November 2022, and probably incomplete. This describes how the codebase cu
 
 At its heart, a graph of roads and intersections. A `Road` is a segment of road that leads between exactly two `Intersection`s. An `Intersection`'s kind tells you if it represents a real-life intersection or some other kind of node in the graph. A `MapEdge` connects a single `Road` the edge of the map, a `Terminus` marks an actual dead end. A `Connection` joins multiple `Road`s together where there is no traffic interaction at all, whereas a `Fork` joins multiple roads that merge or diverge without any stop line. Finally, an `IntersectionKind::Intersection` represents everything that you would actually call an "intersection", where traffic merges with, diverges from or crosses other traffic.
 
-Roads have their lanes listed from left-to-right, each with a type, width, and direction. A lane represents any longitudinal feature of a road: travel lanes on the carriageway, separated bike and footpaths, street-side parking, and buffers, medians and verges. Note osm2streets doesn't model bidirectional lanes yet -- sidewalks and shared center turn lanes are either forwards or backwards right now, and something downstream interprets them in a special way. (osm2lanes has more nuance, but isn't used in osm2streets yet.)
+Roads have their lanes listed from left-to-right, each with a type, width, and direction. A lane represents any longitudinal feature of a road: travel lanes on the carriageway, separated bike and footpaths, street-side parking, and buffers, medians and verges. Note osm2streets doesn't model bidirectional lanes yet -- sidewalks and shared center turn lanes are either forwards or backwards right now, and something downstream interprets them in a special way.
 
 ### IDs
 
@@ -23,7 +23,7 @@ Roads and intersections have opaque (meaningless) IDs. At the very beginning, th
 
 Extraction is straightforward. Since OSM ways often cross many intersections, they don't form a graph yet, so the split step finds nodes common to multiple ways and declares those intersections. Very small roundabouts also get collapsed to a single point here (a hack!). Raw turn restriction data and traffic signal nodes are also matched to a road. After this step, we have the first cut of a `StreetNetwork`. There are no movements filled out and geometry is almost exactly what OSM has.
 
-But from this point, roads do have their lanes filled out, parsed from OSM tags. That currently uses `osm2streets/src/lanes/classic.rs`, but will use a separate project `osm2lanes` in the future.
+But from this point, roads do have their lanes filled out, parsed from OSM tags. That currently uses `osm2streets/src/lanes/algorithm.rs`.
 
 Clipping takes the boundary polygon (which should be passed in explicitly, but can also just be the bounding box around the input XML) and removes roads totally out of bounds. Roads crossing the boundary will get clipped to the boundary, and that intersection will be marked as a map edge.
 

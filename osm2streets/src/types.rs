@@ -73,9 +73,6 @@ pub struct MapConfig {
     pub street_parking_spot_length: Distance,
     /// If true, turns on red which do not conflict crossing traffic ('right on red') are allowed
     pub turn_on_red: bool,
-    /// If true, use experimental osm2lanes for figuring out lanes per road. If false, use the
-    /// classic algorithm.
-    pub osm2lanes: bool,
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
     pub include_railroads: bool,
 }
@@ -90,7 +87,6 @@ impl MapConfig {
             inferred_sidewalks: false,
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
-            osm2lanes: false,
             include_railroads: true,
         }
     }

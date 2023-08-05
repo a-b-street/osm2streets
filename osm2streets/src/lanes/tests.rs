@@ -2,9 +2,6 @@ use abstutil::Tags;
 
 use crate::{get_lane_specs_ltr, Direction, DrivingSide, MapConfig};
 
-// osm2lanes has a more extensive unit test suite, so why does this one exist? This also checks the
-// translation from osm2lanes output into osm2streets. This is particularly useful during migration
-// to osm2lanes (https://github.com/a-b-street/osm2lanes/issues/248).
 #[test]
 fn test_osm_to_specs() {
     abstutil::logger::setup();

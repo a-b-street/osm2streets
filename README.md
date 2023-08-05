@@ -94,7 +94,6 @@ The osm2streets library itself (Rust):
 - [osm2streets](https://github.com/a-b-street/osm2streets/tree/main/osm2streets) with the schema, transformations, rendering, etc
 - [streets_reader](https://github.com/a-b-street/osm2streets/tree/main/streets_reader) to read `osm.xml` input
 - [experimental](https://github.com/a-b-street/osm2streets/tree/main/osm2streets): an experimental crate for experimenting with implementation details.
-- The logic for calculating lanes for a single road will eventually be owned by [osm2lanes](https://github.com/a-b-street/osm2lanes)
 
 Bindings for other languages:
 
