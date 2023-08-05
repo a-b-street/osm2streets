@@ -517,29 +517,6 @@ fn add_sidewalks_and_shoulders(
         }
     }
 
-    // Playing fast-and-loose here (and not checking the lane being modified is a sidewalk) because
-    // of imminent cutover to osm2lanes, where this will be done way more carefully
-    if let Some(x) = tags
-        .get("sidewalk:left:width")
-        .and_then(|num| num.parse::<f64>().ok())
-    {
-        if cfg.driving_side == DrivingSide::Right {
-            back_side.last_mut().unwrap().width = Distance::meters(x);
-        } else {
-            fwd_side.last_mut().unwrap().width = Distance::meters(x);
-        }
-    }
-    if let Some(x) = tags
-        .get("sidewalk:right:width")
-        .and_then(|num| num.parse::<f64>().ok())
-    {
-        if cfg.driving_side == DrivingSide::Right {
-            fwd_side.last_mut().unwrap().width = Distance::meters(x);
-        } else {
-            back_side.last_mut().unwrap().width = Distance::meters(x);
-        }
-    }
-
     let mut need_fwd_shoulder = fwd_side
         .last()
         .map(|spec| spec.lt != LaneType::Sidewalk)

@@ -256,6 +256,19 @@ fn test_osm_to_specs() {
             "F",
             "^",
         ),
+        (
+            // Lots of detail about sidewalk:left, but no "sidewalk=left" or similar
+            "https://www.openstreetmap.org/way/148338681",
+            vec![
+                "highway=residential",
+                "lanes=1",
+                "oneway=yes",
+                "sidewalk:left:width=0.9",
+            ],
+            DrivingSide::Right,
+            "d",
+            "^",
+        ),
     ] {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;
