@@ -2,7 +2,8 @@ use std::collections::BTreeSet;
 
 use geom::PolyLine;
 
-use crate::lanes::RoadPosition;
+use osm2lanes::RoadPosition;
+
 use crate::{
     BufferType, Direction, DrivingSide, LaneSpec, LaneType, Placement, RoadID, StreetNetwork,
 };

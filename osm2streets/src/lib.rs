@@ -16,24 +16,23 @@ pub use self::ids::{CommonEndpoint, IntersectionID, LaneID, RoadID};
 pub use self::intersection::{
     Intersection, IntersectionControl, IntersectionKind, Movement, TrafficConflict,
 };
-pub use self::lanes::{
-    get_lane_specs_ltr, BufferType, Direction, LaneSpec, LaneType, Placement,
-    NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
-};
 pub use self::operations::zip_sidepath::Sidepath;
 pub use self::render::Filter;
 pub use self::road::{Road, StopLine, TrafficInterruption};
 pub use self::transform::Transformation;
-pub use self::types::{DrivingSide, MapConfig, NamePerLanguage};
+pub use self::types::NamePerLanguage;
 
-mod edit;
+// Re-export osm2lanes types for an easier refactor. TODO Stop doing this.
+pub use osm2lanes::{
+    get_lane_specs_ltr, osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig,
+    Placement, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
+};
+
 mod geometry;
 mod ids;
 mod intersection;
-mod lanes;
 mod marking;
 mod operations;
-pub mod osm;
 mod output;
 mod paint;
 mod pathfinding;

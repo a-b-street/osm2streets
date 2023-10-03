@@ -4,7 +4,8 @@ use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficIn
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
-use crate::lanes::{RoadPosition, TrafficClass};
+use osm2lanes::{RoadPosition, TrafficClass};
+
 use crate::marking::{LongitudinalLine, RoadMarking, Transverse};
 use crate::paint::PaintArea;
 

@@ -3,7 +3,7 @@ use crate::{marking, marking::RoadMarking};
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Distance, Line, PolyLine, Polygon, Pt2D, Ring};
 
-use crate::lanes::TrafficClass;
+use osm2lanes::TrafficClass;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct PaintArea {

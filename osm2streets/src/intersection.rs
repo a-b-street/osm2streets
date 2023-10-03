@@ -4,7 +4,9 @@ use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{Circle, Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
-use crate::{osm, DrivingSide, IntersectionID, RoadID, StreetNetwork};
+use osm2lanes::osm;
+
+use crate::{DrivingSide, IntersectionID, RoadID, StreetNetwork};
 use TrafficConflict::*;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

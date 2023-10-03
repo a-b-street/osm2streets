@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "experimental",
+    "osm2lanes",
     "osm2streets",
     "osm2streets-java",
     "osm2streets-js",

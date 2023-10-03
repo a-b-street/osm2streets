@@ -3,8 +3,9 @@ use std::iter;
 use abstutil::Tags;
 use geom::Distance;
 
-use crate::lanes::TurnDirection;
-use crate::{osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig};
+use crate::{
+    osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection,
+};
 
 /// Purely from OSM tags, determine the lanes that a road segment has.
 pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {

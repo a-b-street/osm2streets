@@ -704,6 +704,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "osm2lanes"
+version = "0.1.0"
+dependencies = [
+ "abstutil",
+ "anyhow",
+ "enumset",
+ "geom",
+ "serde",
+]
+
+[[package]]
 name = "osm2streets"
 version = "0.1.0"
 dependencies = [
@@ -715,6 +726,7 @@ dependencies = [
  "geom",
  "itertools",
  "log",
+ "osm2lanes",
  "petgraph",
  "serde",
  "serde_json",

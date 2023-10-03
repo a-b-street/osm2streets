@@ -71,7 +71,7 @@ impl InputRoad {
             layer: 0,
             speed_limit: None,
             reference_line: PolyLine::dummy(),
-            reference_line_placement: crate::lanes::Placement::Transition,
+            reference_line_placement: osm2lanes::Placement::Transition,
             trim_start: Distance::ZERO,
             trim_end: Distance::ZERO,
             turn_restrictions: Vec::new(),

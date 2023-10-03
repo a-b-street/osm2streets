@@ -3,7 +3,6 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use abstutil::{deserialize_btreemap, serialize_btreemap, Tags};
-use geom::Distance;
 
 /// None corresponds to the native name
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
@@ -46,54 +45,4 @@ impl NamePerLanguage {
     pub fn languages(&self) -> Vec<&String> {
         self.0.keys().flatten().collect()
     }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct MapConfig {
-    /// If true, driving happens on the right side of the road (USA). If false, on the left
-    /// (Australia).
-    ///
-    /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
-    /// to set it.
-    pub driving_side: DrivingSide,
-    /// The [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) where
-    /// this network exists. Note osm2streets doesn't support areas that cross country boundaries.
-    ///
-    /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
-    /// to set it.
-    pub country_code: String,
-    pub bikes_can_use_bus_lanes: bool,
-    /// If true, roads without explicitly tagged sidewalks may be assigned sidewalks or shoulders.
-    /// If false, no inference will occur and separate sidewalks and crossings will be included.
-    pub inferred_sidewalks: bool,
-    /// Street parking is divided into spots of this length. 8 meters is a reasonable default, but
-    /// people in some regions might be more accustomed to squeezing into smaller spaces. This
-    /// value can be smaller than the hardcoded maximum car length; cars may render on top of each
-    /// other, but otherwise the simulation doesn't care.
-    pub street_parking_spot_length: Distance,
-    /// If true, turns on red which do not conflict crossing traffic ('right on red') are allowed
-    pub turn_on_red: bool,
-    /// OSM railway=rail will be included as light rail if so. Cosmetic only.
-    pub include_railroads: bool,
-}
-
-impl MapConfig {
-    pub fn default() -> Self {
-        Self {
-            // Just a dummy value that'll be set later
-            driving_side: DrivingSide::Right,
-            country_code: String::new(),
-            bikes_can_use_bus_lanes: true,
-            inferred_sidewalks: false,
-            street_parking_spot_length: Distance::meters(8.0),
-            turn_on_red: true,
-            include_railroads: true,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq)]
-pub enum DrivingSide {
-    Right,
-    Left,
 }

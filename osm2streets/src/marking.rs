@@ -14,8 +14,7 @@ use enumset::EnumSet;
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Line, PolyLine, Polygon, Pt2D};
 
-use crate::lanes::{TrafficClass, TurnDirection};
-use crate::LaneType;
+use osm2lanes::{LaneType, TrafficClass, TurnDirection};
 
 /// A marking painted on the road surface to direct traffic.
 pub enum RoadMarking {
