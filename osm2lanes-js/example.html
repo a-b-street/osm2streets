@@ -2,7 +2,10 @@
   <head>
     <title>osm2lanes-js demo</title>
     <script type="module">
-      import init, { getLaneSpecs } from "./pkg/osm2lanes_js.js";
+      // Use the published NPM version by default:
+      import init, { getLaneSpecs } from "https://unpkg.com/osm2lanes-js/osm2lanes_js.js";
+      // Or uncomment below and follow the instructions on the page to build locally
+      //import init, { getLaneSpecs } from "./pkg/osm2lanes_js.js";
 
       // You have to do this once to set up the WASM API
       await init();
@@ -65,9 +68,10 @@
   </head>
   <body>
     <h1>osm2lanes-js demo</h1>
-    <p>To run this example:</p>
+    <p>To run this example using a local build:</p>
     <ol>
       <li>wasm-pack build --release --target web</li>
+      <li>Modify this file and swap the import to not use unpkg</li>
       <li>python3 -m http.server --directory .</li>
       <li>Open http://0.0.0.0:8000/example.html</li>
     </ol>
