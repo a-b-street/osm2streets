@@ -4,6 +4,12 @@
 # https://www.npmjs.com/package/osm2streets-js-node. It's necessary until
 # wasm-pack can generate one package that works both in web browsers and Node:
 # https://github.com/rustwasm/wasm-pack/issues/313
+#
+# Note it's unnecessary for osm2lanes-js (until someone needs to use it in Node). For that, just:
+# 1) cd osm2lanes-js
+# 2) Bump the version in Cargo.toml
+# 3) rm -rf pkg; wasm-pack build --release --target web
+# 4) Check things, then cd pkg; npm publish
 
 set -e
 

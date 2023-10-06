@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <title>osm2lanes-js demo</title>
+    <script type="module">
+      import init, { getLaneSpecs } from "./pkg/osm2lanes_js.js";
+
+      // You have to do this once to set up the WASM API
+      await init();
+
+      let inputTagsTextArea = document.getElementById("input-tags");
+      let inputConfigTextArea = document.getElementById("input-config");
+      let outputTextArea = document.getElementById("output");
+
+      // Start with something initially
+      inputTagsTextArea.value = JSON.stringify(
+        {
+          highway: "residential",
+          lanes: "2",
+          sidewalk: "left",
+        },
+        null,
+        2
+      );
+      inputConfigTextArea.value = JSON.stringify(
+        {
+          // Only the first two are useful to set. These can be easily looked
+          // up from a single lat/lon coordinate; if it's helpful, that can be
+          // added to the API.
+          driving_side: "Right",
+          country_code: "US",
+          // You can generally leave the rest of these alone
+          bikes_can_use_bus_lanes: true,
+          inferred_sidewalks: false,
+          street_parking_spot_length: 8.0,
+          turn_on_red: true,
+          include_railroads: true,
+        },
+        null,
+        2
+      );
+      outputTextArea.value = getLaneSpecs(
+        JSON.parse(inputTagsTextArea.value),
+        JSON.parse(inputConfigTextArea.value)
+      );
+
+      window.calculateForWay = async function () {
+        outputTextArea.value = "Calculating...";
+
+        let wayID = document.getElementById("wayID").value;
+        let url = `https://api.openstreetmap.org/api/0.6/way/${wayID}.json`;
+        try {
+          let resp = await fetch(url);
+          let json = await resp.json();
+          let tags = json.elements[0].tags;
+          inputTagsTextArea.value = JSON.stringify(tags, null, 2);
+          outputTextArea.value = getLaneSpecs(
+            JSON.parse(inputTagsTextArea.value),
+            JSON.parse(inputConfigTextArea.value)
+          );
+        } catch (err) {
+          outputTextArea.value = `Problem looking up OSM way: ${err}`;
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <h1>osm2lanes-js demo</h1>
+    <p>To run this example:</p>
+    <ol>
+      <li>wasm-pack build --release --target web</li>
+      <li>python3 -m http.server --directory .</li>
+      <li>Open http://0.0.0.0:8000/example.html</li>
+    </ol>
+    <hr />
+    <table style="width: 100%">
+      <tr>
+        <td style="width: 50%">
+          <h2>OSM tags</h2>
+          <label for="wayID">Enter OpenStreetMap Way ID to get tags:</label>
+          <input type="text" id="wayID" value="360390227" />
+          <button onclick="window.calculateForWay()">Generate</button>
+          <br />
+          <br />
+          <textarea id="input-tags" rows="10" cols="50" readonly>...</textarea>
+        </td>
+        <td>
+          <h2>Config</h2>
+          <textarea id="input-config" rows="10" cols="50">...</textarea>
+        </td>
+      </tr>
+    </table>
+    <hr />
+    <h2>Output JSON</h2>
+    <textarea id="output" rows="20" cols="50" readonly>
+      The WASM didn't run; check console log
+    </textarea>
+  </body>
+</html>
