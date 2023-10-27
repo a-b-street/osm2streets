@@ -8,9 +8,9 @@ use anyhow::Result;
 use geom::{GPSBounds, LonLat, Ring};
 
 use osm2streets::{DrivingSide, MapConfig, StreetNetwork};
+use osm_reader::Document;
 
 pub use self::extract::OsmExtract;
-use osm_reader::Document;
 
 // TODO Clean up the public API of all of this
 pub mod extract;
@@ -18,7 +18,7 @@ pub mod osm_reader;
 pub mod split_ways;
 
 /// Create a `StreetNetwork` from the contents of an `.osm.xml` file. If `clip_pts` is specified,
-/// use theese as a boundary polygon. (Use `LonLat::read_geojson_polygon` or similar to produce
+/// use these as a boundary polygon. (Use `LonLat::read_geojson_polygon` or similar to produce
 /// these.)
 ///
 /// You probably want to do `StreetNetwork::apply_transformations` on the result to get a useful
@@ -40,6 +40,25 @@ pub fn osm_to_street_network(
     // Cul-de-sacs aren't supported yet.
     streets.retain_roads(|r| r.src_i != r.dst_i);
 
+    Ok((streets, doc))
+}
+
+pub fn pbf_to_street_network(
+    input: &[u8],
+    clip_pts: Option<Vec<LonLat>>,
+    cfg: MapConfig,
+    timer: &mut Timer,
+) -> Result<(StreetNetwork, Document)> {
+    let mut streets = StreetNetwork::blank();
+    // Note that DrivingSide is still incorrect. It'll be set in extract_osm, before Road::new
+    // happens in split_ways.
+    streets.config = cfg;
+
+    let (extract, doc) = extract_pfb(&mut streets, input, clip_pts, timer)?;
+    split_ways::split_up_roads(&mut streets, extract, timer);
+
+    // Cul-de-sacs aren't supported yet.
+    streets.retain_roads(|r| r.src_i != r.dst_i);
     Ok((streets, doc))
 }
 
@@ -67,12 +86,43 @@ fn extract_osm(
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
 ) -> Result<(OsmExtract, Document)> {
-    let mut doc = Document::read(
-        osm_xml_input,
-        clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
-        timer,
-    )?;
+    let mut doc =
+        Document::read(
+            osm_xml_input,
+            clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
+            timer,
+        )?;
     // If GPSBounds aren't provided above, they'll be computed in the Document
+    let out = process_data(streets, clip_pts, timer, &mut doc)?;
+
+    Ok((out, doc))
+}
+
+fn extract_pfb(
+    streets: &mut StreetNetwork,
+    input: &[u8],
+    clip_pts: Option<Vec<LonLat>>,
+    timer: &mut Timer,
+) -> Result<(OsmExtract, Document)> {
+    let mut doc =
+        Document::read_pbf(
+            input,
+            clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
+            timer,
+        )?;
+
+    let out = process_data(streets, clip_pts, timer, &mut doc)?;
+
+    Ok((out, doc))
+}
+
+fn process_data(
+    streets: &mut StreetNetwork,
+    clip_pts: Option<Vec<LonLat>>,
+    timer: &mut Timer,
+    doc: &mut Document,
+) -> Result<OsmExtract> {
+    // If GPSBounds aren't provided, they'll be computed in the Document
     streets.gps_bounds = doc.gps_bounds.clone().unwrap();
 
     if let Some(pts) = clip_pts {
@@ -113,6 +163,5 @@ fn extract_osm(
         timer.next();
         out.handle_relation(*id, rel);
     }
-
-    Ok((out, doc))
+    Ok(out)
 }

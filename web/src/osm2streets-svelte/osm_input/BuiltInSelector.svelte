@@ -31,14 +31,14 @@
     try {
       dispatch("loading", "Loading built-in boundary and OSM XML");
       let polygonResp = await fetch(
-        `${import.meta.env.BASE_URL}/tests/${testCase}/boundary.json`
+              `${import.meta.env.BASE_URL}/tests/${testCase}/boundary.json`
       );
       let polygon = await polygonResp.json();
       // Test input is always a FeatureCollection with one object. For uniformity...
       let boundaryGj = polygon.features[0];
 
       let osmResp = await fetch(
-        `${import.meta.env.BASE_URL}/tests/${testCase}/input.osm`
+              `${import.meta.env.BASE_URL}/tests/${testCase}/input.osm`
       );
       let osmXml = await osmResp.text();
 
@@ -47,7 +47,7 @@
         boundaryGj,
         osmXml,
       });
-    } catch (err: any) {
+    } catch (err) {
       dispatch("error", err.toString());
     }
   }

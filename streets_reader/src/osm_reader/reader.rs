@@ -1,11 +1,13 @@
 use std::collections::{BTreeMap, HashMap};
+use std::io::Cursor;
 use std::iter::Peekable;
 
+use abstutil::{prettyprint_usize, Tags, Timer};
 use anyhow::Result;
+use geom::{GPSBounds, LonLat};
+use osmpbf::{BlobDecode, BlobReader, Element as PbfElement, IndexedReader, RelMemberType};
 use xmlparser::Token;
 
-use abstutil::{prettyprint_usize, Tags, Timer};
-use geom::{GPSBounds, LonLat};
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
 
 use super::{Document, Node, Relation, Way};
@@ -19,8 +21,154 @@ use super::{Document, Node, Relation, Way};
 // TODO NodeID, WayID, RelationID are nice. Plumb forward through map_model.
 // TODO Replicate IDs in each object, and change members to just hold a reference to the object
 // (which is guaranteed to exist).
-
 impl Document {
+    /// Parses raw pbf from buffer and extracts all objects
+    pub fn read_pbf(
+        input: &[u8],
+        gps_bounds: Option<GPSBounds>,
+        timer: &mut Timer,
+    ) -> Result<Self> {
+        let mut doc = Self {
+            gps_bounds,
+            nodes: BTreeMap::new(),
+            ways: BTreeMap::new(),
+            relations: BTreeMap::new(),
+            clipped_copied_ways: Vec::new(),
+        };
+
+        let mut blob_reader = BlobReader::new(Cursor::new(input));
+        // par_map_reduce would be faster, but would not allow us to read the bbox + header
+        timer.start("scrape objects");
+        while let Some(Ok(blob)) = blob_reader.next() {
+            match blob.decode().unwrap() {
+                BlobDecode::OsmHeader(head) => {
+                    // if we find a bounding box
+                    // in the blob header, use it.
+                    if let Some(bbox) = head.bbox() {
+                        doc.gps_bounds = Some(GPSBounds {
+                            min_lon: bbox.left,
+                            min_lat: bbox.top,
+                            max_lon: bbox.right,
+                            max_lat: bbox.bottom,
+                        });
+                    } else if doc.gps_bounds.is_none() {
+                        doc.gps_bounds = Option::from(
+                            scrape_bounds_pbf(
+                                IndexedReader::new(
+                                    Cursor::new(
+                                        input)).unwrap()))
+                    }
+                }
+                BlobDecode::OsmData(block) => {
+                    block.elements().for_each(|element| {
+                        match element {
+                            PbfElement::Node(node) => {
+                                let pt = LonLat::new(node.lon(), node.lat()).to_pt(&doc.gps_bounds.clone().unwrap());
+                                let mut tags = Tags::new(BTreeMap::new());
+                                for (k, v) in node.tags() {
+                                    tags.insert(k, v);
+                                }
+                                doc.nodes.insert(NodeID(node.id()), Node { pt, tags });
+                            }
+                            PbfElement::DenseNode(node) => {
+                                let pt = LonLat::new(node.lon(), node.lat()).to_pt(&doc.gps_bounds.clone().unwrap());
+
+                                let mut tags = Tags::new(BTreeMap::new());
+                                for (k, v) in node.tags() {
+                                    tags.insert(k, v);
+                                }
+
+                                doc.nodes.insert(NodeID(node.id()), Node { pt, tags });
+                            }
+                            PbfElement::Way(way) => {
+                                let mut tags = Tags::new(BTreeMap::new());
+                                for (k, v) in way.tags() {
+                                    tags.insert(k, v);
+                                }
+
+                                let mut nodes = Vec::new();
+                                let mut pts = Vec::new();
+                                for nd in way.refs() {
+                                    let n = NodeID(nd);
+                                    // Just skip missing nodes
+                                    if let Some(node) = doc.nodes.get(&n) {
+                                        nodes.push(n);
+                                        pts.push(node.pt);
+                                    }
+                                }
+                                let version = way
+                                    .info()
+                                    .version()
+                                    .map(|x| x as usize);
+
+                                if !nodes.is_empty() {
+                                    doc.ways.insert(
+                                        WayID(way.id()),
+                                        Way {
+                                            nodes,
+                                            pts,
+                                            tags,
+                                            version,
+                                        },
+                                    );
+                                }
+                            }
+                            PbfElement::Relation(relation) => {
+                                let mut tags = Tags::new(BTreeMap::new());
+                                for (k, v) in relation.tags() {
+                                    tags.insert(k, v);
+                                }
+                                let id = RelationID(relation.id());
+                                if doc.relations.contains_key(&id) {
+                                    //bail!("Duplicate {}, your .osm is corrupt", id);
+                                }
+                                let mut members = Vec::new();
+                                for member in relation.members() {
+                                    let osm_id = match member.member_type {
+                                        RelMemberType::Node => {
+                                            let n = NodeID(member.member_id);
+                                            if !doc.nodes.contains_key(&n) {
+                                                continue;
+                                            }
+                                            OsmID::Node(n)
+                                        }
+                                        RelMemberType::Way => {
+                                            let w = WayID(member.member_id);
+                                            if !doc.ways.contains_key(&w) {
+                                                continue;
+                                            }
+                                            OsmID::Way(w)
+                                        }
+                                        RelMemberType::Relation => {
+                                            let r = RelationID(member.member_id);
+                                            if !doc.relations.contains_key(&r) {
+                                                continue;
+                                            }
+                                            OsmID::Relation(r)
+                                        }
+                                    };
+                                    members.push((member.role().unwrap().to_string(), osm_id));
+                                }
+
+                                doc.relations.insert(id, Relation { tags, members });
+                            }
+                        }
+                    });
+                }
+                // Just skip unrecognizable data.
+                BlobDecode::Unknown(_) => {}
+            }
+        }
+        timer.stop("scrape objects");
+        info!(
+            "Found {} nodes, {} ways, {} relations",
+            prettyprint_usize(doc.nodes.len()),
+            prettyprint_usize(doc.ways.len()),
+            prettyprint_usize(doc.relations.len())
+        );
+        Ok(doc)
+    }
+
     /// Parses raw OSM XML and extracts all objects.
     pub fn read(
         raw_string: &str,
@@ -40,7 +188,7 @@ impl Document {
         let mut reader = ElementReader {
             tokenizer: xmlparser::Tokenizer::from(raw_string),
         }
-        .peekable();
+            .peekable();
 
         timer.start("scrape objects");
         while let Some(obj) = reader.next() {
@@ -78,7 +226,7 @@ impl Document {
                         obj.attribute("lon").parse::<f64>().unwrap(),
                         obj.attribute("lat").parse::<f64>().unwrap(),
                     )
-                    .to_pt(doc.gps_bounds.as_ref().unwrap());
+                        .to_pt(doc.gps_bounds.as_ref().unwrap());
                     let tags = read_tags(&mut reader);
                     doc.nodes.insert(id, Node { pt, tags });
                 }
@@ -106,7 +254,6 @@ impl Document {
 
                     // We assume <nd>'s come before <tag>'s
                     let tags = read_tags(&mut reader);
-
                     if !nodes.is_empty() {
                         doc.ways.insert(
                             id,
@@ -199,6 +346,28 @@ fn scrape_bounds(raw_string: &str) -> GPSBounds {
             ));
         }
     }
+    b
+}
+
+fn scrape_bounds_pbf(mut reader: IndexedReader<Cursor<&[u8]>>) -> GPSBounds {
+    let mut b = GPSBounds::new();
+    reader.for_each_node(|el| {
+        match el {
+            PbfElement::Node(node) => {
+                b.update(LonLat::new(
+                    node.lon(),
+                    node.lat(),
+                ));
+            }
+            PbfElement::DenseNode(node) => {
+                b.update(LonLat::new(
+                    node.lon(),
+                    node.lat(),
+                ));
+            }
+            _ => {}
+        }
+    }).expect("Failed to scrape bounds from nodes.");
     b
 }
 

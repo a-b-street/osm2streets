@@ -1,20 +1,21 @@
-use anyhow::Result;
-use enum_map::{enum_map, EnumMap};
-use itertools::Itertools;
 use std::collections::HashMap;
 
 use abstutil::Timer;
+use anyhow::Result;
+use enum_map::{enum_map, EnumMap};
+use itertools::Itertools;
+
 use osm2streets::{
     IntersectionID, IntersectionKind, LaneSpec, LaneType, MapConfig, Road, RoadID, StreetNetwork,
     Transformation,
 };
 
 use crate::network::RoadNetwork;
-use crate::road_functions::IntersectionType;
 use crate::road_functions::{ControlType, Intersection, RoadWay};
+use crate::road_functions::IntersectionType;
 use crate::road_parts::{Carriage, Designation, RoadEdge, RoadPart};
-use crate::units::preamble::*;
 use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
+use crate::units::preamble::*;
 
 /// ```
 /// use abstutil::Timer;
@@ -26,7 +27,6 @@ use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetwork> {
     // TODO Use the same clip
     let clip_pts = None;
-
     let (mut street_network, _) = streets_reader::osm_to_street_network(
         &std::fs::read_to_string(osm_path).unwrap(),
         clip_pts,
