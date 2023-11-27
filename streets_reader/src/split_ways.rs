@@ -1,6 +1,6 @@
 use std::collections::{hash_map::Entry, HashMap};
 
-use abstutil::{Counter, Timer};
+use abstutil::Timer;
 use geom::{HashablePt2D, PolyLine, Pt2D};
 use osm2streets::{
     Direction, IntersectionControl, IntersectionID, IntersectionKind, Road, RoadID, StreetNetwork,
@@ -23,14 +23,16 @@ pub fn split_up_roads(
 
     // Create intersections for any points shared by at least 2 roads, and for endpoints of every
     // road.
-    let mut counts_per_pt = Counter::new();
+    let mut count_per_pt = HashMap::new();
     let mut pt_to_intersection_id: HashMap<HashablePt2D, IntersectionID> = HashMap::new();
     timer.start_iter("look for common points", input.roads.len());
     for (_, pts, _) in &input.roads {
         timer.next();
         for (idx, pt) in pts.iter().enumerate() {
             let hash_pt = pt.to_hashable();
-            let count = counts_per_pt.inc(hash_pt);
+            let entry = count_per_pt.entry(hash_pt).or_insert(0);
+            *entry += 1;
+            let count = *entry;
 
             if count == 2 || idx == 0 || idx == pts.len() - 1 {
                 if let Entry::Vacant(entry) = pt_to_intersection_id.entry(hash_pt) {

@@ -1,8 +1,8 @@
 use std::fmt;
 
-use abstutil::{deserialize_usize, serialize_usize};
 use serde::{Deserialize, Serialize};
 
+use crate::utils::{deserialize_usize, serialize_usize};
 use crate::Road;
 
 /// Opaque and non-contiguous

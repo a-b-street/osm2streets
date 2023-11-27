@@ -4,9 +4,10 @@ use std::iter::Peekable;
 use anyhow::Result;
 use xmlparser::Token;
 
-use abstutil::{prettyprint_usize, Tags, Timer};
+use abstutil::{Tags, Timer};
 use geom::{GPSBounds, LonLat};
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
+use osm2streets::utils::prettyprint_usize;
 
 use super::{Document, Node, Relation, Way};
 

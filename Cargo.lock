@@ -308,9 +308,9 @@ dependencies = [
 
 [[package]]
 name = "env_logger"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85cdab6a89accf66733ad5a1693a4dcced6aeff64602b634530dd73c1f3ee9f0"
+checksum = "95b3f3e67048839cb0d0781f445682a35113da7121f7c949db0e2be96a4fbece"
 dependencies = [
  "humantime",
  "is-terminal",
@@ -632,12 +632,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.17"
+version = "0.4.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
-dependencies = [
- "cfg-if",
-]
+checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "memchr"
@@ -710,6 +707,7 @@ dependencies = [
  "abstutil",
  "anyhow",
  "enumset",
+ "env_logger",
  "geom",
  "serde",
 ]
@@ -720,6 +718,8 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "console_error_panic_hook",
+ "console_log",
+ "log",
  "osm2lanes",
  "serde-wasm-bindgen",
  "serde_json",
@@ -761,12 +761,15 @@ dependencies = [
  "abstutil",
  "anyhow",
  "console_error_panic_hook",
+ "console_log",
  "experimental",
  "geom",
  "instant",
+ "log",
  "osm2streets",
  "serde",
  "serde-wasm-bindgen",
+ "serde_json",
  "streets_reader",
  "wasm-bindgen",
 ]
@@ -1097,6 +1100,7 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
+ "env_logger",
  "experimental",
  "geom",
  "osm2streets",
