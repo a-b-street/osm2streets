@@ -9,7 +9,7 @@ rust-version = "1.66"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 enumset = { version = "1.0.12", features=["serde"] }
-geo = "0.26.0"
+geo = "0.27.0"
 geojson = "0.24.1"
 geom = { workspace = true }
 itertools = "0.11.0"
