@@ -10,6 +10,8 @@ members = [
     "tests",
 ]
 
+resolver = "2"
+
 # Specify the versions for common dependencies just once here, instead of
 # repeating in a bunch of crates
 [workspace.dependencies]

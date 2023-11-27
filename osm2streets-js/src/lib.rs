@@ -1,4 +1,5 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::sync::Once;
 
 use abstutil::{Tags, Timer};
 use geom::{Distance, LonLat, PolyLine, Polygon};
@@ -9,6 +10,8 @@ use osm2streets::{
     osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
     StreetNetwork, Transformation,
 };
+
+static SETUP_LOGGER: Once = Once::new();
 
 #[derive(Serialize, Deserialize)]
 pub struct ImportOptions {
@@ -33,7 +36,7 @@ impl JsStreetNetwork {
         clip_pts_geojson: &str,
         input: JsValue,
     ) -> Result<JsStreetNetwork, JsValue> {
-        abstutil::logger::setup();
+        SETUP_LOGGER.call_once(|| console_log::init_with_level(log::Level::Info).unwrap());
         // Panics shouldn't happen, but if they do, console.log them.
         console_error_panic_hook::set_once();
 
@@ -157,21 +160,21 @@ impl JsStreetNetwork {
                     .to_geojson(Some(&self.inner.gps_bounds)),
             );
         }
-        abstutil::to_json(&geom::geometries_to_geojson(polygons))
+        serde_json::to_string_pretty(&geom::geometries_to_geojson(polygons)).unwrap()
     }
 
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a
     // HashMap
     #[wasm_bindgen(js_name = getOsmTagsForWay)]
     pub fn get_osm_tags_for_way(&self, id: i64) -> String {
-        abstutil::to_json(&self.ways[&osm::WayID(id)].tags)
+        serde_json::to_string_pretty(&self.ways[&osm::WayID(id)].tags).unwrap()
     }
 
     /// Returns the entire StreetNetwork as JSON. The API doesn't have guarantees about backwards
     /// compatibility.
     #[wasm_bindgen(js_name = toJson)]
     pub fn to_json(&self) -> String {
-        abstutil::to_json(&self.inner)
+        serde_json::to_string_pretty(&self.inner).unwrap()
     }
 
     /// Returns a GeoJSON Polygon showing a wide buffer around the way's original geometry
@@ -217,7 +220,7 @@ impl JsStreetNetwork {
             .iter()
             .for_each(|c| polygon = polygon.difference(c).unwrap()[0].clone());
 
-        abstutil::to_json(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
+        serde_json::to_string_pretty(&polygon.to_geojson(Some(&self.inner.gps_bounds))).unwrap()
     }
 
     /// Returns the XML string representing a way. Any OSM tags changed via
@@ -250,7 +253,7 @@ impl JsStreetNetwork {
     #[wasm_bindgen(js_name = overwriteOsmTagsForWay)]
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: String) {
         let id = osm::WayID(id);
-        let tags: Tags = abstutil::from_json(tags.as_bytes()).unwrap();
+        let tags: Tags = serde_json::from_slice(tags.as_bytes()).unwrap();
 
         let mut intersections = BTreeSet::new();
         for road in self.inner.roads.values_mut() {
