@@ -68,7 +68,6 @@ offline without running an external server).
 - [osm2streets-vector-tileserver](https://github.com/jakecoppinger/osm2streets-vector-tileserver): Dynamically generate vector tiles and view with QGIS, Mapbox, etc
   - [safe-cycling-map](https://github.com/jakecoppinger/safe-cycling-map) is an example Mapbox use
 - [lane editor](https://a-b-street.github.io/osm2streets/lane_editor.html) to edit OSM tags and see visual results
-- [ATIP](https://github.com/acteng/atip): sketching active travel infrastructure, using `osm2streets` for contextual layers about speed and lane configuration
 - _Planned: plugins for [iD](https://github.com/openstreetmap/iD) and
   [JOSM](https://josm.openstreetmap.de/) to display streets in detail and
   visually edit lane tagging_
