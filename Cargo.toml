@@ -16,10 +16,11 @@ resolver = "2"
 # repeating in a bunch of crates
 [workspace.dependencies]
 anyhow = "1.0.38"
-serde = "1.0.123"
-serde_json = "1.0.61"
+geom = { git = "https://github.com/a-b-street/geom" }
+serde = "1.0.193"
+serde_json = "1.0.108"
 
 # To temporarily work on dependencies locally, uncomment this
 #[patch."https://github.com/a-b-street/abstreet"]
 #abstutil = { path = "/home/dabreegster/abstreet/abstutil" }
-#geom = { path = "/home/dabreegster/abstreet/geom" }
+#geom = { path = "/home/dabreegster/geom" }

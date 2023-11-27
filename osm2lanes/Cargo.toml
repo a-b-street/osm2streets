@@ -7,7 +7,7 @@ edition = "2021"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 enumset = { version = "1.0.12", features=["serde"] }
-geom = { git = "https://github.com/a-b-street/abstreet" }
+geom = { workspace = true }
 serde = { workspace = true }
 
 [dev-dependencies]

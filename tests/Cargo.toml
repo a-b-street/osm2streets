@@ -7,7 +7,7 @@ edition = "2021"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 env_logger = "0.10.1"
-geom = { git = "https://github.com/a-b-street/abstreet" }
+geom = { workspace = true }
 streets_reader = { path = "../streets_reader" }
 serde = { workspace = true }
 serde_json = { workspace = true }

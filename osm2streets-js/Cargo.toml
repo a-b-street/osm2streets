@@ -14,7 +14,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 console_error_panic_hook = "0.1.6"
 console_log = "1.0.0"
-geom = { git = "https://github.com/a-b-street/abstreet" }
+geom = { workspace = true }
 experimental = { path = "../experimental" }
 # TODO Upstream this in abstutil crate. WASM is missing some runtime dep otherwise.
 instant = { version = "0.1.12", features = ["wasm-bindgen"] }
