@@ -8,7 +8,7 @@ edition = "2021"
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 country-geocoder = { git = "https://github.com/a-b-street/country-geocoder" }
-geom = { git = "https://github.com/a-b-street/abstreet" }
+geom = { workspace = true }
 log = "0.4.14"
 osm2streets = { path = "../osm2streets" }
 osmpbf = "0.3.2"

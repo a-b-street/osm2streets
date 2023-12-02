@@ -1,11 +1,11 @@
 use std::collections::BTreeMap;
 
-use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{Circle, Distance, Polygon, Pt2D};
 use serde::{Deserialize, Serialize};
 
 use osm2lanes::osm;
 
+use crate::utils::{deserialize_btreemap, serialize_btreemap};
 use crate::{DrivingSide, IntersectionID, RoadID, StreetNetwork};
 use TrafficConflict::*;
 

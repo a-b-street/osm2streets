@@ -12,6 +12,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 console_error_panic_hook = "0.1.6"
+console_log = "1.0.0"
+log = "0.4.20"
 osm2lanes = { path = "../osm2lanes" }
 wasm-bindgen = "0.2.84"
 serde_json = { workspace = true }

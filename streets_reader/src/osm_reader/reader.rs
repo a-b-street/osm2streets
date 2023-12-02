@@ -2,13 +2,14 @@ use std::collections::{BTreeMap, HashMap};
 use std::io::Cursor;
 use std::iter::Peekable;
 
-use abstutil::{prettyprint_usize, Tags, Timer};
+use abstutil::{Tags, Timer};
 use anyhow::Result;
 use geom::{GPSBounds, LonLat};
 use osmpbf::{BlobDecode, BlobReader, Element as PbfElement, IndexedReader, RelMemberType};
 use xmlparser::Token;
 
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
+use osm2streets::utils::prettyprint_usize;
 
 use super::{Document, Node, Relation, Way};
 

@@ -2,17 +2,24 @@
 mod tests {
     use std::path::Path;
 
-    use abstutil::Timer;
+    use std::sync::Once;
+
     use anyhow::{bail, Result};
     use geom::LonLat;
 
+    use env_logger::{Builder, Env};
+
+    use abstutil::Timer;
     use experimental::RoadNetwork;
     use osm2streets::{MapConfig, Transformation};
+
+    static SETUP_LOGGER: Once = Once::new();
 
     include!(concat!(env!("OUT_DIR"), "/tests.rs"));
 
     fn test(path: &str) -> Result<()> {
-        abstutil::logger::setup();
+        SETUP_LOGGER
+            .call_once(|| Builder::from_env(Env::default().default_filter_or("info")).init());
 
         let mut timer = Timer::new("test osm2streets");
 

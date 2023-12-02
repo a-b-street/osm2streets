@@ -1,10 +1,15 @@
+use std::sync::Once;
+
 use abstutil::Tags;
+use env_logger::{Builder, Env};
 
 use crate::{get_lane_specs_ltr, Direction, DrivingSide, MapConfig};
 
+static SETUP_LOGGER: Once = Once::new();
+
 #[test]
 fn test_osm_to_specs() {
-    abstutil::logger::setup();
+    SETUP_LOGGER.call_once(|| Builder::from_env(Env::default().default_filter_or("info")).init());
 
     let mut ok = true;
     for (url, mut input, driving_side, expected_lt, expected_dir) in vec![

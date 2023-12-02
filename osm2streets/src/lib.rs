@@ -7,8 +7,9 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use abstutil::{deserialize_btreemap, serialize_btreemap};
 use geom::{GPSBounds, PolyLine, Polygon, Pt2D};
+
+use self::utils::{deserialize_btreemap, serialize_btreemap};
 
 pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
@@ -40,6 +41,7 @@ mod render;
 mod road;
 mod transform;
 mod types;
+pub mod utils;
 mod validate;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

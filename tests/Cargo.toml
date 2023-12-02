@@ -6,7 +6,8 @@ edition = "2021"
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
-geom = { git = "https://github.com/a-b-street/abstreet" }
+env_logger = "0.10.1"
+geom = { workspace = true }
 streets_reader = { path = "../streets_reader" }
 serde = { workspace = true }
 serde_json = { workspace = true }
