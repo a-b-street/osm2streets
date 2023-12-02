@@ -27,7 +27,7 @@ impl Document {
         input: &[u8],
         gps_bounds: Option<GPSBounds>,
         timer: &mut Timer,
-    ) -> Result<Self> {
+    ) -> Result<Self, anyhow::Error> {
         let mut doc = Self {
             gps_bounds,
             nodes: BTreeMap::new(),
@@ -120,9 +120,10 @@ impl Document {
                                 }
                                 let id = RelationID(relation.id());
                                 if doc.relations.contains_key(&id) {
-                                    //bail!("Duplicate {}, your .osm is corrupt", id);
+                                    error!("Duplicate IDs detected. Your PBF is corrupt.");
+                                    return
                                 }
-                                let mut members = Vec::new();
+                                    let mut members = Vec::new();
                                 for member in relation.members() {
                                     let osm_id = match member.member_type {
                                         RelMemberType::Node => {
