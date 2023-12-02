@@ -53,18 +53,17 @@ impl Document {
                             max_lat: bbox.bottom,
                         });
                     } else if doc.gps_bounds.is_none() {
-                        doc.gps_bounds = Option::from(
-                            scrape_bounds_pbf(
-                                IndexedReader::new(
-                                    Cursor::new(
-                                        input)).unwrap()))
+                        doc.gps_bounds = Option::from(scrape_bounds_pbf(
+                            IndexedReader::new(Cursor::new(input)).unwrap(),
+                        ))
                     }
                 }
                 BlobDecode::OsmData(block) => {
                     block.elements().for_each(|element| {
                         match element {
                             PbfElement::Node(node) => {
-                                let pt = LonLat::new(node.lon(), node.lat()).to_pt(&doc.gps_bounds.clone().unwrap());
+                                let pt = LonLat::new(node.lon(), node.lat())
+                                    .to_pt(&doc.gps_bounds.clone().unwrap());
                                 let mut tags = Tags::new(BTreeMap::new());
                                 for (k, v) in node.tags() {
                                     tags.insert(k, v);
@@ -72,7 +71,8 @@ impl Document {
                                 doc.nodes.insert(NodeID(node.id()), Node { pt, tags });
                             }
                             PbfElement::DenseNode(node) => {
-                                let pt = LonLat::new(node.lon(), node.lat()).to_pt(&doc.gps_bounds.clone().unwrap());
+                                let pt = LonLat::new(node.lon(), node.lat())
+                                    .to_pt(&doc.gps_bounds.clone().unwrap());
 
                                 let mut tags = Tags::new(BTreeMap::new());
                                 for (k, v) in node.tags() {
@@ -97,10 +97,7 @@ impl Document {
                                         pts.push(node.pt);
                                     }
                                 }
-                                let version = way
-                                    .info()
-                                    .version()
-                                    .map(|x| x as usize);
+                                let version = way.info().version().map(|x| x as usize);
 
                                 if !nodes.is_empty() {
                                     doc.ways.insert(
@@ -122,9 +119,9 @@ impl Document {
                                 let id = RelationID(relation.id());
                                 if doc.relations.contains_key(&id) {
                                     error!("Duplicate IDs detected. Your PBF is corrupt.");
-                                    return
+                                    return;
                                 }
-                                    let mut members = Vec::new();
+                                let mut members = Vec::new();
                                 for member in relation.members() {
                                     let osm_id = match member.member_type {
                                         RelMemberType::Node => {
@@ -190,7 +187,7 @@ impl Document {
         let mut reader = ElementReader {
             tokenizer: xmlparser::Tokenizer::from(raw_string),
         }
-            .peekable();
+        .peekable();
 
         timer.start("scrape objects");
         while let Some(obj) = reader.next() {
@@ -228,7 +225,7 @@ impl Document {
                         obj.attribute("lon").parse::<f64>().unwrap(),
                         obj.attribute("lat").parse::<f64>().unwrap(),
                     )
-                        .to_pt(doc.gps_bounds.as_ref().unwrap());
+                    .to_pt(doc.gps_bounds.as_ref().unwrap());
                     let tags = read_tags(&mut reader);
                     doc.nodes.insert(id, Node { pt, tags });
                 }
@@ -353,23 +350,17 @@ fn scrape_bounds(raw_string: &str) -> GPSBounds {
 
 fn scrape_bounds_pbf(mut reader: IndexedReader<Cursor<&[u8]>>) -> GPSBounds {
     let mut b = GPSBounds::new();
-    reader.for_each_node(|el| {
-        match el {
+    reader
+        .for_each_node(|el| match el {
             PbfElement::Node(node) => {
-                b.update(LonLat::new(
-                    node.lon(),
-                    node.lat(),
-                ));
+                b.update(LonLat::new(node.lon(), node.lat()));
             }
             PbfElement::DenseNode(node) => {
-                b.update(LonLat::new(
-                    node.lon(),
-                    node.lat(),
-                ));
+                b.update(LonLat::new(node.lon(), node.lat()));
             }
             _ => {}
-        }
-    }).expect("Failed to scrape bounds from nodes.");
+        })
+        .expect("Failed to scrape bounds from nodes.");
     b
 }
 

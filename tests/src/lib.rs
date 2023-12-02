@@ -1,15 +1,13 @@
 #[cfg(test)]
 mod tests {
     use std::path::Path;
-
     use std::sync::Once;
 
+    use abstutil::Timer;
     use anyhow::{bail, Result};
+    use env_logger::{Builder, Env};
     use geom::LonLat;
 
-    use env_logger::{Builder, Env};
-
-    use abstutil::Timer;
     use experimental::RoadNetwork;
     use osm2streets::{MapConfig, Transformation};
 
@@ -39,23 +37,20 @@ mod tests {
             None
         };
 
-        let (mut street_network, _) = match Path::new(format!("{path}/input.osm").as_str()).exists() {
-            // If XML is found, use it...
-            true => {
-                streets_reader::osm_to_street_network(
-                    &std::fs::read_to_string(format!("{path}/input.osm"))?,
-                    clip_pts,
-                    MapConfig::default(),
-                    &mut timer)?
-            }
-            // ... Otherwise, look for the .osm.pbf
-            false => {
-                streets_reader::pbf_to_street_network(
-                    &std::fs::read(format!("{path}/input.osm.pbf").as_str())?,
-                    clip_pts,
-                    MapConfig::default(),
-                    &mut timer)?
-            }
+        let (mut street_network, _) = if Path::new(format!("{path}/input.osm").as_str()).exists() {
+            streets_reader::osm_to_street_network(
+                &std::fs::read_to_string(format!("{path}/input.osm"))?,
+                clip_pts,
+                MapConfig::default(),
+                &mut timer,
+            )?
+        } else {
+            streets_reader::pbf_to_street_network(
+                &std::fs::read(format!("{path}/input.osm.pbf").as_str())?,
+                clip_pts,
+                MapConfig::default(),
+                &mut timer,
+            )?
         };
         street_network.check_invariants();
         street_network.apply_transformations_with_invariant_checks(
@@ -81,7 +76,7 @@ mod tests {
                 "./{}/geometry.json is different! If it is OK, commit it. \
                 ./{0}/geometry.orig.json is previous result. Compare it on https://geojson.io",
                 path
-                );
+            );
         }
         Ok(())
     }

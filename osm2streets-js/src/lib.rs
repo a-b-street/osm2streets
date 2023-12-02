@@ -2,12 +2,12 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Once;
 
 use abstutil::{Tags, Timer};
-use geom::{Distance, LonLat, Polygon, PolyLine};
+use geom::{Distance, LonLat, PolyLine, Polygon};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    DebugStreets, Filter, IntersectionID, LaneID, MapConfig, osm, Placement, RoadID, Sidepath,
+    osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
     StreetNetwork, Transformation,
 };
 
@@ -212,7 +212,7 @@ impl JsStreetNetwork {
                     top_pt,
                     top_pt.project_away(width / 2.0, angle.rotate_degs(-135.0)),
                 ])
-                    .make_polygons(width * 0.2)
+                .make_polygons(width * 0.2)
             })
             .collect::<Vec<Polygon>>();
 

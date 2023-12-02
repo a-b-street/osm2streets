@@ -54,8 +54,14 @@ pub fn pbf_to_street_network(
     // happens in split_ways.
     streets.config = cfg;
 
-    let (extract, doc) = extract_pfb(&mut streets, input, clip_pts, timer)?;
-    split_ways::split_up_roads(&mut streets, extract, timer);
+    let mut doc = Document::read_pbf(
+        input,
+        clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
+        timer,
+    )?;
+
+    let out = process_data(&mut streets, clip_pts, timer, &mut doc)?;
+    split_ways::split_up_roads(&mut streets, out, timer);
 
     // Cul-de-sacs aren't supported yet.
     streets.retain_roads(|r| r.src_i != r.dst_i);
@@ -86,31 +92,12 @@ fn extract_osm(
     clip_pts: Option<Vec<LonLat>>,
     timer: &mut Timer,
 ) -> Result<(OsmExtract, Document)> {
-    let mut doc =
-        Document::read(
-            osm_xml_input,
-            clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
-            timer,
-        )?;
+    let mut doc = Document::read(
+        osm_xml_input,
+        clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
+        timer,
+    )?;
     // If GPSBounds aren't provided above, they'll be computed in the Document
-    let out = process_data(streets, clip_pts, timer, &mut doc)?;
-
-    Ok((out, doc))
-}
-
-fn extract_pfb(
-    streets: &mut StreetNetwork,
-    input: &[u8],
-    clip_pts: Option<Vec<LonLat>>,
-    timer: &mut Timer,
-) -> Result<(OsmExtract, Document)> {
-    let mut doc =
-        Document::read_pbf(
-            input,
-            clip_pts.as_ref().map(|pts| GPSBounds::from(pts.clone())),
-            timer,
-        )?;
-
     let out = process_data(streets, clip_pts, timer, &mut doc)?;
 
     Ok((out, doc))

@@ -11,11 +11,11 @@ use osm2streets::{
 };
 
 use crate::network::RoadNetwork;
-use crate::road_functions::{ControlType, Intersection, RoadWay};
 use crate::road_functions::IntersectionType;
+use crate::road_functions::{ControlType, Intersection, RoadWay};
 use crate::road_parts::{Carriage, Designation, RoadEdge, RoadPart};
-use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 use crate::units::preamble::*;
+use crate::units::{Direction, DrivingSide, Meters, Side, TrafficDirections};
 
 /// ```
 /// use abstutil::Timer;
