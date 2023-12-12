@@ -2,7 +2,7 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { Layout, Map } from "../osm2streets-svelte";
+  import { Geocoder, Layout, Map } from "../osm2streets-svelte";
   import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
   import MainLayers from "../osm2streets-svelte/layers/MainLayers.svelte";
   import EditWayControls from "./EditWayControls.svelte";
@@ -43,6 +43,7 @@
   <div slot="main">
     <Map>
       <div style:display="none"><MainLayers /></div>
+      <Geocoder />
     </Map>
   </div>
 </Layout>

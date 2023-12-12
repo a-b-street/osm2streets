@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.1",
+    "@maptiler/geocoding-control": "^1.1.1",
     "@turf/bbox": "^6.5.0",
     "maplibre-gl": "^3.1.0",
     "svelte-maplibre": "^0.3.1"

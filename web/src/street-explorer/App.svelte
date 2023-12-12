@@ -2,7 +2,7 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { Layout, Map, TopLeftPanel } from "../osm2streets-svelte";
+  import { Geocoder, Layout, Map, TopLeftPanel } from "../osm2streets-svelte";
   import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
   import InteractiveLayers from "../osm2streets-svelte/layers/InteractiveLayers.svelte";
   import MainLayers from "../osm2streets-svelte/layers/MainLayers.svelte";
@@ -35,6 +35,7 @@
         <InteractiveLayers />
       </TopLeftPanel>
       <Popups />
+      <Geocoder />
     </Map>
   </div>
 </Layout>
