@@ -10,7 +10,9 @@
 
   // TODO HMR is broken
   onMount(() => {
-    mapController = createMapLibreGlMapController($map, maplibregl);
+    if ($map) {
+      mapController = createMapLibreGlMapController($map, maplibregl);
+    }
   });
 
   // TODO Show markers

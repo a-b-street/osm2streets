@@ -32,7 +32,7 @@ impl JsStreetNetwork {
     // TODO clip_pts_geojson should be Option. Empty means None.
     #[wasm_bindgen(constructor)]
     pub fn new(
-        osm_xml_input: &str,
+        osm_input: &[u8],
         clip_pts_geojson: &str,
         input: JsValue,
     ) -> Result<JsStreetNetwork, JsValue> {
@@ -60,7 +60,7 @@ impl JsStreetNetwork {
 
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =
-            streets_reader::osm_to_street_network(osm_xml_input, clip_pts, cfg, &mut timer)
+            streets_reader::osm_to_street_network(osm_input, clip_pts, cfg, &mut timer)
                 .map_err(|err| JsValue::from_str(&err.to_string()))?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
@@ -229,9 +229,10 @@ impl JsStreetNetwork {
     pub fn way_to_xml(&self, id: i64) -> String {
         let way = &self.ways[&osm::WayID(id)];
         let mut out = format!(r#"<way id="{id}""#);
-        if let Some(version) = way.version {
+        // TODO Add this to osm-reader
+        /*if let Some(version) = way.version {
             out.push_str(&format!(r#" version="{version}""#));
-        }
+        }*/
         out.push_str(">\n");
         for node in &way.nodes {
             out.push_str(&format!(r#"  <nd ref="{}"/>"#, node.0));

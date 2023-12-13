@@ -65,7 +65,8 @@
     try {
       imported = { kind: "loading", msg: "Running osm2streets" };
       let network = new JsStreetNetwork(
-        osmXml,
+        // TODO Can we avoid this?
+        new Uint8Array(new TextEncoder().encode(osmXml)),
         JSON.stringify(boundaryGj),
         settings
       );

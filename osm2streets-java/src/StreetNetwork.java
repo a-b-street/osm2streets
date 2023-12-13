@@ -36,15 +36,15 @@ public class StreetNetwork {
 		}
 	}
 
-	public static native StreetNetwork create(String osmXmlInput);
+	public static native StreetNetwork create(byte[] osmInput);
 
 	public native List<Surface> getSurfaces();
 
 	public native List<PaintArea> getPaintAreas();
 
 	public static void main(String[] args) throws Exception {
-		String osmXmlInput = new String(Files.readAllBytes(Paths.get("../tests/src/aurora_sausage_link/input.osm")));
-		StreetNetwork network = create(osmXmlInput);
+		byte[] osmInput = Files.readAllBytes(Paths.get("../tests/src/aurora_sausage_link/input.osm"));
+		StreetNetwork network = create(osmInput);
 		System.out.println(network.getSurfaces());
 		System.out.println(network.getPaintAreas());
 	}

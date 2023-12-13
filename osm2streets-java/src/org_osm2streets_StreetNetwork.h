@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_osm2streets_StreetNetwork
  * Method:    create
- * Signature: (Ljava/lang/String;)Lorg/osm2streets/StreetNetwork;
+ * Signature: ([B)Lorg/osm2streets/StreetNetwork;
  */
 JNIEXPORT jobject JNICALL Java_org_osm2streets_StreetNetwork_create
-  (JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     org_osm2streets_StreetNetwork

@@ -32,7 +32,6 @@ pub struct Way {
     pub nodes: Vec<NodeID>,
     pub pts: Vec<Pt2D>,
     pub tags: Tags,
-    pub version: Option<usize>,
 }
 
 pub struct Relation {
