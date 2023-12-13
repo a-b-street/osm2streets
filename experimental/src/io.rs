@@ -28,7 +28,7 @@ pub fn load_road_network(osm_path: String, timer: &mut Timer) -> Result<RoadNetw
     // TODO Use the same clip
     let clip_pts = None;
     let (mut street_network, _) = streets_reader::osm_to_street_network(
-        &std::fs::read_to_string(osm_path).unwrap(),
+        &std::fs::read(osm_path).unwrap(),
         clip_pts,
         MapConfig::default(),
         timer,

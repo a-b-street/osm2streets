@@ -8,6 +8,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 enumset = { version = "1.0.12", features=["serde"] }
 geom = { workspace = true }
+osm-reader = { git = "https://github.com/a-b-street/osm-reader", features = ["serde"] }
 serde = { workspace = true }
 
 [dev-dependencies]

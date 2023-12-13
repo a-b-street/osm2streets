@@ -1,5 +1,5 @@
 use abstutil::Timer;
-use jni::objects::{JClass, JObject, JString, JValue};
+use jni::objects::{JClass, JObject, JValue};
 use jni::sys::{jlong, jobject};
 use jni::JNIEnv;
 
@@ -10,14 +10,13 @@ struct StreetNetwork {
 }
 
 impl StreetNetwork {
-    fn new(osm_xml_input: String) -> Self {
+    fn new(input_bytes: &[u8]) -> Self {
         let cfg = MapConfig::default();
 
         let clip_pts = None;
         let mut timer = Timer::throwaway();
         let (mut network, _) =
-            streets_reader::osm_to_street_network(&osm_xml_input, clip_pts, cfg, &mut timer)
-                .unwrap();
+            streets_reader::osm_to_street_network(input_bytes, clip_pts, cfg, &mut timer).unwrap();
         let transformations = Transformation::standard_for_clipped_areas();
         network.apply_transformations(transformations, &mut timer);
 
@@ -29,10 +28,10 @@ impl StreetNetwork {
 pub extern "system" fn Java_org_osm2streets_StreetNetwork_create(
     env: JNIEnv,
     _: JClass,
-    osm_xml_input: JString,
+    input_bytes: jni::sys::jbyteArray,
 ) -> jobject {
-    let osm_xml_input: String = env.get_string(osm_xml_input).unwrap().into();
-    let network = StreetNetwork::new(osm_xml_input);
+    let input_bytes: Vec<u8> = env.convert_byte_array(input_bytes).unwrap();
+    let network = StreetNetwork::new(&input_bytes);
 
     let pointer = Box::into_raw(Box::new(network)) as jlong;
     let obj_class = env.find_class("org/osm2streets/StreetNetwork").unwrap();

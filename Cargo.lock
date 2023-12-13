@@ -863,6 +863,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "osm-reader"
+version = "0.1.0"
+source = "git+https://github.com/a-b-street/osm-reader#e8e7539d77042e4b9cda38ae3ced97a5e4f5503c"
+dependencies = [
+ "anyhow",
+ "osmpbf",
+ "roxmltree",
+ "serde",
+]
+
+[[package]]
 name = "osm2lanes"
 version = "0.1.0"
 dependencies = [
@@ -871,6 +882,7 @@ dependencies = [
  "enumset",
  "env_logger",
  "geom",
+ "osm-reader",
  "serde",
 ]
 
@@ -1139,6 +1151,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cbf4a6aa5f6d6888f39e980649f3ad6b666acdce1d78e95b8a2cb076e687ae30"
 
 [[package]]
+name = "roxmltree"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3cd14fd5e3b777a7422cca79358c57a8f6e3a703d9ac187448d0daf220c2407f"
+
+[[package]]
 name = "rstar"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1326,9 +1344,8 @@ dependencies = [
  "country-geocoder",
  "geom",
  "log",
+ "osm-reader",
  "osm2streets",
- "osmpbf",
- "xmlparser",
 ]
 
 [[package]]
@@ -1770,12 +1787,6 @@ name = "windows_x86_64_msvc"
 version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04"
-
-[[package]]
-name = "xmlparser"
-version = "0.13.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d25c75bf9ea12c4040a97f829154768bbbce366287e2dc044af160cd79a13fd"
 
 [[package]]
 name = "zerocopy"

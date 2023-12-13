@@ -47,7 +47,7 @@
         boundaryGj,
         osmXml,
       });
-    } catch (err) {
+    } catch (err: any) {
       dispatch("error", err.toString());
     }
   }
