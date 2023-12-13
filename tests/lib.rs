@@ -39,14 +39,14 @@ mod tests {
 
         let (mut street_network, _) = if Path::new(format!("{path}/input.osm").as_str()).exists() {
             streets_reader::osm_to_street_network(
-                &std::fs::read_to_string(format!("{path}/input.osm"))?,
+                &std::fs::read(format!("{path}/input.osm"))?,
                 clip_pts,
                 MapConfig::default(),
                 &mut timer,
             )?
         } else {
-            streets_reader::pbf_to_street_network(
-                &std::fs::read(format!("{path}/input.osm.pbf").as_str())?,
+            streets_reader::osm_to_street_network(
+                &std::fs::read(format!("{path}/input.osm.pbf"))?,
                 clip_pts,
                 MapConfig::default(),
                 &mut timer,
