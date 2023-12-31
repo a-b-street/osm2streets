@@ -865,7 +865,7 @@ dependencies = [
 [[package]]
 name = "osm-reader"
 version = "0.1.0"
-source = "git+https://github.com/a-b-street/osm-reader#e8e7539d77042e4b9cda38ae3ced97a5e4f5503c"
+source = "git+https://github.com/a-b-street/osm-reader#ae39050497fff871bba37559ee67918781dc6838"
 dependencies = [
  "anyhow",
  "osmpbf",
