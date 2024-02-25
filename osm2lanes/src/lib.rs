@@ -10,6 +10,7 @@ mod tests;
 mod turns;
 
 use enumset::{EnumSet, EnumSetType};
+use muv_osm::lanes::Lane;
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
@@ -271,6 +272,8 @@ pub struct LaneSpec {
     /// (though local rules might still dictate restrictions).
     /// Turns for specific vehicle types (`turn:bus:lanes` and such) are not yet captured.
     pub allowed_turns: EnumSet<TurnDirection>,
+
+    pub lane: Option<Lane>,
 }
 
 impl LaneSpec {
@@ -349,27 +352,6 @@ impl LaneSpec {
     /// Pick a reasonable default for a lane width, without any context on locale or tags.
     pub fn typical_lane_width(lt: LaneType) -> Distance {
         Self::typical_lane_widths(lt, "road")[0].0
-    }
-
-    /// Put a list of forward and backward lanes into left-to-right order, depending on the driving
-    /// side. Both input lists should be ordered from the center of the road going outwards.
-    pub(crate) fn assemble_ltr(
-        mut fwd_side: Vec<LaneSpec>,
-        mut back_side: Vec<LaneSpec>,
-        driving_side: DrivingSide,
-    ) -> Vec<LaneSpec> {
-        match driving_side {
-            DrivingSide::Right => {
-                back_side.reverse();
-                back_side.extend(fwd_side);
-                back_side
-            }
-            DrivingSide::Left => {
-                fwd_side.reverse();
-                fwd_side.extend(back_side);
-                fwd_side
-            }
-        }
     }
 
     /// None if bidirectional. If it's one-way, which direction is that relative to the road?

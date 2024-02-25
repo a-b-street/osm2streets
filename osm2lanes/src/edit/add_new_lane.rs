@@ -102,6 +102,7 @@ impl LaneSpec {
                 dir,
                 width: LaneSpec::typical_lane_widths(lt, highway_type)[0].0,
                 allowed_turns: Default::default(),
+                lane: None,
             },
         );
         idx

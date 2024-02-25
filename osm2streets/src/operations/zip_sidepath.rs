@@ -109,6 +109,7 @@ impl Sidepath {
             dir: Direction::Fwd,
             width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Planters)),
             allowed_turns: Default::default(),
+            lane: None,
         };
 
         // For every main road segment corresponding to the sidepath, we need to insert these

@@ -82,6 +82,7 @@ impl LaneSpec {
                     dir,
                     width: LaneSpec::typical_lane_width(LaneType::Biking),
                     allowed_turns: Default::default(),
+                    lane: None,
                 };
                 if let Some(buffer) = buffer_type {
                     side.insert(
@@ -91,6 +92,7 @@ impl LaneSpec {
                             dir,
                             width: LaneSpec::typical_lane_width(LaneType::Buffer(buffer)),
                             allowed_turns: Default::default(),
+                            lane: None,
                         },
                     );
                 }
