@@ -11,8 +11,7 @@ static SETUP_LOGGER: Once = Once::new();
 fn test_osm_to_specs() {
     SETUP_LOGGER.call_once(|| Builder::from_env(Env::default().default_filter_or("info")).init());
 
-    let mut ok = true;
-    for (url, mut input, driving_side, expected_lt, expected_dir) in vec![
+    let cases = [
         (
             "https://www.openstreetmap.org/way/428294122",
             vec![
@@ -271,7 +270,11 @@ fn test_osm_to_specs() {
             "d",
             "^",
         ),
-    ] {
+    ];
+    let cases_count = cases.len();
+
+    let mut failing = 0;
+    for (url, mut input, driving_side, expected_lt, expected_dir) in cases {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;
         if input.iter().all(|x| !x.starts_with("highway=")) {
@@ -284,7 +287,7 @@ fn test_osm_to_specs() {
             .map(|s| if s.dir == Direction::Fwd { '^' } else { 'v' })
             .collect();
         if actual_lt != expected_lt || actual_dir != expected_dir {
-            ok = false;
+            failing += 1;
             println!("For input (example from {}):", url);
             for kv in input {
                 println!("    {}", kv);
@@ -298,7 +301,12 @@ fn test_osm_to_specs() {
             println!();
         }
     }
-    assert!(ok);
+    assert!(
+        failing == 0,
+        "{}/{} spec tests failing",
+        failing,
+        cases_count
+    );
 }
 
 fn tags(kv: Vec<&str>) -> Tags {
