@@ -11,22 +11,45 @@ use crate::{osm, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDire
 
 /// Purely from OSM tags, determine the lanes that a road segment has.
 pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
-    // TODO This hides a potentially expensive (on a hot-path) clone
-    let mut tags = tags.clone();
+    let mut tags = tags;
+
     // This'll do weird things for the special cases of railways and cycleways/footways, but the
     // added tags will be ignored, so it doesn't matter too much.
-    infer_sidewalk_tags(&mut tags, cfg);
+    let mut cloned_tags;
+    if cfg.inferred_sidewalks {
+        // TODO This hides a potentially expensive (on a hot-path) clone
+        cloned_tags = tags.clone();
+        infer_sidewalk_tags(&mut cloned_tags, cfg);
+        tags = &cloned_tags;
+    }
 
+    // As in tests only the driving side is given, we're choosing a country here that drives on
+    // the chosen side. This messes up default speed limits and other legal defaults. This
+    // is not checked in the tests however and therefore unimportant.
     let country = match (cfg.country_code.as_str(), cfg.driving_side) {
         ("", DrivingSide::Left) => "GB",
         ("", DrivingSide::Right) => "US",
         (country, _) => country,
     };
 
-    let tags: Tag = tags.into_inner().into_iter().collect();
+    let tags: Tag = tags.inner().iter().collect();
     let lanes = lanes(&tags, &[&country]).unwrap();
 
-    let mut specs: Vec<_> = lanes.lanes.into_iter().map(from_lane).collect();
+    let mut specs: Vec<_> = lanes
+        .lanes
+        .into_iter()
+        .enumerate()
+        .map(|(i, lane)| {
+            from_lane(
+                lane,
+                if (i * 2 < lanes.centre_line) == (cfg.driving_side == DrivingSide::Left) {
+                    Direction::Fwd
+                } else {
+                    Direction::Back
+                },
+            )
+        })
+        .collect();
     if lanes.lifecycle == Lifecycle::Construction {
         for lane in &mut specs {
             lane.lt = LaneType::Construction;
@@ -35,10 +58,10 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     specs
 }
 
-fn from_lane(lane: Lane) -> LaneSpec {
+fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
-        LaneVariant::Travel(t) => travel_lane(t),
-        LaneVariant::Parking(_) => parking_lane(),
+        LaneVariant::Travel(t) => travel_lane(t, traffic_direction),
+        LaneVariant::Parking(_) => parking_lane(traffic_direction),
     };
 
     let width = lane
@@ -68,7 +91,10 @@ fn mode_allowed(val: &Conditional<AccessLevel>) -> bool {
     )
 }
 
-fn travel_lane(t: &TravelLane) -> (LaneType, Direction, EnumSet<TurnDirection>) {
+fn travel_lane(
+    t: &TravelLane,
+    traffic_direction: Direction,
+) -> (LaneType, Direction, EnumSet<TurnDirection>) {
     let turn_forward = t.forward.turn.get(TMode::All);
     let turn_backward = t.backward.turn.get(TMode::All);
     if let Some((turn_forward, turn_backward)) = turn_forward.zip(turn_backward) {
@@ -93,7 +119,7 @@ fn travel_lane(t: &TravelLane) -> (LaneType, Direction, EnumSet<TurnDirection>) 
         let dir = match (access_forward, access_backward) {
             (true, false) => Direction::Fwd,
             (false, true) => Direction::Back,
-            (true, true) => Direction::Fwd, // TODO: Both directions
+            (true, true) => traffic_direction, // TODO: Both directions
             (false, false) => continue,
         };
 
@@ -113,8 +139,8 @@ fn travel_lane(t: &TravelLane) -> (LaneType, Direction, EnumSet<TurnDirection>) 
     (LaneType::Construction, Direction::Fwd, EnumSet::new())
 }
 
-fn parking_lane() -> (LaneType, Direction, EnumSet<TurnDirection>) {
-    (LaneType::Parking, Direction::Fwd, EnumSet::new())
+fn parking_lane(traffic_direction: Direction) -> (LaneType, Direction, EnumSet<TurnDirection>) {
+    (LaneType::Parking, traffic_direction, EnumSet::new())
 }
 
 fn distance_from_muv(u: Unit<units::Distance>) -> Distance {
@@ -124,9 +150,6 @@ fn distance_from_muv(u: Unit<units::Distance>) -> Distance {
 // If sidewalks aren't explicitly tagged on a road, fill them in. This only happens when the map is
 // configured to have this inference.
 pub(crate) fn infer_sidewalk_tags(tags: &mut Tags, cfg: &MapConfig) {
-    if !cfg.inferred_sidewalks {
-        return;
-    }
     // Already explicitly mapped
     if tags.contains_key("sidewalk") {
         return;
