@@ -1,6 +1,7 @@
 use anyhow::Result;
 use enumset::EnumSet;
 use geom::Angle;
+use muv_osm::lanes::travel::Turn;
 
 use super::{TurnDirection, TurnDirection::*};
 
@@ -69,12 +70,47 @@ impl TurnDirection {
         }
         Ok(result)
     }
+
+    pub(crate) fn from_muv(value: &Turn) -> EnumSet<Self> {
+        let mut res = EnumSet::default();
+        if value.contains(Turn::Through) {
+            res.insert(TurnDirection::Through);
+        }
+        if value.contains(Turn::Left) {
+            res.insert(TurnDirection::Left);
+        }
+        if value.contains(Turn::Right) {
+            res.insert(TurnDirection::Right);
+        }
+        if value.contains(Turn::SlightLeft) {
+            res.insert(TurnDirection::SlightLeft);
+        }
+        if value.contains(Turn::SlightRight) {
+            res.insert(TurnDirection::SlightRight);
+        }
+        if value.contains(Turn::SharpLeft) {
+            res.insert(TurnDirection::SharpLeft);
+        }
+        if value.contains(Turn::SharpRight) {
+            res.insert(TurnDirection::SharpRight);
+        }
+        if value.contains(Turn::MergeToLeft) {
+            res.insert(TurnDirection::MergeLeft);
+        }
+        if value.contains(Turn::MergeToRight) {
+            res.insert(TurnDirection::MergeRight);
+        }
+        if value.contains(Turn::Reverse) {
+            res.insert(TurnDirection::Reverse);
+        }
+        res
+    }
 }
 
-#[cfg(tests)]
+#[cfg(test)]
 mod tests {
-    use crate::lanes::TurnDirection;
-    use crate::lanes::TurnDirection::*;
+    use crate::TurnDirection;
+    use crate::TurnDirection::*;
     use enumset::EnumSet;
 
     #[test]
