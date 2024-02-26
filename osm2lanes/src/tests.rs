@@ -62,8 +62,8 @@ fn test_osm_to_specs() {
                 "cycleway:right:oneway=no",
             ],
             DrivingSide::Right,
-            "spddddbbps",
-            "vvvv^^v^^^",
+            "spddddpbbs",
+            "vvvv^^^v^^",
         ),
         (
             "https://www.openstreetmap.org/way/389654080",
@@ -161,8 +161,8 @@ fn test_osm_to_specs() {
             "https://www.openstreetmap.org/way/335668924",
             vec!["lanes=1", "sidewalk=none"],
             DrivingSide::Right,
-            "dd",
-            "v^",
+            "d",
+            "^",
         ),
         (
             "https://www.openstreetmap.org/way/632329263",
