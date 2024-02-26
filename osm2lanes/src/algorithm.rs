@@ -42,11 +42,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         .map(|(i, lane)| {
             from_lane(
                 lane,
-                if (i * 2 < lanes.centre_line) == (cfg.driving_side == DrivingSide::Left) {
-                    Direction::Fwd
-                } else {
-                    Direction::Back
-                },
+                traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
             )
         })
         .collect();
@@ -56,6 +52,18 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         }
     }
     specs
+}
+
+fn traffic_direction(position: usize, centre_line: usize, driving_side: DrivingSide) -> Direction {
+    if position + 1 == centre_line {
+        return Direction::Fwd;
+    }
+
+    if (position < centre_line) == (driving_side == DrivingSide::Left) {
+        Direction::Fwd
+    } else {
+        Direction::Back
+    }
 }
 
 fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
@@ -104,7 +112,7 @@ fn travel_lane(
         }
     }
 
-    for (mode, lt) in [
+    for (mode, mut lt) in [
         (TMode::Tram, LaneType::LightRail),
         (TMode::Train, LaneType::LightRail),
         (TMode::Motorcar, LaneType::Driving),
@@ -115,6 +123,13 @@ fn travel_lane(
     ] {
         let access_forward = t.forward.access.get(mode).is_some_and(mode_allowed);
         let access_backward = t.backward.access.get(mode).is_some_and(mode_allowed);
+
+        if mode == TMode::Bicycle
+            && (t.forward.access.get(TMode::Foot).is_some_and(mode_allowed)
+                || t.backward.access.get(TMode::Foot).is_some_and(mode_allowed))
+        {
+            lt = LaneType::SharedUse;
+        }
 
         let dir = match (access_forward, access_backward) {
             (true, false) => Direction::Fwd,
