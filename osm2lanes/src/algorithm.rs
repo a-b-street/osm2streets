@@ -85,18 +85,25 @@ fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
     }
 }
 
-fn mode_allowed(val: &Conditional<AccessLevel>) -> bool {
-    matches!(
-        val.base(),
-        Some(
-            AccessLevel::Yes
-                | AccessLevel::Designated
-                | AccessLevel::Permissive
-                | AccessLevel::Discouraged
-                | AccessLevel::Destination
-                | AccessLevel::Customers
+fn mode_allowed(val: &Conditional<AccessLevel>, designated: bool) -> bool {
+    let access = val.base();
+    if designated {
+        access == Some(&AccessLevel::Designated)
+    } else {
+        matches!(
+            access,
+            Some(
+                AccessLevel::Designated
+                    | AccessLevel::Yes
+                    | AccessLevel::Permissive
+                    | AccessLevel::Discouraged
+                    | AccessLevel::Destination
+                    | AccessLevel::Customers
+                    | AccessLevel::Permit
+                    | AccessLevel::Private
+            )
         )
-    )
+    }
 }
 
 fn travel_lane(
@@ -112,23 +119,41 @@ fn travel_lane(
         }
     }
 
-    for (mode, mut lt) in [
-        (TMode::Tram, LaneType::LightRail),
-        (TMode::Train, LaneType::LightRail),
-        (TMode::Motorcar, LaneType::Driving),
-        (TMode::Bus, LaneType::Bus),
-        (TMode::Bicycle, LaneType::Biking),
-        (TMode::Foot, LaneType::Sidewalk),
-        (TMode::All, LaneType::Shoulder),
+    for (mode, mode2, designated, lt) in [
+        (TMode::Tram, None, false, LaneType::LightRail),
+        (TMode::Train, None, false, LaneType::LightRail),
+        (TMode::Bus, None, true, LaneType::Bus),
+        (TMode::Motorcar, None, false, LaneType::Driving),
+        (TMode::Bus, None, false, LaneType::Bus),
+        (TMode::Bicycle, Some(TMode::Foot), true, LaneType::SharedUse),
+        (TMode::Bicycle, None, true, LaneType::Biking),
+        (TMode::Foot, None, true, LaneType::Sidewalk),
+        (TMode::Bicycle, None, false, LaneType::Biking),
+        (TMode::Foot, None, false, LaneType::Sidewalk),
+        (TMode::All, None, false, LaneType::Shoulder),
     ] {
-        let access_forward = t.forward.access.get(mode).is_some_and(mode_allowed);
-        let access_backward = t.backward.access.get(mode).is_some_and(mode_allowed);
+        let mut access_forward = t
+            .forward
+            .access
+            .get(mode)
+            .is_some_and(|c| mode_allowed(c, designated));
+        let mut access_backward = t
+            .backward
+            .access
+            .get(mode)
+            .is_some_and(|c| mode_allowed(c, designated));
 
-        if mode == TMode::Bicycle
-            && (t.forward.access.get(TMode::Foot).is_some_and(mode_allowed)
-                || t.backward.access.get(TMode::Foot).is_some_and(mode_allowed))
-        {
-            lt = LaneType::SharedUse;
+        if let Some(mode2) = mode2 {
+            access_forward = access_forward
+                && t.forward
+                    .access
+                    .get(mode2)
+                    .is_some_and(|c| mode_allowed(c, false));
+            access_backward = access_backward
+                && t.backward
+                    .access
+                    .get(mode2)
+                    .is_some_and(|c| mode_allowed(c, false));
         }
 
         let dir = match (access_forward, access_backward) {
