@@ -42,7 +42,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         .map(|(i, lane)| {
             from_lane(
                 lane,
-                traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
+                traffic_direction(i as u8 * 2, lanes.centre_line, cfg.driving_side),
             )
         })
         .collect();
@@ -54,7 +54,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     specs
 }
 
-fn traffic_direction(position: usize, centre_line: usize, driving_side: DrivingSide) -> Direction {
+fn traffic_direction(position: u8, centre_line: u8, driving_side: DrivingSide) -> Direction {
     if position + 1 == centre_line {
         return Direction::Fwd;
     }

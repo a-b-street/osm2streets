@@ -94,6 +94,7 @@ impl OsmExtract {
         };
 
         if !vec![
+            "busway",
             "cycleway",
             "footway",
             "living_street",
