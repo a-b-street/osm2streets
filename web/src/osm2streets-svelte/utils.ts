@@ -8,7 +8,7 @@ export function downloadGeneratedFile(filename: string, textInput: string) {
   var element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8, " + encodeURIComponent(textInput)
+    "data:text/plain;charset=utf-8, " + encodeURIComponent(textInput),
   );
   element.setAttribute("download", filename);
   document.body.appendChild(element);
@@ -20,7 +20,7 @@ export function downloadGeneratedFile(filename: string, textInput: string) {
 export function caseHelper(
   getKey: string,
   map: { [name: string]: string },
-  backup: string
+  backup: string,
 ): any[] {
   let x: any[] = ["case"];
   for (let [key, value] of Object.entries(map)) {
@@ -34,7 +34,7 @@ export function caseHelper(
 export function featureStateToggle(
   key: string,
   falseCase: number,
-  trueCase: number
+  trueCase: number,
 ): any[] {
   return [
     "case",

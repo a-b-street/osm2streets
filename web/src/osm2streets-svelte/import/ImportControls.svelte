@@ -68,7 +68,7 @@
         // TODO Can we avoid this?
         new Uint8Array(new TextEncoder().encode(osmXml)),
         JSON.stringify(boundaryGj),
-        settings
+        settings,
       );
       imported = {
         kind: "done",
@@ -127,38 +127,51 @@
   }
 </script>
 
-<OverpassSelector
-  bind:this={overpassSelector}
-  map={$map}
-  on:loading={loading}
-  on:load={load}
-  on:resetToNone={resetToNone}
-  on:error={error}
-/>
-<fieldset>
-  <legend>
-    <BuiltInSelector
-      bind:testCase
-      on:loading={loading}
-      on:load={load}
-      on:resetToNone={resetToNone}
-      on:error={error}
-    />
-  </legend>
+<div class="controls">
+  <OverpassSelector
+    bind:this={overpassSelector}
+    map={$map}
+    on:loading={loading}
+    on:load={load}
+    on:resetToNone={resetToNone}
+    on:error={error}
+  />
+  <fieldset>
+    <legend>
+      <BuiltInSelector
+        bind:testCase
+        on:loading={loading}
+        on:load={load}
+        on:resetToNone={resetToNone}
+        on:error={error}
+      />
+    </legend>
 
-  {#if imported.kind === "nothing"}
-    <p>Use the polygon tool to select an area to import</p>
-  {:else if imported.kind === "loading"}
-    <p>{imported.msg}</p>
-  {:else if imported.kind === "error"}
-    <p>Error: {imported.msg}</p>
-  {:else if imported.kind === "done"}
-    <div>
-      <button type="button" on:click={update}>Update OSM data</button>
-      <button type="button" on:click={download}>Download osm.xml</button>
-      <button type="button" on:click={resetView}>Reset view</button>
-    </div>
-  {/if}
-</fieldset>
+    {#if imported.kind === "nothing"}
+      <p>Use the polygon tool to select an area to import</p>
+    {:else if imported.kind === "loading"}
+      <p>{imported.msg}</p>
+    {:else if imported.kind === "error"}
+      <p>Error: {imported.msg}</p>
+    {:else if imported.kind === "done"}
+      <div>
+        <button type="button" on:click={update}>Update OSM data</button>
+        <button type="button" on:click={download}>Download osm.xml</button>
+        <button type="button" on:click={resetView}>Reset view</button>
+      </div>
+    {/if}
+  </fieldset>
 
-<Osm2streetsSettings bind:settings />
+  <Osm2streetsSettings bind:settings />
+</div>
+
+<style>
+  .controls > :global(*) {
+    margin-bottom: 8px;
+  }
+
+  fieldset {
+    border: 1px groove black;
+    margin: 0;
+  }
+</style>

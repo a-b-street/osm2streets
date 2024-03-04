@@ -50,19 +50,17 @@
 
 <style>
   details {
-    border: 2px groove silver;
-    padding: 0.75em;
-    margin-top: 0.5em;
+    padding: 0.5em 1em;
+    border: 1px groove black;
   }
-  details > summary:first-of-type {
+  summary {
     position: relative;
     width: fit-content;
-    top: -1.6em;
-    margin-bottom: -1.6em;
-    padding: 0 2px;
-    background: var(--bg-color);
-
-    font-weight: bold;
+    top: -1.2em;
+    margin-bottom: -1.2em;
+    padding: 0 8px;
+    background: white;
+    font-weight: 600;
   }
 
   div,

@@ -22,7 +22,7 @@
   let uniqueID = 0;
 
   for (let [key, value] of Object.entries(
-    JSON.parse($network!.getOsmTagsForWay(way))
+    JSON.parse($network!.getOsmTagsForWay(way)),
   )) {
     tags.push({
       id: uniqueID++,

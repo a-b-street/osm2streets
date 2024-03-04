@@ -25,7 +25,7 @@
     if ($clickedLane) {
       if ($clickedLane.properties.osm_way_ids.length != 1) {
         window.alert(
-          "This road doesn't match up with one OSM way; you can't edit it"
+          "This road doesn't match up with one OSM way; you can't edit it",
         );
       } else {
         way = BigInt($clickedLane.properties.osm_way_ids[0]);

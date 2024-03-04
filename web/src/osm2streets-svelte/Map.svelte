@@ -44,9 +44,6 @@
 
 <style>
   .map {
-    position: relative;
-    flex-grow: 1;
-    /* TODO: Hack, can't figure out why height broken */
-    min-height: 100vh;
+    height: 100vh;
   }
 </style>

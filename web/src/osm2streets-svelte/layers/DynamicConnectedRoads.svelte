@@ -9,8 +9,8 @@
   $: if ($network && $hoveredIntersection) {
     gj = JSON.parse(
       $network!.debugRoadsConnectedToIntersectionGeojson(
-        $hoveredIntersection.properties.id
-      )
+        $hoveredIntersection.properties.id,
+      ),
     );
   } else {
     gj = undefined;

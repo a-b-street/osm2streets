@@ -39,7 +39,7 @@
           // This is the only type used currently
           "Buffer(Planters)": "#555555",
         },
-        "red"
+        "red",
       ),
       "fill-opacity": featureStateToggle("hover", 0.9, 0.4),
     },
