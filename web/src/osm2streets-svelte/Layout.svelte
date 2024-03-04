@@ -20,7 +20,7 @@
     padding: 8px 16px;
     width: 25%;
     height: 100vh;
-    overflow: scroll;
+    overflow: auto;
   }
   .main {
     width: 75%;
