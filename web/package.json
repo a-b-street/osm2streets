@@ -7,7 +7,7 @@
     "wasm": "wasm-pack build --dev --target web ../osm2streets-js",
     "wasm-release": "wasm-pack build --release --target web ../osm2streets-js",
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run wasm-release && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "fmt": "npx prettier --write *.js *.ts *.json *.html src/**",
