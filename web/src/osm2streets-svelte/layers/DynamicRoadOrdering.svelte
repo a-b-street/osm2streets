@@ -18,8 +18,8 @@
     if (show && $hoveredIntersection) {
       let gj = JSON.parse(
         $network!.debugClockwiseOrderingForIntersectionGeojson(
-          $hoveredIntersection.properties.id
-        )
+          $hoveredIntersection.properties.id,
+        ),
       );
       for (let f of gj.features) {
         popups.push(
@@ -30,7 +30,7 @@
           })
             .setLngLat(f.geometry.coordinates)
             .setHTML(f.properties.label)
-            .addTo($map!)
+            .addTo($map!),
         );
       }
     }

@@ -14,4 +14,4 @@ export default defineConfig({
     },
   },
   plugins: [svelte(), wasmPack(["../osm2streets-js"])],
-})
+});

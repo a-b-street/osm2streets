@@ -9,7 +9,7 @@
   $: if ($network && $hoveredLane) {
     let props = $hoveredLane.properties;
     gj = JSON.parse(
-      $network!.debugMovementsFromLaneGeojson(props.road, props.index)
+      $network!.debugMovementsFromLaneGeojson(props.road, props.index),
     );
   } else {
     gj = undefined;

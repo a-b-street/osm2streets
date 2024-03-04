@@ -30,7 +30,7 @@
           Terminus: "#999",
           MapEdge: "#696",
         },
-        "#666"
+        "#666",
       ),
       "fill-opacity": featureStateToggle("hover", 0.9, 0.4),
     },

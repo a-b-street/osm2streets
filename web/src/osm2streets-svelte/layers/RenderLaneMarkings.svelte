@@ -27,7 +27,7 @@
           "vehicle stop line": "white",
           "bike stop line": "green",
         },
-        "red"
+        "red",
       ),
       "fill-opacity": 0.9,
     },

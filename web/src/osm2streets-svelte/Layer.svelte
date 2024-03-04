@@ -45,7 +45,7 @@
         source,
         ...layerStyle,
       },
-      getLayerZorder(layer)
+      getLayerZorder(layer),
     );
     // We may need to hide initially
     if (!show) {

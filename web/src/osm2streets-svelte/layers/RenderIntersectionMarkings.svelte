@@ -21,7 +21,7 @@
         {
           "sidewalk corner": "#CCCCCC",
         },
-        "red"
+        "red",
       ),
       "fill-opacity": 0.9,
     },
