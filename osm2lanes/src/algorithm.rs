@@ -93,7 +93,7 @@ struct Rank {
 }
 
 impl Rank {
-    fn normal(main: TMode, lane_type: LaneType) -> Self {
+    const fn normal(main: TMode, lane_type: LaneType) -> Self {
         Self {
             main,
             secondary: None,
@@ -102,7 +102,7 @@ impl Rank {
         }
     }
 
-    fn designated(main: TMode, lane_type: LaneType) -> Self {
+    const fn designated(main: TMode, lane_type: LaneType) -> Self {
         Self {
             main,
             secondary: None,
@@ -154,6 +154,27 @@ fn access_level_allowed(access: AccessLevel) -> bool {
     )
 }
 
+// Specifies the importance of different modes of transport in descending order
+// The raw outline is `train > car > bus > shared use > bicycle > foot`
+const RANKS: [Rank; 11] = [
+    Rank::normal(TMode::Tram, LaneType::LightRail),
+    Rank::normal(TMode::Train, LaneType::LightRail),
+    Rank::designated(TMode::Bus, LaneType::Bus),
+    Rank::normal(TMode::Motorcar, LaneType::Driving),
+    Rank::normal(TMode::Bus, LaneType::Bus),
+    Rank {
+        main: TMode::Bicycle,
+        secondary: Some(TMode::Foot),
+        designated: false,
+        lane_type: LaneType::SharedUse,
+    },
+    Rank::designated(TMode::Bicycle, LaneType::Biking),
+    Rank::designated(TMode::Foot, LaneType::Sidewalk),
+    Rank::normal(TMode::Bicycle, LaneType::Biking),
+    Rank::normal(TMode::Foot, LaneType::Sidewalk),
+    Rank::normal(TMode::All, LaneType::Shoulder),
+];
+
 fn travel_lane(
     t: &TravelLane,
     traffic_direction: Direction,
@@ -167,24 +188,8 @@ fn travel_lane(
         }
     }
 
-    for rank in [
-        Rank::normal(TMode::Tram, LaneType::LightRail),
-        Rank::normal(TMode::Train, LaneType::LightRail),
-        Rank::designated(TMode::Bus, LaneType::Bus),
-        Rank::normal(TMode::Motorcar, LaneType::Driving),
-        Rank::normal(TMode::Bus, LaneType::Bus),
-        Rank {
-            main: TMode::Bicycle,
-            secondary: Some(TMode::Foot),
-            designated: false,
-            lane_type: LaneType::SharedUse,
-        },
-        Rank::designated(TMode::Bicycle, LaneType::Biking),
-        Rank::designated(TMode::Foot, LaneType::Sidewalk),
-        Rank::normal(TMode::Bicycle, LaneType::Biking),
-        Rank::normal(TMode::Foot, LaneType::Sidewalk),
-        Rank::normal(TMode::All, LaneType::Shoulder),
-    ] {
+    // TODO: footways not as sidewalks
+    for rank in RANKS {
         let access_forward = rank.is_allowed(&t.forward.access);
         let access_backward = rank.is_allowed(&t.backward.access);
 
