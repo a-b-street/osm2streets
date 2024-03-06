@@ -4,7 +4,7 @@ use geom::Distance;
 use muv_osm::{
     lanes::{lanes, travel::TravelLane, Lane, LaneVariant},
     units::{self, Unit},
-    AccessLevel, Conditional, Lifecycle, TMode, Tag,
+    AccessLevel, Conditional, Lifecycle, TMode, TModes, Tag,
 };
 
 use crate::{osm, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection};
@@ -85,25 +85,68 @@ fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
     }
 }
 
-fn mode_allowed(val: &Conditional<AccessLevel>, designated: bool) -> bool {
-    let access = val.base();
-    if designated {
-        access == Some(&AccessLevel::Designated)
-    } else {
-        matches!(
-            access,
-            Some(
-                AccessLevel::Designated
-                    | AccessLevel::Yes
-                    | AccessLevel::Permissive
-                    | AccessLevel::Discouraged
-                    | AccessLevel::Destination
-                    | AccessLevel::Customers
-                    | AccessLevel::Permit
-                    | AccessLevel::Private
-            )
-        )
+struct Rank {
+    main: TMode,
+    secondary: Option<TMode>,
+    designated: bool,
+    lane_type: LaneType,
+}
+
+impl Rank {
+    fn normal(main: TMode, lane_type: LaneType) -> Self {
+        Self {
+            main,
+            secondary: None,
+            designated: false,
+            lane_type,
+        }
     }
+
+    fn designated(main: TMode, lane_type: LaneType) -> Self {
+        Self {
+            main,
+            secondary: None,
+            designated: true,
+            lane_type,
+        }
+    }
+
+    fn is_allowed(&self, on: &TModes<Conditional<AccessLevel>>) -> bool {
+        let Some(access_main) = on.get(self.main).and_then(|c| c.base()) else {
+            return false;
+        };
+
+        if self.designated {
+            if access_main != &AccessLevel::Designated {
+                return false;
+            }
+        } else if !access_level_allowed(*access_main) {
+            return false;
+        }
+
+        if let Some(access_secondary) = self
+            .secondary
+            .and_then(|secondary| on.get(secondary)?.base())
+        {
+            return access_level_allowed(*access_secondary);
+        }
+
+        true
+    }
+}
+
+fn access_level_allowed(access: AccessLevel) -> bool {
+    matches!(
+        access,
+        AccessLevel::Designated
+            | AccessLevel::Yes
+            | AccessLevel::Permissive
+            | AccessLevel::Discouraged
+            | AccessLevel::Destination
+            | AccessLevel::Customers
+            | AccessLevel::Permit
+            | AccessLevel::Private
+    )
 }
 
 fn travel_lane(
@@ -119,42 +162,26 @@ fn travel_lane(
         }
     }
 
-    for (mode, mode2, designated, lt) in [
-        (TMode::Tram, None, false, LaneType::LightRail),
-        (TMode::Train, None, false, LaneType::LightRail),
-        (TMode::Bus, None, true, LaneType::Bus),
-        (TMode::Motorcar, None, false, LaneType::Driving),
-        (TMode::Bus, None, false, LaneType::Bus),
-        (TMode::Bicycle, Some(TMode::Foot), true, LaneType::SharedUse),
-        (TMode::Bicycle, None, true, LaneType::Biking),
-        (TMode::Foot, None, true, LaneType::Sidewalk),
-        (TMode::Bicycle, None, false, LaneType::Biking),
-        (TMode::Foot, None, false, LaneType::Sidewalk),
-        (TMode::All, None, false, LaneType::Shoulder),
+    for rank in [
+        Rank::normal(TMode::Tram, LaneType::LightRail),
+        Rank::normal(TMode::Train, LaneType::LightRail),
+        Rank::designated(TMode::Bus, LaneType::Bus),
+        Rank::normal(TMode::Motorcar, LaneType::Driving),
+        Rank::normal(TMode::Bus, LaneType::Bus),
+        Rank {
+            main: TMode::Bicycle,
+            secondary: Some(TMode::Foot),
+            designated: true,
+            lane_type: LaneType::SharedUse,
+        },
+        Rank::designated(TMode::Bicycle, LaneType::Biking),
+        Rank::designated(TMode::Foot, LaneType::Sidewalk),
+        Rank::normal(TMode::Bicycle, LaneType::Biking),
+        Rank::normal(TMode::Foot, LaneType::Sidewalk),
+        Rank::normal(TMode::All, LaneType::Shoulder),
     ] {
-        let mut access_forward = t
-            .forward
-            .access
-            .get(mode)
-            .is_some_and(|c| mode_allowed(c, designated));
-        let mut access_backward = t
-            .backward
-            .access
-            .get(mode)
-            .is_some_and(|c| mode_allowed(c, designated));
-
-        if let Some(mode2) = mode2 {
-            access_forward = access_forward
-                && t.forward
-                    .access
-                    .get(mode2)
-                    .is_some_and(|c| mode_allowed(c, false));
-            access_backward = access_backward
-                && t.backward
-                    .access
-                    .get(mode2)
-                    .is_some_and(|c| mode_allowed(c, false));
-        }
+        let access_forward = rank.is_allowed(&t.forward.access);
+        let access_backward = rank.is_allowed(&t.backward.access);
 
         let dir = match (access_forward, access_backward) {
             (true, false) => Direction::Fwd,
@@ -169,12 +196,12 @@ fn travel_lane(
             &t.backward
         }
         .turn
-        .get(mode)
+        .get(rank.main)
         .and_then(|v| v.base())
         .map(TurnDirection::from_muv)
         .unwrap_or_default();
 
-        return (lt, dir, turns);
+        return (rank.lane_type, dir, turns);
     }
     (LaneType::Construction, Direction::Fwd, EnumSet::new())
 }
