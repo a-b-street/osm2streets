@@ -942,6 +942,7 @@ dependencies = [
 [[package]]
 name = "muv-osm"
 version = "0.1.0"
+source = "git+https://gitlab.com/LeLuxNet/Muv#ea0f21b7a1d3720fe2ca2ed18a4529bb943e1550"
 dependencies = [
  "chrono",
  "muv-osm-derive",
@@ -954,6 +955,7 @@ dependencies = [
 [[package]]
 name = "muv-osm-derive"
 version = "0.1.0"
+source = "git+https://gitlab.com/LeLuxNet/Muv#ea0f21b7a1d3720fe2ca2ed18a4529bb943e1550"
 dependencies = [
  "convert_case",
  "enum-utils-from-str",
