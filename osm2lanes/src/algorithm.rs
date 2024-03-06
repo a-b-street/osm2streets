@@ -124,10 +124,15 @@ impl Rank {
             return false;
         }
 
-        if let Some(access_secondary) = self
-            .secondary
-            .and_then(|secondary| on.get(secondary)?.base())
-        {
+        if let Some(secondary) = self.secondary {
+            let Some(access_secondary) = on.get(secondary).and_then(|a| a.base()) else {
+                return false;
+            };
+            if access_secondary == &AccessLevel::Designated
+                && access_main != &AccessLevel::Designated
+            {
+                return false;
+            }
             return access_level_allowed(*access_secondary);
         }
 
@@ -171,7 +176,7 @@ fn travel_lane(
         Rank {
             main: TMode::Bicycle,
             secondary: Some(TMode::Foot),
-            designated: true,
+            designated: false,
             lane_type: LaneType::SharedUse,
         },
         Rank::designated(TMode::Bicycle, LaneType::Biking),
