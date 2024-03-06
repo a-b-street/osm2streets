@@ -35,22 +35,23 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     let tags: Tag = tags.inner().iter().collect();
     let lanes = lanes(&tags, &[&country]).unwrap();
 
-    let mut specs: Vec<_> = lanes
-        .lanes
-        .into_iter()
-        .enumerate()
+    let mut specs: Vec<_> = (0..)
+        .zip(lanes.lanes)
         .map(|(i, lane)| {
             from_lane(
+                &tags,
                 lane,
-                traffic_direction(i as u8 * 2, lanes.centre_line, cfg.driving_side),
+                traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
             )
         })
         .collect();
+
     if lanes.lifecycle == Lifecycle::Construction {
         for lane in &mut specs {
             lane.lt = LaneType::Construction;
         }
     }
+
     specs
 }
 
@@ -66,9 +67,9 @@ fn traffic_direction(position: u8, centre_line: u8, driving_side: DrivingSide) -
     }
 }
 
-fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
+fn from_lane(tags: &Tag, lane: Lane, traffic_direction: Direction) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
-        LaneVariant::Travel(t) => travel_lane(t, traffic_direction),
+        LaneVariant::Travel(t) => travel_lane(tags, t, traffic_direction),
         LaneVariant::Parking(_) => parking_lane(traffic_direction),
     };
 
@@ -169,13 +170,14 @@ const RANKS: [Rank; 11] = [
         lane_type: LaneType::SharedUse,
     },
     Rank::designated(TMode::Bicycle, LaneType::Biking),
-    Rank::designated(TMode::Foot, LaneType::Sidewalk),
+    Rank::designated(TMode::Foot, LaneType::Footway),
     Rank::normal(TMode::Bicycle, LaneType::Biking),
-    Rank::normal(TMode::Foot, LaneType::Sidewalk),
+    Rank::normal(TMode::Foot, LaneType::Footway),
     Rank::normal(TMode::All, LaneType::Shoulder),
 ];
 
 fn travel_lane(
+    tags: &Tag,
     t: &TravelLane,
     traffic_direction: Direction,
 ) -> (LaneType, Direction, EnumSet<TurnDirection>) {
@@ -188,7 +190,6 @@ fn travel_lane(
         }
     }
 
-    // TODO: footways not as sidewalks
     for rank in RANKS {
         let access_forward = rank.is_allowed(&t.forward.access);
         let access_backward = rank.is_allowed(&t.backward.access);
@@ -198,6 +199,17 @@ fn travel_lane(
             (false, true) => Direction::Back,
             (true, true) => traffic_direction, // TODO: Both directions
             (false, false) => continue,
+        };
+
+        let lane_type = if rank.lane_type != LaneType::Footway
+            || (matches!(
+                tags.get_value("highway"),
+                Some("footway" | "pedestrian" | "path" | "steps")
+            ) && tags.get_value("footway") != Some("sidewalk"))
+        {
+            rank.lane_type
+        } else {
+            LaneType::Sidewalk
         };
 
         let turns = if access_forward {
@@ -211,7 +223,7 @@ fn travel_lane(
         .map(TurnDirection::from_muv)
         .unwrap_or_default();
 
-        return (rank.lane_type, dir, turns);
+        return (lane_type, dir, turns);
     }
     (LaneType::Construction, Direction::Fwd, EnumSet::new())
 }
