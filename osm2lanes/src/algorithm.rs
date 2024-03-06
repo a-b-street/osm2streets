@@ -39,7 +39,6 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         .zip(lanes.lanes)
         .map(|(i, lane)| {
             from_lane(
-                &tags,
                 lane,
                 traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
             )
@@ -67,9 +66,9 @@ fn traffic_direction(position: u8, centre_line: u8, driving_side: DrivingSide) -
     }
 }
 
-fn from_lane(tags: &Tag, lane: Lane, traffic_direction: Direction) -> LaneSpec {
+fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
-        LaneVariant::Travel(t) => travel_lane(tags, t, traffic_direction),
+        LaneVariant::Travel(t) => travel_lane(t, lane.main, traffic_direction),
         LaneVariant::Parking(_) => parking_lane(traffic_direction),
     };
 
@@ -177,8 +176,8 @@ const RANKS: [Rank; 11] = [
 ];
 
 fn travel_lane(
-    tags: &Tag,
     t: &TravelLane,
+    main: bool,
     traffic_direction: Direction,
 ) -> (LaneType, Direction, EnumSet<TurnDirection>) {
     let turn_forward = t.forward.turn.get(TMode::All);
@@ -201,12 +200,7 @@ fn travel_lane(
             (false, false) => continue,
         };
 
-        let lane_type = if rank.lane_type != LaneType::Footway
-            || (matches!(
-                tags.get_value("highway"),
-                Some("footway" | "pedestrian" | "path" | "steps")
-            ) && tags.get_value("footway") != Some("sidewalk"))
-        {
+        let lane_type = if main || rank.lane_type != LaneType::Footway {
             rank.lane_type
         } else {
             LaneType::Sidewalk
