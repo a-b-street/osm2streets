@@ -24,8 +24,8 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     }
 
     // As in tests only the driving side is given, we're choosing a country here that drives on
-    // the chosen side. This messes up default speed limits and other legal defaults. This
-    // is not checked in the tests however and therefore unimportant.
+    // the chosen side. This messes up default speed limits and other legal defaults. Those
+    // are not checked in the tests, however, and therefore unimportant.
     let country = match (cfg.country_code.as_str(), cfg.driving_side) {
         ("", DrivingSide::Left) => "GB",
         ("", DrivingSide::Right) => "US",

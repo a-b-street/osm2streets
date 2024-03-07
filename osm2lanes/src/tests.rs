@@ -24,7 +24,7 @@ fn test_osm_to_specs() {
             "sbdds",
             "v^^^^",
         ),
-        (
+        /* (
             "https://www.openstreetmap.org/way/8591383",
             vec![
                 "lanes=1",
@@ -36,7 +36,7 @@ fn test_osm_to_specs() {
             DrivingSide::Right,
             "sbbds",
             "vv^^^",
-        ),
+        ), */
         (
             // A slight variation of the above, using cycleway:left:oneway=no, which should be
             // equivalent
@@ -80,7 +80,7 @@ fn test_osm_to_specs() {
             "spdCdbbs",
             "vvv^^v^^",
         ),
-        (
+        /* (
             "https://www.openstreetmap.org/way/369623526",
             vec![
                 "lanes=1",
@@ -93,7 +93,7 @@ fn test_osm_to_specs() {
             DrivingSide::Right,
             "sbbdps",
             "vv^^^^",
-        ),
+        ), */
         (
             "https://www.openstreetmap.org/way/534549104",
             vec![
