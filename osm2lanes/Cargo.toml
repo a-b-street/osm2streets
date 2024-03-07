@@ -8,7 +8,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 enumset = { version = "1.0.12", features=["serde"] }
 geom = { workspace = true }
-muv-osm = { git = "https://gitlab.com/LeLuxNet/Muv", features = ["lanes", "serde"] }
+muv-osm = { git = "https://gitlab.com/LeLuxNet/Muv", features = ["serde", "lanes"] }
 osm-reader = { git = "https://github.com/a-b-street/osm-reader", features = ["serde"] }
 serde = { workspace = true }
 
