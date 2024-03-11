@@ -449,16 +449,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "enum-utils-from-str"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d49be08bad6e4ca87b2b8e74146987d4e5cb3b7512efa50ef505b51a22227ee1"
-dependencies = [
- "proc-macro2",
- "quote",
-]
-
-[[package]]
 name = "enumset"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -942,7 +932,7 @@ dependencies = [
 [[package]]
 name = "muv-osm"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#44660cb57c4c1dd35e12a9d0754afbb09f02f6f0"
+source = "git+https://gitlab.com/LeLuxNet/Muv#c47e9cd7ccac38fd29fed5b52bbca9bdf570df7e"
 dependencies = [
  "chrono",
  "muv-osm-derive",
@@ -955,10 +945,9 @@ dependencies = [
 [[package]]
 name = "muv-osm-derive"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#44660cb57c4c1dd35e12a9d0754afbb09f02f6f0"
+source = "git+https://gitlab.com/LeLuxNet/Muv#c47e9cd7ccac38fd29fed5b52bbca9bdf570df7e"
 dependencies = [
  "convert_case",
- "enum-utils-from-str",
  "proc-macro2",
  "quote",
  "syn 2.0.39",
