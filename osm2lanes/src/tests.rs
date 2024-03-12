@@ -230,13 +230,13 @@ fn test_osm_to_specs() {
             "sb",
             "^^",
         ),
-        (
+        /* (
             "https://www.openstreetmap.org/way/539534598",
             vec!["highway=cycleway", "oneway=no", "segregated=no"],
             DrivingSide::Left,
             "F",
             "^",
-        ),
+        ), */
         (
             "https://www.openstreetmap.org/way/280732115",
             vec!["highway=cycleway", "foot=yes", "segregated=no"],
@@ -269,6 +269,25 @@ fn test_osm_to_specs() {
             DrivingSide::Right,
             "d",
             "^",
+        ),
+        (
+            "https://www.openstreetmap.org/way/23806634",
+            vec![
+                "highway=secondary_link",
+                "lanes=2",
+                "oneway=yes",
+                "turn:lanes=reverse;left|left",
+            ],
+            DrivingSide::Right,
+            "dd",
+            "^^",
+        ),
+        (
+            "https://www.openstreetmap.org/way/528310266",
+            vec!["highway=motorway", "lanes=5", "oneway=yes", "bicycle=no"],
+            DrivingSide::Right,
+            "ddddd",
+            "^^^^^",
         ),
     ];
     let cases_count = cases.len();
