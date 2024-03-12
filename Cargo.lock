@@ -932,7 +932,7 @@ dependencies = [
 [[package]]
 name = "muv-osm"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#95405f9491ac261fc7f8914f1687e76b7db48100"
+source = "git+https://gitlab.com/LeLuxNet/Muv#e58ab5b8cb2c64f48c89474cc9f5f1ae91144ae6"
 dependencies = [
  "chrono",
  "muv-osm-derive",
@@ -945,7 +945,7 @@ dependencies = [
 [[package]]
 name = "muv-osm-derive"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#95405f9491ac261fc7f8914f1687e76b7db48100"
+source = "git+https://gitlab.com/LeLuxNet/Muv#e58ab5b8cb2c64f48c89474cc9f5f1ae91144ae6"
 dependencies = [
  "convert_case",
  "proc-macro2",
