@@ -2,12 +2,15 @@ use abstutil::Tags;
 use enumset::EnumSet;
 use geom::Distance;
 use muv_osm::{
-    lanes::{lanes, travel::TravelLane, Lane, LaneVariant},
+    lanes::{lanes, travel::TravelLane, Lane, LaneIndex, LaneVariant},
     units::{self, Unit},
     AccessLevel, Conditional, Lifecycle, TMode, TModes, Tag,
 };
 
-use crate::{osm, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection};
+use crate::{
+    osm::{self, HIGHWAY},
+    Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection,
+};
 
 /// Purely from OSM tags, determine the lanes that a road segment has.
 pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
@@ -35,11 +38,18 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     let tags: Tag = tags.inner().iter().collect();
     let lanes = lanes(&tags, &[&country]).unwrap();
 
+    let highway_tag = tags.get_value(HIGHWAY).unwrap_or_default();
+
     let mut specs: Vec<_> = (0..)
         .zip(lanes.lanes)
         .map(|(i, lane)| {
             from_lane(
                 lane,
+                highway_tag,
+                // `i` is converted to a `LaneIndex` to make it easier to compare it with
+                // `lanes.centre_line` which is already a `LaneIndex`.
+                // A `LaneIndex` is double the index of a lane in the `lanes` as described in
+                // https://leluxnet.gitlab.io/Muv/muv_osm/lanes/type.LaneIndex.html
                 traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
             )
         })
@@ -54,27 +64,36 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     specs
 }
 
-fn traffic_direction(position: u8, centre_line: u8, driving_side: DrivingSide) -> Direction {
-    if position + 1 == centre_line {
+fn traffic_direction(
+    position: LaneIndex,
+    centre_line: LaneIndex,
+    driving_side: DrivingSide,
+) -> Direction {
+    let on_centre_line = position + 1 == centre_line;
+    if on_centre_line {
         return Direction::Fwd;
     }
 
-    if (position < centre_line) == (driving_side == DrivingSide::Left) {
+    let left_of_centre_line = position < centre_line;
+    let driving_left = driving_side == DrivingSide::Left;
+
+    if left_of_centre_line == driving_left {
         Direction::Fwd
     } else {
         Direction::Back
     }
 }
 
-fn from_lane(lane: Lane, traffic_direction: Direction) -> LaneSpec {
+fn from_lane(lane: Lane, highway_tag: &str, traffic_direction: Direction) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
-        LaneVariant::Travel(t) => travel_lane(t, lane.main, traffic_direction),
+        LaneVariant::Travel(t) => travel_lane(t, lane.is_sidepath, traffic_direction),
         LaneVariant::Parking(_) => parking_lane(traffic_direction),
     };
 
-    let width = lane
-        .width
-        .map_or_else(|| LaneSpec::typical_lane_width(lt), distance_from_muv);
+    let width = lane.width.map_or_else(
+        || LaneSpec::typical_lane_widths(lt, highway_tag)[0].0,
+        distance_from_muv,
+    );
 
     LaneSpec {
         lt,
@@ -156,9 +175,10 @@ fn access_level_allowed(access: AccessLevel) -> bool {
 
 // Specifies the importance of different modes of transport in descending order
 // The raw outline is `train > car > bus > shared use > bicycle > foot`
-const RANKS: [Rank; 11] = [
+const RANKS: [Rank; 12] = [
     Rank::normal(TMode::Tram, LaneType::LightRail),
     Rank::normal(TMode::Train, LaneType::LightRail),
+    Rank::designated(TMode::Motorcar, LaneType::Driving),
     Rank::designated(TMode::Bus, LaneType::Bus),
     Rank::normal(TMode::Motorcar, LaneType::Driving),
     Rank::normal(TMode::Bus, LaneType::Bus),
@@ -177,7 +197,7 @@ const RANKS: [Rank; 11] = [
 
 fn travel_lane(
     t: &TravelLane,
-    main: bool,
+    is_sidepath: bool,
     traffic_direction: Direction,
 ) -> (LaneType, Direction, EnumSet<TurnDirection>) {
     let turn_forward = t.forward.turn.get(TMode::All);
@@ -200,10 +220,12 @@ fn travel_lane(
             (false, false) => continue,
         };
 
-        let lane_type = if main || rank.lane_type != LaneType::Footway {
-            rank.lane_type
-        } else {
+        let lane_type = if is_sidepath && rank.lane_type == LaneType::Footway {
+            // We distinguish a sidewalk from a footway by checking whether it's a sidepath of any other road.
+            // This makes even separately mapped sidewalks (`footway=sidewalk`) not appear as footways.
             LaneType::Sidewalk
+        } else {
+            rank.lane_type
         };
 
         let turns = if access_forward {
@@ -219,6 +241,7 @@ fn travel_lane(
 
         return (lane_type, dir, turns);
     }
+
     (LaneType::Construction, Direction::Fwd, EnumSet::new())
 }
 
