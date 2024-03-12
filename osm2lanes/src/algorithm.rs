@@ -64,6 +64,12 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
     specs
 }
 
+/// Get the direction of traffic for the lane.
+/// This currently used for bidirectional lanes (such as sidewalks)
+/// as osm2lanes doesn't have a mapping for this yet.
+/// osm2streets expects bidirectional lanes for follow the direction of traffic
+/// of the side of the road it's on (with RHT forward on the right-hand side and
+/// backwards on the left-hand side).
 fn traffic_direction(
     position: LaneIndex,
     centre_line: LaneIndex,
@@ -143,19 +149,17 @@ impl Rank {
             return false;
         }
 
-        if let Some(secondary) = self.secondary {
-            let Some(access_secondary) = on.get(secondary).and_then(|a| a.base()) else {
-                return false;
-            };
-            if access_secondary == &AccessLevel::Designated
-                && access_main != &AccessLevel::Designated
-            {
-                return false;
-            }
-            return access_level_allowed(*access_secondary);
-        }
+        let Some(secondary) = self.secondary else {
+            return true;
+        };
 
-        true
+        let Some(access_secondary) = on.get(secondary).and_then(|a| a.base()) else {
+            return false;
+        };
+        if access_secondary == &AccessLevel::Designated && access_main != &AccessLevel::Designated {
+            return false;
+        }
+        access_level_allowed(*access_secondary)
     }
 }
 
