@@ -180,7 +180,7 @@ fn access_level_allowed(access: AccessLevel) -> bool {
 // Specifies the importance of different modes of transport in descending order
 // The raw outline is `train > car > bus > shared use > bicycle > foot`
 const RANKS: [Rank; 12] = [
-    Rank::normal(TMode::Tram, LaneType::LightRail),
+    Rank::normal(TMode::LightRail, LaneType::LightRail),
     Rank::normal(TMode::Train, LaneType::LightRail),
     Rank::designated(TMode::Motorcar, LaneType::Driving),
     Rank::designated(TMode::Bus, LaneType::Bus),
