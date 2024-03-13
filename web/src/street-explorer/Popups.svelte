@@ -26,6 +26,7 @@
       // Instantiate the Svelte component manually, so we can then put the DOM
       // it creates into the popup
       let container = document.createElement("div");
+      container.style.cssText = "height: 300px; overflow-y: auto;";
       new LanePopup({
         target: container,
         props: { lane: $clickedLane },

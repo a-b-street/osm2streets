@@ -7,6 +7,7 @@
 
   let props = structuredClone(lane.properties);
   delete props.osm_way_ids;
+  delete props.muv;
 
   function collapse() {
     $network!.collapseShortRoad(lane.properties.road);
@@ -17,16 +18,34 @@
     $network!.zipSidepath(lane.properties.road);
     $network = $network;
   }
+
+  // TODO Hack because TS doesn't work below
+  let networkValue = $network!;
 </script>
 
 <pre>{JSON.stringify(props, null, "  ")}</pre>
 
-<div>
-  OSM ways:
+{#if lane.properties.muv}
+  <details>
+    <summary>Full Muv JSON</summary>
+    <pre>{JSON.stringify(lane.properties.muv, null, "  ")}</pre>
+  </details>
+{/if}
+
+<hr />
+
+<u>OSM ways:</u>
+<ul>
   {#each lane.properties.osm_way_ids as id}
-    <a href="https://www.openstreetmap.org/way/{id}" target="_blank">{id}</a>,
+    <li>
+      <a href="https://www.openstreetmap.org/way/{id}" target="_blank">{id}</a>
+      <details>
+        <summary>See OSM tags</summary>
+        <pre>{networkValue.getOsmTagsForWay(BigInt(id))}</pre>
+      </details>
+    </li>
   {/each}
-</div>
+</ul>
 
 <div>
   <button type="button" on:click={collapse}>Collapse short road</button>

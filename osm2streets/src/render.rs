@@ -148,6 +148,9 @@ impl StreetNetwork {
                     "osm_way_ids",
                     Value::Array(road.osm_ids.iter().map(|id| id.0.into()).collect()),
                 );
+                if let Some(ref muv) = lane.lane {
+                    f.set_property("muv", serde_json::to_value(muv)?);
+                }
                 features.push(f);
             }
         }

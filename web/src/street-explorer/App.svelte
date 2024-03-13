@@ -21,7 +21,8 @@
       Understanding OSM streets &amp; intersections with
       <a href="https://github.com/a-b-street/osm2streets" target="_blank"
         >osm2streets</a
-      > and <a href="https://gitlab.com/LeLuxNet/Muv" target="_blank">Muv</a>.
+      >
+      and <a href="https://gitlab.com/LeLuxNet/Muv" target="_blank">Muv</a>.
     </p>
     <hr />
 
