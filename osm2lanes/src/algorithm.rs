@@ -137,7 +137,11 @@ impl Rank {
     }
 
     fn is_allowed(&self, on: &TModes<Conditional<AccessLevel>>) -> bool {
-        let Some(access_main) = on.get(self.main).and_then(|c| c.base()) else {
+        let Some(access_main) = self
+            .main
+            .iter_hierarchy()
+            .find_map(|mode| on.get_raw(mode)?.base())
+        else {
             return false;
         };
 
@@ -153,7 +157,10 @@ impl Rank {
             return true;
         };
 
-        let Some(access_secondary) = on.get(secondary).and_then(|a| a.base()) else {
+        let Some(access_secondary) = secondary
+            .iter_hierarchy()
+            .find_map(|mode| on.get_raw(mode)?.base())
+        else {
             return false;
         };
         if access_secondary == &AccessLevel::Designated && access_main != &AccessLevel::Designated {
