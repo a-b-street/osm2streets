@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
+chrono = "0.4.35"
 enumset = { version = "1.0.12", features=["serde"] }
 geom = { workspace = true }
 muv-osm = { git = "https://gitlab.com/LeLuxNet/Muv", features = ["serde", "lanes"] }

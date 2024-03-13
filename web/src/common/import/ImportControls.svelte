@@ -22,6 +22,7 @@
     sidepath_zipping_experiment: boolean;
     inferred_sidewalks: boolean;
     inferred_kerbs: boolean;
+    date_time: string | undefined;
   }
 
   type Imported =

@@ -1,10 +1,12 @@
 use abstutil::Tags;
+use chrono::NaiveDateTime;
 use enumset::EnumSet;
 use geom::Distance;
 use muv_osm::{
+    conditional::MatchSituation,
     lanes::{lanes, travel::TravelLane, Lane, LaneIndex, LaneVariant},
     units::{self, Quantity},
-    AccessLevel, Conditional, Lifecycle, TMode, TModes, Tag,
+    AccessLevel, Conditional, Lifecycle, Location, TMode, TModes, Tag, Vehicle,
 };
 
 use crate::{
@@ -66,7 +68,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
             });
         }
 
-        specs.push(from_lane(lane, highway_tag, direction));
+        specs.push(from_lane(lane, highway_tag, direction, cfg.date_time));
     }
 
     if lanes.lifecycle == Lifecycle::Construction {
@@ -104,9 +106,14 @@ fn traffic_direction(
     }
 }
 
-fn from_lane(lane: Lane, highway_tag: &str, traffic_direction: Direction) -> LaneSpec {
+fn from_lane(
+    lane: Lane,
+    highway_tag: &str,
+    traffic_direction: Direction,
+    date_time: Option<NaiveDateTime>,
+) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
-        LaneVariant::Travel(t) => travel_lane(t, lane.is_sidepath, traffic_direction),
+        LaneVariant::Travel(t) => travel_lane(t, lane.is_sidepath, traffic_direction, date_time),
         LaneVariant::Parking(_) => parking_lane(traffic_direction),
     };
 
@@ -150,12 +157,34 @@ impl Rank {
         }
     }
 
-    fn is_allowed(&self, on: &TModes<Conditional<AccessLevel>>) -> bool {
-        let Some(access_main) = self
-            .main
-            .iter_hierarchy()
-            .find_map(|mode| on.get_raw(mode)?.base())
-        else {
+    fn evaluate_mode(
+        mode: TMode,
+        on: &TModes<Conditional<AccessLevel>>,
+        date_time: Option<NaiveDateTime>,
+    ) -> Option<&AccessLevel> {
+        if let Some(date_time) = date_time {
+            let situation = MatchSituation {
+                date_time,
+                location: Location::new(0.0, 0.0),
+                vehicle: &Vehicle::new(mode),
+                stay: None,
+                wet: false,
+                snow: false,
+                access_levels: Vec::new(),
+            };
+            on.evaluate(&situation)
+        } else {
+            mode.iter_hierarchy()
+                .find_map(|mode| on.get_raw(mode)?.base())
+        }
+    }
+
+    fn is_allowed(
+        &self,
+        on: &TModes<Conditional<AccessLevel>>,
+        date_time: Option<NaiveDateTime>,
+    ) -> bool {
+        let Some(access_main) = Self::evaluate_mode(self.main, on, date_time) else {
             return false;
         };
 
@@ -171,10 +200,7 @@ impl Rank {
             return true;
         };
 
-        let Some(access_secondary) = secondary
-            .iter_hierarchy()
-            .find_map(|mode| on.get_raw(mode)?.base())
-        else {
+        let Some(access_secondary) = Self::evaluate_mode(secondary, on, date_time) else {
             return false;
         };
         if access_secondary == &AccessLevel::Designated && access_main != &AccessLevel::Designated {
@@ -223,6 +249,7 @@ fn travel_lane(
     t: &TravelLane,
     is_sidepath: bool,
     traffic_direction: Direction,
+    date_time: Option<NaiveDateTime>,
 ) -> (LaneType, Direction, EnumSet<TurnDirection>) {
     let turn_forward = t.forward.turn.get(TMode::All);
     let turn_backward = t.backward.turn.get(TMode::All);
@@ -234,8 +261,8 @@ fn travel_lane(
     }
 
     for rank in RANKS {
-        let access_forward = rank.is_allowed(&t.forward.access);
-        let access_backward = rank.is_allowed(&t.backward.access);
+        let access_forward = rank.is_allowed(&t.forward.access, date_time);
+        let access_backward = rank.is_allowed(&t.backward.access, date_time);
 
         let dir = match (access_forward, access_backward) {
             (true, false) => Direction::Forward,

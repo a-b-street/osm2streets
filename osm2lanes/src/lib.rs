@@ -9,6 +9,7 @@ mod placement;
 mod tests;
 mod turns;
 
+use chrono::NaiveDateTime;
 use enumset::{EnumSet, EnumSetType};
 use muv_osm::lanes::Lane;
 use std::fmt;
@@ -558,6 +559,7 @@ pub struct MapConfig {
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
     pub include_railroads: bool,
     pub inferred_kerbs: bool,
+    pub date_time: Option<NaiveDateTime>,
 }
 
 impl MapConfig {
@@ -572,6 +574,7 @@ impl MapConfig {
             turn_on_red: true,
             include_railroads: true,
             inferred_kerbs: true,
+            date_time: None,
         }
     }
 }

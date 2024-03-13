@@ -25,3 +25,4 @@ serde_json = { workspace = true }
 streets_reader = { path = "../streets_reader" }
 wasm-bindgen = "0.2.84"
 serde-wasm-bindgen = "0.5.0"
+chrono = "0.4.35"

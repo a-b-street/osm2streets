@@ -1,11 +1,17 @@
 <script lang="ts">
+  import LanePopup from "../../street-explorer/LanePopup.svelte";
+
   export let settings = {
     debug_each_step: false,
     dual_carriageway_experiment: false,
     sidepath_zipping_experiment: false,
     inferred_sidewalks: false,
     inferred_kerbs: true,
+    date_time: undefined as string | undefined,
   };
+
+  let date_time: string;
+  $: settings.date_time = date_time && date_time + ":00";
 </script>
 
 <details>
@@ -27,6 +33,10 @@
       bind:checked={settings.sidepath_zipping_experiment}
     />
     Enable sidepath zipping experiment
+  </label>
+  <label>
+    <input type="datetime-local" bind:value={date_time} />
+    Change the time of date
   </label>
   <div>
     Sidewalks:
