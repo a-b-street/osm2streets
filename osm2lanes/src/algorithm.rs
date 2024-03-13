@@ -179,7 +179,6 @@ fn access_level_allowed(access: AccessLevel) -> bool {
             | AccessLevel::Discouraged
             | AccessLevel::Destination
             | AccessLevel::Customers
-            | AccessLevel::Permit
             | AccessLevel::Private
     )
 }
