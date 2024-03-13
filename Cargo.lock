@@ -1052,6 +1052,7 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
+ "chrono",
  "enumset",
  "env_logger",
  "geom",
@@ -1108,6 +1109,7 @@ version = "0.1.4"
 dependencies = [
  "abstutil",
  "anyhow",
+ "chrono",
  "console_error_panic_hook",
  "console_log",
  "experimental",
