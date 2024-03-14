@@ -17,12 +17,12 @@
 <GeoJSON data={gj}>
   <LineLayer
     {...layerId("boundary")}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
     paint={{
       "line-color": "blue",
       "line-width": 4,
-    }}
-    layout={{
-      visibility: show ? "visible" : "none",
     }}
   />
 </GeoJSON>

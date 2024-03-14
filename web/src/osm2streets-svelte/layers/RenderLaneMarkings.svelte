@@ -14,6 +14,9 @@
 <GeoJSON data={gj}>
   <FillLayer
     {...layerId("lane-markings")}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
     paint={{
       "fill-color": caseHelper(
         "type",
@@ -29,9 +32,6 @@
         "red",
       ),
       "fill-opacity": 0.9,
-    }}
-    layout={{
-      visibility: show ? "visible" : "none",
     }}
   />
 </GeoJSON>

@@ -4,8 +4,12 @@
   import AppSwitcher from "../AppSwitcher.svelte";
   import { Geocoder, Layout, Map } from "../osm2streets-svelte";
   import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
-  import MainLayers from "../osm2streets-svelte/layers/MainLayers.svelte";
   import EditWayControls from "./EditWayControls.svelte";
+  import RenderBoundary from "../osm2streets-svelte/layers/RenderBoundary.svelte";
+  import RenderIntersectionMarkings from "../osm2streets-svelte/layers/RenderIntersectionMarkings.svelte";
+  import RenderIntersectionPolygons from "../osm2streets-svelte/layers/RenderIntersectionPolygons.svelte";
+  import RenderLaneMarkings from "../osm2streets-svelte/layers/RenderLaneMarkings.svelte";
+  import RenderLanePolygons from "../osm2streets-svelte/layers/RenderLanePolygons.svelte";
 
   onMount(async () => {
     await init();
@@ -43,7 +47,13 @@
   </div>
   <div slot="main">
     <Map>
-      <div style:display="none"><MainLayers /></div>
+      <div style:display="none">
+        <RenderBoundary />
+        <RenderIntersectionPolygons />
+        <RenderIntersectionMarkings />
+        <RenderLanePolygons />
+        <RenderLaneMarkings />
+      </div>
       <Geocoder />
     </Map>
   </div>

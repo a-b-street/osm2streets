@@ -1,27 +1,25 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
-  import {
-    clickedIntersection,
-    clickedIntersectionPosition,
-    hoveredIntersection,
-    network,
-  } from "../store";
-  import { caseHelper, featureStateToggle } from "../utils";
+  import { hoveredIntersection, network } from "../store";
+  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
-  $: if ($network) {
-    gj = JSON.parse($network.toGeojsonPlain());
-  } else {
-    gj = undefined;
-  }
 
-  let layerStyle = {
-    type: "fill",
-    filter: ["==", ["get", "type"], "intersection"],
-    paint: {
+  // TODO The lane polygon layer uses this too; bundle together to reduce calls?
+  $: gj = $network ? JSON.parse($network.toGeojsonPlain()) : emptyGeojson();
+</script>
+
+<GeoJSON data={gj} generateId>
+  <FillLayer
+    {...layerId("intersection-polygons")}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+    manageHoverState
+    bind:hovered={$hoveredIntersection}
+    filter={["==", ["get", "type"], "intersection"]}
+    paint={{
       "fill-color": caseHelper(
         "intersection_kind",
         {
@@ -32,19 +30,11 @@
         },
         "#666",
       ),
-      "fill-opacity": featureStateToggle("hover", 0.9, 0.4),
-    },
-  };
-</script>
+      "fill-opacity": hoverStateFilter(0.9, 0.4),
+    }}
+  >
+    <slot />
+  </FillLayer>
+</GeoJSON>
 
-<Layer
-  source="intersection-polygons"
-  {gj}
-  {layerStyle}
-  interactive
-  bind:hoveredFeature={$hoveredIntersection}
-  bind:clickedFeature={$clickedIntersection}
-  bind:clickedFeaturePosition={$clickedIntersectionPosition}
-  {show}
-/>
 <LayerControls {gj} name="Intersection polygons" bind:show />

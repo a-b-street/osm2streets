@@ -112,7 +112,7 @@ export function getLayerZorder(layer: string): string | undefined {
 const layerZorder = [
   "boundary",
   "lane-polygons-layer",
-  "intersection-polygons-layer",
+  "intersection-polygons",
   "lane-markings",
   "intersection-markings",
 
