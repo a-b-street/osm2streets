@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Polygon } from "geojson";
-  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
-  import { network } from "../osm2streets-svelte";
+  import type { FeatureWithProps } from "../common/utils";
+  import { network } from "../common";
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;

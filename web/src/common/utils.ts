@@ -120,7 +120,7 @@ const layerZorder = [
   "connected-roads-layer",
 
   // TODO This is specific to lane-editor. Figure out how different apps can
-  // build on top of the osm2streets-svelte common ordering.
+  // build on top of the common common ordering.
   "current-way-layer",
 
   // Draw most things beneath text road labels. This is the only layer in this
