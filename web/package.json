@@ -6,7 +6,7 @@
   "scripts": {
     "wasm": "wasm-pack build --dev --target web ../osm2streets-js",
     "wasm-release": "wasm-pack build --release --target web ../osm2streets-js",
-    "dev": "npm run wasm && vite",
+    "dev": "vite",
     "build": "npm run wasm-release && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
