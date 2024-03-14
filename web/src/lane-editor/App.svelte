@@ -19,6 +19,11 @@
   });
 
   let way: bigint | null = null;
+  // When changing areas, unset any selected way
+  network.subscribe((value) => {
+    way = null;
+  });
+
   $: wayGj = way
     ? JSON.parse($network!.getGeometryForWay(way))
     : emptyGeojson();
