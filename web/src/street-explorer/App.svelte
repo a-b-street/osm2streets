@@ -5,12 +5,15 @@
   import AppSwitcher from "../AppSwitcher.svelte";
   import { Geocoder, Layout, Map, TopLeftPanel } from "../common";
   import ImportControls from "../common/import/ImportControls.svelte";
-  import InteractiveLayers from "../common/layers/InteractiveLayers.svelte";
   import RenderBoundary from "../common/layers/RenderBoundary.svelte";
   import RenderIntersectionMarkings from "../common/layers/RenderIntersectionMarkings.svelte";
   import RenderIntersectionPolygons from "../common/layers/RenderIntersectionPolygons.svelte";
   import RenderLaneMarkings from "../common/layers/RenderLaneMarkings.svelte";
   import RenderLanePolygons from "../common/layers/RenderLanePolygons.svelte";
+  import DynamicConnectedRoads from "../common/layers/DynamicConnectedRoads.svelte";
+  import DynamicMovementArrows from "../common/layers/DynamicMovementArrows.svelte";
+  import DynamicRoadOrdering from "../common/layers/DynamicRoadOrdering.svelte";
+
   import IntersectionPopup from "./IntersectionPopup.svelte";
   import LanePopup from "./LanePopup.svelte";
 
@@ -50,8 +53,12 @@
           </Popup>
         </RenderLanePolygons>
         <RenderLaneMarkings />
+
         <hr />
-        <InteractiveLayers />
+
+        <DynamicMovementArrows />
+        <DynamicRoadOrdering />
+        <DynamicConnectedRoads />
       </TopLeftPanel>
       <Geocoder />
     </Map>
