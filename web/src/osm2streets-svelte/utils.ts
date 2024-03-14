@@ -1,6 +1,7 @@
 import turfBbox from "@turf/bbox";
 import type { Feature, FeatureCollection, GeoJSON, Geometry } from "geojson";
 import { get } from "svelte/store";
+import type { ExpressionSpecification } from "maplibre-gl";
 import { map as mapStore } from "./store";
 
 // TODO Why can't I find an NPM package to do this?
@@ -16,19 +17,19 @@ export function downloadGeneratedFile(filename: string, textInput: string) {
   document.body.removeChild(element);
 }
 
-// Helper for https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case based on one property
+// Helper for https://maplibre.org/maplibre-style-spec/expressions#case based on one property
 export function caseHelper(
   getKey: string,
   map: { [name: string]: string },
   backup: string,
-): any[] {
+): ExpressionSpecification {
   let x: any[] = ["case"];
   for (let [key, value] of Object.entries(map)) {
     x.push(["==", ["get", getKey], key]);
     x.push(value);
   }
   x.push(backup);
-  return x;
+  return x as ExpressionSpecification;
 }
 
 export function featureStateToggle(
@@ -61,6 +62,21 @@ export type FeatureWithProps<G extends Geometry> = Feature<G> & {
   properties: { [name: string]: any };
 };
 
+interface LayerProps {
+  id: string;
+  beforeId: string | undefined;
+}
+
+// Use this helper for every svelte-maplibre layer component. It sets the layer
+// ID and beforeId (for z-ordering between layers).
+export function layerId(layerId: string): LayerProps {
+  return {
+    id: layerId,
+    beforeId: getLayerZorder(layerId),
+  };
+}
+
+// TODO Make private after refactor
 export function getLayerZorder(layer: string): string | undefined {
   let map = get(mapStore)!;
   // layerZorder lists all layers in the desired z-order. map.addLayer takes an
@@ -94,11 +110,11 @@ export function getLayerZorder(layer: string): string | undefined {
 
 // Later entries are drawn on top
 const layerZorder = [
-  "boundary-layer",
+  "boundary",
   "lane-polygons-layer",
   "intersection-polygons-layer",
-  "lane-markings-layer",
-  "intersection-markings-layer",
+  "lane-markings",
+  "intersection-markings",
 
   "movements-layer",
   "connected-roads-layer",

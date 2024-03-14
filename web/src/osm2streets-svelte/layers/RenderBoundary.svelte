@@ -1,29 +1,30 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
   import { boundaryGj, map } from "../store";
-  import { bbox } from "../utils";
+  import { layerId, bbox, emptyGeojson } from "../utils";
+  import { LineLayer, GeoJSON } from "svelte-maplibre";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
+
+  $: gj = $boundaryGj ?? emptyGeojson();
+
   $: if ($boundaryGj) {
-    gj = structuredClone($boundaryGj);
-
     // Initially zoom to fit the imported boundary
-    $map?.fitBounds(bbox(gj), { animate: false, padding: 10 });
-  } else {
-    gj = undefined;
+    $map?.fitBounds(bbox($boundaryGj), { animate: false, padding: 10 });
   }
-
-  let layerStyle = {
-    type: "line",
-    paint: {
-      "line-color": "blue",
-      "line-width": 4,
-    },
-  };
 </script>
 
-<Layer source="boundary" {gj} {layerStyle} {show} />
+<GeoJSON data={gj}>
+  <LineLayer
+    {...layerId("boundary")}
+    paint={{
+      "line-color": "blue",
+      "line-width": 4,
+    }}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+  />
+</GeoJSON>
+
 <LayerControls {gj} name="Boundary" bind:show />

@@ -1,21 +1,20 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
+  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { FillLayer, GeoJSON } from "svelte-maplibre";
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";
-  import { caseHelper } from "../utils";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
-  $: if ($network) {
-    gj = JSON.parse($network.toLaneMarkingsGeojson());
-  } else {
-    gj = undefined;
-  }
 
-  let layerStyle = {
-    type: "fill",
-    paint: {
+  $: gj = $network
+    ? JSON.parse($network.toLaneMarkingsGeojson())
+    : emptyGeojson();
+</script>
+
+<GeoJSON data={gj}>
+  <FillLayer
+    {...layerId("lane-markings")}
+    paint={{
       "fill-color": caseHelper(
         "type",
         {
@@ -30,9 +29,11 @@
         "red",
       ),
       "fill-opacity": 0.9,
-    },
-  };
-</script>
+    }}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+  />
+</GeoJSON>
 
-<Layer source="lane-markings" {gj} {layerStyle} {show} />
 <LayerControls {gj} name="Lane markings " bind:show />
