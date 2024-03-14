@@ -111,7 +111,7 @@ export function getLayerZorder(layer: string): string | undefined {
 // Later entries are drawn on top
 const layerZorder = [
   "boundary",
-  "lane-polygons-layer",
+  "lane-polygons",
   "intersection-polygons",
   "lane-markings",
   "intersection-markings",

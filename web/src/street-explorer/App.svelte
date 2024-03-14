@@ -11,8 +11,8 @@
   import RenderIntersectionPolygons from "../osm2streets-svelte/layers/RenderIntersectionPolygons.svelte";
   import RenderLaneMarkings from "../osm2streets-svelte/layers/RenderLaneMarkings.svelte";
   import RenderLanePolygons from "../osm2streets-svelte/layers/RenderLanePolygons.svelte";
-  import Popups from "./Popups.svelte";
   import IntersectionPopup from "./IntersectionPopup.svelte";
+  import LanePopup from "./LanePopup.svelte";
 
   onMount(async () => {
     await init();
@@ -39,17 +39,20 @@
       <TopLeftPanel>
         <RenderBoundary />
         <RenderIntersectionPolygons>
-          <Popup openOn="click" let:data>
-            <IntersectionPopup {data} />
+          <Popup openOn="click" let:data let:close>
+            <IntersectionPopup {data} {close} />
           </Popup>
         </RenderIntersectionPolygons>
         <RenderIntersectionMarkings />
-        <RenderLanePolygons />
+        <RenderLanePolygons>
+          <Popup openOn="click" let:data let:close>
+            <LanePopup {data} {close} />
+          </Popup>
+        </RenderLanePolygons>
         <RenderLaneMarkings />
         <hr />
         <InteractiveLayers />
       </TopLeftPanel>
-      <Popups />
       <Geocoder />
     </Map>
   </div>

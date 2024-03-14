@@ -6,7 +6,6 @@
 
   let show = true;
 
-  // TODO The lane polygon layer uses this too; bundle together to reduce calls?
   $: gj = $network ? JSON.parse($network.toGeojsonPlain()) : emptyGeojson();
 </script>
 

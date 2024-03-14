@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
+  import type { Polygon } from "geojson";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
@@ -14,6 +16,8 @@
   onMount(async () => {
     await init();
   });
+
+  let clickedLane: FeatureWithProps<Polygon> | null = null;
 </script>
 
 <Layout>
@@ -32,7 +36,7 @@
     <ImportControls />
     <hr />
 
-    <EditWayControls />
+    <EditWayControls {clickedLane} />
     <hr />
 
     <div>
@@ -51,7 +55,12 @@
         <RenderBoundary />
         <RenderIntersectionPolygons />
         <RenderIntersectionMarkings />
-        <RenderLanePolygons />
+        <RenderLanePolygons
+          on:click={(e) => {
+            // @ts-expect-error Need to typecast
+            clickedLane = e.detail.features[0];
+          }}
+        />
         <RenderLaneMarkings />
       </div>
       <Geocoder />

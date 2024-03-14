@@ -1,8 +1,11 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import { clickedLane, Layer, network } from "../osm2streets-svelte";
+  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
+  import type { GeoJSON, Polygon } from "geojson";
+  import { Layer, network } from "../osm2streets-svelte";
   import AllEdits from "./AllEdits.svelte";
   import Tags from "./Tags.svelte";
+
+  export let clickedLane: FeatureWithProps<Polygon> | null;
 
   // TODO Is this layering and event plumbing nice?
   let allEdits: AllEdits;
@@ -22,13 +25,14 @@
     way = null;
     gj = undefined;
 
-    if ($clickedLane) {
-      if ($clickedLane.properties.osm_way_ids.length != 1) {
+    if (clickedLane) {
+      let ways = JSON.parse(clickedLane.properties.osm_way_ids);
+      if (ways.length != 1) {
         window.alert(
           "This road doesn't match up with one OSM way; you can't edit it",
         );
       } else {
-        way = BigInt($clickedLane.properties.osm_way_ids[0]);
+        way = BigInt(ways[0]);
         gj = JSON.parse($network!.getGeometryForWay(way));
       }
     }
