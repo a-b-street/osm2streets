@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { FeatureWithProps } from "../common/utils";
-  import type { Polygon } from "geojson";
+  import { GeoJSON, FillLayer, type LayerClickInfo } from "svelte-maplibre";
+  import { emptyGeojson, layerId } from "../common/utils";
+  import { network } from "../common";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
@@ -17,7 +18,21 @@
     await init();
   });
 
-  let clickedLane: FeatureWithProps<Polygon> | null = null;
+  let way: bigint | null = null;
+  $: wayGj = way
+    ? JSON.parse($network!.getGeometryForWay(way))
+    : emptyGeojson();
+
+  function onClickLane(e: CustomEvent<LayerClickInfo>) {
+    let ways = JSON.parse(e.detail.features[0].properties!.osm_way_ids);
+    if (ways.length != 1) {
+      window.alert(
+        "This road doesn't match up with one OSM way; you can't edit it",
+      );
+    } else {
+      way = BigInt(ways[0]);
+    }
+  }
 </script>
 
 <Layout>
@@ -36,7 +51,7 @@
     <ImportControls />
     <hr />
 
-    <EditWayControls {clickedLane} />
+    <EditWayControls {way} />
     <hr />
 
     <div>
@@ -55,13 +70,17 @@
         <RenderBoundary />
         <RenderIntersectionPolygons />
         <RenderIntersectionMarkings />
-        <RenderLanePolygons
-          on:click={(e) => {
-            // @ts-expect-error Need to typecast
-            clickedLane = e.detail.features[0];
-          }}
-        />
+        <RenderLanePolygons on:click={onClickLane} />
         <RenderLaneMarkings />
+        <GeoJSON data={wayGj}>
+          <FillLayer
+            {...layerId("current-way")}
+            paint={{
+              "fill-color": "red",
+              "fill-opacity": 0.3,
+            }}
+          />
+        </GeoJSON>
       </div>
       <Geocoder />
     </Map>

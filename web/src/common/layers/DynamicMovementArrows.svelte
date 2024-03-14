@@ -1,28 +1,33 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
   import { hoveredLane, network } from "../store";
+  import { layerId, emptyGeojson } from "../utils";
+  import { FillLayer, GeoJSON } from "svelte-maplibre";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
-  $: if ($network && $hoveredLane) {
-    let props = $hoveredLane.properties;
-    gj = JSON.parse(
-      $network!.debugMovementsFromLaneGeojson(props.road, props.index),
-    );
-  } else {
-    gj = undefined;
-  }
 
-  let layerStyle = {
-    type: "fill",
-    paint: {
-      "fill-color": "blue",
-      "fill-opacity": 0.5,
-    },
-  };
+  $: gj =
+    $network && $hoveredLane
+      ? JSON.parse(
+          $network!.debugMovementsFromLaneGeojson(
+            $hoveredLane.properties.road,
+            $hoveredLane.properties.index,
+          ),
+        )
+      : emptyGeojson();
 </script>
 
-<Layer source="movements" {gj} {layerStyle} {show} />
+<GeoJSON data={gj}>
+  <FillLayer
+    {...layerId("movements")}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+    paint={{
+      "fill-color": "blue",
+      "fill-opacity": 0.5,
+    }}
+  />
+</GeoJSON>
+
 <LayerControls {gj} name="Movement arrows" bind:show downloadable={false} />
