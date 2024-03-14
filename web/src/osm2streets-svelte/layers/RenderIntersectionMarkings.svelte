@@ -1,21 +1,20 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";
-  import { caseHelper } from "../utils";
+  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { FillLayer, GeoJSON } from "svelte-maplibre";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
-  $: if ($network) {
-    gj = JSON.parse($network.toIntersectionMarkingsGeojson());
-  } else {
-    gj = undefined;
-  }
 
-  let layerStyle = {
-    type: "fill",
-    paint: {
+  $: gj = $network
+    ? JSON.parse($network.toIntersectionMarkingsGeojson())
+    : emptyGeojson();
+</script>
+
+<GeoJSON data={gj}>
+  <FillLayer
+    {...layerId("intersection-markings")}
+    paint={{
       "fill-color": caseHelper(
         "type",
         {
@@ -24,9 +23,11 @@
         "red",
       ),
       "fill-opacity": 0.9,
-    },
-  };
-</script>
+    }}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+  />
+</GeoJSON>
 
-<Layer source="intersection-markings" {gj} {layerStyle} {show} />
 <LayerControls {gj} name="Intersection markings" bind:show />
