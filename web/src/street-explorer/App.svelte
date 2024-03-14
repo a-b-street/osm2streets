@@ -1,12 +1,18 @@
 <script lang="ts">
+  import { Popup } from "svelte-maplibre";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
   import { Geocoder, Layout, Map, TopLeftPanel } from "../osm2streets-svelte";
   import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
   import InteractiveLayers from "../osm2streets-svelte/layers/InteractiveLayers.svelte";
-  import MainLayers from "../osm2streets-svelte/layers/MainLayers.svelte";
+  import RenderBoundary from "../osm2streets-svelte/layers/RenderBoundary.svelte";
+  import RenderIntersectionMarkings from "../osm2streets-svelte/layers/RenderIntersectionMarkings.svelte";
+  import RenderIntersectionPolygons from "../osm2streets-svelte/layers/RenderIntersectionPolygons.svelte";
+  import RenderLaneMarkings from "../osm2streets-svelte/layers/RenderLaneMarkings.svelte";
+  import RenderLanePolygons from "../osm2streets-svelte/layers/RenderLanePolygons.svelte";
   import Popups from "./Popups.svelte";
+  import IntersectionPopup from "./IntersectionPopup.svelte";
 
   onMount(async () => {
     await init();
@@ -31,7 +37,15 @@
   <div slot="main">
     <Map>
       <TopLeftPanel>
-        <MainLayers />
+        <RenderBoundary />
+        <RenderIntersectionPolygons>
+          <Popup openOn="click" let:data>
+            <IntersectionPopup {data} />
+          </Popup>
+        </RenderIntersectionPolygons>
+        <RenderIntersectionMarkings />
+        <RenderLanePolygons />
+        <RenderLaneMarkings />
         <hr />
         <InteractiveLayers />
       </TopLeftPanel>

@@ -1,14 +1,7 @@
 <script lang="ts">
   import { Popup } from "maplibre-gl";
   import { onDestroy } from "svelte";
-  import {
-    clickedIntersection,
-    clickedIntersectionPosition,
-    clickedLane,
-    clickedLanePosition,
-    map,
-  } from "../osm2streets-svelte";
-  import IntersectionPopup from "./IntersectionPopup.svelte";
+  import { clickedLane, clickedLanePosition, map } from "../osm2streets-svelte";
   import LanePopup from "./LanePopup.svelte";
 
   let popup = new Popup({
@@ -33,16 +26,6 @@
       });
       popup
         .setLngLat($clickedLanePosition!)
-        .setDOMContent(container)
-        .addTo($map!);
-    } else if ($clickedIntersection) {
-      let container = document.createElement("div");
-      new IntersectionPopup({
-        target: container,
-        props: { intersection: $clickedIntersection },
-      });
-      popup
-        .setLngLat($clickedIntersectionPosition!)
         .setDOMContent(container)
         .addTo($map!);
     } else {

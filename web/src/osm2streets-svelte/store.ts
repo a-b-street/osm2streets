@@ -18,12 +18,8 @@ export const hoveredIntersection: Writable<FeatureWithProps<Polygon> | null> =
 
 export const clickedLane: Writable<FeatureWithProps<Polygon> | null> =
   writable(null);
-export const clickedIntersection: Writable<FeatureWithProps<Polygon> | null> =
-  writable(null);
 // When something is clicked, also remember the position the click happened
 export const clickedLanePosition: Writable<LngLat | null> = writable(null);
-export const clickedIntersectionPosition: Writable<LngLat | null> =
-  writable(null);
 
 // TODO Need to unsubscribe
 // Unset when the network changes
@@ -31,7 +27,5 @@ network.subscribe((value) => {
   hoveredLane.set(null);
   hoveredIntersection.set(null);
   clickedLane.set(null);
-  clickedIntersection.set(null);
   clickedLanePosition.set(null);
-  clickedIntersectionPosition.set(null);
 });
