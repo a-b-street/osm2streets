@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
+  import type { FeatureWithProps } from "../common/utils";
   import type { GeoJSON, Polygon } from "geojson";
-  import { Layer, network } from "../osm2streets-svelte";
+  import { Layer, network } from "../common";
   import AllEdits from "./AllEdits.svelte";
   import Tags from "./Tags.svelte";
 

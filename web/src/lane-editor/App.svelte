@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { FeatureWithProps } from "../osm2streets-svelte/utils";
+  import type { FeatureWithProps } from "../common/utils";
   import type { Polygon } from "geojson";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { Geocoder, Layout, Map } from "../osm2streets-svelte";
-  import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
+  import { Geocoder, Layout, Map } from "../common";
+  import ImportControls from "../common/import/ImportControls.svelte";
   import EditWayControls from "./EditWayControls.svelte";
-  import RenderBoundary from "../osm2streets-svelte/layers/RenderBoundary.svelte";
-  import RenderIntersectionMarkings from "../osm2streets-svelte/layers/RenderIntersectionMarkings.svelte";
-  import RenderIntersectionPolygons from "../osm2streets-svelte/layers/RenderIntersectionPolygons.svelte";
-  import RenderLaneMarkings from "../osm2streets-svelte/layers/RenderLaneMarkings.svelte";
-  import RenderLanePolygons from "../osm2streets-svelte/layers/RenderLanePolygons.svelte";
+  import RenderBoundary from "../common/layers/RenderBoundary.svelte";
+  import RenderIntersectionMarkings from "../common/layers/RenderIntersectionMarkings.svelte";
+  import RenderIntersectionPolygons from "../common/layers/RenderIntersectionPolygons.svelte";
+  import RenderLaneMarkings from "../common/layers/RenderLaneMarkings.svelte";
+  import RenderLanePolygons from "../common/layers/RenderLanePolygons.svelte";
 
   onMount(async () => {
     await init();

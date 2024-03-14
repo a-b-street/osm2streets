@@ -3,14 +3,14 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { Geocoder, Layout, Map, TopLeftPanel } from "../osm2streets-svelte";
-  import ImportControls from "../osm2streets-svelte/import/ImportControls.svelte";
-  import InteractiveLayers from "../osm2streets-svelte/layers/InteractiveLayers.svelte";
-  import RenderBoundary from "../osm2streets-svelte/layers/RenderBoundary.svelte";
-  import RenderIntersectionMarkings from "../osm2streets-svelte/layers/RenderIntersectionMarkings.svelte";
-  import RenderIntersectionPolygons from "../osm2streets-svelte/layers/RenderIntersectionPolygons.svelte";
-  import RenderLaneMarkings from "../osm2streets-svelte/layers/RenderLaneMarkings.svelte";
-  import RenderLanePolygons from "../osm2streets-svelte/layers/RenderLanePolygons.svelte";
+  import { Geocoder, Layout, Map, TopLeftPanel } from "../common";
+  import ImportControls from "../common/import/ImportControls.svelte";
+  import InteractiveLayers from "../common/layers/InteractiveLayers.svelte";
+  import RenderBoundary from "../common/layers/RenderBoundary.svelte";
+  import RenderIntersectionMarkings from "../common/layers/RenderIntersectionMarkings.svelte";
+  import RenderIntersectionPolygons from "../common/layers/RenderIntersectionPolygons.svelte";
+  import RenderLaneMarkings from "../common/layers/RenderLaneMarkings.svelte";
+  import RenderLanePolygons from "../common/layers/RenderLanePolygons.svelte";
   import IntersectionPopup from "./IntersectionPopup.svelte";
   import LanePopup from "./LanePopup.svelte";
 
