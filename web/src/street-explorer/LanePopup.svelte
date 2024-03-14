@@ -1,22 +1,29 @@
 <script lang="ts">
   import type { Polygon } from "geojson";
-  import { network } from "../osm2streets-svelte";
   import type { FeatureWithProps } from "../osm2streets-svelte/utils";
+  import { network } from "../osm2streets-svelte";
 
-  export let lane: FeatureWithProps<Polygon>;
+  // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
+  export let data: FeatureWithProps<Polygon> | undefined;
+  export let close: () => boolean;
 
-  let props = structuredClone(lane.properties);
+  let props = structuredClone(data!.properties);
+  props.allowed_turns = JSON.parse(props.allowed_turns);
   delete props.osm_way_ids;
+  let osm_way_ids = JSON.parse(data!.properties.osm_way_ids);
+  let muv = JSON.parse(data!.properties.muv ?? "{}");
   delete props.muv;
 
   function collapse() {
-    $network!.collapseShortRoad(lane.properties.road);
+    $network!.collapseShortRoad(props.road);
     $network = $network;
+    close();
   }
 
   function zip() {
-    $network!.zipSidepath(lane.properties.road);
+    $network!.zipSidepath(props.road);
     $network = $network;
+    close();
   }
 
   // TODO Hack because TS doesn't work below
@@ -25,10 +32,10 @@
 
 <pre>{JSON.stringify(props, null, "  ")}</pre>
 
-{#if lane.properties.muv}
+{#if muv}
   <details>
     <summary>Full Muv JSON</summary>
-    <pre>{JSON.stringify(lane.properties.muv, null, "  ")}</pre>
+    <pre>{JSON.stringify(muv, null, "  ")}</pre>
   </details>
 {/if}
 
@@ -36,7 +43,7 @@
 
 <u>OSM ways:</u>
 <ul>
-  {#each lane.properties.osm_way_ids as id}
+  {#each osm_way_ids as id}
     <li>
       <a href="https://www.openstreetmap.org/way/{id}" target="_blank">{id}</a>
       <details>

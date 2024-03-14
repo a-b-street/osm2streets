@@ -5,6 +5,7 @@
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;
+  export let close: () => boolean;
 
   let props = structuredClone(data!.properties);
   props.movements = JSON.parse(props.movements);
@@ -14,6 +15,7 @@
   function collapse() {
     $network!.collapseIntersection(props.id);
     $network = $network;
+    close();
   }
 </script>
 

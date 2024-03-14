@@ -1,26 +1,26 @@
 <script lang="ts">
-  import type { GeoJSON } from "geojson";
-  import Layer from "../Layer.svelte";
   import LayerControls from "../LayerControls.svelte";
-  import {
-    clickedLane,
-    clickedLanePosition,
-    hoveredLane,
-    network,
-  } from "../store";
-  import { caseHelper, featureStateToggle } from "../utils";
+  import { hoveredLane, network } from "../store";
+  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
-  let gj: GeoJSON | undefined = undefined;
   let show = true;
-  $: if ($network) {
-    gj = JSON.parse($network.toLanePolygonsGeojson());
-  } else {
-    gj = undefined;
-  }
 
-  let layerStyle = {
-    type: "fill",
-    paint: {
+  $: gj = $network
+    ? JSON.parse($network.toLanePolygonsGeojson())
+    : emptyGeojson();
+</script>
+
+<GeoJSON data={gj} generateId>
+  <FillLayer
+    {...layerId("lane-polygons")}
+    layout={{
+      visibility: show ? "visible" : "none",
+    }}
+    manageHoverState
+    bind:hovered={$hoveredLane}
+    on:click
+    paint={{
       "fill-color": caseHelper(
         "type",
         // TODO Could we express the Rust enum in TS and be type-safe here?
@@ -41,19 +41,11 @@
         },
         "red",
       ),
-      "fill-opacity": featureStateToggle("hover", 0.9, 0.4),
-    },
-  };
-</script>
+      "fill-opacity": hoverStateFilter(0.9, 0.4),
+    }}
+  >
+    <slot />
+  </FillLayer>
+</GeoJSON>
 
-<Layer
-  source="lane-polygons"
-  {gj}
-  {layerStyle}
-  interactive
-  bind:clickedFeature={$clickedLane}
-  bind:hoveredFeature={$hoveredLane}
-  bind:clickedFeaturePosition={$clickedLanePosition}
-  {show}
-/>
 <LayerControls {gj} name="Lane polygons" bind:show />
