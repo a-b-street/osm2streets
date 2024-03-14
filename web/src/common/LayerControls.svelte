@@ -2,10 +2,12 @@
   import type { GeoJSON } from "geojson";
   import { downloadGeneratedFile } from "./utils";
 
-  export let gj: GeoJSON | undefined;
+  export let gj: GeoJSON;
   export let name: string;
   export let show: boolean;
   export let downloadable = true;
+
+  $: empty = gj.type == "FeatureCollection" && gj.features.length == 0;
 
   function download() {
     downloadGeneratedFile(`${name}.geojson`, JSON.stringify(gj));
@@ -19,6 +21,6 @@
   </label>
 
   {#if downloadable}
-    <button type="button" on:click={download} disabled={!gj}>Download</button>
+    <button type="button" on:click={download} disabled={empty}>Download</button>
   {/if}
 </div>
