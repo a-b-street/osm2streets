@@ -7,6 +7,14 @@
   let loaded = false;
 
   function getStyle(basemap: string): string | StyleSpecification {
+    if (basemap == "blank") {
+      return {
+        version: 8,
+        sources: {},
+        layers: [],
+      };
+    }
+
     return `https://api.maptiler.com/maps/${basemap}/style.json?key=${maptilerApiKey}`;
   }
 

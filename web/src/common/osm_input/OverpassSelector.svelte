@@ -26,7 +26,7 @@
     // @ts-ignore
     MapboxDraw.constants.classes.CONTROL_GROUP = "maplibregl-ctrl-group";
 
-    drawControls = new MapboxDraw({
+    /*drawControls = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
         polygon: true,
@@ -39,7 +39,7 @@
       let boundaryGj = e.features[0];
       drawControls!.deleteAll();
       await importPolygon(boundaryGj);
-    });
+    });*/
   }
 
   onDestroy(() => {
