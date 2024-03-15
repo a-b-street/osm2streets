@@ -215,8 +215,8 @@ fn test_osm_to_specs() {
                 "sidewalk=right",
             ],
             DrivingSide::Left,
-            "bbs",
-            "^vv",
+            "bb|s",
+            "^vvv",
         ),
         (
             "https://www.openstreetmap.org/way/705809125",
@@ -227,8 +227,8 @@ fn test_osm_to_specs() {
                 "sidewalk=left",
             ],
             DrivingSide::Left,
-            "sb",
-            "^^",
+            "s|b",
+            "^^^",
         ),
         /* (
             "https://www.openstreetmap.org/way/539534598",
