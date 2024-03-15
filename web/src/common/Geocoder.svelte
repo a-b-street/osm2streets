@@ -4,7 +4,7 @@
   import type { MapController } from "@maptiler/geocoding-control/types";
   import maplibregl from "maplibre-gl";
   import { onMount } from "svelte";
-  import { map } from "./store";
+  import { map, maptilerApiKey } from "./store";
 
   let mapController: MapController;
 
@@ -21,7 +21,7 @@
 
 {#if mapController}
   <div>
-    <GeocodingControl {mapController} apiKey="MZEJTanw3WpxRvt7qDfo" />
+    <GeocodingControl {mapController} apiKey={maptilerApiKey} />
   </div>
 {/if}
 
