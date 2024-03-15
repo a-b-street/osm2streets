@@ -21,8 +21,8 @@ fn test_osm_to_specs() {
                 "cycleway:left=lane",
             ],
             DrivingSide::Right,
-            "sbdds",
-            "v^^^^",
+            "s|bdd|s",
+            "vv^^^^^",
         ),
         /* (
             "https://www.openstreetmap.org/way/8591383",
@@ -49,8 +49,8 @@ fn test_osm_to_specs() {
                 "cycleway:left:oneway=no",
             ],
             DrivingSide::Right,
-            "sbbds",
-            "vv^^^",
+            "sbb|d|s",
+            "vv^^^^^",
         ),
         (
             "https://www.openstreetmap.org/way/353690151",
@@ -62,8 +62,8 @@ fn test_osm_to_specs() {
                 "cycleway:right:oneway=no",
             ],
             DrivingSide::Right,
-            "spddddpbbs",
-            "vvvv^^^v^^",
+            "s|pddddp|bbs",
+            "vvvvv^^^^v^^",
         ),
         (
             "https://www.openstreetmap.org/way/389654080",
@@ -77,8 +77,8 @@ fn test_osm_to_specs() {
                 "cycleway:right:oneway=no",
             ],
             DrivingSide::Right,
-            "spdCdbbs",
-            "vvv^^v^^",
+            "s|pdCd|bbs",
+            "vvvv^^^v^^",
         ),
         /* (
             "https://www.openstreetmap.org/way/369623526",
@@ -105,22 +105,22 @@ fn test_osm_to_specs() {
                 "oneway:bicycle=no",
             ],
             DrivingSide::Right,
-            "sddbbs",
-            "v^^v^^",
+            "s|dd|bbs",
+            "vv^^^v^^",
         ),
         (
             "https://www.openstreetmap.org/way/777565028",
             vec!["highway=residential", "oneway=no", "sidewalk=both"],
             DrivingSide::Left,
-            "sdds",
-            "^^vv",
+            "s|dd|s",
+            "^^^vvv",
         ),
         (
             "https://www.openstreetmap.org/way/224637155",
             vec!["lanes=2", "oneway=yes", "sidewalk=left"],
             DrivingSide::Left,
-            "sdd",
-            "^^^",
+            "s|dd",
+            "^^^^",
         ),
         (
             "https://www.openstreetmap.org/way/4188078",
@@ -131,23 +131,23 @@ fn test_osm_to_specs() {
                 "sidewalk=left",
             ],
             DrivingSide::Left,
-            "sbdd",
-            "^^^^",
+            "s|bdd",
+            "^^^^^",
         ),
         (
             "https://www.openstreetmap.org/way/49207928",
             vec!["cycleway:right=lane", "sidewalk=both"],
             DrivingSide::Left,
-            "sddbs",
-            "^^vvv",
+            "s|ddb|s",
+            "^^^vvvv",
         ),
         // How should an odd number of lanes forward/backwards be split without any clues?
         (
             "https://www.openstreetmap.org/way/898731283",
             vec!["lanes=3", "sidewalk=both"],
             DrivingSide::Left,
-            "sddds",
-            "^^^vv",
+            "s|ddd|s",
+            "^^^^vvv",
         ),
         (
             // I didn't look for a real example of this
@@ -196,8 +196,8 @@ fn test_osm_to_specs() {
             "https://www.openstreetmap.org/way/228767989",
             vec!["busway:both=lane", "sidewalk=both"],
             DrivingSide::Left,
-            "sBddBs",
-            "^^^vvv",
+            "s|BddB|s",
+            "^^^^vvvv",
         ),
         (
             "https://www.openstreetmap.org/way/905830125",
@@ -296,6 +296,7 @@ fn test_osm_to_specs() {
     for (url, mut input, driving_side, expected_lt, expected_dir) in cases {
         let mut cfg = MapConfig::default();
         cfg.driving_side = driving_side;
+
         if input.iter().all(|x| !x.starts_with("highway=")) {
             input.push("highway=residential");
         }

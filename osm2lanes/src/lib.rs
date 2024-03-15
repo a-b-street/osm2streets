@@ -557,6 +557,7 @@ pub struct MapConfig {
     pub turn_on_red: bool,
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
     pub include_railroads: bool,
+    pub inferred_kerbs: bool,
 }
 
 impl MapConfig {
@@ -570,6 +571,7 @@ impl MapConfig {
             street_parking_spot_length: Distance::meters(8.0),
             turn_on_red: true,
             include_railroads: true,
+            inferred_kerbs: true,
         }
     }
 }
