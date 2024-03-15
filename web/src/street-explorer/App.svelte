@@ -3,14 +3,7 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import {
-    ThemePicker,
-    BasemapPicker,
-    Geocoder,
-    Layout,
-    Map,
-    TopLeftPanel,
-  } from "../common";
+  import { ThemePicker, BasemapPicker, Geocoder, Layout, Map } from "../common";
   import ImportControls from "../common/import/ImportControls.svelte";
   import RenderBoundary from "../common/layers/RenderBoundary.svelte";
   import RenderIntersectionMarkings from "../common/layers/RenderIntersectionMarkings.svelte";
@@ -27,6 +20,16 @@
   onMount(async () => {
     await init();
   });
+
+  // Some of the layer contents need to be under the Map component for Svelte
+  // context to work, but the controls themselves should be in the
+  // sidebar. This trick moves the DOM node around.
+  let controlsContents: HTMLDivElement | null = null;
+  let controlsContainer: HTMLSpanElement;
+  $: if (controlsContents && controlsContainer) {
+    controlsContainer.innerHTML = "";
+    controlsContainer.appendChild(controlsContents);
+  }
 </script>
 
 <Layout>
@@ -40,13 +43,21 @@
       >
       and <a href="https://gitlab.com/LeLuxNet/Muv" target="_blank">Muv</a>.
     </p>
+
     <hr />
 
     <ImportControls />
+
+    <br />
+
+    <details open>
+      <summary>Layers</summary>
+      <div bind:this={controlsContainer} />
+    </details>
   </div>
   <div slot="main">
     <Map>
-      <TopLeftPanel>
+      <div bind:this={controlsContents}>
         <RenderBoundary />
         <RenderIntersectionPolygons>
           <Popup openOn="click" popupClass="popup" let:data let:close>
@@ -75,7 +86,7 @@
 
         <BasemapPicker />
         <ThemePicker />
-      </TopLeftPanel>
+      </div>
       <Geocoder />
     </Map>
   </div>
@@ -87,5 +98,10 @@
     overflow: auto;
     max-height: 50vh;
     max-width: 30vw;
+  }
+
+  details {
+    border: 1px solid black;
+    padding: 4px;
   }
 </style>
