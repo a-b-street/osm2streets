@@ -42,10 +42,6 @@
     <hr />
 
     <ImportControls />
-
-    <hr />
-
-    <BasemapPicker />
   </div>
   <div slot="main">
     <Map>
@@ -69,6 +65,10 @@
         <DynamicMovementArrows />
         <DynamicRoadOrdering />
         <DynamicConnectedRoads />
+
+        <hr />
+
+        <BasemapPicker />
       </TopLeftPanel>
       <Geocoder />
     </Map>
