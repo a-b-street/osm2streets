@@ -16,6 +16,9 @@ export const hoveredLane: Writable<FeatureWithProps<Polygon> | null> =
 export const hoveredIntersection: Writable<FeatureWithProps<Polygon> | null> =
   writable(null);
 
+export const maptilerApiKey = "MZEJTanw3WpxRvt7qDfo";
+export let basemap: Writable<string> = writable("dataviz");
+
 // TODO Need to unsubscribe
 // Unset when the network changes
 network.subscribe((value) => {

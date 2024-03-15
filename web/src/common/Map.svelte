@@ -1,10 +1,14 @@
 <script lang="ts">
   import { MapLibre, ScaleControl, NavigationControl } from "svelte-maplibre";
-  import type { Map } from "maplibre-gl";
-  import { map as mapStore } from "./store";
+  import type { Map, StyleSpecification } from "maplibre-gl";
+  import { map as mapStore, basemap, maptilerApiKey } from "./store";
 
   let map: Map;
   let loaded = false;
+
+  function getStyle(basemap: string): string | StyleSpecification {
+    return `https://api.maptiler.com/maps/${basemap}/style.json?key=${maptilerApiKey}`;
+  }
 
   $: if (loaded) {
     mapStore.set(map);
@@ -13,7 +17,7 @@
 
 <div>
   <MapLibre
-    style="https://api.maptiler.com/maps/streets/style.json?key=MZEJTanw3WpxRvt7qDfo"
+    style={getStyle($basemap)}
     hash
     bind:map
     bind:loaded
