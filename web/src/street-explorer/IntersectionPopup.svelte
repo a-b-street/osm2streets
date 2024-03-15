@@ -7,10 +7,7 @@
   export let data: FeatureWithProps<Polygon> | undefined;
   export let close: () => boolean;
 
-  let props = structuredClone(data!.properties);
-  props.movements = JSON.parse(props.movements);
-  delete props.osm_node_ids;
-  let osm_node_ids = JSON.parse(data!.properties.osm_node_ids);
+  let props = data!.properties;
 
   function collapse() {
     $network!.collapseIntersection(props.id);
@@ -19,15 +16,16 @@
   }
 </script>
 
-<pre>{JSON.stringify(props, null, "  ")}</pre>
+<h2>Intersection #{props.id}</h2>
+<p><u>Kind</u>: {props.intersection_kind}</p>
+<p><u>Control</u>: {props.control}</p>
+<p><u>Movements</u>: {props.movements}</p>
 
-<div>
-  OSM nodes:
-  {#each osm_node_ids as id}
+<p>
+  <u>OSM nodes</u>:
+  {#each JSON.parse(props.osm_node_ids) as id}
     <a href="https://www.openstreetmap.org/node/{id}" target="_blank">{id}</a>,
   {/each}
-</div>
+</p>
 
-<div>
-  <button type="button" on:click={collapse}>Collapse intersection</button>
-</div>
+<button type="button" on:click={collapse}>Collapse intersection</button>
