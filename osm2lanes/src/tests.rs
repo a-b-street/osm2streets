@@ -303,7 +303,13 @@ fn test_osm_to_specs() {
         let actual_lt: String = actual.iter().map(|s| s.lt.to_char()).collect();
         let actual_dir: String = actual
             .iter()
-            .map(|s| if s.dir == Direction::Fwd { '^' } else { 'v' })
+            .map(|s| {
+                if s.dir == Direction::Forward {
+                    '^'
+                } else {
+                    'v'
+                }
+            })
             .collect();
         if actual_lt != expected_lt || actual_dir != expected_dir {
             failing += 1;

@@ -20,9 +20,9 @@ impl LaneSpec {
             .map(|(lt, dir)| LaneSpec {
                 lt: LaneType::from_char(lt),
                 dir: if dir == '^' {
-                    Direction::Fwd
+                    Direction::Forward
                 } else {
-                    Direction::Back
+                    Direction::Backward
                 },
                 // Dummy
                 width: Distance::ZERO,
@@ -46,7 +46,13 @@ impl LaneSpec {
         let actual_lt: String = actual_lanes_ltr.iter().map(|s| s.lt.to_char()).collect();
         let actual_dir: String = actual_lanes_ltr
             .iter()
-            .map(|s| if s.dir == Direction::Fwd { '^' } else { 'v' })
+            .map(|s| {
+                if s.dir == Direction::Forward {
+                    '^'
+                } else {
+                    'v'
+                }
+            })
             .collect();
 
         if actual_lt != expected_lt || actual_dir != expected_dir {

@@ -9,9 +9,9 @@ impl LaneSpec {
     /// narrow lanes.
     pub fn toggle_road_direction(lanes_ltr: &mut Vec<LaneSpec>, driving_side: DrivingSide) {
         let leftmost_dir = if driving_side == DrivingSide::Right {
-            Direction::Back
+            Direction::Backward
         } else {
-            Direction::Fwd
+            Direction::Forward
         };
         let oneway_dir = LaneSpec::oneway_for_driving(lanes_ltr);
         let mut num_driving_lanes = lanes_ltr
@@ -21,7 +21,7 @@ impl LaneSpec {
 
         // Pre-processing: if it's one-way backwards and there's only one driving lane,
         // split it into two narrow pieces
-        if oneway_dir == Some(Direction::Back) && num_driving_lanes == 1 {
+        if oneway_dir == Some(Direction::Backward) && num_driving_lanes == 1 {
             // TODO If there's parking, use that
             let idx = lanes_ltr
                 .iter()
@@ -51,11 +51,11 @@ impl LaneSpec {
             if lane.lt == LaneType::Driving {
                 driving_lanes_so_far += 1;
                 match oneway_dir {
-                    Some(Direction::Fwd) => {
+                    Some(Direction::Forward) => {
                         // If it's one-way forwards, flip the direction
-                        lane.dir = Direction::Back;
+                        lane.dir = Direction::Backward;
                     }
-                    Some(Direction::Back) => {
+                    Some(Direction::Backward) => {
                         // If it's one-way backwards, make it bidirectional. Split the
                         // directions down the middle
                         if (driving_lanes_so_far as f64) / (num_driving_lanes as f64) <= 0.5 {
@@ -67,7 +67,7 @@ impl LaneSpec {
                     None => {
                         // TODO If it's narrow...
                         // If it's bidirectional, make it one-way
-                        lane.dir = Direction::Fwd;
+                        lane.dir = Direction::Forward;
                     }
                 }
             }

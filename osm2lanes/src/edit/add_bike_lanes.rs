@@ -11,7 +11,7 @@ impl LaneSpec {
         let mut fwd_side = Vec::new();
         let mut back_side = Vec::new();
         for spec in lanes_ltr.drain(..) {
-            if spec.dir == Direction::Fwd {
+            if spec.dir == Direction::Forward {
                 fwd_side.push(spec);
             } else {
                 back_side.push(spec);
@@ -24,8 +24,8 @@ impl LaneSpec {
         }
 
         for (dir, side) in [
-            (Direction::Fwd, &mut fwd_side),
-            (Direction::Back, &mut back_side),
+            (Direction::Forward, &mut fwd_side),
+            (Direction::Backward, &mut back_side),
         ] {
             // For each side, start searching outer->inner. If there's parking, replace it. If there's
             // multiple driving lanes, fallback to changing the rightmost. If there's a bus lane, put

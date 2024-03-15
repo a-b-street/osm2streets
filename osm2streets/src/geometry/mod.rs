@@ -59,7 +59,7 @@ impl InputRoad {
             center_line: self.center_line.clone(),
             lane_specs_ltr: vec![crate::LaneSpec {
                 lt: crate::LaneType::Driving,
-                dir: crate::Direction::Fwd,
+                dir: crate::Direction::Forward,
                 width: self.total_width,
                 allowed_turns: Default::default(),
                 lane: None,

@@ -195,7 +195,7 @@ impl StreetNetwork {
                 .into_iter()
             {
                 if let Some(dir) = dir {
-                    let stop_line = if dir == Direction::Fwd {
+                    let stop_line = if dir == Direction::Forward {
                         &road.stop_line_end
                     } else {
                         &road.stop_line_start
@@ -250,7 +250,7 @@ impl StreetNetwork {
 
             // The renderings that follow need lane centers to point in the direction of the lane.
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter_mut()) {
-                if lane.dir == Direction::Back {
+                if lane.dir == Direction::Backward {
                     *center = center.reversed();
                 }
             }

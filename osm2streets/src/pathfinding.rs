@@ -40,7 +40,7 @@ impl StreetNetwork {
             let mut back = false;
             for lane in &r.lane_specs_ltr {
                 if lane_types.contains(&lane.lt) {
-                    if lane.dir == Direction::Fwd {
+                    if lane.dir == Direction::Forward {
                         fwd = true;
                     } else {
                         back = true;
@@ -48,10 +48,10 @@ impl StreetNetwork {
                 }
             }
             if fwd {
-                graph.add_edge(r.src_i, r.dst_i, (r.id, Direction::Fwd));
+                graph.add_edge(r.src_i, r.dst_i, (r.id, Direction::Forward));
             }
             if back {
-                graph.add_edge(r.dst_i, r.src_i, (r.id, Direction::Back));
+                graph.add_edge(r.dst_i, r.src_i, (r.id, Direction::Backward));
             }
         }
         let (_, path) = petgraph::algo::astar(

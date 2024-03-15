@@ -77,16 +77,16 @@ fn traffic_direction(
 ) -> Direction {
     let on_centre_line = position + 1 == centre_line;
     if on_centre_line {
-        return Direction::Fwd;
+        return Direction::Forward;
     }
 
     let left_of_centre_line = position < centre_line;
     let driving_left = driving_side == DrivingSide::Left;
 
     if left_of_centre_line == driving_left {
-        Direction::Fwd
+        Direction::Forward
     } else {
-        Direction::Back
+        Direction::Backward
     }
 }
 
@@ -215,7 +215,7 @@ fn travel_lane(
     if let Some((turn_forward, turn_backward)) = turn_forward.zip(turn_backward) {
         let forward_base = turn_forward.base();
         if forward_base.is_some() && forward_base == turn_backward.base() {
-            return (LaneType::SharedLeftTurn, Direction::Fwd, EnumSet::new());
+            return (LaneType::SharedLeftTurn, Direction::Forward, EnumSet::new());
         }
     }
 
@@ -224,8 +224,8 @@ fn travel_lane(
         let access_backward = rank.is_allowed(&t.backward.access);
 
         let dir = match (access_forward, access_backward) {
-            (true, false) => Direction::Fwd,
-            (false, true) => Direction::Back,
+            (true, false) => Direction::Forward,
+            (false, true) => Direction::Backward,
             (true, true) => traffic_direction, // TODO: Both directions
             (false, false) => continue,
         };
@@ -252,7 +252,7 @@ fn travel_lane(
         return (lane_type, dir, turns);
     }
 
-    (LaneType::Construction, Direction::Fwd, EnumSet::new())
+    (LaneType::Construction, Direction::Forward, EnumSet::new())
 }
 
 fn parking_lane(traffic_direction: Direction) -> (LaneType, Direction, EnumSet<TurnDirection>) {

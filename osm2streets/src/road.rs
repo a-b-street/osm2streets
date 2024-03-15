@@ -227,9 +227,9 @@ impl Road {
     pub fn can_drive_out_of_end(&self, which_end: IntersectionID) -> bool {
         if let Some(driving_dir) = self.oneway_for_driving() {
             let required_dir = if self.dst_i == which_end {
-                Direction::Fwd
+                Direction::Forward
             } else {
-                Direction::Back
+                Direction::Backward
             };
             return driving_dir == required_dir;
         }
@@ -239,9 +239,9 @@ impl Road {
     pub(crate) fn can_drive_into_end(&self, which_end: IntersectionID) -> bool {
         if let Some(driving_dir) = self.oneway_for_driving() {
             let required_dir = if self.src_i == which_end {
-                Direction::Fwd
+                Direction::Forward
             } else {
-                Direction::Back
+                Direction::Backward
             };
             return driving_dir == required_dir;
         }
@@ -312,7 +312,7 @@ impl Road {
             }
             if lane.lt == LaneType::SharedLeftTurn {
                 result.1 += 1;
-            } else if lane.dir == Direction::Fwd {
+            } else if lane.dir == Direction::Forward {
                 result.0 += 1;
             } else {
                 result.2 += 1;
@@ -363,9 +363,9 @@ impl Road {
                 // FIXME contraflow lanes (even bike tracks) will break this.
 
                 let left_dir = if driving_side == DrivingSide::Left {
-                    Direction::Fwd
+                    Direction::Forward
                 } else {
-                    Direction::Back
+                    Direction::Backward
                 };
                 let mut found_first_side = false;
                 let mut median_width = Distance::ZERO;
@@ -403,7 +403,8 @@ impl Road {
                 let mut lanes_found = 0;
                 // Lanes are counted from the left in the direction of the named lane, so we
                 // iterate from the right when we're looking for a backward lane.
-                let lanes: Box<dyn Iterator<Item = &LaneSpec>> = if target_dir == Direction::Fwd {
+                let lanes: Box<dyn Iterator<Item = &LaneSpec>> = if target_dir == Direction::Forward
+                {
                     Box::new(self.lane_specs_ltr.iter())
                 } else {
                     Box::new(self.lane_specs_ltr.iter().rev())
@@ -420,7 +421,7 @@ impl Road {
                                 dist_so_far += lane.width;
                             }
 
-                            return if target_dir == Direction::Fwd {
+                            return if target_dir == Direction::Forward {
                                 dist_so_far
                             } else {
                                 self.total_width() - dist_so_far

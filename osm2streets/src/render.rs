@@ -214,7 +214,7 @@ impl StreetNetwork {
 
             // Below renderings need lane centers to point in the direction of the lane
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter_mut()) {
-                if lane.dir == Direction::Back {
+                if lane.dir == Direction::Backward {
                     *center = center.reversed();
                 }
             }
@@ -351,7 +351,7 @@ impl StreetNetwork {
 
     pub fn debug_movements_from_lane_geojson(&self, id: LaneID) -> Result<String> {
         let road = &self.roads[&id.road];
-        let i = if road.lane_specs_ltr[id.index].dir == Direction::Fwd {
+        let i = if road.lane_specs_ltr[id.index].dir == Direction::Forward {
             road.dst_i
         } else {
             road.src_i
@@ -557,7 +557,7 @@ fn draw_stop_lines(
     }
     let thickness = Distance::meters(0.5);
 
-    let stop_line = if lane.dir == Direction::Fwd {
+    let stop_line = if lane.dir == Direction::Forward {
         &road.stop_line_end
     } else {
         &road.stop_line_start

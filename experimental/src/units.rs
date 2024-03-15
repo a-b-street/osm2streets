@@ -9,14 +9,14 @@ pub type Meters = f64;
 #[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum End {
     Front,
-    Back,
+    Backward,
 }
 
 /// Binary travel direction, frontward & backward.
 #[derive(Copy, Clone, Debug, Enum, PartialEq)]
 pub enum Direction {
     Forward,
-    Backward,
+    Backwardward,
 }
 
 /// The directions that traffic flows.
@@ -25,7 +25,7 @@ pub enum TrafficDirections {
     /// All traffic travels forward.
     Forward,
     /// All traffic travels backward.
-    Backward,
+    Backwardward,
     /// Traffic negotiates use of the road space.
     BothWays,
     /// Traffic takes turns, negotiated, or with the aid of a control like traffic lights.
@@ -84,13 +84,13 @@ impl DrivingSide {
     pub fn get_direction(&self, side: Side) -> Direction {
         match (self, side) {
             (Self::LHT, Side::Left) | (Self::RHT, Side::Right) => Direction::Forward,
-            (Self::LHT, Side::Right) | (Self::RHT, Side::Left) => Direction::Backward,
+            (Self::LHT, Side::Right) | (Self::RHT, Side::Left) => Direction::Backwardward,
         }
     }
     pub fn get_side(&self, dir: Direction) -> Side {
         match (self, dir) {
-            (Self::LHT, Direction::Forward) | (Self::RHT, Direction::Backward) => Side::Left,
-            (Self::LHT, Direction::Backward) | (Self::RHT, Direction::Forward) => Side::Right,
+            (Self::LHT, Direction::Forward) | (Self::RHT, Direction::Backwardward) => Side::Left,
+            (Self::LHT, Direction::Backwardward) | (Self::RHT, Direction::Forward) => Side::Right,
         }
     }
 }

@@ -62,7 +62,7 @@ impl From<StreetNetwork> for RoadNetwork {
                                 intersections[&road.dst_i],
                             )
                         }),
-                        ways[Backward].take().map(|b| {
+                        ways[Backwardward].take().map(|b| {
                             net.add_closing_roadway(
                                 b,
                                 intersections[&road.dst_i],
@@ -89,8 +89,8 @@ impl RoadWay {
         // lanes are ltr, so take the left lanes until we see one in the direction of the traffic
         // on the right. Then the right hand lanes will be remaining.
         let dir_on_right = match ds.get_direction(Right) {
-            Forward => osm2streets::Direction::Fwd,
-            Backward => osm2streets::Direction::Back,
+            Forward => osm2streets::Direction::Forward,
+            Backwardward => osm2streets::Direction::Backward,
         };
         let left_lanes = lanes
             .take_while_ref(|&l| match l.lt {
@@ -111,7 +111,7 @@ impl RoadWay {
             Right => half_roads[Right].len() > 0,
         };
         let fs = ds.get_side(Forward);
-        let bs = ds.get_side(Backward);
+        let bs = ds.get_side(Backwardward);
         enum_map! {
             Forward => if has_half[fs] {
                 Some(RoadWay {
@@ -120,7 +120,7 @@ impl RoadWay {
                     outer: RoadEdge::Sudden,
                 })
             } else { None},
-            Backward => if has_half[bs] {
+            Backwardward => if has_half[bs] {
                 Some(RoadWay {
                     inner: if has_half[fs] { RoadEdge::Join } else { RoadEdge::Sudden },
                     elements: half_roads[bs].clone(),

@@ -106,7 +106,7 @@ impl Sidepath {
             // TODO Use https://wiki.openstreetmap.org/wiki/Proposed_features/separation if
             // available
             lt: LaneType::Buffer(BufferType::Planters),
-            dir: Direction::Fwd,
+            dir: Direction::Forward,
             width: LaneSpec::typical_lane_width(LaneType::Buffer(BufferType::Planters)),
             allowed_turns: Default::default(),
             lane: None,

@@ -8,7 +8,7 @@ impl LaneSpec {
         highway_type: &str,
         driving_side: DrivingSide,
     ) -> usize {
-        let mut dir = Direction::Fwd;
+        let mut dir = Direction::Forward;
         let mut idx = 0;
 
         match lt {
@@ -42,16 +42,16 @@ impl LaneSpec {
                 if !lanes_ltr[0].lt.is_walkable() {
                     idx = 0;
                     dir = if driving_side == DrivingSide::Right {
-                        Direction::Back
+                        Direction::Backward
                     } else {
-                        Direction::Fwd
+                        Direction::Forward
                     };
                 } else {
                     idx = lanes_ltr.len();
                     dir = if driving_side == DrivingSide::Right {
-                        Direction::Fwd
+                        Direction::Forward
                     } else {
-                        Direction::Back
+                        Direction::Backward
                     };
                 }
             }
@@ -61,14 +61,14 @@ impl LaneSpec {
                 let mut back_bike = None;
                 for (idx, spec) in lanes_ltr.iter().enumerate() {
                     if spec.lt == LaneType::Biking {
-                        if spec.dir == Direction::Fwd {
+                        if spec.dir == Direction::Forward {
                             fwd_bike = Some(idx);
                         } else {
                             back_bike = Some(idx);
                         }
                     }
                 }
-                // TODO This is US-centric, since it assumes the Fwd direction is on the right. We
+                // TODO This is US-centric, since it assumes the Forward direction is on the right. We
                 // should probably decompose into sides like maybe_add_bike_lanes.
                 if let Some(i) = fwd_bike {
                     // If there's nothing to the left of this bike lane, not sure what's going on...
@@ -77,7 +77,7 @@ impl LaneSpec {
                         .map(|spec| !matches!(spec.lt, LaneType::Buffer(_)))
                         .unwrap_or(false)
                     {
-                        dir = Direction::Fwd;
+                        dir = Direction::Forward;
                         idx = i;
                     }
                 }
@@ -87,7 +87,7 @@ impl LaneSpec {
                         .map(|spec| !matches!(spec.lt, LaneType::Buffer(_)))
                         .unwrap_or(false)
                     {
-                        dir = Direction::Back;
+                        dir = Direction::Backward;
                         idx = i + 1;
                     }
                 }
@@ -130,20 +130,20 @@ fn default_outside_lane_placement(lanes_ltr: &[LaneSpec], dir: Direction) -> usi
 fn determine_lane_dir(lanes_ltr: &[LaneSpec], lt: LaneType, minority: bool) -> Direction {
     if (lanes_ltr
         .iter()
-        .filter(|x| x.dir == Direction::Fwd && x.lt == lt)
+        .filter(|x| x.dir == Direction::Forward && x.lt == lt)
         .count() as f64
         / lanes_ltr.iter().filter(|x| x.lt == lt).count() as f64)
         <= 0.5
     {
         if minority {
-            Direction::Fwd
+            Direction::Forward
         } else {
-            Direction::Back
+            Direction::Backward
         }
     } else if minority {
-        Direction::Back
+        Direction::Backward
     } else {
-        Direction::Fwd
+        Direction::Forward
     }
 }
 

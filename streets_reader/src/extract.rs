@@ -207,8 +207,8 @@ impl OsmExtract {
 
 fn parse_dir(x: Option<&String>) -> Option<Direction> {
     match x.map(|x| x.as_str()) {
-        Some("forward") => Some(Direction::Fwd),
-        Some("backward") => Some(Direction::Back),
+        Some("forward") => Some(Direction::Forward),
+        Some("backward") => Some(Direction::Backward),
         _ => None,
     }
 }

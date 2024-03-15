@@ -226,7 +226,7 @@ pub fn split_up_roads(
                 // On a one-way road, specifying direction is redundant, so infer from there too
                 if let Some(dir) = dir.or_else(|| road.oneway_for_driving()) {
                     // Update the intersection control type
-                    let i = if dir == Direction::Fwd {
+                    let i = if dir == Direction::Forward {
                         road.dst_i
                     } else {
                         road.src_i
@@ -240,7 +240,7 @@ pub fn split_up_roads(
 
                     // Specify the explicit vehicle stop line
                     if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
-                        let stop_line = if dir == Direction::Fwd {
+                        let stop_line = if dir == Direction::Forward {
                             &mut road.stop_line_end
                         } else {
                             &mut road.stop_line_start
@@ -265,7 +265,7 @@ pub fn split_up_roads(
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             if let Some(dir) = dir {
                 if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
-                    let stop_line = if dir == Direction::Fwd {
+                    let stop_line = if dir == Direction::Forward {
                         &mut road.stop_line_end
                     } else {
                         &mut road.stop_line_start
@@ -273,7 +273,7 @@ pub fn split_up_roads(
                     stop_line.bike_distance = Some(dist);
 
                     // Inherit the interruption type from the intersection
-                    let i = if dir == Direction::Fwd {
+                    let i = if dir == Direction::Forward {
                         road.dst_i
                     } else {
                         road.src_i

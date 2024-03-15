@@ -361,7 +361,7 @@ impl LaneSpec {
         let mut back = false;
         for x in lanes {
             if x.lt == LaneType::Driving {
-                if x.dir == Direction::Fwd {
+                if x.dir == Direction::Forward {
                     fwd = true;
                 } else {
                     back = true;
@@ -372,9 +372,9 @@ impl LaneSpec {
             // Bidirectional
             None
         } else if fwd {
-            Some(Direction::Fwd)
+            Some(Direction::Forward)
         } else if back {
-            Some(Direction::Back)
+            Some(Direction::Backward)
         } else {
             // Not driveable at all
             None
@@ -399,15 +399,15 @@ pub enum TrafficClass {
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Direction {
-    Fwd,
-    Back,
+    Forward,
+    Backward,
 }
 
 impl Direction {
     pub fn opposite(self) -> Direction {
         match self {
-            Direction::Fwd => Direction::Back,
-            Direction::Back => Direction::Fwd,
+            Direction::Forward => Direction::Backward,
+            Direction::Backward => Direction::Forward,
         }
     }
 }
@@ -415,8 +415,8 @@ impl Direction {
 impl fmt::Display for Direction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Direction::Fwd => write!(f, "forwards"),
-            Direction::Back => write!(f, "backwards"),
+            Direction::Forward => write!(f, "forwards"),
+            Direction::Backward => write!(f, "backwards"),
         }
     }
 }
@@ -441,28 +441,28 @@ pub enum TurnDirection {
     Reverse,
 }
 
-/// Refers to a lane by its left-to-right position among all lanes in that direction. Backward
+/// Refers to a lane by its left-to-right position among all lanes in that direction. Backwardward
 /// lanes are counted left-to-right from the backwards direction.
 ///
 /// e.g. The left-most forward lane is `LtrLaneNum::Forward(1)` and the backward lane furthest to
-/// the road-right is `LtrLaneNum::Backward(1)`, because of the backward perspective.
+/// the road-right is `LtrLaneNum::Backwardward(1)`, because of the backward perspective.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum LtrLaneNum {
     Forward(usize),
-    Backward(usize),
+    Backwardward(usize),
 }
 
 impl LtrLaneNum {
     pub fn direction(&self) -> Direction {
         match self {
-            Self::Forward(_) => Direction::Fwd,
-            Self::Backward(_) => Direction::Back,
+            Self::Forward(_) => Direction::Forward,
+            Self::Backwardward(_) => Direction::Backward,
         }
     }
 
     pub fn number(&self) -> usize {
         match self {
-            Self::Forward(num) | Self::Backward(num) => *num,
+            Self::Forward(num) | Self::Backwardward(num) => *num,
         }
     }
 
@@ -470,8 +470,8 @@ impl LtrLaneNum {
     pub fn reverse(&self) -> Self {
         use LtrLaneNum::*;
         match self {
-            Forward(n) => Backward(*n),
-            Backward(n) => Forward(*n),
+            Forward(n) => Backwardward(*n),
+            Backwardward(n) => Forward(*n),
         }
     }
 }

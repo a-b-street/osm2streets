@@ -146,7 +146,7 @@ mod tests {
                 "right_of:1".into()
             )])))
             .unwrap(),
-            Consistent(RightOf(Backward(1)))
+            Consistent(RightOf(Backwardward(1)))
         );
 
         assert_eq!(
@@ -164,7 +164,7 @@ mod tests {
                 ("placement:backward:end".into(), "right_of:2".into())
             ])))
             .unwrap(),
-            Varying(RightOf(Backward(1)), RightOf(Backward(2)))
+            Varying(RightOf(Backwardward(1)), RightOf(Backwardward(2)))
         );
     }
 }
