@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
   import {
+    ThemePicker,
     BasemapPicker,
     Geocoder,
     Layout,
@@ -73,6 +74,7 @@
         <hr />
 
         <BasemapPicker />
+        <ThemePicker />
       </TopLeftPanel>
       <Geocoder />
     </Map>

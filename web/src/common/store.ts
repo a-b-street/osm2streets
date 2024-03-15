@@ -18,6 +18,7 @@ export const hoveredIntersection: Writable<FeatureWithProps<Polygon> | null> =
 
 export const maptilerApiKey = "MZEJTanw3WpxRvt7qDfo";
 export let basemap: Writable<string> = writable("dataviz");
+export let theme: Writable<"debug" | "realistic"> = writable("debug");
 
 // TODO Need to unsubscribe
 // Unset when the network changes

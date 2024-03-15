@@ -1,7 +1,7 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
-  import { hoveredIntersection, network } from "../store";
-  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { theme, hoveredIntersection, network } from "../store";
+  import { caseHelper, layerId, emptyGeojson } from "../utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
   let show = true;
@@ -19,16 +19,19 @@
     bind:hovered={$hoveredIntersection}
     filter={["==", ["get", "type"], "intersection"]}
     paint={{
-      "fill-color": caseHelper(
-        "intersection_kind",
-        {
-          Connection: "#666",
-          Intersection: "#966",
-          Terminus: "#999",
-          MapEdge: "#696",
-        },
-        "#666",
-      ),
+      "fill-color": {
+        debug: caseHelper(
+          "intersection_kind",
+          {
+            Connection: "#666",
+            Intersection: "#966",
+            Terminus: "#999",
+            MapEdge: "#696",
+          },
+          "#666",
+        ),
+        realistic: "black",
+      }[$theme],
       "fill-opacity": hoverStateFilter(0.9, 0.4),
     }}
   >
