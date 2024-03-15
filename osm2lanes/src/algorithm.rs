@@ -52,8 +52,9 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         // We can't represent curbs being in the middle of a lane.
         // Therefore we push the left curb to the right edge of that lane by "rounding up",
         // and the right curb to the left edge of that lane by "rounding down".
-        if lanes.kerb_left.is_some_and(|kerb| (kerb + 1) / 2 == i)
-            || lanes.kerb_right.is_some_and(|kerb| kerb / 2 == i)
+        if cfg.inferred_kerbs
+            && (lanes.kerb_left.is_some_and(|kerb| (kerb + 1) / 2 == i)
+                || lanes.kerb_right.is_some_and(|kerb| kerb / 2 == i))
         {
             let lt = LaneType::Buffer(BufferType::Curb);
             specs.push(LaneSpec {
