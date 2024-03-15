@@ -28,7 +28,7 @@
 <style>
   div {
     position: absolute;
-    top: 50px;
+    top: 10px;
     right: 10px;
   }
 </style>
