@@ -48,13 +48,13 @@
       <TopLeftPanel>
         <RenderBoundary />
         <RenderIntersectionPolygons>
-          <Popup openOn="click" let:data let:close>
+          <Popup openOn="click" popupClass="popup" let:data let:close>
             <IntersectionPopup {data} {close} />
           </Popup>
         </RenderIntersectionPolygons>
         <RenderIntersectionMarkings />
         <RenderLanePolygons>
-          <Popup openOn="click" let:data let:close>
+          <Popup openOn="click" popupClass="popup" let:data let:close>
             <LanePopup {data} {close} />
           </Popup>
         </RenderLanePolygons>
@@ -74,3 +74,10 @@
     </Map>
   </div>
 </Layout>
+
+<style>
+  :global(.popup .maplibregl-popup-content) {
+    border: 1px solid black;
+    overflow: auto;
+  }
+</style>

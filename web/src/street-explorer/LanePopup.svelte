@@ -7,12 +7,9 @@
   export let data: FeatureWithProps<Polygon> | undefined;
   export let close: () => boolean;
 
-  let props = structuredClone(data!.properties);
-  props.allowed_turns = JSON.parse(props.allowed_turns);
-  delete props.osm_way_ids;
-  let osm_way_ids = JSON.parse(data!.properties.osm_way_ids);
-  let muv = JSON.parse(data!.properties.muv ?? "{}");
-  delete props.muv;
+  let props = data!.properties;
+  // TODO Hack because TS doesn't work below
+  let networkValue = $network!;
 
   function collapse() {
     $network!.collapseShortRoad(props.road);
@@ -25,36 +22,52 @@
     $network = $network;
     close();
   }
-
-  // TODO Hack because TS doesn't work below
-  let networkValue = $network!;
 </script>
 
-<pre>{JSON.stringify(props, null, "  ")}</pre>
+<div style="max-height: 50vh; max-width: 30vw;">
+  <h2>Lane {props.index} of Road {props.road}</h2>
+  <p><u>Type</u>: {props.type}</p>
+  <p><u>Direction</u>: {props.direction}</p>
+  <p><u>Width</u>: {props.width}m</p>
+  <p><u>Speed limit</u>: {props.speed_limit}</p>
+  <p><u>Allowed turns</u>: {props.allowed_turns}</p>
+  <p><u>Layer</u>: {props.layer}</p>
 
-{#if muv}
-  <details>
-    <summary>Full Muv JSON</summary>
-    <pre>{JSON.stringify(muv, null, "  ")}</pre>
-  </details>
-{/if}
+  {#if props.muv}
+    <details>
+      <summary>Full Muv JSON</summary>
+      <pre>{JSON.stringify(JSON.parse(props.muv), null, "  ")}</pre>
+    </details>
+  {/if}
 
-<hr />
+  <hr />
 
-<u>OSM ways:</u>
-<ul>
-  {#each osm_way_ids as id}
-    <li>
+  <p><u>OSM ways:</u></p>
+  {#each JSON.parse(props.osm_way_ids) as id}
+    <p>
       <a href="https://www.openstreetmap.org/way/{id}" target="_blank">{id}</a>
-      <details>
-        <summary>See OSM tags</summary>
-        <pre>{networkValue.getOsmTagsForWay(BigInt(id))}</pre>
-      </details>
-    </li>
+    </p>
+    <details>
+      <summary>See OSM tags</summary>
+      <table>
+        <tbody>
+          {#each Object.entries(JSON.parse(networkValue.getOsmTagsForWay(BigInt(id)))) as [key, value]}
+            <tr><td>{key}</td><td>{value}</td></tr>
+          {/each}
+        </tbody>
+      </table>
+    </details>
   {/each}
-</ul>
 
-<div>
-  <button type="button" on:click={collapse}>Collapse short road</button>
-  <button type="button" on:click={zip}>Zip side-path</button>
+  <div>
+    <button type="button" on:click={collapse}>Collapse short road</button>
+    <button type="button" on:click={zip}>Zip side-path</button>
+  </div>
 </div>
+
+<style>
+  td {
+    border: solid 1px black;
+    padding: 3px;
+  }
+</style>
