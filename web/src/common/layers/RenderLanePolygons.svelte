@@ -4,6 +4,8 @@
   import { layerId, emptyGeojson, caseHelper } from "../utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
+  export let hoverCursor: string | undefined = undefined;
+
   let show = true;
 
   $: gj = $network
@@ -19,6 +21,7 @@
     }}
     manageHoverState
     bind:hovered={$hoveredLane}
+    {hoverCursor}
     on:click
     paint={{
       "fill-color": caseHelper(

@@ -4,6 +4,8 @@
   import { caseHelper, layerId, emptyGeojson } from "../utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
+  export let hoverCursor: string | undefined = undefined;
+
   let show = true;
 
   $: gj = $network ? JSON.parse($network.toGeojsonPlain()) : emptyGeojson();
@@ -17,6 +19,7 @@
     }}
     manageHoverState
     bind:hovered={$hoveredIntersection}
+    {hoverCursor}
     filter={["==", ["get", "type"], "intersection"]}
     paint={{
       "fill-color": {

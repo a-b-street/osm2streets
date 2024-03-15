@@ -59,7 +59,7 @@
     <Map>
       <div bind:this={controlsContents}>
         <RenderBoundary />
-        <RenderIntersectionPolygons>
+        <RenderIntersectionPolygons hoverCursor="pointer">
           <Popup openOn="click" popupClass="popup" let:data let:close>
             {#key data}
               <IntersectionPopup {data} {close} />
@@ -67,7 +67,7 @@
           </Popup>
         </RenderIntersectionPolygons>
         <RenderIntersectionMarkings />
-        <RenderLanePolygons>
+        <RenderLanePolygons hoverCursor="pointer">
           <Popup openOn="click" popupClass="popup" let:data let:close>
             {#key data}
               <LanePopup {data} {close} />

@@ -75,7 +75,7 @@
         <RenderBoundary />
         <RenderIntersectionPolygons />
         <RenderIntersectionMarkings />
-        <RenderLanePolygons on:click={onClickLane} />
+        <RenderLanePolygons hoverCursor="pointer" on:click={onClickLane} />
         <RenderLaneMarkings />
         <GeoJSON data={wayGj}>
           <FillLayer
