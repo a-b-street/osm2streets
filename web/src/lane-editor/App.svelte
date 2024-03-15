@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { map } from "../common/store";
   import { GeoJSON, FillLayer, type LayerClickInfo } from "svelte-maplibre";
   import { emptyGeojson, layerId } from "../common/utils";
   import { network, StreetView } from "../common";
@@ -69,7 +70,9 @@
       </ul>
     </div>
 
-    <StreetView />
+    {#if $map}
+      <StreetView />
+    {/if}
   </div>
   <div slot="main">
     <Map>
