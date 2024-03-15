@@ -30,6 +30,7 @@
           "buffer stripe": general_road_marking,
           "parking hatch": general_road_marking,
           "vehicle stop line": general_road_marking,
+          "sidewalk line": "#BBBBBB",
           "bike stop line": "green",
         },
         "red",
