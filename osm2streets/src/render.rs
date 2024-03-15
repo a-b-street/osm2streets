@@ -287,6 +287,17 @@ impl StreetNetwork {
                     features.push(f);
                 }
             }
+
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if lane.lt != LaneType::Parking {
+                    continue;
+                }
+                for polygon in draw_parking_lines(lane, center, self) {
+                    let mut f = Feature::from(polygon.to_geojson(gps_bounds));
+                    f.set_property("type", "parking hatch");
+                    features.push(f);
+                }
+            }
         }
 
         serialize_features(features)
@@ -560,6 +571,44 @@ fn draw_stop_lines(
     // TODO Change the rendering based on interruption too
 
     results
+}
+
+fn draw_parking_lines(lane: &LaneSpec, center: &PolyLine, streets: &StreetNetwork) -> Vec<Polygon> {
+    let mut result = Vec::new();
+
+    // No spots next to intersections
+    let spots = (center.length() / streets.config.street_parking_spot_length).floor() - 2.0;
+    let num_spots = if spots >= 1.0 {
+        spots as usize
+    } else {
+        return result;
+    };
+
+    let leg_length = Distance::meters(1.0);
+    for idx in 0..=num_spots {
+        let (pt, lane_angle) =
+            center.must_dist_along(streets.config.street_parking_spot_length * (1.0 + idx as f64));
+        let perp_angle = if streets.config.driving_side == DrivingSide::Right {
+            lane_angle.rotate_degs(270.0)
+        } else {
+            lane_angle.rotate_degs(90.0)
+        };
+        // Find the outside of the lane. Actually, shift inside a little bit, since the line
+        // will have thickness, but shouldn't really intersect the adjacent line
+        // when drawn.
+        let t_pt = pt.project_away(lane.width * 0.4, perp_angle);
+        // The perp leg
+        let p1 = t_pt.project_away(leg_length, perp_angle.opposite());
+        result.push(Line::must_new(t_pt, p1).make_polygons(Distance::meters(0.25)));
+        // Upper leg
+        let p2 = t_pt.project_away(leg_length, lane_angle);
+        result.push(Line::must_new(t_pt, p2).make_polygons(Distance::meters(0.25)));
+        // Lower leg
+        let p3 = t_pt.project_away(leg_length, lane_angle.opposite());
+        result.push(Line::must_new(t_pt, p3).make_polygons(Distance::meters(0.25)));
+    }
+
+    result
 }
 
 fn serialize_features(features: Vec<Feature>) -> Result<String> {

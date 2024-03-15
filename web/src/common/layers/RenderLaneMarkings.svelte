@@ -9,6 +9,8 @@
   $: gj = $network
     ? JSON.parse($network.toLaneMarkingsGeojson())
     : emptyGeojson();
+
+  let general_road_marking = "white";
 </script>
 
 <GeoJSON data={gj}>
@@ -22,11 +24,12 @@
         "type",
         {
           "center line": "yellow",
-          "lane separator": "white",
-          "lane arrow": "white",
-          "buffer edge": "white",
-          "buffer stripe": "white",
-          "vehicle stop line": "white",
+          "lane separator": general_road_marking,
+          "lane arrow": general_road_marking,
+          "buffer edge": general_road_marking,
+          "buffer stripe": general_road_marking,
+          "parking hatch": general_road_marking,
+          "vehicle stop line": general_road_marking,
           "bike stop line": "green",
         },
         "red",
