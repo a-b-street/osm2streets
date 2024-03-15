@@ -1,7 +1,7 @@
 <script lang="ts">
   import { GeoJSON, FillLayer, type LayerClickInfo } from "svelte-maplibre";
   import { emptyGeojson, layerId } from "../common/utils";
-  import { network } from "../common";
+  import { network, StreetView } from "../common";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
@@ -68,6 +68,8 @@
         <li>Don't edit a way that's partly clipped</li>
       </ul>
     </div>
+
+    <StreetView />
   </div>
   <div slot="main">
     <Map>

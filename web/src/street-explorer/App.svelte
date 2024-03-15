@@ -3,7 +3,14 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { ThemePicker, BasemapPicker, Geocoder, Layout, Map } from "../common";
+  import {
+    StreetView,
+    ThemePicker,
+    BasemapPicker,
+    Geocoder,
+    Layout,
+    Map,
+  } from "../common";
   import ImportControls from "../common/import/ImportControls.svelte";
   import RenderBoundary from "../common/layers/RenderBoundary.svelte";
   import RenderIntersectionMarkings from "../common/layers/RenderIntersectionMarkings.svelte";
@@ -86,6 +93,7 @@
 
         <BasemapPicker />
         <ThemePicker />
+        <StreetView />
       </div>
       <Geocoder />
     </Map>
