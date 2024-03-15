@@ -2,6 +2,7 @@
   import { MapLibre, ScaleControl, NavigationControl } from "svelte-maplibre";
   import type { Map, StyleSpecification } from "maplibre-gl";
   import { map as mapStore, basemap, maptilerApiKey } from "./store";
+  import { PolygonToolLayer } from "maplibre-draw-polygon";
 
   let map: Map;
   let loaded = false;
@@ -37,6 +38,7 @@
     {#if $mapStore}
       <ScaleControl />
       <NavigationControl position="bottom-right" visualizePitch />
+      <PolygonToolLayer />
       <slot />
     {/if}
   </MapLibre>
