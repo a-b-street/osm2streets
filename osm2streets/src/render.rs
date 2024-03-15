@@ -309,6 +309,17 @@ impl StreetNetwork {
                     features.push(f);
                 }
             }
+
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if lane.lt != LaneType::SharedUse && lane.lt != LaneType::Footway {
+                    continue;
+                }
+                for polygon in draw_path_outlines(lane, center) {
+                    let mut f = Feature::from(polygon.to_geojson(gps_bounds));
+                    f.set_property("type", "path outline");
+                    features.push(f);
+                }
+            }
         }
 
         serialize_features(features)
@@ -632,6 +643,22 @@ fn draw_sidewalk_lines(lane: &LaneSpec, center: &PolyLine) -> Vec<Polygon> {
             perp_line(Line::must_new(pt, pt2), lane.width).make_polygons(Distance::meters(0.25))
         })
         .collect()
+}
+
+fn draw_path_outlines(lane: &LaneSpec, center: &PolyLine) -> Vec<Polygon> {
+    let mut result = Vec::new();
+    // Dashed lines on both sides
+    for dir in [-1.0, 1.0] {
+        let pl = center
+            .shift_either_direction(dir * lane.width / 2.0)
+            .unwrap();
+        result.extend(pl.exact_dashed_polygons(
+            Distance::meters(0.25),
+            Distance::meters(1.0),
+            Distance::meters(1.5),
+        ));
+    }
+    result
 }
 
 // this always does it at pt1

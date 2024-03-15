@@ -32,6 +32,7 @@
           "vehicle stop line": general_road_marking,
           "sidewalk line": "#BBBBBB",
           "bike stop line": "green",
+          "path outline": "black",
         },
         "red",
       ),

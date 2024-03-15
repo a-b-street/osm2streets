@@ -35,7 +35,7 @@
           Construction: "#FF6D00",
           LightRail: "#844204",
           Footway: "#DDDDE8",
-          SharedUse: "#E5E1BB",
+          SharedUse: "#DED68A",
           // This is the only type used currently
           "Buffer(Planters)": "#555555",
         },
