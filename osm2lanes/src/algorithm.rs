@@ -3,7 +3,7 @@ use enumset::EnumSet;
 use geom::Distance;
 use muv_osm::{
     lanes::{lanes, travel::TravelLane, Lane, LaneIndex, LaneVariant},
-    units::{self, Unit},
+    units::{self, Quantity},
     AccessLevel, Conditional, Lifecycle, TMode, TModes, Tag,
 };
 
@@ -259,8 +259,8 @@ fn parking_lane(traffic_direction: Direction) -> (LaneType, Direction, EnumSet<T
     (LaneType::Parking, traffic_direction, EnumSet::new())
 }
 
-fn distance_from_muv(u: Unit<units::Distance>) -> Distance {
-    Distance::meters(u.to(units::Distance::Metre).value.into())
+fn distance_from_muv(qty: Quantity<units::Distance>) -> Distance {
+    Distance::meters(qty.to(units::Distance::Metre).value.into())
 }
 
 // If sidewalks aren't explicitly tagged on a road, fill them in. This only happens when the map is
