@@ -9,7 +9,7 @@ use muv_osm::{
 
 use crate::{
     osm::{self, HIGHWAY},
-    Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection,
+    BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection,
 };
 
 /// Purely from OSM tags, determine the lanes that a road segment has.
@@ -40,20 +40,33 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
 
     let highway_tag = tags.get_value(HIGHWAY).unwrap_or_default();
 
-    let mut specs: Vec<_> = (0..)
-        .zip(lanes.lanes)
-        .map(|(i, lane)| {
-            from_lane(
-                lane,
-                highway_tag,
-                // `i` is converted to a `LaneIndex` to make it easier to compare it with
-                // `lanes.centre_line` which is already a `LaneIndex`.
-                // A `LaneIndex` is double the index of a lane in the `lanes` as described in
-                // https://leluxnet.gitlab.io/Muv/muv_osm/lanes/type.LaneIndex.html
-                traffic_direction(i * 2, lanes.centre_line, cfg.driving_side),
-            )
-        })
-        .collect();
+    let mut specs = Vec::with_capacity(lanes.lanes.len() + 2);
+
+    for (i, lane) in (0..).zip(lanes.lanes) {
+        // `i` is converted to a `LaneIndex` to make it easier to compare it with
+        // `lanes.centre_line` which is already a `LaneIndex`.
+        // A `LaneIndex` is double the index of a lane in the `lanes` as described in
+        // https://leluxnet.gitlab.io/Muv/muv_osm/lanes/type.LaneIndex.html
+        let direction = traffic_direction(i * 2, lanes.centre_line, cfg.driving_side);
+
+        // We can't represent curbs being in the middle of a lane.
+        // Therefore we push the left curb to the right edge of that lane by "rounding up",
+        // and the right curb to the left edge of that lane by "rounding down".
+        if lanes.kerb_left.is_some_and(|kerb| (kerb + 1) / 2 == i)
+            || lanes.kerb_right.is_some_and(|kerb| kerb / 2 == i)
+        {
+            let lt = LaneType::Buffer(BufferType::Curb);
+            specs.push(LaneSpec {
+                lt,
+                dir: direction,
+                width: LaneSpec::typical_lane_width(lt),
+                allowed_turns: EnumSet::new(),
+                lane: None,
+            });
+        }
+
+        specs.push(from_lane(lane, highway_tag, direction));
+    }
 
     if lanes.lifecycle == Lifecycle::Construction {
         for lane in &mut specs {
