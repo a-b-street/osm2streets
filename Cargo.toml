@@ -24,3 +24,7 @@ serde_json = "1.0.108"
 #[patch."https://github.com/a-b-street/abstreet"]
 #abstutil = { path = "/home/dabreegster/abstreet/abstutil" }
 #geom = { path = "/home/dabreegster/geom" }
+
+# For local development, build dependencies in release mode once
+[profile.dev.package."*"]
+opt-level = 3
