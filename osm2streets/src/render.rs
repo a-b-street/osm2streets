@@ -298,6 +298,17 @@ impl StreetNetwork {
                     features.push(f);
                 }
             }
+
+            for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                if lane.lt != LaneType::Sidewalk {
+                    continue;
+                }
+                for polygon in draw_sidewalk_lines(lane, center) {
+                    let mut f = Feature::from(polygon.to_geojson(gps_bounds));
+                    f.set_property("type", "sidewalk line");
+                    features.push(f);
+                }
+            }
         }
 
         serialize_features(features)
@@ -609,6 +620,25 @@ fn draw_parking_lines(lane: &LaneSpec, center: &PolyLine, streets: &StreetNetwor
     }
 
     result
+}
+
+fn draw_sidewalk_lines(lane: &LaneSpec, center: &PolyLine) -> Vec<Polygon> {
+    center
+        .step_along(lane.width, lane.width)
+        .into_iter()
+        .map(|(pt, angle)| {
+            // Project away an arbitrary amount
+            let pt2 = pt.project_away(Distance::meters(1.0), angle);
+            perp_line(Line::must_new(pt, pt2), lane.width).make_polygons(Distance::meters(0.25))
+        })
+        .collect()
+}
+
+// this always does it at pt1
+fn perp_line(l: Line, length: Distance) -> Line {
+    let pt1 = l.shift_right(length / 2.0).pt1();
+    let pt2 = l.shift_left(length / 2.0).pt1();
+    Line::must_new(pt1, pt2)
 }
 
 fn serialize_features(features: Vec<Feature>) -> Result<String> {
