@@ -11,7 +11,7 @@ pub(crate) fn degenerate(
     road2: InputRoad,
 ) -> Result<Results> {
     // Arbitrary parameters
-    let intersection_half_len = Distance::meters(1.0);
+    let intersection_half_len = Distance::meters(0.1);
     let min_road_len = 2.0 * intersection_half_len;
 
     // Make both roads point at the intersection, to simplify logic below

@@ -24,26 +24,29 @@
     {hoverCursor}
     on:click
     paint={{
-      "fill-color": caseHelper(
-        "type",
-        // TODO Could we express the Rust enum in TS and be type-safe here?
-        {
-          Driving: "black",
-          Parking: "#333333",
-          Sidewalk: "#CCCCCC",
-          Shoulder: "#CCCCCC",
-          Biking: "#0F7D4B",
-          Bus: "#BE4A4C",
-          SharedLeftTurn: "black",
-          Construction: "#FF6D00",
-          LightRail: "#844204",
-          Footway: "#DDDDE8",
-          SharedUse: "#DED68A",
-          // This is the only type used currently
-          "Buffer(Planters)": "#555555",
-          "Buffer(Curb)": "white",
-        },
-        "red",
+      "fill-color": hoverStateFilter(
+        caseHelper(
+          "type",
+          // TODO Could we express the Rust enum in TS and be type-safe here?
+          {
+            Driving: "black",
+            Parking: "#333333",
+            Sidewalk: "#CCCCCC",
+            Shoulder: "#CCCCCC",
+            Biking: "#0F7D4B",
+            Bus: "#BE4A4C",
+            SharedLeftTurn: "black",
+            Construction: "#FF6D00",
+            LightRail: "#844204",
+            Footway: "#DDDDE8",
+            SharedUse: "#DED68A",
+            // This is the only type used currently
+            "Buffer(Planters)": "#555555",
+            "Buffer(Curb)": "white",
+          },
+          "red",
+        ),
+        "purple",
       ),
       "fill-opacity": hoverStateFilter(0.9, 0.4),
     }}
