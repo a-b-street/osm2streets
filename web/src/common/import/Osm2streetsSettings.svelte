@@ -4,6 +4,7 @@
     dual_carriageway_experiment: false,
     sidepath_zipping_experiment: false,
     inferred_sidewalks: false,
+    inferred_kerbs: true,
   };
 </script>
 
@@ -46,6 +47,10 @@
       infer on roads
     </label>
   </div>
+  <label>
+    <input type="checkbox" bind:checked={settings.inferred_kerbs} />
+    Infer kerbs
+  </label>
 </details>
 
 <style>

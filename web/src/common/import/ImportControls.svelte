@@ -21,6 +21,7 @@
     dual_carriageway_experiment: boolean;
     sidepath_zipping_experiment: boolean;
     inferred_sidewalks: boolean;
+    inferred_kerbs: boolean;
   }
 
   type Imported =
