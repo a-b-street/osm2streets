@@ -10,8 +10,8 @@ use serde_json::Value;
 
 use crate::road::RoadEdge;
 use crate::{
-    DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID, LaneSpec, LaneType,
-    Movement, Road, RoadID, StreetNetwork,
+    BufferType, DebugStreets, Direction, DrivingSide, Intersection, IntersectionID, LaneID,
+    LaneSpec, LaneType, Movement, Road, RoadID, StreetNetwork,
 };
 
 /// Specifies what roads and intersections to render.
@@ -244,10 +244,13 @@ impl StreetNetwork {
                 }
             }
 
-            // Add stripes to show buffers. Ignore the type of the buffer for now -- we need to
-            // decide all the types and how to render them.
+            // Add stripes to show most buffers.
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
+                // TODO Revisit rendering for different buffer types
                 if !matches!(lane.lt, LaneType::Buffer(_)) {
+                    continue;
+                }
+                if lane.lt == LaneType::Buffer(BufferType::Curb) {
                     continue;
                 }
 
