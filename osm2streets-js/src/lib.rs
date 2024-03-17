@@ -20,11 +20,8 @@ pub struct ImportOptions {
     dual_carriageway_experiment: bool,
     sidepath_zipping_experiment: bool,
     inferred_sidewalks: bool,
-<<<<<<< HEAD
     inferred_kerbs: bool,
-=======
     date_time: Option<NaiveDateTime>,
->>>>>>> cedde4a (Add time output)
 }
 
 #[wasm_bindgen]
@@ -63,11 +60,8 @@ impl JsStreetNetwork {
 
         let mut cfg = MapConfig::default();
         cfg.inferred_sidewalks = input.inferred_sidewalks;
-<<<<<<< HEAD
         cfg.inferred_kerbs = input.inferred_kerbs;
-=======
         cfg.date_time = input.date_time;
->>>>>>> cedde4a (Add time output)
 
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =

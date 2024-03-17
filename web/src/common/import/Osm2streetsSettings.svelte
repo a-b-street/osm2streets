@@ -34,10 +34,6 @@
     />
     Enable sidepath zipping experiment
   </label>
-  <label>
-    <input type="datetime-local" bind:value={date_time} />
-    Change the time of date
-  </label>
   <div>
     Sidewalks:
     <label>
@@ -61,6 +57,12 @@
     <input type="checkbox" bind:checked={settings.inferred_kerbs} />
     Infer kerbs
   </label>
+  <div>
+    Change the time and date:
+    <label>
+      <input type="datetime-local" bind:value={date_time} />
+    </label>
+  </div>
 </details>
 
 <style>
@@ -83,6 +85,9 @@
     display: block;
     margin-inline-start: 1em;
     text-indent: -1em;
+  }
+  div {
+    padding: 0.25em 0;
   }
   div > label {
     white-space: nowrap;
