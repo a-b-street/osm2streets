@@ -41,6 +41,7 @@
           SharedUse: "#DED68A",
           // This is the only type used currently
           "Buffer(Planters)": "#555555",
+          "Buffer(Curb)": "white",
         },
         "red",
       ),
