@@ -488,6 +488,11 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
             continue;
         }
 
+        // Only want roads with more than just a sidewalk/shoulder lane
+        if streets.roads[&one.road].lane_specs_ltr.len() == 1 ||  streets.roads[&two.road].lane_specs_ltr.len() == 1 {
+            continue;
+        }
+
         // These points should be right on the intersection polygon
         let outer_corner1 = one.pl.last_pt();
         let outer_corner2 = two.pl.last_pt();
