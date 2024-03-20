@@ -15,8 +15,10 @@
   import RenderLaneMarkings from "../common/layers/RenderLaneMarkings.svelte";
   import RenderLanePolygons from "../common/layers/RenderLanePolygons.svelte";
 
+  let wasmReady = false;
   onMount(async () => {
     await init();
+    wasmReady = true;
   });
 
   let way: bigint | null = null;
@@ -54,7 +56,9 @@
     </p>
     <hr />
 
-    <ImportControls />
+    {#if wasmReady}
+      <ImportControls />
+    {/if}
     <hr />
 
     <EditWayControls {way} />

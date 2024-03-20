@@ -24,8 +24,10 @@
   import IntersectionPopup from "./IntersectionPopup.svelte";
   import LanePopup from "./LanePopup.svelte";
 
+  let wasmReady = false;
   onMount(async () => {
     await init();
+    wasmReady = true;
   });
 
   // Some of the layer contents need to be under the Map component for Svelte
@@ -53,7 +55,9 @@
 
     <hr />
 
-    <ImportControls />
+    {#if wasmReady}
+      <ImportControls />
+    {/if}
 
     <br />
 
