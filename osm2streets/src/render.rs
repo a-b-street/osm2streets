@@ -489,7 +489,9 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
         }
 
         // Only want roads with more than just a sidewalk/shoulder lane
-        if streets.roads[&one.road].lane_specs_ltr.len() == 1 ||  streets.roads[&two.road].lane_specs_ltr.len() == 1 {
+        if streets.roads[&one.road].lane_specs_ltr.len() == 1
+            || streets.roads[&two.road].lane_specs_ltr.len() == 1
+        {
             continue;
         }
 

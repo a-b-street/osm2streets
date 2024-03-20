@@ -1,10 +1,11 @@
 use anyhow::Result;
-use geom::{Distance, Ring};
+use geom::{Distance, PolyLine, Ring};
 
 use super::Results;
 use crate::InputRoad;
 
 /// For intersections between exactly 2 roads, just trim back a bit.
+// TODO Return type is messy
 pub(crate) fn degenerate(
     mut results: Results,
     road1: InputRoad,
@@ -53,6 +54,16 @@ pub(crate) fn degenerate(
         center1.shift_right(road1.half_width())?.last_pt(),
     ];
     endpts.push(endpts[0]);
+
+    // Will the polygon overlap itself?
+    if let (Ok(perp1), Ok(perp2)) = (
+        PolyLine::new(vec![endpts[0], endpts[3]]),
+        PolyLine::new(vec![endpts[1], endpts[2]]),
+    ) {
+        if perp1.intersection(&perp2).is_some() {
+            bail!("Do the general case");
+        }
+    }
 
     results.intersection_polygon = Ring::deduping_new(endpts)?.into_polygon();
 
