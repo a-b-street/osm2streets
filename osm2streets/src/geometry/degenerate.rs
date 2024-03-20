@@ -28,6 +28,23 @@ pub(crate) fn degenerate(
     center1 = center1.exact_slice(Distance::ZERO, center1.length() - intersection_half_len);
     center2 = center2.exact_slice(Distance::ZERO, center2.length() - intersection_half_len);
 
+    // TODO cases...
+    // https://www.openstreetmap.org/node/7654649166, square polygon
+    //    thing below looks good. trimmed and thcikened linestrings have no overlap at all.
+    //
+    // https://www.openstreetmap.org/node/7654649170, one point leaks inside
+    //   after we do above, one thickened polygon overlap the other in one point.
+    //          center1, shift left and right. thats a perp
+    //          center2, same
+    //   - then see if those two linestrings intersect. if not, do what we do now.
+    //   - if they do, then... that intersection point is X
+    //   - the polygon should be a triangle. two of the ends (on the same side), X. but which side
+    //   gets left out?
+    //   - ... ** can we just fallback to the general case here? bc the thick guys overlap.
+    //
+    //
+    // we should make the two perpendicular ends...
+
     // Make the square polygon
     let mut endpts = vec![
         center1.shift_left(road1.half_width())?.last_pt(),
