@@ -302,25 +302,6 @@ impl Road {
         self.total_width() / 2.0
     }
 
-    /// Calculates the number of (forward, both_ways, backward) lanes. The order of the lanes
-    /// doesn't matter.
-    pub fn _travel_lane_counts(&self) -> (usize, usize, usize) {
-        let mut result = (0, 0, 0);
-        for lane in &self.lane_specs_ltr {
-            if !lane.lt.is_tagged_by_lanes_suffix() {
-                continue;
-            }
-            if lane.lt == LaneType::SharedLeftTurn {
-                result.1 += 1;
-            } else if lane.dir == Direction::Forward {
-                result.0 += 1;
-            } else {
-                result.2 += 1;
-            }
-        }
-        result
-    }
-
     /// Calculates the distance from the left edge to the placement.
     pub fn left_edge_offset_of(
         &self,

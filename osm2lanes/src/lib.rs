@@ -101,6 +101,7 @@ impl LaneType {
     /// Note that the `lanes` tag counts car driving lanes, excluding bike lanes, whereas the
     /// `:lanes` suffix specifies that each lane, including bike lanes, should have a value between
     /// `|`s. This function identifies the latter kind.
+    // TODO This breaks the abstraction boundary, now that Muv handles this kind of detail
     pub fn is_tagged_by_lanes_suffix(&self) -> bool {
         match self {
             LaneType::Driving => true,
