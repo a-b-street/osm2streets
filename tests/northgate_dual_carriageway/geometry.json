@@ -26258,7 +26258,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 217,
         "intersection_kind": "Intersection",
         "movements": [
@@ -26505,7 +26508,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 224,
         "intersection_kind": "Intersection",
         "movements": [
@@ -27679,7 +27685,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 252,
         "intersection_kind": "Intersection",
         "movements": [
@@ -28064,7 +28073,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 262,
         "intersection_kind": "Intersection",
         "movements": [

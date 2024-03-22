@@ -4343,7 +4343,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 43,
         "intersection_kind": "Fork",
         "movements": [
@@ -4762,7 +4765,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 52,
         "intersection_kind": "Connection",
         "movements": [

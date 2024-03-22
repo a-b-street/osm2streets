@@ -18465,7 +18465,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 5,
         "intersection_kind": "Fork",
         "movements": [
@@ -20440,7 +20443,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 62,
         "intersection_kind": "Connection",
         "movements": [],
@@ -24214,7 +24220,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Signalized"
+        },
         "id": 158,
         "intersection_kind": "Intersection",
         "movements": [
@@ -29042,7 +29051,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 265,
         "intersection_kind": "Intersection",
         "movements": [
@@ -32312,7 +32324,7 @@
         "control": "Signalled",
         "crossing": {
           "has_island": false,
-          "kind": "Unmarked"
+          "kind": "Signalized"
         },
         "id": 331,
         "intersection_kind": "Intersection",
@@ -33338,7 +33350,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 359,
         "intersection_kind": "Fork",
         "movements": [

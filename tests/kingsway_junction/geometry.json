@@ -7390,7 +7390,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": true,
+          "kind": "Signalized"
+        },
         "id": 24,
         "intersection_kind": "Fork",
         "movements": [
