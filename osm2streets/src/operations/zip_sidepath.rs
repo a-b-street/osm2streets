@@ -1,3 +1,5 @@
+use std::collections::BTreeSet;
+
 use geom::{Distance, PolyLine};
 
 use crate::{BufferType, Direction, IntersectionID, LaneSpec, LaneType, RoadID, StreetNetwork};
@@ -22,6 +24,8 @@ pub struct Sidepath {
     main_road_src_i: IntersectionID,
     main_road_dst_i: IntersectionID,
     main_roads: Vec<RoadID>,
+    connector_src_i: Option<RoadID>,
+    connector_dst_i: Option<RoadID>,
 }
 
 impl Sidepath {
@@ -35,12 +39,17 @@ impl Sidepath {
         for i in sidepath_road.endpoints() {
             let mut connector_candidates = Vec::new();
             for road in streets.roads_per_intersection(i) {
-                if road.untrimmed_length() < SHORT_ROAD_THRESHOLD {
+                if road.id != sidepath_road.id && road.center_line.length() < SHORT_ROAD_THRESHOLD {
                     connector_candidates.push(road.id);
                 }
             }
             if connector_candidates.len() == 1 {
-                main_road_endpoints.push(streets.roads[&connector_candidates[0]].other_side(i));
+                let connector = connector_candidates[0];
+                main_road_endpoints
+                    .push((streets.roads[&connector].other_side(i), Some(connector)));
+            } else if connector_candidates.is_empty() {
+                // Maybe this intersection has been merged already. Use it directly.
+                main_road_endpoints.push((i, None));
             }
         }
 
@@ -50,8 +59,12 @@ impl Sidepath {
 
         // Often the main road parallel to this sidepath segment is just one road, but it might
         // be more.
-        let main_road_src_i = main_road_endpoints[0];
-        let main_road_dst_i = main_road_endpoints[1];
+        let (main_road_src_i, connector_src_i) = main_road_endpoints[0];
+        let (main_road_dst_i, connector_dst_i) = main_road_endpoints[1];
+        // It may be none at all, when the main road intersection gets merged
+        if main_road_src_i == main_road_dst_i {
+            return None;
+        }
 
         // Find all main road segments "parallel to" this sidepath, by pathfinding between the
         // main road intersections. We don't care about the order, but simple_path does. In
@@ -66,6 +79,8 @@ impl Sidepath {
                 main_road_src_i,
                 main_road_dst_i,
                 main_roads: path.into_iter().map(|(r, _)| r).collect(),
+                connector_src_i,
+                connector_dst_i,
             });
         }
 
@@ -79,10 +94,20 @@ impl Sidepath {
         for x in &self.main_roads {
             streets.debug_road(*x, format!("main road along {label}"));
         }
+        if let Some(r) = self.connector_src_i {
+            streets.debug_road(r, format!("src_i connector of {label}"));
+        }
+        if let Some(r) = self.connector_dst_i {
+            streets.debug_road(r, format!("dst_i connector of {label}"));
+        }
     }
 
     pub fn zip(self, streets: &mut StreetNetwork) {
-        assert!(streets.roads.contains_key(&self.sidepath));
+        // The caller may find a bunch of these and zip, which sometimes could delete one of the
+        // located pieces
+        if !streets.roads.contains_key(&self.sidepath) {
+            return;
+        }
 
         // Remove the sidepath, but remember the lanes it contained
         let mut sidepath_lanes = streets.remove_road(self.sidepath).lane_specs_ltr;
@@ -118,6 +143,7 @@ impl Sidepath {
         // - Fixing the direction of the lanes
         // - Appending them on the left or right side (and "inside" the inferred sidewalk on the road)
         // - Inserting the buffer
+        let mut intersections = BTreeSet::new();
         for r in self.main_roads {
             let main_road = &streets.roads[&r];
             // Which side is closer to the sidepath?
@@ -187,11 +213,31 @@ impl Sidepath {
 
             let main_road = streets.roads.get_mut(&r).unwrap();
             splice_in(&mut main_road.lane_specs_ltr, insert_idx, insert_lanes);
+
+            intersections.extend(main_road.endpoints());
+        }
+
+        // Recalculate geometry along all of the main roads we just thickened
+        for i in intersections {
+            streets.update_i(i);
         }
 
         // After this transformation, we should run CollapseDegenerateIntersections to handle the
         // intersection where the side road originally crossed the sidepath, and TrimDeadendCycleways
         // to clean up any small cycle connection roads.
+        //
+        // ALTERNATIVELY, remove the connector segments immediately.
+        if let Some(r) = self.connector_src_i {
+            if streets.roads.contains_key(&r) {
+                // Ignore errors
+                let _ = streets.collapse_short_road(r);
+            }
+        }
+        if let Some(r) = self.connector_dst_i {
+            if streets.roads.contains_key(&r) {
+                let _ = streets.collapse_short_road(r);
+            }
+        }
     }
 }
 
