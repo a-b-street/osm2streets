@@ -1,13 +1,13 @@
 use itertools::Itertools;
 
-use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficInterruption};
 use geo::MapCoordsInPlace;
 use geom::{Distance, Line, Pt2D};
 
 use osm2lanes::{RoadPosition, TrafficClass};
 
-use crate::marking::{LongitudinalLine, RoadMarking, Transverse};
-use crate::paint::PaintArea;
+use crate::render::marking::{LongitudinalLine, RoadMarking, Transverse};
+use crate::render::paint::PaintArea;
+use crate::{BufferType, Direction, LaneType, Placement, StreetNetwork, TrafficInterruption};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Surface {

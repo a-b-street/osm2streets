@@ -1,3 +1,7 @@
+mod marking;
+mod output;
+mod paint;
+
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs::File;
 use std::io::Write;

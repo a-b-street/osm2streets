@@ -1,4 +1,4 @@
-use crate::{marking, marking::RoadMarking};
+use crate::render::{marking, marking::RoadMarking};
 
 // We use geom and stay in map space. Output is done in latlon.
 use geom::{Angle, Distance, Line, PolyLine, Polygon, Pt2D, Ring};

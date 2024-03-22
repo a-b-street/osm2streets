@@ -32,10 +32,7 @@ pub use osm2lanes::{
 mod geometry;
 mod ids;
 mod intersection;
-mod marking;
 mod operations;
-mod output;
-mod paint;
 mod pathfinding;
 mod render;
 mod road;
