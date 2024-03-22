@@ -2302,7 +2302,10 @@
       },
       "properties": {
         "control": "Signalled",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Signalized"
+        },
         "id": 2,
         "intersection_kind": "Intersection",
         "movements": [

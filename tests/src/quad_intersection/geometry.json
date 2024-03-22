@@ -5812,7 +5812,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 48,
         "intersection_kind": "Intersection",
         "movements": [

@@ -98,15 +98,15 @@ pub struct Crossing {
     pub has_island: bool,
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum CrossingKind {
-    /// Controlled by a traffic signal
-    Signalized,
-    /// Often a zebra crossing. The semantics of which road user has priority is region-specific.
-    Marked,
     /// No paint markings, but maybe still a de facto crossing due to a nearby curb cut or an
     /// island on this crossing.
     Unmarked,
+    /// Often a zebra crossing. The semantics of which road user has priority is region-specific.
+    Marked,
+    /// Controlled by a traffic signal
+    Signalized,
 }
 
 /// The path that some group of adjacent lanes of traffic can take through an intersection.
@@ -394,4 +394,14 @@ fn is_between(num: usize, range: &(usize, usize)) -> bool {
     let bot = std::cmp::min(range.0, range.1);
     let top = std::cmp::max(range.0, range.1);
     return bot < num && num < top;
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_crossing_kind_order() {
+        assert!(CrossingKind::Signalized > CrossingKind::Marked);
+    }
 }

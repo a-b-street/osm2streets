@@ -6212,7 +6212,10 @@
       },
       "properties": {
         "control": "Signed",
-        "crossing": null,
+        "crossing": {
+          "has_island": false,
+          "kind": "Unmarked"
+        },
         "id": 71,
         "intersection_kind": "Connection",
         "movements": [

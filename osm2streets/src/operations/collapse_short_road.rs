@@ -2,7 +2,9 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 
-use crate::{IntersectionControl, IntersectionKind, RestrictionType, RoadID, StreetNetwork};
+use crate::{
+    Crossing, IntersectionControl, IntersectionKind, RestrictionType, RoadID, StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Collapses a road, merging the two intersections together. This may also delete other roads
@@ -62,20 +64,23 @@ impl StreetNetwork {
 
         self.remove_road(short_r);
 
-        let destroy_i = self.intersections.remove(&destroy_i).unwrap();
+        let mut destroy_i = self.intersections.remove(&destroy_i).unwrap();
 
-        // If the intersection types differ, upgrade the surviving interesting.
-        if destroy_i.control == IntersectionControl::Signalled {
-            self.intersections.get_mut(&keep_i).unwrap().control = IntersectionControl::Signalled;
-            // TODO Propagate to stop lines
+        {
+            let keep_intersection = self.intersections.get_mut(&keep_i).unwrap();
+
+            // If the intersection types differ, upgrade the surviving interesting.
+            if destroy_i.control == IntersectionControl::Signalled {
+                keep_intersection.control = IntersectionControl::Signalled;
+                // TODO Propagate to stop lines
+            }
+
+            keep_intersection.crossing =
+                merge_crossings(keep_intersection.crossing.take(), destroy_i.crossing.take());
+
+            // Remember the merge
+            keep_intersection.osm_ids.extend(destroy_i.osm_ids);
         }
-
-        // Remember the merge
-        self.intersections
-            .get_mut(&keep_i)
-            .unwrap()
-            .osm_ids
-            .extend(destroy_i.osm_ids);
 
         // Fix the endpoint of all roads connected to destroy_i.
         for r in destroy_i.roads {
@@ -153,5 +158,19 @@ impl StreetNetwork {
         }
 
         Ok(())
+    }
+}
+
+fn merge_crossings(c1: Option<Crossing>, c2: Option<Crossing>) -> Option<Crossing> {
+    match (c1, c2) {
+        (Some(mut c1), Some(c2)) => {
+            c1.has_island = c1.has_island || c2.has_island;
+            if c1.kind != c2.kind {
+                // TODO Log?
+                c1.kind = c1.kind.max(c2.kind);
+            }
+            return Some(c1);
+        }
+        (c1, c2) => c1.or(c2),
     }
 }
