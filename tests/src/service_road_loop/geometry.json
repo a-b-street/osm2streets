@@ -1055,6 +1055,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 0,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1093,6 +1094,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 1,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1131,6 +1133,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 2,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1173,6 +1176,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 3,
         "intersection_kind": "Connection",
         "movements": [
@@ -1220,6 +1224,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 4,
         "intersection_kind": "Connection",
         "movements": [
@@ -1263,6 +1268,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 5,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1301,6 +1307,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 6,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1343,6 +1350,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 7,
         "intersection_kind": "Intersection",
         "movements": [
@@ -1398,6 +1406,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 8,
         "intersection_kind": "Intersection",
         "movements": [
@@ -1443,6 +1452,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 9,
         "intersection_kind": "Connection",
         "movements": [
@@ -1485,6 +1495,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 10,
         "intersection_kind": "Connection",
         "movements": [
@@ -1535,6 +1546,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 11,
         "intersection_kind": "Intersection",
         "movements": [
@@ -1584,6 +1596,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 12,
         "intersection_kind": "Intersection",
         "movements": [
@@ -1633,6 +1646,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 13,
         "intersection_kind": "Intersection",
         "movements": [
@@ -1690,6 +1704,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 14,
         "intersection_kind": "Connection",
         "movements": [
@@ -1740,6 +1755,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 15,
         "intersection_kind": "Fork",
         "movements": [
@@ -1787,6 +1803,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 16,
         "intersection_kind": "Fork",
         "movements": [
@@ -1842,6 +1859,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 17,
         "intersection_kind": "Connection",
         "movements": [
@@ -1884,6 +1902,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 18,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -1922,6 +1941,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 19,
         "intersection_kind": "MapEdge",
         "movements": [],

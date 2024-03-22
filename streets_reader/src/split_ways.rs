@@ -286,12 +286,14 @@ pub fn split_up_roads(
         }
     }
 
-    timer.start_iter(
-        "match signalized crossings",
-        input.signalized_crossings.len(),
-    );
-    for pt in input.signalized_crossings {
+    timer.start_iter("match crossings", input.crossings.len());
+    for (pt, crossing) in input.crossings {
         timer.next();
+
+        if let Some(i) = pt_to_intersection_id.get(&pt) {
+            streets.intersections.get_mut(&i).unwrap().crossing = Some(crossing);
+        }
+
         if let Some(road) = pt_to_road.get(&pt).and_then(|r| streets.roads.get_mut(r)) {
             if let Some((dist, _)) = road.reference_line.dist_along_of_point(pt.to_pt2d()) {
                 // We don't know the direction. Arbitrarily snap to the start or end if it's within

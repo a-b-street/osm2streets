@@ -78,6 +78,7 @@ impl StreetNetwork {
             );
             f.set_property("intersection_kind", format!("{:?}", intersection.kind));
             f.set_property("control", format!("{:?}", intersection.control));
+            f.set_property("crossing", serde_json::to_value(&intersection.crossing)?);
             f.set_property(
                 "movements",
                 Value::Array(

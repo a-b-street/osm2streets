@@ -15,7 +15,8 @@ pub use self::geometry::{intersection_polygon, InputRoad};
 pub(crate) use self::ids::RoadWithEndpoints;
 pub use self::ids::{CommonEndpoint, IntersectionID, LaneID, RoadID};
 pub use self::intersection::{
-    Intersection, IntersectionControl, IntersectionKind, Movement, TrafficConflict,
+    Crossing, CrossingKind, Intersection, IntersectionControl, IntersectionKind, Movement,
+    TrafficConflict,
 };
 pub use self::operations::zip_sidepath::Sidepath;
 pub use self::render::Filter;

@@ -20,6 +20,14 @@
 <p><u>Kind</u>: {props.intersection_kind}</p>
 <p><u>Control</u>: {props.control}</p>
 <p><u>Movements</u>: {props.movements}</p>
+{#if props.crossing}
+  {@const crossing = JSON.parse(props.crossing)}
+  <p>
+    <u>Crossing</u>: {crossing.kind}
+    {#if crossing.has_island}
+      (with an island){/if}
+  </p>
+{/if}
 
 <p>
   <u>OSM nodes</u>:

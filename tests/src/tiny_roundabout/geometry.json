@@ -303,6 +303,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 0,
         "intersection_kind": "Fork",
         "movements": [
@@ -355,6 +356,7 @@
       },
       "properties": {
         "control": "Signed",
+        "crossing": null,
         "id": 1,
         "intersection_kind": "Fork",
         "movements": [
@@ -399,6 +401,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 2,
         "intersection_kind": "MapEdge",
         "movements": [],
@@ -437,6 +440,7 @@
       },
       "properties": {
         "control": "Uncontrolled",
+        "crossing": null,
         "id": 3,
         "intersection_kind": "MapEdge",
         "movements": [],
