@@ -111,13 +111,6 @@ impl JsStreetNetwork {
             .unwrap()
     }
 
-    #[wasm_bindgen(js_name = toGraphviz)]
-    pub fn to_graphviz(&self) -> String {
-        // TODO Should we make the caller do the clone? Is that weird from JS?
-        let road_network: experimental::RoadNetwork = self.inner.clone().into();
-        road_network.to_dot()
-    }
-
     #[wasm_bindgen(js_name = getDebugSteps)]
     pub fn get_debug_steps(&self) -> Vec<JsValue> {
         self.inner

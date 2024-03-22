@@ -8,7 +8,6 @@ mod tests {
     use env_logger::{Builder, Env};
     use geom::LonLat;
 
-    use experimental::RoadNetwork;
     use osm2streets::{Filter, MapConfig, Transformation};
 
     static SETUP_LOGGER: Once = Once::new();
@@ -25,8 +24,6 @@ mod tests {
         // Read the output file before modifying it. If it doesn't exist, then we're creating a new
         // test case.
         let prior_json = std::fs::read_to_string(format!("{path}/geometry.json"))
-            .unwrap_or_else(|_| String::new());
-        let prior_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))
             .unwrap_or_else(|_| String::new());
 
         let clip_pts = if Path::new(format!("{path}/boundary.json").as_str()).exists() {
@@ -61,16 +58,6 @@ mod tests {
             format!("{path}/geometry.json"),
             street_network.to_geojson(&Filter::All)?,
         )?;
-        let road_network: RoadNetwork = street_network.into();
-
-        std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
-
-        let current_dot = std::fs::read_to_string(format!("{path}/road_network.dot"))?;
-        if prior_dot != current_dot {
-            std::fs::write(format!("{path}/road_network.orig.dot"), prior_dot)?;
-            bail!("./{}/road_network.dot is different! If it is OK, commit it. \
-            ./{0}/road_network.orig.dot is previous result. Compare it on https://doctorbud.com/graphviz-viewer/", path);
-        }
 
         let current_json = std::fs::read_to_string(format!("{path}/geometry.json"))?;
         if prior_json != current_json {

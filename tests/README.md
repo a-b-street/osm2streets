@@ -9,7 +9,6 @@ This is a collection of test cases for osm2streets. Each test case has a directo
 - `input.osm`, from the export tab of <https://www.openstreetmap.org> or saved from JOSM
 - `test.json`, defining the `driving_side` and describing the situation
 - `geometry.json` [e.g.](https://github.com/a-b-street/osm2streets/blob/main/tests/src/seattle_triangle/geometry.json), a GeoJSON of the `StreetNetwork` road and intersection polygons
-- `road_network.dot` [e.g.](https://doctorbud.com/graphviz-viewer/?url=https:%2F%2Fraw.githubusercontent.com%2Fa-b-street%2Fosm2streets%2Fmain%2Ftests%2Fsrc%2Fseattle_triangle%2Froad_network.dot), a Graphviz of the `RoadNetwork` intersections and roadways connections
 
 The outputs here are *current implementations*, not *gold standards* (though we could add
 some of them). Use them to observe your changes as you work. (more coming soon...)

@@ -8,8 +8,7 @@ abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
 env_logger = "0.10.1"
 geom = { workspace = true }
-streets_reader = { path = "../streets_reader" }
+osm2streets = { path = "../osm2streets" }
 serde = { workspace = true }
 serde_json = { workspace = true }
-osm2streets = { path = "../osm2streets" }
-experimental = { path = "../experimental" }
+streets_reader = { path = "../streets_reader" }
