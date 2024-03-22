@@ -10,8 +10,9 @@
     "build": "npm run wasm-release && vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "fmt": "npx prettier --write *.js *.ts *.json *.html src/**",
-    "list-tests": "./public/list_tests.sh"
+    "fmt": "npx prettier --write *.js *.ts *.json *.html src/** scripts/**",
+    "list-tests": "./public/list_tests.sh",
+    "update-osm-data": "node scripts/update_osm_data.js"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
