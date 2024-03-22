@@ -9,7 +9,7 @@ mod tests {
     use geom::LonLat;
 
     use experimental::RoadNetwork;
-    use osm2streets::{MapConfig, Transformation};
+    use osm2streets::{Filter, MapConfig, Transformation};
 
     static SETUP_LOGGER: Once = Once::new();
 
@@ -57,7 +57,10 @@ mod tests {
             Transformation::standard_for_clipped_areas(),
             &mut timer,
         );
-        street_network.save_to_geojson(format!("{path}/geometry.json"))?;
+        std::fs::write(
+            format!("{path}/geometry.json"),
+            street_network.to_geojson(&Filter::All)?,
+        )?;
         let road_network: RoadNetwork = street_network.into();
 
         std::fs::write(format!("{path}/road_network.dot"), road_network.to_dot())?;
