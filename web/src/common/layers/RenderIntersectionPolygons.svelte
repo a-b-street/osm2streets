@@ -26,12 +26,13 @@
         debug: caseHelper(
           "intersection_kind",
           {
-            Connection: "#666",
-            Intersection: "#966",
-            Terminus: "#999",
             MapEdge: "#696",
+            Terminus: "#999",
+            Connection: "#666",
+            Fork: "#669",
+            Intersection: "#966",
           },
-          "#666",
+          "red",
         ),
         realistic: "black",
       }[$theme],
