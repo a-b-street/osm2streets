@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<osm version="0.6" generator="Overpass API 0.7.61.5 4133829e">
+<osm version="0.6" generator="Overpass API 0.7.62 7c32a7d5">
 <note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
-<meta osm_base="2024-03-13T12:13:00Z"/>
+<meta osm_base="2024-03-22T14:10:45Z"/>
 
   <node id="53070507" lat="47.6171603" lon="-122.3370450" version="9" timestamp="2022-03-11T07:58:50Z" changeset="118351890" uid="11390451" user="markkerrigan">
     <tag k="direction" v="both"/>
@@ -159,25 +159,6 @@
   <node id="1735751051" lat="47.6184182" lon="-122.3385743" version="2" timestamp="2015-09-18T20:50:04Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
   <node id="1735751064" lat="47.6252942" lon="-122.3385329" version="2" timestamp="2015-09-18T20:50:04Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
   <node id="1735751065" lat="47.6254917" lon="-122.3385611" version="2" timestamp="2015-09-18T20:50:04Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
-  <node id="1769031327" lat="47.6159976" lon="-122.3380968" version="3" timestamp="2024-02-25T01:10:20Z" changeset="147874843" uid="3594360" user="kosmer">
-    <tag k="amenity" v="bicycle_parking"/>
-    <tag k="attribution" v="City of Seattle, Department of Transportation, Traffic Management, Bicycle Program"/>
-    <tag k="bicycle_parking" v="stands"/>
-    <tag k="capacity" v="2"/>
-    <tag k="covered" v="no"/>
-    <tag k="fee" v="no"/>
-    <tag k="mapillary" v="751574992206907"/>
-    <tag k="note" v="WESTLAKE AVE 0202 BLOCK W SIDE ( 174) 70 FT S/O 8TH AVE"/>
-    <tag k="operator" v="SDOT"/>
-    <tag k="sdot:bike_rack:condition" v="good"/>
-    <tag k="sdot:bike_rack:facility" v="SGL"/>
-    <tag k="sdot:bike_rack:id" v="BKR-1882"/>
-    <tag k="sdot:bike_rack:type" v="BKR"/>
-    <tag k="source" v="SDOT Bike Rack Import 2012"/>
-    <tag k="source:license" v="Public Domain"/>
-    <tag k="source:url" v="http://www.seattle.gov/transportation/bikeprogram.htm"/>
-    <tag k="survey:date" v="2020-01-26"/>
-  </node>
   <node id="1769031366" lat="47.6167458" lon="-122.3374182" version="2" timestamp="2022-06-03T01:05:39Z" changeset="121872248" uid="16182900" user="mitchp27">
     <tag k="amenity" v="bicycle_parking"/>
     <tag k="attribution" v="City of Seattle, Department of Transportation, Traffic Management, Bicycle Program"/>
@@ -272,13 +253,6 @@
   <node id="2327732469" lat="47.6165073" lon="-122.3368816" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
   <node id="2327732473" lat="47.6165279" lon="-122.3363157" version="1" timestamp="2013-05-31T23:49:30Z" changeset="16372353" uid="1382179" user="SeattleImport"/>
   <node id="2327732475" lat="47.6165489" lon="-122.3363516" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="2327732478" lat="47.6165970" lon="-122.3362902" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="2327732492" lat="47.6167818" lon="-122.3373552" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="2327732501" lat="47.6170029" lon="-122.3369904" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="2327732502" lat="47.6170020" lon="-122.3370740" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="2327732503" lat="47.6170149" lon="-122.3370231" version="2" timestamp="2017-04-14T19:33:51Z" changeset="47793417" uid="2601744" user="sctrojan79">
-    <tag k="entrance" v="yes"/>
-  </node>
   <node id="2511955242" lat="47.6258607" lon="-122.3369070" version="2" timestamp="2017-01-21T20:15:47Z" changeset="45357769" uid="2601744" user="sctrojan79"/>
   <node id="2511955244" lat="47.6257024" lon="-122.3371046" version="2" timestamp="2017-01-21T20:15:47Z" changeset="45357769" uid="2601744" user="sctrojan79"/>
   <node id="2511955245" lat="47.6254922" lon="-122.3371189" version="1" timestamp="2013-10-28T19:52:03Z" changeset="18590788" uid="567792" user="Natfoot"/>
@@ -404,7 +378,7 @@
   <node id="3749739264" lat="47.6254428" lon="-122.3385483" version="1" timestamp="2015-09-18T20:49:42Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
   <node id="3749739268" lat="47.6258019" lon="-122.3385797" version="1" timestamp="2015-09-18T20:49:42Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
   <node id="3749739269" lat="47.6258614" lon="-122.3385129" version="1" timestamp="2015-09-18T20:49:42Z" changeset="34111353" uid="2601744" user="sctrojan79"/>
-  <node id="3749739274" lat="47.6258819" lon="-122.3345850" version="2" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="Fogey7">
+  <node id="3749739274" lat="47.6258819" lon="-122.3345850" version="2" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="fogey">
     <tag k="railway" v="signal"/>
     <tag k="railway:signal:direction" v="forward"/>
     <tag k="railway:signal:main:form" v="light"/>
@@ -461,9 +435,6 @@
   <node id="4622484581" lat="47.6257960" lon="-122.3370312" version="1" timestamp="2017-01-21T20:15:46Z" changeset="45357769" uid="2601744" user="sctrojan79"/>
   <node id="4622484582" lat="47.6258737" lon="-122.3368580" version="1" timestamp="2017-01-21T20:15:46Z" changeset="45357769" uid="2601744" user="sctrojan79"/>
   <node id="4622484583" lat="47.6258432" lon="-122.3369529" version="1" timestamp="2017-01-21T20:15:46Z" changeset="45357769" uid="2601744" user="sctrojan79"/>
-  <node id="4793968345" lat="47.6170108" lon="-122.3370052" version="1" timestamp="2017-04-14T19:33:47Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="4793968346" lat="47.6170148" lon="-122.3370419" version="1" timestamp="2017-04-14T19:33:47Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
-  <node id="4793968347" lat="47.6170103" lon="-122.3370596" version="1" timestamp="2017-04-14T19:33:47Z" changeset="47793417" uid="2601744" user="sctrojan79"/>
   <node id="4821253561" lat="47.6164131" lon="-122.3374983" version="2" timestamp="2017-04-30T20:17:05Z" changeset="48291777" uid="2601744" user="sctrojan79"/>
   <node id="4821253562" lat="47.6163120" lon="-122.3373782" version="1" timestamp="2017-04-27T20:01:16Z" changeset="48207453" uid="2601744" user="sctrojan79"/>
   <node id="4821253563" lat="47.6163418" lon="-122.3373128" version="1" timestamp="2017-04-27T20:01:16Z" changeset="48207453" uid="2601744" user="sctrojan79"/>
@@ -694,10 +665,6 @@
   <node id="6577539909" lat="47.6170116" lon="-122.3417256" version="3" timestamp="2021-04-15T13:16:01Z" changeset="102997771" uid="10822678" user="mxooc"/>
   <node id="6577539910" lat="47.6162354" lon="-122.3403929" version="2" timestamp="2021-04-15T13:16:01Z" changeset="102997771" uid="10822678" user="mxooc"/>
   <node id="6577539911" lat="47.6159539" lon="-122.3407629" version="2" timestamp="2021-04-15T13:16:01Z" changeset="102997771" uid="10822678" user="mxooc"/>
-  <node id="6582458889" lat="47.6167800" lon="-122.3388388" version="2" timestamp="2021-10-17T08:00:58Z" changeset="112600553" uid="11362869" user="Frame&amp;Focus">
-    <tag k="amenity" v="bench"/>
-    <tag k="backrest" v="yes"/>
-  </node>
   <node id="6582458890" lat="47.6164802" lon="-122.3383870" version="5" timestamp="2022-07-13T18:27:10Z" changeset="123576510" uid="692614" user="seattlefyi">
     <tag k="addr:city" v="Seattle"/>
     <tag k="addr:housenumber" v="2105"/>
@@ -769,13 +736,13 @@
   </node>
   <node id="7083431696" lat="47.6167928" lon="-122.3379910" version="2" timestamp="2023-02-27T06:49:16Z" changeset="133073000" uid="10350264" user="0wu"/>
   <node id="7083431697" lat="47.6165683" lon="-122.3382870" version="2" timestamp="2023-02-27T06:49:16Z" changeset="133073000" uid="10350264" user="0wu"/>
-  <node id="8323188563" lat="47.6261644" lon="-122.3341920" version="1" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="Fogey7">
+  <node id="8323188563" lat="47.6261644" lon="-122.3341920" version="1" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="fogey">
     <tag k="railway" v="signal"/>
     <tag k="railway:signal:direction" v="forward"/>
     <tag k="railway:signal:main:form" v="light"/>
     <tag k="railway:signal:position" v="overhead"/>
   </node>
-  <node id="8323188564" lat="47.6221583" lon="-122.3372058" version="1" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="Fogey7">
+  <node id="8323188564" lat="47.6221583" lon="-122.3372058" version="1" timestamp="2021-01-15T04:50:02Z" changeset="97528308" uid="11127047" user="fogey">
     <tag k="railway" v="signal"/>
     <tag k="railway:signal:direction" v="both"/>
     <tag k="railway:signal:main:form" v="light"/>
@@ -813,14 +780,6 @@
     <tag k="man_made" v="surveillance"/>
     <tag k="surveillance:type" v="camera"/>
   </node>
-  <node id="8720223630" lat="47.6166470" lon="-122.3372217" version="1" timestamp="2021-05-11T02:06:54Z" changeset="104479369" uid="2814663" user="Ballard OpenStreetMap">
-    <tag k="man_made" v="surveillance"/>
-    <tag k="surveillance:type" v="camera"/>
-  </node>
-  <node id="8720223631" lat="47.6166390" lon="-122.3372046" version="1" timestamp="2021-05-11T02:06:54Z" changeset="104479369" uid="2814663" user="Ballard OpenStreetMap">
-    <tag k="man_made" v="surveillance"/>
-    <tag k="surveillance:type" v="camera"/>
-  </node>
   <node id="8780140700" lat="47.6168259" lon="-122.3384215" version="2" timestamp="2022-04-26T04:08:58Z" changeset="120191126" uid="11935733" user="iamnotatgregs"/>
   <node id="8780140705" lat="47.6167151" lon="-122.3380346" version="2" timestamp="2023-02-27T06:49:16Z" changeset="133073000" uid="10350264" user="0wu"/>
   <node id="8780140706" lat="47.6166431" lon="-122.3380214" version="1" timestamp="2021-05-30T03:54:57Z" changeset="105553718" uid="10721783" user="ThisIsTheWay"/>
@@ -855,7 +814,6 @@
   <node id="10059852685" lat="47.6167800" lon="-122.3387276" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
   <node id="10059852686" lat="47.6167723" lon="-122.3388420" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
   <node id="10059852687" lat="47.6167602" lon="-122.3388402" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
-  <node id="10059852688" lat="47.6167559" lon="-122.3389051" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
   <node id="10059852692" lat="47.6161996" lon="-122.3390114" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
   <node id="10059852693" lat="47.6162354" lon="-122.3390230" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
   <node id="10059852694" lat="47.6166562" lon="-122.3390239" version="1" timestamp="2022-09-28T23:30:25Z" changeset="126758406" uid="9465017" user="tguen"/>
@@ -1776,26 +1734,6 @@
     <tag k="source" v="data.seattle.gov;https://blue.kingcounty.com/Assessor/eRealProperty/Dashboard.aspx?ParcelNbr=0660000500"/>
     <tag k="start_date" v="1920"/>
   </way>
-  <way id="223928504" version="5" timestamp="2022-12-20T10:34:41Z" changeset="130284132" uid="2814663" user="Ballard OpenStreetMap">
-    <nd ref="2327732501"/>
-    <nd ref="2327732478"/>
-    <nd ref="2327732475"/>
-    <nd ref="2327732457"/>
-    <nd ref="2327732465"/>
-    <nd ref="2327732469"/>
-    <nd ref="2327732492"/>
-    <nd ref="2327732502"/>
-    <nd ref="4793968347"/>
-    <nd ref="4793968346"/>
-    <nd ref="2327732503"/>
-    <nd ref="4793968345"/>
-    <nd ref="2327732501"/>
-    <tag k="amenity" v="parking"/>
-    <tag k="building" v="yes"/>
-    <tag k="parking" v="multi-storey"/>
-    <tag k="source" v="https://web6.seattle.gov/DPD/HistoricalSite/QueryResult.aspx?ID=-546988452"/>
-    <tag k="start_date" v="1948"/>
-  </way>
   <way id="338886326" version="6" timestamp="2019-09-08T09:23:18Z" changeset="74222109" uid="2814663" user="Ballard OpenStreetMap">
     <nd ref="3460390028"/>
     <nd ref="5418962767"/>
@@ -2688,13 +2626,6 @@
     <tag k="highway" v="footway"/>
     <tag k="surface" v="concrete"/>
   </way>
-  <way id="1098693001" version="2" timestamp="2023-02-27T06:49:16Z" changeset="133073000" uid="10350264" user="0wu">
-    <nd ref="10059852688"/>
-    <nd ref="10059852687"/>
-    <tag k="highway" v="steps"/>
-    <tag k="incline" v="down"/>
-    <tag k="surface" v="concrete"/>
-  </way>
   <way id="1149577136" version="2" timestamp="2023-02-27T06:49:16Z" changeset="133073000" uid="10350264" user="0wu">
     <nd ref="6854636535"/>
     <nd ref="10696393833"/>
@@ -3300,7 +3231,7 @@
     <tag k="restriction" v="no_left_turn"/>
     <tag k="type" v="restriction"/>
   </relation>
-  <relation id="9338681" version="33" timestamp="2023-12-04T01:30:06Z" changeset="144737204" uid="384146" user="wislander">
+  <relation id="9338681" version="34" timestamp="2024-03-18T22:13:46Z" changeset="148836674" uid="10353387" user="VigilantPenguin">
     <member type="node" ref="4018777632" role="platform"/>
     <member type="node" ref="4018777631" role="stop"/>
     <member type="way" ref="371513450" role="platform"/>
@@ -3413,6 +3344,7 @@
     <member type="way" ref="686214472" role=""/>
     <member type="way" ref="462696719" role=""/>
     <member type="way" ref="22760467" role=""/>
+    <member type="way" ref="1263921069" role=""/>
     <member type="way" ref="398982863" role=""/>
     <member type="way" ref="400679671" role=""/>
     <member type="way" ref="428230572" role=""/>

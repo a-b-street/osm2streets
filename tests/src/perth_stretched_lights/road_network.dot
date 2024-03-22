@@ -10,7 +10,7 @@ digraph {
     8 [ label = "MapEdge" ]
     9 [ label = "MapEdge" ]
     10 [ label = "MapEdge" ]
-    11 [ label = "MapEdge" ]
+    11 [ label = "Slice" ]
     12 [ label = "MapEdge" ]
     13 [ label = "MapEdge" ]
     14 [ label = "MapEdge" ]
@@ -30,6 +30,7 @@ digraph {
     28 [ label = "Slice" ]
     29 [ label = "Slice" ]
     30 [ label = "Slice" ]
+    31 [ label = "MapEdge" ]
     0 -> 1 [ label = "1 lanes" ]
     1 -> 0 [ label = "1 lanes" ]
     2 -> 17 [ label = "2 lanes" ]
@@ -78,4 +79,5 @@ digraph {
     26 -> 27 [ label = "1 lanes" ]
     28 -> 29 [ label = "1 lanes" ]
     29 -> 30 [ label = "1 lanes" ]
+    31 -> 11 [ label = "1 lanes" ]
 }

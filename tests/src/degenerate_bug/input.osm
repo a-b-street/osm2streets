@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<osm version="0.6" generator="Overpass API 0.7.59 e21c39fe">
+<osm version="0.6" generator="Overpass API 0.7.62 7c32a7d5">
 <note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
-<meta osm_base="2023-02-17T15:41:25Z"/>
+<meta osm_base="2024-03-22T14:09:45Z"/>
 
   <node id="113712245" lat="51.4749125" lon="-2.5312550" version="8" timestamp="2016-01-24T19:51:26Z" changeset="36783189" uid="3937" user="southglos"/>
   <node id="151187236" lat="51.4713913" lon="-2.5411301" version="14" timestamp="2009-03-15T18:04:15Z" changeset="814398" uid="11463" user="plikma"/>
@@ -268,6 +268,7 @@
   <node id="1857097160" lat="51.4713856" lon="-2.5442154" version="3" timestamp="2015-10-29T19:56:06Z" changeset="34957926" uid="2565445" user="DanGregory"/>
   <node id="1857097161" lat="51.4731876" lon="-2.5419308" version="2" timestamp="2019-02-19T14:07:46Z" changeset="67354362" uid="7694591" user="cryptickryptos"/>
   <node id="2082579382" lat="51.4718977" lon="-2.5324572" version="1" timestamp="2012-12-25T19:56:26Z" changeset="14403933" uid="115894" user="DaveF"/>
+  <node id="2082579387" lat="51.4718161" lon="-2.5325139" version="2" timestamp="2023-09-24T00:07:46Z" changeset="141664311" uid="7694591" user="cryptickryptos"/>
   <node id="2082579396" lat="51.4772373" lon="-2.5330380" version="2" timestamp="2022-10-24T19:08:43Z" changeset="128011137" uid="13402786" user="foxysrider">
     <tag k="barrier" v="bollard"/>
   </node>
@@ -614,7 +615,7 @@
   <node id="8479217958" lat="51.4764638" lon="-2.5348671" version="1" timestamp="2021-03-02T13:58:22Z" changeset="100285204" uid="55365" user="GrooveBox"/>
   <node id="8479217959" lat="51.4765231" lon="-2.5346784" version="1" timestamp="2021-03-02T13:58:22Z" changeset="100285204" uid="55365" user="GrooveBox"/>
   <node id="8479217960" lat="51.4766049" lon="-2.5347446" version="1" timestamp="2021-03-02T13:58:22Z" changeset="100285204" uid="55365" user="GrooveBox"/>
-  <node id="8479217961" lat="51.4765248" lon="-2.5347746" version="2" timestamp="2022-02-18T13:12:38Z" changeset="117564708" uid="83127" user="sec147">
+  <node id="8479217961" lat="51.4765248" lon="-2.5347746" version="4" timestamp="2023-10-20T01:31:13Z" changeset="142844374" uid="9451067" user="b-jazz-bot">
     <tag k="addr:city" v="Bristol"/>
     <tag k="addr:housenumber" v="1A"/>
     <tag k="addr:postcode" v="BS16 3JE"/>
@@ -622,9 +623,9 @@
     <tag k="craft" v="upholsterer"/>
     <tag k="email" v="enquiries@olympia-upholstery.co.uk"/>
     <tag k="name" v="Olympia Upholstery Service"/>
-    <tag k="opening_hours" v="Mo-Th 09:00-17:00 Fr 09:00-16:00 Sa 09:00-13:00"/>
+    <tag k="opening_hours" v="Mo-Th 09:00-17:00; Fr 09:00-16:00; Sa 09:00-13:00"/>
     <tag k="phone" v="+44 117 965 5968"/>
-    <tag k="website" v="http://olympia-upholstery.co.uk/"/>
+    <tag k="website" v="https://olympia-upholstery.co.uk/"/>
   </node>
   <node id="8479217962" lat="51.4765886" lon="-2.5347314" version="1" timestamp="2021-03-02T13:58:22Z" changeset="100285204" uid="55365" user="GrooveBox"/>
   <node id="8479217963" lat="51.4766101" lon="-2.5346643" version="1" timestamp="2021-03-02T13:58:22Z" changeset="100285204" uid="55365" user="GrooveBox"/>
@@ -685,6 +686,7 @@
   <node id="10126749538" lat="51.4772492" lon="-2.5330429" version="1" timestamp="2022-10-24T19:08:43Z" changeset="128011137" uid="13402786" user="foxysrider"/>
   <node id="10126749539" lat="51.4772586" lon="-2.5330113" version="1" timestamp="2022-10-24T19:08:43Z" changeset="128011137" uid="13402786" user="foxysrider"/>
   <node id="10126749540" lat="51.4773431" lon="-2.5329238" version="1" timestamp="2022-10-24T19:08:43Z" changeset="128011137" uid="13402786" user="foxysrider"/>
+  <node id="11415108221" lat="51.4730197" lon="-2.5267088" version="1" timestamp="2023-12-13T15:55:23Z" changeset="145080534" uid="631239" user="Joseph2541"/>
   <way id="23136958" version="14" timestamp="2021-07-10T15:35:18Z" changeset="107752766" uid="13402786" user="foxysrider">
     <nd ref="151256782"/>
     <nd ref="244151227"/>
@@ -806,7 +808,7 @@
     <tag k="landuse" v="industrial"/>
     <tag k="name" v="Balaclava Industrial Estate"/>
   </way>
-  <way id="305522818" version="28" timestamp="2022-06-29T19:26:47Z" changeset="123016609" uid="13402786" user="foxysrider">
+  <way id="305522818" version="30" timestamp="2023-12-13T15:55:23Z" changeset="145080534" uid="631239" user="Joseph2541">
     <nd ref="1319218293"/>
     <nd ref="1319218240"/>
     <nd ref="244149070"/>
@@ -820,6 +822,7 @@
     <nd ref="151187246"/>
     <nd ref="1319218260"/>
     <nd ref="2082579382"/>
+    <nd ref="2082579387"/>
     <nd ref="244149365"/>
     <nd ref="1319218371"/>
     <nd ref="1319218231"/>
@@ -913,6 +916,7 @@
     <nd ref="1319218354"/>
     <nd ref="1319218180"/>
     <nd ref="1319218254"/>
+    <nd ref="11415108221"/>
     <nd ref="6554799046"/>
     <nd ref="7463497737"/>
     <nd ref="1319218382"/>
@@ -1881,7 +1885,7 @@
     <tag k="addr:street" v="Halstock Avenue"/>
     <tag k="building" v="house"/>
   </way>
-  <relation id="1277566" version="712" timestamp="2022-12-17T12:38:41Z" changeset="130184632" uid="17820724" user="MRT12">
+  <relation id="1277566" version="727" timestamp="2023-12-22T00:47:30Z" changeset="145389489" uid="5008136" user="JayTurnr">
     <member type="way" ref="427876478" role="outer"/>
     <member type="way" ref="86285945" role="outer"/>
     <member type="way" ref="292958618" role="outer"/>
@@ -1952,7 +1956,6 @@
     <member type="way" ref="128617883" role="outer"/>
     <member type="way" ref="87244690" role="inner"/>
     <member type="way" ref="87244691" role="inner"/>
-    <member type="way" ref="87245395" role="inner"/>
     <member type="way" ref="87245324" role="inner"/>
     <member type="way" ref="87245336" role="inner"/>
     <member type="way" ref="87245347" role="inner"/>
@@ -1997,7 +2000,6 @@
     <member type="way" ref="87529000" role="inner"/>
     <member type="way" ref="87528995" role="inner"/>
     <member type="way" ref="87528997" role="inner"/>
-    <member type="way" ref="87529002" role="inner"/>
     <member type="way" ref="87529001" role="inner"/>
     <member type="way" ref="87565940" role="inner"/>
     <member type="way" ref="87565936" role="inner"/>
@@ -2005,7 +2007,6 @@
     <member type="way" ref="87565941" role="inner"/>
     <member type="way" ref="87568713" role="inner"/>
     <member type="way" ref="87568711" role="inner"/>
-    <member type="way" ref="87571065" role="inner"/>
     <member type="way" ref="463238230" role="outer"/>
     <member type="way" ref="294776617" role="outer"/>
     <member type="way" ref="87807364" role="outer"/>
@@ -2022,7 +2023,6 @@
     <member type="way" ref="91766516" role="inner"/>
     <member type="way" ref="91813584" role="inner"/>
     <member type="way" ref="91813586" role="outer"/>
-    <member type="way" ref="91819047" role="inner"/>
     <member type="way" ref="91988343" role="outer"/>
     <member type="way" ref="91979634" role="inner"/>
     <member type="way" ref="284675048" role="outer"/>
@@ -2061,7 +2061,6 @@
     <member type="way" ref="94475938" role="inner"/>
     <member type="way" ref="94475940" role="inner"/>
     <member type="way" ref="95341784" role="inner"/>
-    <member type="way" ref="95344102" role="inner"/>
     <member type="way" ref="95344103" role="inner"/>
     <member type="way" ref="95386205" role="outer"/>
     <member type="way" ref="95386784" role="inner"/>
@@ -2107,9 +2106,7 @@
     <member type="way" ref="224099369" role="inner"/>
     <member type="way" ref="224099371" role="inner"/>
     <member type="way" ref="224099368" role="inner"/>
-    <member type="way" ref="235293433" role="outer"/>
-    <member type="way" ref="235293434" role="inner"/>
-    <member type="way" ref="235293432" role="inner"/>
+    <member type="way" ref="1177363312" role="outer"/>
     <member type="way" ref="235293796" role="inner"/>
     <member type="way" ref="252349843" role="inner"/>
     <member type="way" ref="265433182" role="inner"/>
@@ -2137,7 +2134,6 @@
     <member type="way" ref="303473812" role="inner"/>
     <member type="way" ref="303475896" role="inner"/>
     <member type="way" ref="303492039" role="inner"/>
-    <member type="way" ref="303492040" role="inner"/>
     <member type="way" ref="303492041" role="inner"/>
     <member type="way" ref="303591640" role="inner"/>
     <member type="way" ref="218050762" role="outer"/>
@@ -2146,7 +2142,6 @@
     <member type="way" ref="305522818" role="outer"/>
     <member type="way" ref="305522815" role="inner"/>
     <member type="way" ref="306828480" role="inner"/>
-    <member type="way" ref="308393098" role="inner"/>
     <member type="way" ref="308395292" role="inner"/>
     <member type="way" ref="308396759" role="inner"/>
     <member type="way" ref="319848421" role="inner"/>
@@ -2234,7 +2229,6 @@
     <member type="way" ref="424496530" role="inner"/>
     <member type="way" ref="427876479" role="inner"/>
     <member type="way" ref="436083325" role="inner"/>
-    <member type="way" ref="436083322" role="inner"/>
     <member type="way" ref="436087920" role="inner"/>
     <member type="way" ref="436088720" role="inner"/>
     <member type="way" ref="436088718" role="inner"/>
@@ -2271,7 +2265,6 @@
     <member type="way" ref="474384935" role="inner"/>
     <member type="way" ref="474053801" role="inner"/>
     <member type="way" ref="474400192" role="inner"/>
-    <member type="way" ref="474400194" role="inner"/>
     <member type="way" ref="474400193" role="inner"/>
     <member type="way" ref="474400432" role="inner"/>
     <member type="way" ref="475442050" role="inner"/>
@@ -2325,17 +2318,10 @@
     <member type="way" ref="629898627" role="inner"/>
     <member type="way" ref="476872164" role="inner"/>
     <member type="way" ref="637568502" role="inner"/>
-    <member type="way" ref="637568504" role="inner"/>
     <member type="way" ref="637575282" role="inner"/>
     <member type="way" ref="637580134" role="inner"/>
     <member type="way" ref="637585153" role="inner"/>
-    <member type="way" ref="637577972" role="inner"/>
     <member type="way" ref="649290784" role="outer"/>
-    <member type="way" ref="224242637" role="outer"/>
-    <member type="way" ref="224242635" role="outer"/>
-    <member type="way" ref="224242638" role="outer"/>
-    <member type="way" ref="224242020" role="outer"/>
-    <member type="way" ref="224242019" role="outer"/>
     <member type="way" ref="83113526" role="outer"/>
     <member type="way" ref="528870764" role="inner"/>
     <member type="way" ref="666637880" role="inner"/>
@@ -2353,11 +2339,7 @@
     <member type="way" ref="734871908" role="inner"/>
     <member type="way" ref="402271479" role="outer"/>
     <member type="way" ref="734889070" role="inner"/>
-    <member type="way" ref="734895145" role="inner"/>
     <member type="way" ref="734898216" role="inner"/>
-    <member type="way" ref="574740328" role="outer"/>
-    <member type="way" ref="723713661" role="inner"/>
-    <member type="way" ref="798810669" role="inner"/>
     <member type="way" ref="798867751" role="inner"/>
     <member type="way" ref="86641097" role="inner"/>
     <member type="way" ref="813983696" role="inner"/>
@@ -2366,6 +2348,8 @@
     <member type="way" ref="888720610" role="inner"/>
     <member type="way" ref="888722541" role="inner"/>
     <member type="way" ref="498680998" role="outer"/>
+    <member type="way" ref="1178126939" role="outer"/>
+    <member type="way" ref="1188342481" role="inner"/>
     <tag k="landuse" v="residential"/>
     <tag k="note" v="Bristol Residential"/>
     <tag k="type" v="multipolygon"/>
