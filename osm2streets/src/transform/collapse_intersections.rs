@@ -9,19 +9,26 @@ use crate::{IntersectionID, IntersectionKind, Placement, Road, StreetNetwork};
 /// Collapse degenerate intersections:
 /// - between two cycleways
 /// - when the lane specs, name, and layer match
+/// - when there's no crossing
 pub fn collapse(streets: &mut StreetNetwork) {
     let mut merge: Vec<IntersectionID> = Vec::new();
-    for id in streets.intersections.keys() {
-        let roads = streets.roads_per_intersection(*id);
+    for intersection in streets.intersections.values() {
+        if intersection.crossing.is_some() {
+            continue;
+        }
+        let roads = streets.roads_per_intersection(intersection.id);
         if roads.len() != 2 {
             continue;
         }
         match should_collapse(roads[0], roads[1]) {
             Ok(()) => {
-                merge.push(*id);
+                merge.push(intersection.id);
             }
             Err(err) => {
-                warn!("Not collapsing degenerate intersection {}: {}", id, err);
+                warn!(
+                    "Not collapsing degenerate intersection {}: {}",
+                    intersection.id, err
+                );
             }
         }
     }
