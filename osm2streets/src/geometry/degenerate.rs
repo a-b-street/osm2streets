@@ -10,23 +10,31 @@ pub(crate) fn degenerate(
     road1: InputRoad,
     road2: InputRoad,
 ) -> Result<Results> {
-    // Arbitrary parameters
-    let intersection_half_len = Distance::meters(1.0);
-    let min_road_len = 2.0 * intersection_half_len;
-
     // Make both roads point at the intersection, to simplify logic below
     let mut center1 = road1.center_line_pointed_at(results.intersection_id);
     let mut center2 = road2.center_line_pointed_at(results.intersection_id);
 
+    // Try to trim back two different distances, depending on the length of the road
+    let ideal_trim_back = Distance::meters(1.0);
+    let min_trim_back = Distance::meters(0.1);
+
     // If either road is too short, just fail outright. What else should we do?
     // TODO Also, if we haven't trimmed the other side yet, we don't have the full picture
-    if center1.length() < min_road_len || center2.length() < min_road_len {
+    if center1.length() < 2.0 * min_trim_back || center2.length() < 2.0 * min_trim_back {
         bail!("Road is too short to trim for a degenerate intersection");
     }
 
-    // Trim each.
-    center1 = center1.exact_slice(Distance::ZERO, center1.length() - intersection_half_len);
-    center2 = center2.exact_slice(Distance::ZERO, center2.length() - intersection_half_len);
+    if center1.length() > 2.0 * ideal_trim_back {
+        center1 = center1.exact_slice(Distance::ZERO, center1.length() - ideal_trim_back);
+    } else {
+        center1 = center1.exact_slice(Distance::ZERO, center1.length() - min_trim_back);
+    }
+
+    if center2.length() > 2.0 * ideal_trim_back {
+        center2 = center2.exact_slice(Distance::ZERO, center2.length() - ideal_trim_back);
+    } else {
+        center2 = center2.exact_slice(Distance::ZERO, center2.length() - min_trim_back);
+    }
 
     // Make the square polygon
     let mut endpts = vec![
