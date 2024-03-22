@@ -63,7 +63,25 @@
     testCase = prev;
     await reload();
   }
+
+  async function prev() {
+    let idx = list.indexOf(testCase);
+    if (idx != -1 && idx != 0) {
+      testCase = list[idx - 1];
+      await reload();
+    }
+  }
+
+  async function next() {
+    let idx = list.indexOf(testCase);
+    if (idx != -1 && idx != list.length - 1) {
+      testCase = list[idx + 1];
+      await reload();
+    }
+  }
 </script>
+
+<button on:click={prev} disabled={testCase == "none"}>&larr;</button>
 
 <select bind:value={testCase} on:change={reload}>
   <option value="none">None</option>
@@ -71,5 +89,7 @@
     <option value={x}>{x}</option>
   {/each}
 </select>
+
+<button on:click={next} disabled={testCase == "none"}>&rarr;</button>
 
 <svelte:window on:popstate={popState} />

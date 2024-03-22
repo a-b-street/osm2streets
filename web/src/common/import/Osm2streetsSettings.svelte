@@ -1,6 +1,4 @@
 <script lang="ts">
-  import LanePopup from "../../street-explorer/LanePopup.svelte";
-
   export let settings = {
     debug_each_step: false,
     dual_carriageway_experiment: false,
