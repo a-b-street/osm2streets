@@ -134,9 +134,8 @@ pub fn intersection_polygon(
     let mut results = if roads.len() == 1 {
         terminus::terminus(results, roads.into_values().next().unwrap())
     } else if roads.len() == 2 {
-        let mut iter = roads.clone().into_values();
-        degenerate::degenerate(results.clone(), iter.next().unwrap(), iter.next().unwrap())
-            .or_else(|_| general_case::trim_to_corners(results, roads, sorted_roads))
+        let mut iter = roads.into_values();
+        degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
     } else if !trim_roads_for_merging.is_empty() {
         pretrimmed::pretrimmed_geometry(results, roads, sorted_roads, trim_roads_for_merging)
     } else if let Some(result) =

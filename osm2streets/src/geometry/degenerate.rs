@@ -5,7 +5,6 @@ use super::Results;
 use crate::InputRoad;
 
 /// For intersections between exactly 2 roads, just trim back a bit.
-// TODO Return type is messy
 pub(crate) fn degenerate(
     mut results: Results,
     road1: InputRoad,
@@ -60,8 +59,8 @@ pub(crate) fn degenerate(
         PolyLine::new(vec![endpts[0], endpts[3]]),
         PolyLine::new(vec![endpts[1], endpts[2]]),
     ) {
-        if perp1.intersection(&perp2).is_some() {
-            bail!("Do the general case");
+        if let Some((hit, _)) = perp1.intersection(&perp2) {
+            //bail!("Do the general case");
         }
     }
 
