@@ -29,6 +29,8 @@ pub struct Intersection {
     pub roads: Vec<RoadID>,
     pub movements: Vec<Movement>,
 
+    pub crossing: Option<Crossing>,
+
     // true if src_i matches this intersection (or the deleted/consolidated one, whatever)
     // TODO Store start/end trim distance on _every_ road
     #[serde(
@@ -88,6 +90,25 @@ pub enum IntersectionControl {
     Construction,
 }
 
+/// When an Intersection is a pedestrian (and/or bike) crossing, represents details.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Crossing {
+    pub kind: CrossingKind,
+    /// Is there a pedestrian/traffic island/refuge?
+    pub has_island: bool,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
+pub enum CrossingKind {
+    /// Controlled by a traffic signal
+    Signalized,
+    /// Often a zebra crossing. The semantics of which road user has priority is region-specific.
+    Marked,
+    /// No paint markings, but maybe still a de facto crossing due to a nearby curb cut or an
+    /// island on this crossing.
+    Unmarked,
+}
+
 /// The path that some group of adjacent lanes of traffic can take through an intersection.
 pub type Movement = (RoadID, RoadID);
 
@@ -140,6 +161,7 @@ impl StreetNetwork {
                 // Filled out later
                 roads: Vec::new(),
                 movements: Vec::new(),
+                crossing: None,
                 trim_roads_for_merging: BTreeMap::new(),
             },
         );

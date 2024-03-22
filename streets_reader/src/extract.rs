@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use abstutil::Tags;
 use geom::{HashablePt2D, Pt2D};
 use osm2streets::osm::{NodeID, OsmID, RelationID, WayID};
-use osm2streets::{osm, Direction, RestrictionType};
+use osm2streets::{osm, Crossing, CrossingKind, Direction, RestrictionType};
 
 use crate::osm_reader::{Node, Relation, Way};
 use crate::MapConfig;
@@ -22,8 +22,7 @@ pub struct OsmExtract {
     /// Traffic signals and bike stop lines, with an optional direction they apply to
     pub traffic_signals: HashMap<HashablePt2D, Option<Direction>>,
     pub cycleway_stop_lines: Vec<(HashablePt2D, Option<Direction>)>,
-    /// Pedestrian crossings with a traffic signal, with unknown direction
-    pub signalized_crossings: Vec<HashablePt2D>,
+    pub crossings: HashMap<HashablePt2D, Crossing>,
 }
 
 impl OsmExtract {
@@ -36,7 +35,7 @@ impl OsmExtract {
 
             traffic_signals: HashMap::new(),
             cycleway_stop_lines: Vec::new(),
-            signalized_crossings: Vec::new(),
+            crossings: HashMap::new(),
         }
     }
 
@@ -53,10 +52,21 @@ impl OsmExtract {
             self.cycleway_stop_lines.push((node.pt.to_hashable(), dir));
         }
 
-        // TODO Maybe restricting to traffic_signals is too much. But we definitely don't want to
-        // use crossing=unmarked to infer stop lines
-        if node.tags.is("highway", "crossing") && node.tags.is("crossing", "traffic_signals") {
-            self.signalized_crossings.push(node.pt.to_hashable());
+        if node.tags.is("highway", "crossing") || node.tags.is("railway", "crossing") {
+            let kind = match node.tags.get("crossing").map(|x| x.as_str()) {
+                Some("traffic_signals") => CrossingKind::Signalized,
+                Some("uncontrolled" | "marked") => CrossingKind::Marked,
+                Some("unmarked") => CrossingKind::Unmarked,
+                // TODO Look into these cases
+                _ => CrossingKind::Unmarked,
+            };
+            self.crossings.insert(
+                node.pt.to_hashable(),
+                Crossing {
+                    kind,
+                    has_island: node.tags.is("crossing:island", "yes"),
+                },
+            );
         }
     }
 

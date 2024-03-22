@@ -22,6 +22,8 @@
         "type",
         {
           "sidewalk corner": "#CCCCCC",
+          "marked crossing line": "white",
+          "unmarked crossing outline": "white",
         },
         "red",
       ),
