@@ -1,8 +1,5 @@
-use std::collections::{hash_map::Entry, BinaryHeap, HashMap, HashSet};
-
 use anyhow::Result;
 use geojson::Feature;
-use geom::Distance;
 
 use crate::{IntersectionID, RoadID, StreetNetwork};
 
@@ -13,31 +10,47 @@ enum Step {
 
 impl StreetNetwork {
     pub fn find_cycle(&self, start: IntersectionID) -> Result<String> {
-        // TODO Or even simpler... always try to go CW or CCW consistently. we dont want to
-        // backtrack ever.
+        let steps_cw = self.walk_around(start, true);
+        let steps_ccw = self.walk_around(start, false);
+        // Use the shorter
+        if steps_cw.len() < steps_ccw.len() {
+            render(self, steps_cw)
+        } else {
+            render(self, steps_ccw)
+        }
+    }
 
-        let mut stack = vec![start];
-        let mut steps = Vec::new();
-        let mut visited = HashSet::new();
+    fn walk_around(&self, start: IntersectionID, clockwise: bool) -> Vec<Step> {
+        let mut current_i = start;
+        // Start arbitrarily
+        let mut current_r = self.intersections[&start].roads[0];
 
-        while let Some(current) = stack.pop() {
-            if visited.contains(&current) {
-                if current == start && steps.len() > 1 {
-                    return render(self, steps);
+        let mut steps = vec![Step::Edge(current_r)];
+
+        while current_i != start || steps.len() < 2 {
+            let next_i = &self.intersections[&self.roads[&current_r].other_side(current_i)];
+            let idx = next_i.roads.iter().position(|x| *x == current_r).unwrap();
+            let next_idx = if clockwise {
+                if idx == next_i.roads.len() - 1 {
+                    0
+                } else {
+                    idx + 1
                 }
-
-                continue;
-            }
-            visited.insert(current);
-            steps.push(Step::Node(current));
-
-            for road in &self.intersections[&current].roads {
-                let next_i = self.roads[road].other_side(current);
-                stack.push(next_i);
-            }
+            } else {
+                if idx == 0 {
+                    next_i.roads.len() - 1
+                } else {
+                    idx - 1
+                }
+            };
+            let next_r = next_i.roads[next_idx];
+            steps.push(Step::Node(next_i.id));
+            steps.push(Step::Edge(next_r));
+            current_i = next_i.id;
+            current_r = next_r;
         }
 
-        bail!("Something broke");
+        steps
     }
 }
 
