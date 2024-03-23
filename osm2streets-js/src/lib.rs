@@ -249,6 +249,11 @@ impl JsStreetNetwork {
         out.push_str("</way>");
         Ok(out)
     }
+
+    #[wasm_bindgen(js_name = findCycle)]
+    pub fn find_cycle(&self, intersection: usize) -> String {
+        self.inner.find_cycle(IntersectionID(intersection)).unwrap()
+    }
 }
 
 // Mutations
