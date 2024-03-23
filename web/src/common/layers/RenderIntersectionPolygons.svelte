@@ -46,12 +46,12 @@
   >
     <slot />
   </FillLayer>
-  <SymbolLayer
+  <!--<SymbolLayer
     filter={["==", ["get", "type"], "intersection"]}
     layout={{
       "text-field": ["get", "id"],
     }}
-  />
+  />-->
 </GeoJSON>
 
 <LayerControls {gj} name="Intersection polygons" bind:show />
