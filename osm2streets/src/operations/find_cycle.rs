@@ -28,6 +28,7 @@ impl StreetNetwork {
                     continue;
                 }
                 visited.insert(via);
+                backrefs.insert(current, via);
             }
             info!("Current step: {current} with dist {dist_so_far} via {:?}", via_road);
 
@@ -52,7 +53,8 @@ impl StreetNetwork {
             for road in &self.intersections[&current].roads {
                 let next_i = self.roads[road].other_side(current);
                 if let Entry::Vacant(e) = backrefs.entry(next_i) {
-                    e.insert(*road);
+                    // DONT do this yet
+                    //e.insert(*road);
                     // Remember to keep things negative
                     let dist = dist_so_far - self.roads[road].center_line.length();
                     queue.push((dist, next_i, Some(*road)));
