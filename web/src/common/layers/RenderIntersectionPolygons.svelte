@@ -2,7 +2,7 @@
   import LayerControls from "../LayerControls.svelte";
   import { theme, hoveredIntersection, network } from "../store";
   import { caseHelper, layerId, emptyGeojson } from "../utils";
-  import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
+  import { SymbolLayer, hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
   export let hoverCursor: string | undefined = undefined;
 
@@ -41,6 +41,12 @@
   >
     <slot />
   </FillLayer>
+  <SymbolLayer
+          filter={["==", ["get", "type"], "intersection"]}
+          layout={{
+          "text-field": ["get", "id"]
+          }}
+  />
 </GeoJSON>
 
 <LayerControls {gj} name="Intersection polygons" bind:show />
