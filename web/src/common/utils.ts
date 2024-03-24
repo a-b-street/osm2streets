@@ -118,7 +118,7 @@ const layerZorder = [
   // Street Explorer only
   "movements",
   "connected-roads",
-  "cycle",
+  "block",
 
   // TODO This is specific to lane-editor. Figure out how different apps can
   // build on top of the common common ordering.

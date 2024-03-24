@@ -3,7 +3,7 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import RenderCycle from "./RenderCycle.svelte";
+  import RenderBlock from "./RenderBlock.svelte";
   import {
     StreetView,
     ThemePicker,
@@ -93,7 +93,7 @@
         <DynamicMovementArrows />
         <DynamicRoadOrdering />
         <DynamicConnectedRoads />
-        <RenderCycle />
+        <RenderBlock />
 
         <hr />
 
