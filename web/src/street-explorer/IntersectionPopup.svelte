@@ -17,7 +17,11 @@
   }
 
   function findBlock() {
-    blockGj.set(JSON.parse($network!.findBlock(props.id)));
+    try {
+      blockGj.set(JSON.parse($network!.findBlock(props.id)));
+    } catch (err) {
+      window.alert(err);
+    }
     close();
   }
 </script>
