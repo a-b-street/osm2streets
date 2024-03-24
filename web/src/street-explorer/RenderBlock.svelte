@@ -2,9 +2,14 @@
   import { layerId, emptyGeojson } from "../common/utils";
   import { Popup, FillLayer, GeoJSON } from "svelte-maplibre";
   import { blockGj } from "./stores";
+  import { network } from "../common";
 
   function clear() {
     blockGj.set(emptyGeojson());
+  }
+
+  function findAll() {
+    blockGj.set(JSON.parse($network!.findAllBlocks()));
   }
 </script>
 
@@ -24,4 +29,5 @@
 
 <div>
   Block <button on:click={clear}>Clear</button>
+  <button on:click={findAll}>Find all</button>
 </div>

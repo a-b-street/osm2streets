@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use anyhow::Result;
 use geojson::Feature;
 use geom::{Polygon, Ring};
@@ -20,11 +22,14 @@ impl StreetNetwork {
         let steps_cw = self.walk_around(start, true);
         let steps_ccw = self.walk_around(start, false);
         // Use the shorter one
-        let (steps, clockwise) = if steps_cw.len() < steps_ccw.len() {
+        let (steps, clockwise) = if steps_cw.len() < steps_ccw.len() && !steps_cw.is_empty() {
             (steps_cw, true)
         } else {
             (steps_ccw, false)
         };
+        if steps.is_empty() {
+            bail!("Found a dead-end");
+        }
 
         // Trace the polygon
         let shift_dir = if clockwise { -1.0 } else { 1.0 };
@@ -62,6 +67,35 @@ impl StreetNetwork {
         Ok(Block { steps, polygon })
     }
 
+    pub fn find_all_blocks(&self) -> Result<String> {
+        // TODO We should track by side of the road (but then need a way to start there)
+        let mut visited_intersections = HashSet::new();
+        let mut blocks = Vec::new();
+
+        for i in self.intersections.keys() {
+            if visited_intersections.contains(i) {
+                continue;
+            }
+            if let Ok(block) = self.find_block(*i) {
+                for step in &block.steps {
+                    if let Step::Node(i) = step {
+                        visited_intersections.insert(*i);
+                    }
+                }
+                blocks.push(block);
+            }
+        }
+
+        let mut features = Vec::new();
+        for block in blocks {
+            let mut f = Feature::from(block.polygon.to_geojson(Some(&self.gps_bounds)));
+            f.set_property("type", "block");
+            features.push(f);
+        }
+        serialize_features(features)
+    }
+
+    // Returns an empty Vec for failures (hitting a dead-end)
     fn walk_around(&self, start: IntersectionID, clockwise: bool) -> Vec<Step> {
         let mut current_i = start;
         // Start arbitrarily
@@ -70,6 +104,11 @@ impl StreetNetwork {
         let mut steps = vec![Step::Edge(current_r)];
 
         while current_i != start || steps.len() < 2 {
+            // Fail for dead-ends (for now, to avoid tracing around the entire clipped map)
+            if self.intersections[&current_i].roads.len() == 1 {
+                return Vec::new();
+            }
+
             let next_i = &self.intersections[&self.roads[&current_r].other_side(current_i)];
             let idx = next_i.roads.iter().position(|x| *x == current_r).unwrap();
             let next_idx = if clockwise {
@@ -100,13 +139,7 @@ impl Block {
     pub fn render_polygon(&self, streets: &StreetNetwork) -> Result<String> {
         let mut f = Feature::from(self.polygon.to_geojson(Some(&streets.gps_bounds)));
         f.set_property("type", "block");
-        let gj = geojson::GeoJson::from(geojson::FeatureCollection {
-            bbox: None,
-            features: vec![f],
-            foreign_members: None,
-        });
-        let output = serde_json::to_string_pretty(&gj)?;
-        Ok(output)
+        serialize_features(vec![f])
     }
 
     pub fn render_debug(&self, streets: &StreetNetwork) -> Result<String> {
@@ -136,12 +169,16 @@ impl Block {
             }
         }
 
-        let gj = geojson::GeoJson::from(geojson::FeatureCollection {
-            bbox: None,
-            features,
-            foreign_members: None,
-        });
-        let output = serde_json::to_string_pretty(&gj)?;
-        Ok(output)
+        serialize_features(features)
     }
+}
+
+fn serialize_features(features: Vec<Feature>) -> Result<String> {
+    let gj = geojson::GeoJson::from(geojson::FeatureCollection {
+        bbox: None,
+        features,
+        foreign_members: None,
+    });
+    let output = serde_json::to_string_pretty(&gj)?;
+    Ok(output)
 }
