@@ -14,8 +14,13 @@
     contents += `<create/>\n`;
     contents += `<modify>\n`;
     for (let id of editedWays) {
-      contents += $network!.wayToXml(id);
-      contents += "\n";
+      try {
+        contents += $network!.wayToXml(id);
+        contents += "\n";
+      } catch (err) {
+        // TODO Not sure why this happens, but just skip this edit
+        console.error(err);
+      }
     }
     contents += `</modify>\n`;
     contents += `</osmChange>`;

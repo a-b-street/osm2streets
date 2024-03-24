@@ -171,8 +171,12 @@ impl JsStreetNetwork {
     // TODO I think https://github.com/cloudflare/serde-wasm-bindgen would let us just return a
     // HashMap
     #[wasm_bindgen(js_name = getOsmTagsForWay)]
-    pub fn get_osm_tags_for_way(&self, id: i64) -> String {
-        serde_json::to_string_pretty(&self.ways[&osm::WayID(id)].tags).unwrap()
+    pub fn get_osm_tags_for_way(&self, id: i64) -> Result<String, JsValue> {
+        if let Some(ref way) = self.ways.get(&osm::WayID(id)) {
+            Ok(serde_json::to_string_pretty(&way.tags).unwrap())
+        } else {
+            Err(JsValue::from_str(&format!("unknown way {id}")))
+        }
     }
 
     /// Returns the entire StreetNetwork as JSON. The API doesn't have guarantees about backwards
@@ -231,8 +235,11 @@ impl JsStreetNetwork {
     /// Returns the XML string representing a way. Any OSM tags changed via
     /// `overwrite_osm_tags_for_way` are reflected.
     #[wasm_bindgen(js_name = wayToXml)]
-    pub fn way_to_xml(&self, id: i64) -> String {
-        let way = &self.ways[&osm::WayID(id)];
+    pub fn way_to_xml(&self, id: i64) -> Result<String, JsValue> {
+        let Some(ref way) = self.ways.get(&osm::WayID(id)) else {
+            return Err(JsValue::from_str(&format!("unknown way {id}")));
+        };
+
         let mut out = format!(r#"<way id="{id}""#);
         if let Some(version) = way.version {
             out.push_str(&format!(r#" version="{version}""#));
@@ -247,7 +254,7 @@ impl JsStreetNetwork {
             out.push('\n');
         }
         out.push_str("</way>");
-        out
+        Ok(out)
     }
 }
 
