@@ -49,7 +49,13 @@ impl Document {
                     ]));
                 }
             }
-            Element::Node { id, lon, lat, tags } => {
+            Element::Node {
+                id,
+                lon,
+                lat,
+                tags,
+                version,
+            } => {
                 if doc.gps_bounds.is_none() {
                     warn!(
                         "No clipping polygon provided and the .osm is missing a <bounds> element, \
@@ -68,10 +74,16 @@ impl Document {
                     Node {
                         pt,
                         tags: make_tags(tags),
+                        version,
                     },
                 );
             }
-            Element::Way { id, node_ids, tags } => {
+            Element::Way {
+                id,
+                node_ids,
+                tags,
+                version,
+            } => {
                 if doc.ways.contains_key(&id) {
                     panic!("Duplicate {id}, your .osm is corrupt");
                 }
@@ -92,6 +104,7 @@ impl Document {
                             nodes,
                             pts,
                             tags: make_tags(tags),
+                            version,
                         },
                     );
                 }
@@ -100,6 +113,7 @@ impl Document {
                 id,
                 tags,
                 mut members,
+                version,
             } => {
                 if doc.relations.contains_key(&id) {
                     panic!("Duplicate {id}, your .osm is corrupt");
@@ -116,6 +130,7 @@ impl Document {
                     Relation {
                         tags: make_tags(tags),
                         members,
+                        version,
                     },
                 );
             }

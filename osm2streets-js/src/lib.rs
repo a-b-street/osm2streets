@@ -234,10 +234,9 @@ impl JsStreetNetwork {
     pub fn way_to_xml(&self, id: i64) -> String {
         let way = &self.ways[&osm::WayID(id)];
         let mut out = format!(r#"<way id="{id}""#);
-        // TODO Add this to osm-reader
-        /*if let Some(version) = way.version {
+        if let Some(version) = way.version {
             out.push_str(&format!(r#" version="{version}""#));
-        }*/
+        }
         out.push_str(">\n");
         for node in &way.nodes {
             out.push_str(&format!(r#"  <nd ref="{}"/>"#, node.0));

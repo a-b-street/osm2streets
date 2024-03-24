@@ -24,6 +24,7 @@ pub struct Document {
 pub struct Node {
     pub pt: Pt2D,
     pub tags: Tags,
+    pub version: Option<i32>,
 }
 
 #[derive(Clone)]
@@ -32,10 +33,12 @@ pub struct Way {
     pub nodes: Vec<NodeID>,
     pub pts: Vec<Pt2D>,
     pub tags: Tags,
+    pub version: Option<i32>,
 }
 
 pub struct Relation {
     pub tags: Tags,
     /// Role, member
     pub members: Vec<(String, OsmID)>,
+    pub version: Option<i32>,
 }
