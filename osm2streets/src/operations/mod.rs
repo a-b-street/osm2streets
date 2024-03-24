@@ -2,6 +2,5 @@
 
 mod collapse_intersection;
 mod collapse_short_road;
-mod find_cycle;
 mod update_geometry;
 pub mod zip_sidepath;

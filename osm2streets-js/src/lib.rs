@@ -250,9 +250,13 @@ impl JsStreetNetwork {
         Ok(out)
     }
 
-    #[wasm_bindgen(js_name = findCycle)]
-    pub fn find_cycle(&self, intersection: usize) -> String {
-        self.inner.find_cycle(IntersectionID(intersection)).unwrap()
+    #[wasm_bindgen(js_name = findBlock)]
+    pub fn find_block(&self, intersection: usize) -> String {
+        self.inner
+            .find_block(IntersectionID(intersection))
+            .unwrap()
+            .render_polygon(&self.inner)
+            .unwrap()
     }
 }
 

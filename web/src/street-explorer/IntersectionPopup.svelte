@@ -2,7 +2,7 @@
   import type { Polygon } from "geojson";
   import type { FeatureWithProps } from "../common/utils";
   import { network } from "../common";
-  import { cycleGj } from "./stores";
+  import { blockGj } from "./stores";
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;
@@ -16,8 +16,8 @@
     close();
   }
 
-  function findCycle() {
-    cycleGj.set(JSON.parse($network!.findCycle(props.id)));
+  function findBlock() {
+    blockGj.set(JSON.parse($network!.findBlock(props.id)));
     close();
   }
 </script>
@@ -44,5 +44,5 @@
 
 <div>
   <button type="button" on:click={collapse}>Collapse intersection</button>
-  <button type="button" on:click={findCycle}>Find cycle</button>
+  <button type="button" on:click={findBlock}>Find block</button>
 </div>
