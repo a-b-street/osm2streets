@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { layerId, emptyGeojson } from "../common/utils";
+  import { caseHelper, layerId, emptyGeojson } from "../common/utils";
   import { Popup, FillLayer, GeoJSON } from "svelte-maplibre";
   import { blockGj } from "./stores";
   import { network } from "../common";
@@ -17,7 +17,15 @@
   <FillLayer
     {...layerId("block")}
     paint={{
-      "fill-color": "purple",
+      "fill-color": caseHelper(
+        "kind",
+        {
+          RoadAndSidewalk: "green",
+          DualCarriageway: "purple",
+          Unknown: "red",
+        },
+        "red",
+      ),
       "fill-opacity": 0.8,
     }}
   >
