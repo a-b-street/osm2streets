@@ -1,8 +1,10 @@
 use anyhow::Result;
 use geojson::Feature;
+use geom::Ring;
 
 use crate::{IntersectionID, RoadID, StreetNetwork};
 
+#[derive(Clone, Copy)]
 enum Step {
     Node(IntersectionID),
     Edge(RoadID),
@@ -14,9 +16,9 @@ impl StreetNetwork {
         let steps_ccw = self.walk_around(start, false);
         // Use the shorter
         if steps_cw.len() < steps_ccw.len() {
-            render(self, steps_cw)
+            trace_polygon(self, steps_cw)
         } else {
-            render(self, steps_ccw)
+            trace_polygon(self, steps_ccw)
         }
     }
 
@@ -54,7 +56,41 @@ impl StreetNetwork {
     }
 }
 
-fn render(streets: &StreetNetwork, steps: Vec<Step>) -> Result<String> {
+fn trace_polygon(streets: &StreetNetwork, steps: Vec<Step>) -> Result<String> {
+    let mut pts = Vec::new();
+
+    // steps will begin and end with an edge
+    for pair in steps.windows(2) {
+        match (pair[0], pair[1]) {
+            (Step::Edge(r), Step::Node(i)) => {
+                let road = &streets.roads[&r];
+                if road.dst_i == i {
+                    pts.extend(road.reference_line.clone().into_points());
+                } else {
+                    pts.extend(road.reference_line.reversed().into_points());
+                }
+            }
+            // Skip... unless for the last case?
+            (Step::Node(_), Step::Edge(_)) => {}
+            _ => unreachable!(),
+        }
+    }
+
+    pts.push(pts[0]);
+    let polygon = Ring::deduping_new(pts)?.into_polygon();
+
+    let mut f = Feature::from(polygon.to_geojson(Some(&streets.gps_bounds)));
+    f.set_property("type", "block");
+    let gj = geojson::GeoJson::from(geojson::FeatureCollection {
+        bbox: None,
+        features: vec![f],
+        foreign_members: None,
+    });
+    let output = serde_json::to_string_pretty(&gj)?;
+    Ok(output)
+}
+
+fn _debug_steps(streets: &StreetNetwork, steps: Vec<Step>) -> Result<String> {
     let mut features = Vec::new();
 
     info!("Cycle!");
