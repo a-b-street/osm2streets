@@ -16,9 +16,9 @@ impl StreetNetwork {
         let steps_ccw = self.walk_around(start, false);
         // Use the shorter
         if steps_cw.len() < steps_ccw.len() {
-            trace_polygon(self, steps_cw)
+            trace_polygon(self, steps_cw, true)
         } else {
-            trace_polygon(self, steps_ccw)
+            trace_polygon(self, steps_ccw, false)
         }
     }
 
@@ -56,7 +56,8 @@ impl StreetNetwork {
     }
 }
 
-fn trace_polygon(streets: &StreetNetwork, steps: Vec<Step>) -> Result<String> {
+fn trace_polygon(streets: &StreetNetwork, steps: Vec<Step>, clockwise: bool) -> Result<String> {
+    let shift_dir = if clockwise { -1.0 } else { 1.0 };
     let mut pts = Vec::new();
 
     // steps will begin and end with an edge
@@ -65,9 +66,18 @@ fn trace_polygon(streets: &StreetNetwork, steps: Vec<Step>) -> Result<String> {
             (Step::Edge(r), Step::Node(i)) => {
                 let road = &streets.roads[&r];
                 if road.dst_i == i {
-                    pts.extend(road.reference_line.clone().into_points());
+                    pts.extend(
+                        road.center_line
+                            .shift_either_direction(shift_dir * road.half_width())?
+                            .into_points(),
+                    );
                 } else {
-                    pts.extend(road.reference_line.reversed().into_points());
+                    pts.extend(
+                        road.center_line
+                            .reversed()
+                            .shift_either_direction(shift_dir * road.half_width())?
+                            .into_points(),
+                    );
                 }
             }
             // Skip... unless for the last case?
