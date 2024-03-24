@@ -1,16 +1,16 @@
 <script lang="ts">
   import { layerId, emptyGeojson } from "../common/utils";
   import { Popup, FillLayer, GeoJSON } from "svelte-maplibre";
-  import { cycleGj } from "./stores";
+  import { blockGj } from "./stores";
 
   function clear() {
-    cycleGj.set(emptyGeojson());
+    blockGj.set(emptyGeojson());
   }
 </script>
 
-<GeoJSON data={$cycleGj}>
+<GeoJSON data={$blockGj}>
   <FillLayer
-    {...layerId("cycle")}
+    {...layerId("block")}
     paint={{
       "fill-color": "purple",
       "fill-opacity": 0.8,
@@ -23,5 +23,5 @@
 </GeoJSON>
 
 <div>
-  Cycle <button on:click={clear}>Clear</button>
+  Block <button on:click={clear}>Clear</button>
 </div>

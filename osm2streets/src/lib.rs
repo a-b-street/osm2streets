@@ -30,6 +30,7 @@ pub use osm2lanes::{
     Placement, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
 };
 
+mod block;
 mod geometry;
 mod ids;
 mod intersection;
