@@ -249,6 +249,20 @@ impl JsStreetNetwork {
         out.push_str("</way>");
         Ok(out)
     }
+
+    #[wasm_bindgen(js_name = findBlock)]
+    pub fn find_block(&self, intersection: usize) -> String {
+        self.inner
+            .find_block(IntersectionID(intersection))
+            .unwrap()
+            .render_polygon(&self.inner)
+            .unwrap()
+    }
+
+    #[wasm_bindgen(js_name = findAllBlocks)]
+    pub fn find_all_blocks(&self) -> String {
+        self.inner.find_all_blocks().unwrap()
+    }
 }
 
 // Mutations
