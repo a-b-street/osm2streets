@@ -21,6 +21,7 @@
   import DynamicConnectedRoads from "../common/layers/DynamicConnectedRoads.svelte";
   import DynamicMovementArrows from "../common/layers/DynamicMovementArrows.svelte";
   import DynamicRoadOrdering from "../common/layers/DynamicRoadOrdering.svelte";
+  import DebugIDs from "../common/layers/DebugIDs.svelte";
 
   import IntersectionPopup from "./IntersectionPopup.svelte";
   import LanePopup from "./LanePopup.svelte";
@@ -93,6 +94,7 @@
         <DynamicMovementArrows />
         <DynamicRoadOrdering />
         <DynamicConnectedRoads />
+        <DebugIDs />
         <RenderBlock />
 
         <hr />
