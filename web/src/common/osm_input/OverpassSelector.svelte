@@ -89,7 +89,7 @@
       return;
     }
     if (map.getZoom() < 15) {
-      dispatch("error", "Zoom in more to import");
+      dispatch("error", "Zoom in more to import (or draw a custom area)");
       return;
     }
     await importPolygon(mapBoundsToGeojson());

@@ -28,7 +28,6 @@
   type Imported =
     | { kind: "nothing" }
     | { kind: "loading"; msg: string }
-    | { kind: "error"; msg: string }
     | {
         kind: "done";
         boundaryGj: Feature<Polygon>;
@@ -82,7 +81,8 @@
       networkStore.set(imported.network);
       boundaryGjStore.set(imported.boundaryGj);
     } catch (err: any) {
-      imported = { kind: "error", msg: err.toString() };
+      window.alert(err.toString());
+      imported = { kind: "nothing" };
     }
   }
 
@@ -121,7 +121,8 @@
   }
 
   function error(e: CustomEvent<string>) {
-    imported = { kind: "error", msg: e.detail };
+    window.alert(e.detail);
+    imported = { kind: "nothing" };
   }
 
   function loading(e: CustomEvent<string>) {
@@ -153,8 +154,6 @@
       <p>Use the polygon tool to select an area to import</p>
     {:else if imported.kind === "loading"}
       <p>{imported.msg}</p>
-    {:else if imported.kind === "error"}
-      <p>Error: {imported.msg}</p>
     {:else if imported.kind === "done"}
       <div>
         <button type="button" on:click={update}>Update OSM data</button>
