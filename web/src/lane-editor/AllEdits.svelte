@@ -1,8 +1,13 @@
 <script lang="ts">
-  import { network } from "../common";
+  import { network, importCounter } from "../common";
   import { downloadGeneratedFile } from "../common/utils";
 
   let editedWays: Set<bigint> = new Set();
+
+  // Drop edits when changing areas
+  $: if ($importCounter > 0) {
+    editedWays = new Set();
+  }
 
   export function handleEditedWay(e: CustomEvent<bigint>) {
     editedWays.add(e.detail);
@@ -14,13 +19,8 @@
     contents += `<create/>\n`;
     contents += `<modify>\n`;
     for (let id of editedWays) {
-      try {
-        contents += $network!.wayToXml(id);
-        contents += "\n";
-      } catch (err) {
-        // TODO Not sure why this happens, but just skip this edit
-        console.error(err);
-      }
+      contents += $network!.wayToXml(id);
+      contents += "\n";
     }
     contents += `</modify>\n`;
     contents += `</osmChange>`;
@@ -30,4 +30,6 @@
 </script>
 
 <div>{editedWays.size} ways edited</div>
-<button type="button" on:click={downloadOsc}>Download .osc</button>
+<button type="button" on:click={downloadOsc} disabled={editedWays.size == 0}
+  >Download .osc</button
+>

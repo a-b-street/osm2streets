@@ -8,6 +8,7 @@
     boundaryGj as boundaryGjStore,
     map,
     network as networkStore,
+    importCounter,
   } from "../store";
   import { bbox, downloadGeneratedFile } from "../utils";
   import Osm2streetsSettings from "./Osm2streetsSettings.svelte";
@@ -79,6 +80,7 @@
         network,
       };
 
+      $importCounter++;
       networkStore.set(imported.network);
       boundaryGjStore.set(imported.boundaryGj);
     } catch (err: any) {
@@ -117,6 +119,7 @@
 
   function resetToNone(e: CustomEvent<void>) {
     imported = { kind: "nothing" };
+    $importCounter++;
     networkStore.set(null);
     boundaryGjStore.set(null);
   }

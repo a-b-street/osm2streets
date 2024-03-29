@@ -6,9 +6,13 @@ import type { FeatureWithProps } from "./utils";
 
 // These are all global singleton values, available anywhere in the code. When
 // they're non-null, then they're loaded and ready to use.
-
 export const map: Writable<Map | null> = writable(null);
 export const network: Writable<JsStreetNetwork | null> = writable(null);
+
+// A way for different components to know when a new area has been imported.
+// Modifying the current network doesn't count.
+export let importCounter: Writable<number> = writable(1);
+
 export const boundaryGj: Writable<Feature<Polygon> | null> = writable(null);
 
 export const hoveredLane: Writable<FeatureWithProps<Polygon> | null> =
