@@ -4,7 +4,7 @@ use anyhow::Result;
 use geojson::Feature;
 use geom::{Polygon, Ring};
 
-use crate::{IntersectionID, LaneType, RoadID, StreetNetwork};
+use crate::{Intersection, IntersectionID, LaneType, RoadID, StreetNetwork};
 
 /// A "tight" cycle of roads and intersections, with a polygon capturing the negative space inside.
 pub struct Block {
@@ -36,10 +36,10 @@ pub enum BlockKind {
 
 impl StreetNetwork {
     // Start at road's src_i
-    pub fn find_block(&self, start: RoadID, left: bool) -> Result<Block> {
-        // TODO ??
+    // TODO API is getting messy
+    pub fn find_block(&self, start: RoadID, left: bool, sidewalks: bool) -> Result<Block> {
         let clockwise = left;
-        let steps = walk_around(self, start, clockwise)?;
+        let steps = walk_around(self, start, clockwise, sidewalks)?;
         let polygon = trace_polygon(self, &steps, clockwise)?;
         let kind = classify(self, &steps);
 
@@ -60,7 +60,7 @@ impl StreetNetwork {
                 if visited_roads.contains(&(*r, left)) {
                     continue;
                 }
-                if let Ok(block) = self.find_block(*r, left) {
+                if let Ok(block) = self.find_block(*r, left, false) {
                     // TODO Put more info in Step to avoid duplicating logic with trace_polygon
                     for pair in block.steps.windows(2) {
                         match (pair[0], pair[1]) {
@@ -132,7 +132,12 @@ impl Block {
     }
 }
 
-fn walk_around(streets: &StreetNetwork, start_road: RoadID, clockwise: bool) -> Result<Vec<Step>> {
+fn walk_around(
+    streets: &StreetNetwork,
+    start_road: RoadID,
+    clockwise: bool,
+    sidewalks: bool,
+) -> Result<Vec<Step>> {
     let start_i = streets.roads[&start_road].src_i;
 
     let mut current_i = start_i;
@@ -142,26 +147,30 @@ fn walk_around(streets: &StreetNetwork, start_road: RoadID, clockwise: bool) -> 
 
     while current_i != start_i || steps.len() < 2 {
         // Fail for dead-ends (for now, to avoid tracing around the entire clipped map)
-        if streets.intersections[&current_i].roads.len() == 1 {
+        if filter_roads(streets, sidewalks, &streets.intersections[&current_i]).len() == 1 {
             bail!("Found a dead-end at {current_i}");
         }
 
         let next_i = &streets.intersections[&streets.roads[&current_r].other_side(current_i)];
-        let idx = next_i.roads.iter().position(|x| *x == current_r).unwrap();
+        let clockwise_roads = filter_roads(streets, sidewalks, next_i);
+        let idx = clockwise_roads
+            .iter()
+            .position(|x| *x == current_r)
+            .unwrap();
         let next_idx = if clockwise {
-            if idx == next_i.roads.len() - 1 {
+            if idx == clockwise_roads.len() - 1 {
                 0
             } else {
                 idx + 1
             }
         } else {
             if idx == 0 {
-                next_i.roads.len() - 1
+                clockwise_roads.len() - 1
             } else {
                 idx - 1
             }
         };
-        let next_r = next_i.roads[next_idx];
+        let next_r = clockwise_roads[next_idx];
         steps.push(Step::Node(next_i.id));
         steps.push(Step::Edge(next_r));
         current_i = next_i.id;
@@ -169,6 +178,24 @@ fn walk_around(streets: &StreetNetwork, start_road: RoadID, clockwise: bool) -> 
     }
 
     Ok(steps)
+}
+
+// When we're limiting to sidewalks, get rid of any roads around the intersection that aren't
+// crossings or sidewalks
+fn filter_roads(
+    streets: &StreetNetwork,
+    sidewalks: bool,
+    intersection: &Intersection,
+) -> Vec<RoadID> {
+    let mut roads = intersection.roads.clone();
+    if !sidewalks {
+        return roads;
+    }
+    roads.retain(|r| {
+        let road = &streets.roads[r];
+        road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt.is_walkable()
+    });
+    roads
 }
 
 fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) -> Result<Polygon> {

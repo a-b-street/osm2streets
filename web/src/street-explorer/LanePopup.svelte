@@ -24,9 +24,9 @@
     close();
   }
 
-  function findBlock(left: boolean) {
+  function findBlock(left: boolean, sidewalks: boolean) {
     try {
-      blockGj.set(JSON.parse($network!.findBlock(props.road, left)));
+      blockGj.set(JSON.parse($network!.findBlock(props.road, left, sidewalks)));
     } catch (err) {
       window.alert(err);
     }
@@ -73,11 +73,19 @@
   <button type="button" on:click={zip}>Zip side-path</button>
 </div>
 <div>
-  <button type="button" on:click={() => findBlock(true)}
+  <button type="button" on:click={() => findBlock(true, false)}
     >Find block on left</button
   >
-  <button type="button" on:click={() => findBlock(false)}
+  <button type="button" on:click={() => findBlock(false, false)}
     >Find block on right</button
+  >
+</div>
+<div>
+  <button type="button" on:click={() => findBlock(true, true)}
+    >Trace sidewalks on left</button
+  >
+  <button type="button" on:click={() => findBlock(false, true)}
+    >Trace sidewalks on right</button
   >
 </div>
 

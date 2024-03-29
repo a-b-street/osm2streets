@@ -251,9 +251,9 @@ impl JsStreetNetwork {
     }
 
     #[wasm_bindgen(js_name = findBlock)]
-    pub fn find_block(&self, road: usize, left: bool) -> Result<String, JsValue> {
+    pub fn find_block(&self, road: usize, left: bool, sidewalks: bool) -> Result<String, JsValue> {
         self.inner
-            .find_block(RoadID(road), left)
+            .find_block(RoadID(road), left, sidewalks)
             .map_err(err_to_js)?
             .render_polygon(&self.inner)
             .map_err(err_to_js)
