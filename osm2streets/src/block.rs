@@ -31,18 +31,18 @@ pub enum BlockKind {
 
 impl StreetNetwork {
     pub fn find_block(&self, start: IntersectionID) -> Result<Block> {
-        let steps_cw = walk_around(self, start, true);
-        let steps_ccw = walk_around(self, start, false);
+        let mut choices = Vec::new();
+        if let Some(steps_cw) = walk_around(self, start, true) {
+            choices.push((steps_cw, true));
+        }
+        if let Some(steps_ccw) = walk_around(self, start, false) {
+            choices.push((steps_ccw, false));
+        }
 
         // Use the shorter one
-        let (steps, clockwise) = if steps_cw.len() < steps_ccw.len() && !steps_cw.is_empty() {
-            (steps_cw, true)
-        } else {
-            (steps_ccw, false)
+        let Some((steps, clockwise)) = choices.into_iter().min_by_key(|pair| pair.0.len()) else {
+            bail!("Found a dead-end on both directions");
         };
-        if steps.is_empty() {
-            bail!("Found a dead-end");
-        }
 
         let polygon = trace_polygon(self, &steps, clockwise)?;
 
@@ -124,8 +124,12 @@ impl Block {
     }
 }
 
-// Returns an empty Vec for failures (hitting a dead-end)
-fn walk_around(streets: &StreetNetwork, start: IntersectionID, clockwise: bool) -> Vec<Step> {
+// Fails when hitting a dead-end
+fn walk_around(
+    streets: &StreetNetwork,
+    start: IntersectionID,
+    clockwise: bool,
+) -> Option<Vec<Step>> {
     let mut current_i = start;
     // Start arbitrarily
     let mut current_r = streets.intersections[&start].roads[0];
@@ -135,7 +139,7 @@ fn walk_around(streets: &StreetNetwork, start: IntersectionID, clockwise: bool) 
     while current_i != start || steps.len() < 2 {
         // Fail for dead-ends (for now, to avoid tracing around the entire clipped map)
         if streets.intersections[&current_i].roads.len() == 1 {
-            return Vec::new();
+            return None;
         }
 
         let next_i = &streets.intersections[&streets.roads[&current_r].other_side(current_i)];
@@ -160,7 +164,7 @@ fn walk_around(streets: &StreetNetwork, start: IntersectionID, clockwise: bool) 
         current_r = next_r;
     }
 
-    steps
+    Some(steps)
 }
 
 fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) -> Result<Polygon> {
