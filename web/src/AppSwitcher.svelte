@@ -4,8 +4,9 @@
 
   function gotoPage() {
     if (page != origPage) {
-      // TODO Preserve the camera and query parameters, at least
-      window.location.href = page;
+      // Preserve the camera and query parameters
+      // (When both are defined, the camera will be clobbered by RenderBoundary)
+      window.location.href = `${page}${window.location.search}${window.location.hash}`;
     }
   }
 </script>
