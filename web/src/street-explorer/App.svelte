@@ -91,11 +91,14 @@
 
         <hr />
 
+        <RenderBlock />
+
+        <hr />
+
         <DynamicMovementArrows />
         <DynamicRoadOrdering />
         <DynamicConnectedRoads />
         <DebugIDs />
-        <RenderBlock />
 
         <hr />
 
