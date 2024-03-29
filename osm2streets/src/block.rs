@@ -46,21 +46,34 @@ impl StreetNetwork {
     }
 
     pub fn find_all_blocks(&self) -> Result<String> {
-        // TODO We should track by side of the road (but then need a way to start there)
-        /*let mut visited_intersections = HashSet::new();
+        // TODO consider a Left/Right enum instead of bool
+        let mut visited_roads: HashSet<(RoadID, bool)> = HashSet::new();
         let mut blocks = Vec::new();
 
-        for i in self.intersections.keys() {
-            if visited_intersections.contains(i) {
-                continue;
-            }
-            if let Ok(block) = self.find_block(*i) {
-                for step in &block.steps {
-                    if let Step::Node(i) = step {
-                        visited_intersections.insert(*i);
-                    }
+        for r in self.roads.keys() {
+            for left in [true, false] {
+                if visited_roads.contains(&(*r, left)) {
+                    continue;
                 }
-                blocks.push(block);
+                if let Ok(block) = self.find_block(*r, left) {
+                    // TODO Put more info in Step to avoid duplicating logic with trace_polygon
+                    for pair in block.steps.windows(2) {
+                        match (pair[0], pair[1]) {
+                            (Step::Edge(r), Step::Node(i)) => {
+                                let road = &self.roads[&r];
+                                if road.dst_i == i {
+                                    visited_roads.insert((r, left));
+                                } else {
+                                    visited_roads.insert((r, !left));
+                                }
+                            }
+                            // Skip... unless for the last case?
+                            (Step::Node(_), Step::Edge(_)) => {}
+                            _ => unreachable!(),
+                        }
+                    }
+                    blocks.push(block);
+                }
             }
         }
 
@@ -71,8 +84,7 @@ impl StreetNetwork {
             f.set_property("kind", format!("{:?}", block.kind));
             features.push(f);
         }
-        serialize_features(features)*/
-        bail!("TODO")
+        serialize_features(features)
     }
 }
 
