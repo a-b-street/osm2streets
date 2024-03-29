@@ -23,6 +23,11 @@ pub enum Step {
 pub enum BlockKind {
     /// The space between a road and sidewalk. It might be a wide sidewalk or contain grass.
     RoadAndSidewalk,
+    /// The space between a road and cycle lane. It should contain some kind of separation.
+    RoadAndCycleLane,
+    /// The space between a cycle lane and sidewalk. It should contain some kind of separation --
+    /// at least a curb.
+    CycleLaneAndSidewalk,
     /// The space between one-way roads. Probably has some kind of physical barrier, not just
     /// markings.
     DualCarriageway,
@@ -202,6 +207,7 @@ fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) ->
 
 fn classify(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     let mut has_road = false;
+    let mut has_cycle_lane = false;
     let mut has_sidewalk = false;
 
     for step in steps {
@@ -210,6 +216,10 @@ fn classify(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
             if road.is_driveable() {
                 // TODO Or bus lanes?
                 has_road = true;
+            } else if road.lane_specs_ltr.len() == 1
+                && road.lane_specs_ltr[0].lt == LaneType::Biking
+            {
+                has_cycle_lane = true;
             } else if road.lane_specs_ltr.len() == 1
                 && road.lane_specs_ltr[0].lt == LaneType::Sidewalk
             {
@@ -221,10 +231,17 @@ fn classify(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     if has_road && has_sidewalk {
         return BlockKind::RoadAndSidewalk;
     }
+    if has_road && has_cycle_lane {
+        return BlockKind::RoadAndCycleLane;
+    }
     if has_road {
         // TODO Insist on one-ways pointing the opposite direction? What about different types of
         // small connector roads?
         return BlockKind::DualCarriageway;
+    }
+    // TODO This one is usually missed, because of a small piece of road crossing both
+    if !has_road && has_cycle_lane && has_sidewalk {
+        return BlockKind::CycleLaneAndSidewalk;
     }
 
     BlockKind::Unknown
