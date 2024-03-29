@@ -30,22 +30,12 @@ pub enum BlockKind {
 }
 
 impl StreetNetwork {
-    pub fn find_block(&self, start: IntersectionID) -> Result<Block> {
-        let mut choices = Vec::new();
-        if let Some(steps_cw) = walk_around(self, start, true) {
-            choices.push((steps_cw, true));
-        }
-        if let Some(steps_ccw) = walk_around(self, start, false) {
-            choices.push((steps_ccw, false));
-        }
-
-        // Use the shorter one
-        let Some((steps, clockwise)) = choices.into_iter().min_by_key(|pair| pair.0.len()) else {
-            bail!("Found a dead-end on both directions");
-        };
-
+    // Start at road's src_i
+    pub fn find_block(&self, start: RoadID, left: bool) -> Result<Block> {
+        // TODO ??
+        let clockwise = left;
+        let steps = walk_around(self, start, clockwise)?;
         let polygon = trace_polygon(self, &steps, clockwise)?;
-
         let kind = classify(self, &steps);
 
         Ok(Block {
@@ -57,7 +47,7 @@ impl StreetNetwork {
 
     pub fn find_all_blocks(&self) -> Result<String> {
         // TODO We should track by side of the road (but then need a way to start there)
-        let mut visited_intersections = HashSet::new();
+        /*let mut visited_intersections = HashSet::new();
         let mut blocks = Vec::new();
 
         for i in self.intersections.keys() {
@@ -81,7 +71,8 @@ impl StreetNetwork {
             f.set_property("kind", format!("{:?}", block.kind));
             features.push(f);
         }
-        serialize_features(features)
+        serialize_features(features)*/
+        bail!("TODO")
     }
 }
 
@@ -124,22 +115,18 @@ impl Block {
     }
 }
 
-// Fails when hitting a dead-end
-fn walk_around(
-    streets: &StreetNetwork,
-    start: IntersectionID,
-    clockwise: bool,
-) -> Option<Vec<Step>> {
-    let mut current_i = start;
-    // Start arbitrarily
-    let mut current_r = streets.intersections[&start].roads[0];
+fn walk_around(streets: &StreetNetwork, start_road: RoadID, clockwise: bool) -> Result<Vec<Step>> {
+    let start_i = streets.roads[&start_road].src_i;
+
+    let mut current_i = start_i;
+    let mut current_r = start_road;
 
     let mut steps = vec![Step::Edge(current_r)];
 
-    while current_i != start || steps.len() < 2 {
+    while current_i != start_i || steps.len() < 2 {
         // Fail for dead-ends (for now, to avoid tracing around the entire clipped map)
         if streets.intersections[&current_i].roads.len() == 1 {
-            return None;
+            bail!("Found a dead-end at {current_i}");
         }
 
         let next_i = &streets.intersections[&streets.roads[&current_r].other_side(current_i)];
@@ -164,7 +151,7 @@ fn walk_around(
         current_r = next_r;
     }
 
-    Some(steps)
+    Ok(steps)
 }
 
 fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) -> Result<Polygon> {

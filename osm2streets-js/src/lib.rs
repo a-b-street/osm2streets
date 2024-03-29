@@ -48,8 +48,8 @@ impl JsStreetNetwork {
         let clip_pts = if clip_pts_geojson.is_empty() {
             None
         } else {
-            let mut list = LonLat::parse_geojson_polygons(clip_pts_geojson.to_string())
-                .map_err(|err| JsValue::from_str(&err.to_string()))?;
+            let mut list =
+                LonLat::parse_geojson_polygons(clip_pts_geojson.to_string()).map_err(err_to_js)?;
             if list.len() != 1 {
                 return Err(JsValue::from_str(&format!(
                     "{clip_pts_geojson} doesn't contain exactly one polygon"
@@ -66,7 +66,7 @@ impl JsStreetNetwork {
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =
             streets_reader::osm_to_street_network(osm_input, clip_pts, cfg, &mut timer)
-                .map_err(|err| JsValue::from_str(&err.to_string()))?;
+                .map_err(err_to_js)?;
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
             // Collapsing short roads tries to touch "bridges," making debugging harder
@@ -251,12 +251,12 @@ impl JsStreetNetwork {
     }
 
     #[wasm_bindgen(js_name = findBlock)]
-    pub fn find_block(&self, intersection: usize) -> String {
+    pub fn find_block(&self, road: usize, left: bool) -> Result<String, JsValue> {
         self.inner
-            .find_block(IntersectionID(intersection))
-            .unwrap()
+            .find_block(RoadID(road), left)
+            .map_err(err_to_js)?
             .render_polygon(&self.inner)
-            .unwrap()
+            .map_err(err_to_js)
     }
 
     #[wasm_bindgen(js_name = findAllBlocks)]
@@ -345,4 +345,8 @@ impl JsDebugStreets {
     pub fn to_debug_geojson(&self) -> Option<String> {
         self.inner.to_debug_geojson()
     }
+}
+
+fn err_to_js<E: std::fmt::Display>(err: E) -> JsValue {
+    JsValue::from_str(&err.to_string())
 }

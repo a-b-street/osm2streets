@@ -2,6 +2,7 @@
   import type { Polygon } from "geojson";
   import type { FeatureWithProps } from "../common/utils";
   import { network } from "../common";
+  import { blockGj } from "./stores";
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;
@@ -20,6 +21,15 @@
   function zip() {
     $network!.zipSidepath(props.road);
     $network = $network;
+    close();
+  }
+
+  function findBlock(left: boolean) {
+    try {
+      blockGj.set(JSON.parse($network!.findBlock(props.road, left)));
+    } catch (err) {
+      window.alert(err);
+    }
     close();
   }
 </script>
@@ -61,6 +71,14 @@
 <div>
   <button type="button" on:click={collapse}>Collapse short road</button>
   <button type="button" on:click={zip}>Zip side-path</button>
+</div>
+<div>
+  <button type="button" on:click={() => findBlock(true)}
+    >Find block on left</button
+  >
+  <button type="button" on:click={() => findBlock(false)}
+    >Find block on right</button
+  >
 </div>
 
 <style>

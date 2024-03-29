@@ -2,7 +2,6 @@
   import type { Polygon } from "geojson";
   import type { FeatureWithProps } from "../common/utils";
   import { network } from "../common";
-  import { blockGj } from "./stores";
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;
@@ -13,15 +12,6 @@
   function collapse() {
     $network!.collapseIntersection(props.id);
     $network = $network;
-    close();
-  }
-
-  function findBlock() {
-    try {
-      blockGj.set(JSON.parse($network!.findBlock(props.id)));
-    } catch (err) {
-      window.alert(err);
-    }
     close();
   }
 </script>
@@ -48,5 +38,4 @@
 
 <div>
   <button type="button" on:click={collapse}>Collapse intersection</button>
-  <button type="button" on:click={findBlock}>Find block</button>
 </div>
