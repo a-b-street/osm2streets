@@ -28,4 +28,4 @@
   />
 </GeoJSON>
 
-<LayerControls {gj} name="Debug IDs" bind:show />
+<LayerControls {gj} name="Debug IDs" bind:show downloadable={false} />
