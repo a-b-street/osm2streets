@@ -1,6 +1,6 @@
 use anyhow::Result;
 use geojson::Feature;
-use geom::{Distance, Line, PolyLine, Polygon, Ring};
+use geom::{Distance, Line, PolyLine, Polygon, Pt2D, Ring};
 
 use super::{serialize_features, Filter};
 use crate::road::RoadEdge;
@@ -129,33 +129,49 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
     results
 }
 
+// TODO The alternate approach would be to preserve the original OSM way representing the crossing,
+// even as the intersection polygon gets built
 fn get_crossing_line_and_min_width(
     streets: &StreetNetwork,
     intersection: &Intersection,
 ) -> Option<(PolyLine, Distance)> {
-    // Find the pedestrian roads making up the crossing
+    // Find the pedestrian roads making up the crossing, and the endpoint on the side of the
+    // intersection for each
     let mut roads = Vec::new();
     for r in &intersection.roads {
         let road = &streets.roads[r];
         if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt.is_walkable() {
-            roads.push(road);
+            let endpt = center_line_pointed_at(road, intersection).last_pt();
+            roads.push((road, endpt));
         }
     }
-    // TODO Look for examples
-    if roads.len() != 2 {
-        return None;
-    }
+
+    // Normally there are exactly two to connect. But when a tiny road gets consolidated, there'll
+    // be more. Pick the pair farthest away from each other as a heuristic.
+    let ((r1, pt1), (r2, pt2)) = farthest_pair(roads)?;
 
     // Create the line connecting these two roads.
     // TODO Subset the reference_lines by trim_start/end to get more detail
-    let pl = PolyLine::new(vec![
-        center_line_pointed_at(roads[0], intersection).last_pt(),
-        center_line_pointed_at(roads[1], intersection).last_pt(),
-    ])
-    .ok()?;
-
-    let width = roads[0].total_width().min(roads[1].total_width());
+    let pl = PolyLine::new(vec![pt1, pt2]).ok()?;
+    let width = r1.total_width().min(r2.total_width());
     Some((pl, width))
+}
+
+fn farthest_pair(candidates: Vec<(&Road, Pt2D)>) -> Option<((&Road, Pt2D), (&Road, Pt2D))> {
+    let mut max_dist = Distance::ZERO;
+    let mut max_pair = None;
+
+    for idx1 in 0..candidates.len() {
+        for idx2 in (idx1 + 1)..candidates.len() {
+            let dist = candidates[idx1].1.dist_to(candidates[idx2].1);
+            if dist > max_dist {
+                max_dist = dist;
+                max_pair = Some((candidates[idx1], candidates[idx2]));
+            }
+        }
+    }
+
+    max_pair
 }
 
 fn draw_zebra_crossing(streets: &StreetNetwork, intersection: &Intersection) -> Vec<Polygon> {
