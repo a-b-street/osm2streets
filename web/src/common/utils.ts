@@ -119,6 +119,7 @@ const layerZorder = [
   "movements",
   "connected-roads",
   "block",
+  "block-debug",
   "debug-ids",
 
   // TODO This is specific to lane-editor. Figure out how different apps can

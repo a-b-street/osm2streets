@@ -11,6 +11,9 @@ pub struct Block {
     pub kind: BlockKind,
     pub steps: Vec<Step>,
     pub polygon: Polygon,
+    /// Not counting the boundary (described by steps)
+    pub member_roads: HashSet<RoadID>,
+    pub member_intersections: HashSet<IntersectionID>,
 }
 
 #[derive(Clone, Copy)]
@@ -43,10 +46,30 @@ impl StreetNetwork {
         let polygon = trace_polygon(self, &steps, clockwise)?;
         let kind = classify(self, &steps);
 
+        let mut member_roads = HashSet::new();
+        let mut member_intersections = HashSet::new();
+        if sidewalks {
+            // Look for roads inside the polygon geometrically
+            // TODO Slow; could cache an rtree
+            // TODO Incorrect near bridges/tunnels
+            for road in self.roads.values() {
+                if polygon.contains_pt(road.center_line.middle()) {
+                    member_roads.insert(road.id);
+                }
+            }
+            for intersection in self.intersections.values() {
+                if polygon.contains_pt(intersection.polygon.center()) {
+                    member_intersections.insert(intersection.id);
+                }
+            }
+        }
+
         Ok(Block {
             kind,
             steps,
             polygon,
+            member_roads,
+            member_intersections,
         })
     }
 
@@ -95,36 +118,33 @@ impl StreetNetwork {
 
 impl Block {
     pub fn render_polygon(&self, streets: &StreetNetwork) -> Result<String> {
+        let mut features = Vec::new();
+
         let mut f = Feature::from(self.polygon.to_geojson(Some(&streets.gps_bounds)));
         f.set_property("type", "block");
         f.set_property("kind", format!("{:?}", self.kind));
-        serialize_features(vec![f])
-    }
+        features.push(f);
 
-    pub fn render_debug(&self, streets: &StreetNetwork) -> Result<String> {
-        let mut features = Vec::new();
-
-        for step in &self.steps {
-            match step {
-                Step::Node(i) => {
-                    let mut f = Feature::from(
-                        streets.intersections[&i]
-                            .polygon
-                            .to_geojson(Some(&streets.gps_bounds)),
-                    );
-                    f.set_property("type", "intersection");
-                    features.push(f);
-                }
-                Step::Edge(r) => {
-                    let road = &streets.roads[&r];
-                    let mut f = Feature::from(
-                        road.center_line
-                            .make_polygons(road.total_width())
-                            .to_geojson(Some(&streets.gps_bounds)),
-                    );
-                    f.set_property("type", "road");
-                    features.push(f);
-                }
+        // Debugging
+        if false {
+            for r in &self.member_roads {
+                let road = &streets.roads[&r];
+                let mut f = Feature::from(
+                    road.center_line
+                        .make_polygons(road.total_width())
+                        .to_geojson(Some(&streets.gps_bounds)),
+                );
+                f.set_property("type", "member-road");
+                features.push(f);
+            }
+            for i in &self.member_intersections {
+                let mut f = Feature::from(
+                    streets.intersections[i]
+                        .polygon
+                        .to_geojson(Some(&streets.gps_bounds)),
+                );
+                f.set_property("type", "member-intersection");
+                features.push(f);
             }
         }
 

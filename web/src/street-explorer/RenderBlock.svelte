@@ -1,6 +1,6 @@
 <script lang="ts">
   import { caseHelper, layerId, emptyGeojson } from "../common/utils";
-  import { Popup, FillLayer, GeoJSON } from "svelte-maplibre";
+  import { Popup, LineLayer, FillLayer, GeoJSON } from "svelte-maplibre";
   import { blockGj } from "./stores";
   import { network, Legend } from "../common";
 
@@ -26,6 +26,7 @@
 <GeoJSON data={$blockGj}>
   <FillLayer
     {...layerId("block")}
+    filter={["==", ["get", "type"], "block"]}
     paint={{
       "fill-color": caseHelper("kind", colors, "red"),
       "fill-opacity": 0.8,
@@ -35,6 +36,24 @@
       <p>{data.properties.kind}</p>
     </Popup>
   </FillLayer>
+
+  <LineLayer
+    {...layerId("block-debug")}
+    filter={["!=", ["get", "type"], "block"]}
+    paint={{
+      "line-color": [
+        "case",
+        ["==", ["get", "type"], "member-road"],
+        "red",
+        "black",
+      ],
+      "line-width": 5,
+    }}
+  >
+    <Popup openOn="hover" let:data>
+      <pre>{JSON.stringify(data.properties, null, "  ")}</pre>
+    </Popup>
+  </LineLayer>
 </GeoJSON>
 
 <div>
