@@ -140,7 +140,7 @@ fn get_crossing_line_and_min_width(
     let mut roads = Vec::new();
     for r in &intersection.roads {
         let road = &streets.roads[r];
-        if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt.is_walkable() {
+        if road.is_footway() {
             let endpt = center_line_pointed_at(road, intersection).last_pt();
             roads.push((road, endpt));
         }

@@ -220,6 +220,11 @@ impl Road {
             .any(|spec| spec.lt == LaneType::Driving)
     }
 
+    /// Is it only for walking?
+    pub fn is_footway(&self) -> bool {
+        self.lane_specs_ltr.len() == 1 && self.lane_specs_ltr[0].lt.is_walkable()
+    }
+
     pub fn oneway_for_driving(&self) -> Option<Direction> {
         LaneSpec::oneway_for_driving(&self.lane_specs_ltr)
     }

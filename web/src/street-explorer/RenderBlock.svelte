@@ -10,8 +10,8 @@
     blockGj.set(emptyGeojson());
   }
 
-  function findAll() {
-    blockGj.set(JSON.parse($network!.findAllBlocks()));
+  function findAll(sidewalks: boolean) {
+    blockGj.set(JSON.parse($network!.findAllBlocks(sidewalks)));
   }
 
   let colors = {
@@ -19,6 +19,9 @@
     RoadAndCycleLane: "orange",
     CycleLaneAndSidewalk: "yellow",
     DualCarriageway: "purple",
+    // Can reuse colors because we won't display blocks and bundles at the same time
+    RoadBundle: "green",
+    IntersectionBundle: "orange",
     Unknown: "blue",
   };
 </script>
@@ -59,7 +62,8 @@
 <div>
   Blocks
   <button on:click={clear} disabled={!active}>Clear</button>
-  <button on:click={findAll}>Find all</button>
+  <button on:click={() => findAll(false)}>Find all blocks</button>
+  <button on:click={() => findAll(true)}>Find all sidewalk bundles</button>
 </div>
 {#if active}
   <Legend rows={Object.entries(colors)} />
