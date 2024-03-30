@@ -24,6 +24,9 @@ pub enum Step {
 
 #[derive(Debug)]
 pub enum BlockKind {
+    /// A "city" block; the space in between sidewals, probably just containing buildings and not
+    /// roads
+    LandUseBlock,
     /// The space between a road and sidewalk. It might be a wide sidewalk or contain grass.
     RoadAndSidewalk,
     /// The space between a road and cycle lane. It should contain some kind of separation.
@@ -67,7 +70,7 @@ impl StreetNetwork {
             }
         }
         let kind = if sidewalks {
-            classify_bundle(self, &member_roads, &member_intersections)
+            classify_bundle(self, &polygon, &member_roads, &member_intersections)
         } else {
             classify_block(self, &steps)
         };
@@ -286,6 +289,7 @@ fn classify_block(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     }
 
     if has_road && has_sidewalk {
+        // TODO But ignore driveways and service roads?
         return BlockKind::RoadAndSidewalk;
     }
     if has_road && has_cycle_lane {
@@ -300,33 +304,52 @@ fn classify_block(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     if !has_road && has_cycle_lane && has_sidewalk {
         return BlockKind::CycleLaneAndSidewalk;
     }
+    if !has_road && !has_cycle_lane && has_sidewalk {
+        return BlockKind::LandUseBlock;
+    }
 
     BlockKind::Unknown
 }
 
 fn classify_bundle(
     streets: &StreetNetwork,
+    polygon: &Polygon,
     member_roads: &HashSet<RoadID>,
     member_intersections: &HashSet<IntersectionID>,
 ) -> BlockKind {
-    // A simple heuristic to start -- sum the intersection and road polygon area, and see which is
-    // greater
-    // TODO Not working well
-    let mut road_area = 0.0;
-    for r in member_roads {
-        let road = &streets.roads[r];
-        road_area += road.center_line.make_polygons(road.total_width()).area();
+    if member_intersections.is_empty() && member_roads.is_empty() {
+        return BlockKind::LandUseBlock;
     }
 
-    let mut intersection_area = 0.0;
-    for i in member_intersections {
-        intersection_area += streets.intersections[i].polygon.area();
+    // A bad heuristic: sum the intersection and road polygon area, and see which is greater
+    if false {
+        let mut road_area = 0.0;
+        for r in member_roads {
+            let road = &streets.roads[r];
+            road_area += road.center_line.make_polygons(road.total_width()).area();
+        }
+
+        let mut intersection_area = 0.0;
+        for i in member_intersections {
+            intersection_area += streets.intersections[i].polygon.area();
+        }
+
+        if road_area > intersection_area {
+            return BlockKind::RoadBundle;
+        } else {
+            return BlockKind::IntersectionBundle;
+        }
     }
 
-    if road_area > intersection_area {
-        BlockKind::RoadBundle
+    // TODO Check member road names and ignore service roads?
+
+    // See how "square" the block polygon is. Even if it's not axis-aligned, this sometimes works
+    let bounds = polygon.get_bounds();
+    let ratio = bounds.width() / bounds.height();
+    if ratio > 0.5 && ratio < 2.0 {
+        return BlockKind::IntersectionBundle;
     } else {
-        BlockKind::IntersectionBundle
+        return BlockKind::RoadBundle;
     }
 }
 
