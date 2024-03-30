@@ -27,10 +27,10 @@
   function findBlock(left: boolean, sidewalks: boolean) {
     try {
       blockGj.set(JSON.parse($network!.findBlock(props.road, left, sidewalks)));
+      close();
     } catch (err) {
       window.alert(err);
     }
-    close();
   }
 </script>
 
