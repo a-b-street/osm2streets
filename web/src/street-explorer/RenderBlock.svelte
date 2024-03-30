@@ -1,7 +1,13 @@
 <script lang="ts">
   import { caseHelper, layerId, emptyGeojson } from "../common/utils";
-  import { hoverStateFilter, Popup, LineLayer, FillLayer, GeoJSON } from "svelte-maplibre";
-  import { blockGj } from "./stores";
+  import {
+    hoverStateFilter,
+    Popup,
+    LineLayer,
+    FillLayer,
+    GeoJSON,
+  } from "svelte-maplibre";
+  import { showingBundles, blockGj } from "./stores";
   import { network, Legend } from "../common";
 
   $: active = $blockGj.features.length > 0;
@@ -12,19 +18,24 @@
 
   function findAll(sidewalks: boolean) {
     blockGj.set(JSON.parse($network!.findAllBlocks(sidewalks)));
+    showingBundles.set(sidewalks);
   }
 
-  let colors = {
+  let blockColors = {
     LandUseBlock: "grey",
     RoadAndSidewalk: "green",
     RoadAndCycleLane: "orange",
     CycleLaneAndSidewalk: "yellow",
     DualCarriageway: "purple",
-    // Can reuse colors because we won't display blocks and bundles at the same time
-    RoadBundle: "green",
-    IntersectionBundle: "orange",
     Unknown: "blue",
   };
+  let bundleColors = {
+    LandUseBlock: "grey",
+    RoadBundle: "green",
+    IntersectionBundle: "orange",
+  };
+
+  $: colors = $showingBundles ? bundleColors : blockColors;
 </script>
 
 <GeoJSON data={$blockGj} generateId>

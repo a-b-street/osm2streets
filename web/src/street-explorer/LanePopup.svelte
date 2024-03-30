@@ -2,7 +2,7 @@
   import type { Polygon } from "geojson";
   import type { FeatureWithProps } from "../common/utils";
   import { network } from "../common";
-  import { blockGj } from "./stores";
+  import { blockGj, showingBundles } from "./stores";
 
   // Note the input is maplibre's GeoJSONFeature, which stringifies nested properties
   export let data: FeatureWithProps<Polygon> | undefined;
@@ -27,6 +27,7 @@
   function findBlock(left: boolean, sidewalks: boolean) {
     try {
       blockGj.set(JSON.parse($network!.findBlock(props.road, left, sidewalks)));
+      showingBundles.set(sidewalks);
       close();
     } catch (err) {
       window.alert(err);
