@@ -1,6 +1,6 @@
 <script lang="ts">
   import { caseHelper, layerId, emptyGeojson } from "../common/utils";
-  import { Popup, LineLayer, FillLayer, GeoJSON } from "svelte-maplibre";
+  import { hoverStateFilter, Popup, LineLayer, FillLayer, GeoJSON } from "svelte-maplibre";
   import { blockGj } from "./stores";
   import { network, Legend } from "../common";
 
@@ -15,6 +15,7 @@
   }
 
   let colors = {
+    LandUseBlock: "grey",
     RoadAndSidewalk: "green",
     RoadAndCycleLane: "orange",
     CycleLaneAndSidewalk: "yellow",
@@ -26,13 +27,14 @@
   };
 </script>
 
-<GeoJSON data={$blockGj}>
+<GeoJSON data={$blockGj} generateId>
   <FillLayer
     {...layerId("block")}
     filter={["==", ["get", "type"], "block"]}
+    manageHoverState
     paint={{
       "fill-color": caseHelper("kind", colors, "red"),
-      "fill-opacity": 0.8,
+      "fill-opacity": hoverStateFilter(0.8, 0.4),
     }}
   >
     <Popup openOn="hover" let:data>
