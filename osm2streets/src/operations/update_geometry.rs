@@ -14,7 +14,7 @@ impl StreetNetwork {
             .iter()
             .map(|r| self.roads[r].to_input_road(self.config.driving_side))
             .collect::<Vec<_>>();
-        match crate::intersection_polygon(i.id, input_roads, &i.trim_roads_for_merging) {
+        match crate::intersection_polygon(i.id, i.kind, input_roads, &i.trim_roads_for_merging) {
             Ok(results) => {
                 self.intersections.get_mut(&id).unwrap().polygon = results.intersection_polygon;
 
