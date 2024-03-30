@@ -20,7 +20,7 @@ use anyhow::Result;
 use geom::{Distance, PolyLine, Polygon, Pt2D, Ring};
 
 use crate::road::RoadEdge;
-use crate::{IntersectionID, RoadID, StopLine};
+use crate::{IntersectionID, IntersectionKind, RoadID, StopLine};
 
 // For anyone considering removing this indirection in the future: it's used to recalculate one or
 // two intersections at a time in A/B Street's edit mode. Within just this repo, it does seem
@@ -102,6 +102,7 @@ pub struct Results {
 /// to be untrimmed (based on the original reference geometry), and the roads must be ordered clockwise.
 pub fn intersection_polygon(
     intersection_id: IntersectionID,
+    intersection_kind: IntersectionKind,
     input_roads: Vec<InputRoad>,
     trim_roads_for_merging: &BTreeMap<(RoadID, bool), Pt2D>,
 ) -> Result<Results> {
@@ -132,7 +133,11 @@ pub fn intersection_polygon(
     let mut untrimmed_roads = roads.clone();
 
     let mut results = if roads.len() == 1 {
-        terminus::terminus(results, roads.into_values().next().unwrap())
+        terminus::terminus(
+            results,
+            roads.into_values().next().unwrap(),
+            intersection_kind,
+        )
     } else if roads.len() == 2 {
         let mut iter = roads.into_values();
         degenerate::degenerate(results, iter.next().unwrap(), iter.next().unwrap())
