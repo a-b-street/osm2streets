@@ -34,6 +34,10 @@ pub enum BlockKind {
     /// The space between one-way roads. Probably has some kind of physical barrier, not just
     /// markings.
     DualCarriageway,
+    /// A segment of road and all sidepaths and internal connections
+    RoadBundle,
+    /// A possibly complex junction; everything in between all the crossings
+    IntersectionBundle,
     Unknown,
 }
 
@@ -44,7 +48,6 @@ impl StreetNetwork {
         let clockwise = left;
         let steps = walk_around(self, start, clockwise, sidewalks)?;
         let polygon = trace_polygon(self, &steps, clockwise)?;
-        let kind = classify(self, &steps);
 
         let mut member_roads = HashSet::new();
         let mut member_intersections = HashSet::new();
@@ -63,6 +66,11 @@ impl StreetNetwork {
                 }
             }
         }
+        let kind = if sidewalks {
+            classify_bundle(self, &member_roads, &member_intersections)
+        } else {
+            classify_block(self, &steps)
+        };
 
         Ok(Block {
             kind,
@@ -73,17 +81,22 @@ impl StreetNetwork {
         })
     }
 
-    pub fn find_all_blocks(&self) -> Result<String> {
+    // TODO Messy API again
+    pub fn find_all_blocks(&self, sidewalks: bool) -> Result<String> {
         // TODO consider a Left/Right enum instead of bool
         let mut visited_roads: HashSet<(RoadID, bool)> = HashSet::new();
         let mut blocks = Vec::new();
 
         for r in self.roads.keys() {
+            if sidewalks && !self.roads[r].is_footway() {
+                continue;
+            }
+
             for left in [true, false] {
                 if visited_roads.contains(&(*r, left)) {
                     continue;
                 }
-                if let Ok(block) = self.find_block(*r, left, false) {
+                if let Ok(block) = self.find_block(*r, left, sidewalks) {
                     // TODO Put more info in Step to avoid duplicating logic with trace_polygon
                     for pair in block.steps.windows(2) {
                         match (pair[0], pair[1]) {
@@ -211,10 +224,7 @@ fn filter_roads(
     if !sidewalks {
         return roads;
     }
-    roads.retain(|r| {
-        let road = &streets.roads[r];
-        road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt.is_walkable()
-    });
+    roads.retain(|r| streets.roads[r].is_footway());
     roads
 }
 
@@ -252,7 +262,7 @@ fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) ->
     Ok(Ring::deduping_new(pts)?.into_polygon())
 }
 
-fn classify(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
+fn classify_block(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     let mut has_road = false;
     let mut has_cycle_lane = false;
     let mut has_sidewalk = false;
@@ -292,6 +302,32 @@ fn classify(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
     }
 
     BlockKind::Unknown
+}
+
+fn classify_bundle(
+    streets: &StreetNetwork,
+    member_roads: &HashSet<RoadID>,
+    member_intersections: &HashSet<IntersectionID>,
+) -> BlockKind {
+    // A simple heuristic to start -- sum the intersection and road polygon area, and see which is
+    // greater
+    // TODO Not working well
+    let mut road_area = 0.0;
+    for r in member_roads {
+        let road = &streets.roads[r];
+        road_area += road.center_line.make_polygons(road.total_width()).area();
+    }
+
+    let mut intersection_area = 0.0;
+    for i in member_intersections {
+        intersection_area += streets.intersections[i].polygon.area();
+    }
+
+    if road_area > intersection_area {
+        BlockKind::RoadBundle
+    } else {
+        BlockKind::IntersectionBundle
+    }
 }
 
 fn serialize_features(features: Vec<Feature>) -> Result<String> {

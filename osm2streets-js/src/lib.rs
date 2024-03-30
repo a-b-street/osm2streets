@@ -260,8 +260,8 @@ impl JsStreetNetwork {
     }
 
     #[wasm_bindgen(js_name = findAllBlocks)]
-    pub fn find_all_blocks(&self) -> String {
-        self.inner.find_all_blocks().unwrap()
+    pub fn find_all_blocks(&self, sidewalks: bool) -> String {
+        self.inner.find_all_blocks(sidewalks).unwrap()
     }
 }
 
