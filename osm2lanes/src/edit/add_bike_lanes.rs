@@ -36,7 +36,7 @@ impl LaneSpec {
             let mut num_driving_lanes = 0;
             let mut already_has_bike_lane = false;
             for (idx, spec) in side.iter().enumerate() {
-                if spec.lt == LaneType::Parking && parking_lane.is_none() {
+                if matches!(spec.lt, LaneType::Parking(_)) && parking_lane.is_none() {
                     parking_lane = Some(idx);
                 }
                 if spec.lt == LaneType::Driving && first_driving_lane.is_none() {

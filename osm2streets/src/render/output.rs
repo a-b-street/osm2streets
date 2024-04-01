@@ -329,7 +329,7 @@ fn material_from_lane_type(lt: LaneType) -> Option<SurfaceMaterial> {
     match lt {
         Sidewalk | Footway => Some(SurfaceMaterial::Concrete),
 
-        Driving | Parking | Shoulder | SharedLeftTurn | Construction | Buffer(_) | Bus => {
+        Driving | Parking(_) | Shoulder | SharedLeftTurn | Construction | Buffer(_) | Bus => {
             Some(SurfaceMaterial::Asphalt)
         }
 

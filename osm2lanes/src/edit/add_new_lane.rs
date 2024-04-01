@@ -21,7 +21,7 @@ impl LaneSpec {
                     .map(|x| x + 1)
                     .unwrap_or(lanes_ltr.len());
             }
-            LaneType::Biking | LaneType::Bus | LaneType::Parking | LaneType::Construction => {
+            LaneType::Biking | LaneType::Bus | LaneType::Parking(_) | LaneType::Construction => {
                 let relevant_lanes: Vec<&LaneSpec> =
                     lanes_ltr.iter().filter(|x| x.lt == lt).collect();
                 dir = if !relevant_lanes.is_empty() {

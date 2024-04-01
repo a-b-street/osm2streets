@@ -28,7 +28,7 @@ const SHOULDER_THICKNESS: Distance = Distance::const_meters(0.5);
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum LaneType {
     Driving,
-    Parking,
+    Parking(ParkingType),
     Sidewalk,
     // Walkable like a Sidewalk, but very narrow. Used to model pedestrians walking on roads
     // without sidewalks.
@@ -62,13 +62,20 @@ pub enum BufferType {
     Verge,
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum ParkingType {
+    Parallel,
+    Diagonal,
+    Perpendicular,
+}
+
 impl LaneType {
     pub fn is_for_moving_vehicles(self) -> bool {
         match self {
             LaneType::Driving => true,
             LaneType::Biking => true,
             LaneType::Bus => true,
-            LaneType::Parking => false,
+            LaneType::Parking(_) => false,
             LaneType::Sidewalk => false,
             LaneType::Shoulder => false,
             LaneType::SharedLeftTurn => false,
@@ -85,7 +92,7 @@ impl LaneType {
             LaneType::Driving => true,
             LaneType::Biking => true,
             LaneType::Bus => true,
-            LaneType::Parking => false,
+            LaneType::Parking(_) => false,
             LaneType::Sidewalk => true,
             LaneType::Shoulder => true,
             LaneType::SharedLeftTurn => false,
@@ -107,7 +114,7 @@ impl LaneType {
             LaneType::Driving => true,
             LaneType::Biking => true, // FIXME depends on lane vs track
             LaneType::Bus => true,
-            LaneType::Parking => false,
+            LaneType::Parking(_) => false,
             LaneType::Sidewalk => false,
             LaneType::Shoulder => false,
             LaneType::SharedLeftTurn => true,
@@ -126,7 +133,7 @@ impl LaneType {
             LaneType::Driving => true,
             LaneType::Biking => true, // FIXME depends on lane vs track
             LaneType::Bus => true,
-            LaneType::Parking => true, // FIXME depends on on-street vs street-side
+            LaneType::Parking(_) => true, // FIXME depends on on-street vs street-side
             LaneType::Sidewalk => false,
             LaneType::Shoulder => true,
             LaneType::SharedLeftTurn => true,
@@ -156,7 +163,7 @@ impl LaneType {
             SharedUse | Biking => Some(TrafficClass::Bicycle),
             Bus | SharedLeftTurn | Driving => Some(TrafficClass::Motor),
             LightRail => Some(TrafficClass::Rail),
-            Buffer(_) | Shoulder | Construction | Parking => None,
+            Buffer(_) | Shoulder | Construction | Parking(_) => None,
         }
     }
 
@@ -165,7 +172,7 @@ impl LaneType {
             LaneType::Driving => "a general-purpose driving lane",
             LaneType::Biking => "a bike lane",
             LaneType::Bus => "a bus-only lane",
-            LaneType::Parking => "an on-street parking lane",
+            LaneType::Parking(_) => "an on-street parking lane",
             LaneType::Sidewalk => "a sidewalk",
             LaneType::Shoulder => "a shoulder",
             LaneType::SharedLeftTurn => "a shared left-turn lane",
@@ -187,7 +194,9 @@ impl LaneType {
             LaneType::Driving => "driving lane",
             LaneType::Biking => "bike lane",
             LaneType::Bus => "bus lane",
-            LaneType::Parking => "parking lane",
+            LaneType::Parking(ParkingType::Parallel) => "parallel parking lane",
+            LaneType::Parking(ParkingType::Diagonal) => "diagonal parking lane",
+            LaneType::Parking(ParkingType::Perpendicular) => "perpendicular parking lane",
             LaneType::Sidewalk => "sidewalk",
             LaneType::Shoulder => "shoulder",
             LaneType::SharedLeftTurn => "left-turn lane",
@@ -209,7 +218,9 @@ impl LaneType {
             "driving lane" => Some(LaneType::Driving),
             "bike lane" => Some(LaneType::Biking),
             "bus lane" => Some(LaneType::Bus),
-            "parking lane" => Some(LaneType::Parking),
+            "parallel parking lane" => Some(LaneType::Parking(ParkingType::Parallel)),
+            "diagonal parking lane" => Some(LaneType::Parking(ParkingType::Diagonal)),
+            "perpendicular parking lane" => Some(LaneType::Parking(ParkingType::Perpendicular)),
             "sidewalk" => Some(LaneType::Sidewalk),
             "shoulder" => Some(LaneType::Shoulder),
             "left-turn lane" => Some(LaneType::SharedLeftTurn),
@@ -233,7 +244,7 @@ impl LaneType {
             LaneType::Driving => 'd',
             LaneType::Biking => 'b',
             LaneType::Bus => 'B',
-            LaneType::Parking => 'p',
+            LaneType::Parking(_) => 'p',
             LaneType::Sidewalk => 's',
             LaneType::Shoulder => 'S',
             LaneType::SharedLeftTurn => 'C',
@@ -245,13 +256,13 @@ impl LaneType {
         }
     }
 
-    /// The inverse of `to_char`. Always picks one buffer type. Panics on invalid input.
+    /// The inverse of `to_char`. Always picks one buffer and parking type. Panics on invalid input.
     pub fn from_char(x: char) -> LaneType {
         match x {
             'd' => LaneType::Driving,
             'b' => LaneType::Biking,
             'B' => LaneType::Bus,
-            'p' => LaneType::Parking,
+            'p' => LaneType::Parking(ParkingType::Parallel),
             's' => LaneType::Sidewalk,
             'S' => LaneType::Shoulder,
             'C' => LaneType::SharedLeftTurn,
@@ -309,7 +320,7 @@ impl LaneSpec {
                 (Distance::feet(12.0), "normal"),
             ],
             // https://nacto.org/publication/urban-street-design-guide/street-design-elements/lane-width/
-            LaneType::Parking => {
+            LaneType::Parking(_) => {
                 let mut choices = vec![
                     (NORMAL_LANE_THICKNESS, "full lane"),
                     (SERVICE_ROAD_LANE_THICKNESS, "alley"),
@@ -550,11 +561,12 @@ pub struct MapConfig {
     /// If true, roads without explicitly tagged sidewalks may be assigned sidewalks or shoulders.
     /// If false, no inference will occur and separate sidewalks and crossings will be included.
     pub inferred_sidewalks: bool,
-    /// Street parking is divided into spots of this length. 8 meters is a reasonable default, but
-    /// people in some regions might be more accustomed to squeezing into smaller spaces. This
-    /// value can be smaller than the hardcoded maximum car length; cars may render on top of each
-    /// other, but otherwise the simulation doesn't care.
-    pub street_parking_spot_length: Distance,
+    /// Parallel street parking is divided into spots of this length. 8 meters is a reasonable
+    /// default, but people in some regions might be more accustomed to squeezing into smaller
+    /// spaces.
+    pub parallel_street_parking_spot_length: Distance,
+    /// For diagonal and perpendicular parking spots
+    pub vehicle_width_for_parking_spots: Distance,
     /// If true, turns on red which do not conflict crossing traffic ('right on red') are allowed
     pub turn_on_red: bool,
     /// OSM railway=rail will be included as light rail if so. Cosmetic only.
@@ -571,7 +583,8 @@ impl MapConfig {
             country_code: String::new(),
             bikes_can_use_bus_lanes: true,
             inferred_sidewalks: false,
-            street_parking_spot_length: Distance::meters(8.0),
+            parallel_street_parking_spot_length: Distance::meters(8.0),
+            vehicle_width_for_parking_spots: Distance::meters(3.0),
             turn_on_red: true,
             include_railroads: true,
             inferred_kerbs: true,

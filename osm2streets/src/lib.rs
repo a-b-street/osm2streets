@@ -27,7 +27,7 @@ pub use self::types::NamePerLanguage;
 // Re-export osm2lanes types for an easier refactor. TODO Stop doing this.
 pub use osm2lanes::{
     get_lane_specs_ltr, osm, BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig,
-    Placement, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
+    ParkingType, Placement, NORMAL_LANE_THICKNESS, SIDEWALK_THICKNESS,
 };
 
 mod block;
