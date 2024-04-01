@@ -3,7 +3,9 @@ use geojson::Feature;
 use geom::{ArrowCap, Distance, Line, PolyLine, Polygon};
 
 use super::{serialize_features, Filter};
-use crate::{BufferType, Direction, DrivingSide, LaneSpec, LaneType, Road, StreetNetwork};
+use crate::{
+    BufferType, Direction, DrivingSide, LaneSpec, LaneType, ParkingType, Road, StreetNetwork,
+};
 
 impl StreetNetwork {
     /// Generate polygons representing lane markings, with a property indicating type.
@@ -141,10 +143,19 @@ impl StreetNetwork {
             }
 
             for (lane, center) in road.lane_specs_ltr.iter().zip(lane_centers.iter()) {
-                if lane.lt != LaneType::Parking {
-                    continue;
-                }
-                for polygon in draw_parking_lines(lane, center, self) {
+                let polygons = match lane.lt {
+                    LaneType::Parking(ParkingType::Parallel) => {
+                        draw_parallel_parking_lines(lane, center, self)
+                    }
+                    LaneType::Parking(ParkingType::Diagonal) => {
+                        draw_diagonal_parking_lines(lane, center, self)
+                    }
+                    LaneType::Parking(ParkingType::Perpendicular) => {
+                        draw_perpendicular_parking_lines(lane, center, self)
+                    }
+                    _ => continue,
+                };
+                for polygon in polygons {
                     let mut f = Feature::from(polygon.to_geojson(gps_bounds));
                     f.set_property("type", "parking hatch");
                     features.push(f);
@@ -231,11 +242,16 @@ fn draw_stop_lines(
     results
 }
 
-fn draw_parking_lines(lane: &LaneSpec, center: &PolyLine, streets: &StreetNetwork) -> Vec<Polygon> {
+fn draw_parallel_parking_lines(
+    lane: &LaneSpec,
+    center: &PolyLine,
+    streets: &StreetNetwork,
+) -> Vec<Polygon> {
     let mut result = Vec::new();
 
     // No spots next to intersections
-    let spots = (center.length() / streets.config.street_parking_spot_length).floor() - 2.0;
+    let spots =
+        (center.length() / streets.config.parallel_street_parking_spot_length).floor() - 2.0;
     let num_spots = if spots >= 1.0 {
         spots as usize
     } else {
@@ -244,8 +260,9 @@ fn draw_parking_lines(lane: &LaneSpec, center: &PolyLine, streets: &StreetNetwor
 
     let leg_length = Distance::meters(1.0);
     for idx in 0..=num_spots {
-        let (pt, lane_angle) =
-            center.must_dist_along(streets.config.street_parking_spot_length * (1.0 + idx as f64));
+        let (pt, lane_angle) = center.must_dist_along(
+            streets.config.parallel_street_parking_spot_length * (1.0 + idx as f64),
+        );
         let perp_angle = if streets.config.driving_side == DrivingSide::Right {
             lane_angle.rotate_degs(270.0)
         } else {
@@ -264,6 +281,78 @@ fn draw_parking_lines(lane: &LaneSpec, center: &PolyLine, streets: &StreetNetwor
         // Lower leg
         let p3 = t_pt.project_away(leg_length, lane_angle.opposite());
         result.push(Line::must_new(t_pt, p3).make_polygons(Distance::meters(0.25)));
+    }
+
+    result
+}
+
+fn draw_diagonal_parking_lines(
+    lane: &LaneSpec,
+    center: &PolyLine,
+    streets: &StreetNetwork,
+) -> Vec<Polygon> {
+    let mut result = Vec::new();
+
+    // No spots next to intersections
+    // TODO This needs to account for the 45 degree angle too
+    let spots = (center.length() / streets.config.vehicle_width_for_parking_spots).floor() - 2.0;
+    let num_spots = if spots >= 1.0 {
+        spots as usize
+    } else {
+        return result;
+    };
+
+    // TODO Would PolyLine::step_along be simpler?
+    for idx in 0..=num_spots {
+        let (pt, lane_angle) = center
+            .must_dist_along(streets.config.vehicle_width_for_parking_spots * (1.0 + idx as f64));
+        let offset = if lane.dir == Direction::Forward {
+            -45.0
+        } else {
+            45.0
+        };
+        let diag_angle = if streets.config.driving_side == DrivingSide::Right {
+            lane_angle.rotate_degs(270.0 + offset)
+        } else {
+            lane_angle.rotate_degs(90.0 + offset)
+        };
+        // Find the inside and outside of the lane
+        // TODO Do trig, the length changes
+        let outside_pt = pt.project_away(lane.width * 0.4, diag_angle);
+        let inside_pt = pt.project_away(lane.width * 0.5, diag_angle.opposite());
+        result.push(Line::must_new(outside_pt, inside_pt).make_polygons(Distance::meters(0.25)));
+    }
+
+    result
+}
+
+fn draw_perpendicular_parking_lines(
+    lane: &LaneSpec,
+    center: &PolyLine,
+    streets: &StreetNetwork,
+) -> Vec<Polygon> {
+    let mut result = Vec::new();
+
+    // No spots next to intersections
+    let spots = (center.length() / streets.config.vehicle_width_for_parking_spots).floor() - 2.0;
+    let num_spots = if spots >= 1.0 {
+        spots as usize
+    } else {
+        return result;
+    };
+
+    for idx in 0..=num_spots {
+        let (pt, lane_angle) = center
+            .must_dist_along(streets.config.vehicle_width_for_parking_spots * (1.0 + idx as f64));
+        let perp_angle = if streets.config.driving_side == DrivingSide::Right {
+            lane_angle.rotate_degs(270.0)
+        } else {
+            lane_angle.rotate_degs(90.0)
+        };
+        // Find the inside and outside of the lane
+        let outside_pt = pt.project_away(lane.width * 0.4, perp_angle);
+        let inside_pt = pt.project_away(lane.width * 0.5, perp_angle.opposite());
+        result.push(Line::must_new(outside_pt, inside_pt).make_polygons(Distance::meters(0.25)));
     }
 
     result

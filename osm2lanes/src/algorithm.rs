@@ -4,14 +4,19 @@ use enumset::EnumSet;
 use geom::Distance;
 use muv_osm::{
     conditional::MatchSituation,
-    lanes::{lanes, travel::TravelLane, Lane, LaneIndex, LaneVariant},
+    lanes::{
+        lanes,
+        parking::{ParkingLane, ParkingOrientation},
+        travel::TravelLane,
+        Lane, LaneIndex, LaneVariant,
+    },
     units::{self, Quantity},
-    AccessLevel, Conditional, Lifecycle, Location, TMode, TModes, Tag, Vehicle,
+    AccessLevel, Conditional, Lifecycle, Location, TMode, TModes, Tag, Taglike, Vehicle,
 };
 
 use crate::{
     osm::{self, HIGHWAY},
-    BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, TurnDirection,
+    BufferType, Direction, DrivingSide, LaneSpec, LaneType, MapConfig, ParkingType, TurnDirection,
 };
 
 /// Purely from OSM tags, determine the lanes that a road segment has.
@@ -114,7 +119,7 @@ fn from_lane(
 ) -> LaneSpec {
     let (lt, dir, turns) = match &lane.variant {
         LaneVariant::Travel(t) => travel_lane(t, lane.is_sidepath, traffic_direction, date_time),
-        LaneVariant::Parking(_) => parking_lane(traffic_direction),
+        LaneVariant::Parking(p) => parking_lane(p, traffic_direction),
     };
 
     let width = lane.width.map_or_else(
@@ -296,8 +301,20 @@ fn travel_lane(
     (LaneType::Construction, Direction::Forward, EnumSet::new())
 }
 
-fn parking_lane(traffic_direction: Direction) -> (LaneType, Direction, EnumSet<TurnDirection>) {
-    (LaneType::Parking, traffic_direction, EnumSet::new())
+fn parking_lane(
+    p: &ParkingLane,
+    traffic_direction: Direction,
+) -> (LaneType, Direction, EnumSet<TurnDirection>) {
+    let parking_type = match p.orientation {
+        Some(ParkingOrientation::Parallel) | None => ParkingType::Parallel,
+        Some(ParkingOrientation::Diagonal) => ParkingType::Diagonal,
+        Some(ParkingOrientation::Perpendicular) => ParkingType::Perpendicular,
+    };
+    (
+        LaneType::Parking(parking_type),
+        traffic_direction,
+        EnumSet::new(),
+    )
 }
 
 fn distance_from_muv(qty: Quantity<units::Distance>) -> Distance {

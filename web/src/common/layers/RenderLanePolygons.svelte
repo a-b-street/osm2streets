@@ -29,7 +29,9 @@
         // TODO Could we express the Rust enum in TS and be type-safe here?
         {
           Driving: "black",
-          Parking: "#333333",
+          "Parking(Parallel)": "#333333",
+          "Parking(Diagonal)": "#333333",
+          "Parking(Perpendicular)": "#333333",
           Sidewalk: "#CCCCCC",
           Shoulder: "#CCCCCC",
           Biking: "#0F7D4B",
@@ -39,7 +41,7 @@
           LightRail: "#844204",
           Footway: "#DDDDE8",
           SharedUse: "#DED68A",
-          // This is the only type used currently
+          // These are the only types used currently
           "Buffer(Planters)": "#555555",
           "Buffer(Curb)": "white",
         },
