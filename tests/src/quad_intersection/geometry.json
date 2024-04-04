@@ -174,32 +174,24 @@
         "coordinates": [
           [
             [
-              -122.30364838339237,
-              47.64371598426791
+              -122.30365732797026,
+              47.64371563712977
             ],
             [
-              -122.30357759161684,
-              47.643722326283715
+              -122.30305888752332,
+              47.64370874113187
             ],
             [
-              -122.30306083634943,
-              47.64370878699727
+              -122.30305683191223,
+              47.6437896674839
             ],
             [
-              -122.30305616717565,
-              47.643789664785935
+              -122.30365527235917,
+              47.64379656348181
             ],
             [
-              -122.3035832085074,
-              47.64380347386886
-            ],
-            [
-              -122.30366421693705,
-              47.643796216343674
-            ],
-            [
-              -122.30364838339237,
-              47.64371598426791
+              -122.30365732797026,
+              47.64371563712977
             ]
           ]
         ],
@@ -210,6 +202,7 @@
         "id": 5,
         "layer": 0,
         "osm_way_ids": [
+          6390208,
           6390208
         ],
         "src_i": 40,
@@ -222,8 +215,8 @@
         "coordinates": [
           [
             [
-              -122.30305676784124,
-              47.64370872764205
+              -122.30305743524744,
+              47.64370873034001
             ],
             [
               -122.30220130125815,
@@ -234,12 +227,12 @@
               47.643786768970436
             ],
             [
-              -122.30305616450603,
-              47.643789664785935
+              -122.30305683191223,
+              47.6437896674839
             ],
             [
-              -122.30305676784124,
-              47.64370872764205
+              -122.30305743524744,
+              47.64370873034001
             ]
           ]
         ],
@@ -247,9 +240,10 @@
       },
       "properties": {
         "dst_i": 53,
-        "id": 6,
+        "id": 7,
         "layer": 0,
         "osm_way_ids": [
+          6390208,
           6390208
         ],
         "src_i": 4,
@@ -287,7 +281,7 @@
       },
       "properties": {
         "dst_i": 7,
-        "id": 7,
+        "id": 9,
         "layer": 0,
         "osm_way_ids": [
           6390208
@@ -327,7 +321,7 @@
       },
       "properties": {
         "dst_i": 48,
-        "id": 8,
+        "id": 10,
         "layer": 0,
         "osm_way_ids": [
           6486418
@@ -367,7 +361,7 @@
       },
       "properties": {
         "dst_i": 7,
-        "id": 9,
+        "id": 11,
         "layer": 0,
         "osm_way_ids": [
           6486418
@@ -407,7 +401,7 @@
       },
       "properties": {
         "dst_i": 10,
-        "id": 10,
+        "id": 12,
         "layer": 0,
         "osm_way_ids": [
           40416108
@@ -447,7 +441,7 @@
       },
       "properties": {
         "dst_i": 12,
-        "id": 11,
+        "id": 13,
         "layer": 0,
         "osm_way_ids": [
           130470645
@@ -511,7 +505,7 @@
       },
       "properties": {
         "dst_i": 14,
-        "id": 12,
+        "id": 14,
         "layer": 0,
         "osm_way_ids": [
           272598465
@@ -559,7 +553,7 @@
       },
       "properties": {
         "dst_i": 16,
-        "id": 13,
+        "id": 15,
         "layer": 0,
         "osm_way_ids": [
           332060228
@@ -607,7 +601,7 @@
       },
       "properties": {
         "dst_i": 6,
-        "id": 15,
+        "id": 17,
         "layer": 0,
         "osm_way_ids": [
           332060243
@@ -646,8 +640,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 73,
-        "id": 16,
+        "dst_i": 79,
+        "id": 18,
         "layer": 0,
         "osm_way_ids": [
           332060248
@@ -687,12 +681,12 @@
       },
       "properties": {
         "dst_i": 17,
-        "id": 17,
+        "id": 19,
         "layer": 0,
         "osm_way_ids": [
           332060248
         ],
-        "src_i": 73,
+        "src_i": 79,
         "type": "road"
       },
       "type": "Feature"
@@ -726,8 +720,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 74,
-        "id": 19,
+        "dst_i": 80,
+        "id": 21,
         "layer": 0,
         "osm_way_ids": [
           332060263
@@ -775,12 +769,12 @@
       },
       "properties": {
         "dst_i": 22,
-        "id": 20,
+        "id": 22,
         "layer": 0,
         "osm_way_ids": [
           332060263
         ],
-        "src_i": 74,
+        "src_i": 80,
         "type": "road"
       },
       "type": "Feature"
@@ -815,7 +809,7 @@
       },
       "properties": {
         "dst_i": 24,
-        "id": 21,
+        "id": 23,
         "layer": 0,
         "osm_way_ids": [
           361443212
@@ -871,7 +865,7 @@
       },
       "properties": {
         "dst_i": 26,
-        "id": 22,
+        "id": 24,
         "layer": -2,
         "osm_way_ids": [
           372672863
@@ -911,7 +905,7 @@
       },
       "properties": {
         "dst_i": 28,
-        "id": 23,
+        "id": 25,
         "layer": 0,
         "osm_way_ids": [
           424636846
@@ -950,8 +944,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 79,
-        "id": 24,
+        "dst_i": 85,
+        "id": 26,
         "layer": 0,
         "osm_way_ids": [
           424636850
@@ -991,12 +985,12 @@
       },
       "properties": {
         "dst_i": 17,
-        "id": 25,
+        "id": 27,
         "layer": 0,
         "osm_way_ids": [
           424636850
         ],
-        "src_i": 79,
+        "src_i": 85,
         "type": "road"
       },
       "type": "Feature"
@@ -1031,7 +1025,7 @@
       },
       "properties": {
         "dst_i": 27,
-        "id": 26,
+        "id": 28,
         "layer": -1,
         "osm_way_ids": [
           424807771
@@ -1071,7 +1065,7 @@
       },
       "properties": {
         "dst_i": 31,
-        "id": 28,
+        "id": 30,
         "layer": -1,
         "osm_way_ids": [
           424807773
@@ -1111,7 +1105,7 @@
       },
       "properties": {
         "dst_i": 33,
-        "id": 31,
+        "id": 33,
         "layer": 0,
         "osm_way_ids": [
           428224940
@@ -1151,7 +1145,7 @@
       },
       "properties": {
         "dst_i": 32,
-        "id": 32,
+        "id": 34,
         "layer": 0,
         "osm_way_ids": [
           431103956
@@ -1191,7 +1185,7 @@
       },
       "properties": {
         "dst_i": 35,
-        "id": 33,
+        "id": 35,
         "layer": 0,
         "osm_way_ids": [
           432829181
@@ -1230,8 +1224,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 64,
-        "id": 34,
+        "dst_i": 70,
+        "id": 36,
         "layer": 0,
         "osm_way_ids": [
           531617255
@@ -1279,12 +1273,12 @@
       },
       "properties": {
         "dst_i": 36,
-        "id": 35,
+        "id": 37,
         "layer": 0,
         "osm_way_ids": [
           531617255
         ],
-        "src_i": 64,
+        "src_i": 70,
         "type": "road"
       },
       "type": "Feature"
@@ -1319,7 +1313,7 @@
       },
       "properties": {
         "dst_i": 38,
-        "id": 36,
+        "id": 38,
         "layer": 0,
         "osm_way_ids": [
           607798207
@@ -1366,8 +1360,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 64,
-        "id": 37,
+        "dst_i": 70,
+        "id": 39,
         "layer": 0,
         "osm_way_ids": [
           607798222,
@@ -1408,12 +1402,12 @@
       },
       "properties": {
         "dst_i": 17,
-        "id": 38,
+        "id": 40,
         "layer": 0,
         "osm_way_ids": [
           607798222
         ],
-        "src_i": 64,
+        "src_i": 70,
         "type": "road"
       },
       "type": "Feature"
@@ -1448,7 +1442,7 @@
       },
       "properties": {
         "dst_i": 40,
-        "id": 39,
+        "id": 41,
         "layer": 0,
         "osm_way_ids": [
           607991778
@@ -1488,7 +1482,7 @@
       },
       "properties": {
         "dst_i": 41,
-        "id": 40,
+        "id": 42,
         "layer": 0,
         "osm_way_ids": [
           607991778
@@ -1528,7 +1522,7 @@
       },
       "properties": {
         "dst_i": 52,
-        "id": 41,
+        "id": 43,
         "layer": 0,
         "osm_way_ids": [
           607992165,
@@ -1577,7 +1571,7 @@
       },
       "properties": {
         "dst_i": 47,
-        "id": 42,
+        "id": 44,
         "layer": 0,
         "osm_way_ids": [
           607992167
@@ -1617,7 +1611,7 @@
       },
       "properties": {
         "dst_i": 45,
-        "id": 43,
+        "id": 45,
         "layer": 0,
         "osm_way_ids": [
           607992167
@@ -1657,7 +1651,7 @@
       },
       "properties": {
         "dst_i": 47,
-        "id": 44,
+        "id": 46,
         "layer": 0,
         "osm_way_ids": [
           607992280
@@ -1697,7 +1691,7 @@
       },
       "properties": {
         "dst_i": 46,
-        "id": 46,
+        "id": 48,
         "layer": 0,
         "osm_way_ids": [
           607992282
@@ -1745,7 +1739,7 @@
       },
       "properties": {
         "dst_i": 51,
-        "id": 47,
+        "id": 49,
         "layer": 0,
         "osm_way_ids": [
           607992284
@@ -1785,7 +1779,7 @@
       },
       "properties": {
         "dst_i": 53,
-        "id": 48,
+        "id": 50,
         "layer": 0,
         "osm_way_ids": [
           607992285
@@ -1825,7 +1819,7 @@
       },
       "properties": {
         "dst_i": 48,
-        "id": 49,
+        "id": 51,
         "layer": 0,
         "osm_way_ids": [
           607992285
@@ -1865,7 +1859,7 @@
       },
       "properties": {
         "dst_i": 55,
-        "id": 51,
+        "id": 53,
         "layer": 0,
         "osm_way_ids": [
           607992289
@@ -1905,7 +1899,7 @@
       },
       "properties": {
         "dst_i": 50,
-        "id": 52,
+        "id": 54,
         "layer": 0,
         "osm_way_ids": [
           607992289
@@ -1945,7 +1939,7 @@
       },
       "properties": {
         "dst_i": 54,
-        "id": 53,
+        "id": 55,
         "layer": 0,
         "osm_way_ids": [
           607992290
@@ -1992,8 +1986,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 56,
-        "id": 54,
+        "dst_i": 62,
+        "id": 59,
         "layer": -1,
         "osm_way_ids": [
           760445304
@@ -2040,13 +2034,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 58,
-        "id": 55,
+        "dst_i": 64,
+        "id": 60,
         "layer": -2,
         "osm_way_ids": [
           824708856
         ],
-        "src_i": 57,
+        "src_i": 63,
         "type": "road"
       },
       "type": "Feature"
@@ -2096,13 +2090,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 93,
-        "id": 56,
+        "dst_i": 99,
+        "id": 61,
         "layer": 0,
         "osm_way_ids": [
           981013925
         ],
-        "src_i": 59,
+        "src_i": 65,
         "type": "road"
       },
       "type": "Feature"
@@ -2136,13 +2130,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 62,
-        "id": 58,
+        "dst_i": 68,
+        "id": 63,
         "layer": 0,
         "osm_way_ids": [
           981013926
         ],
-        "src_i": 61,
+        "src_i": 67,
         "type": "road"
       },
       "type": "Feature"
@@ -2176,13 +2170,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 64,
-        "id": 59,
+        "dst_i": 70,
+        "id": 64,
         "layer": 0,
         "osm_way_ids": [
           981013927
         ],
-        "src_i": 63,
+        "src_i": 69,
         "type": "road"
       },
       "type": "Feature"
@@ -2224,14 +2218,14 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 83,
-        "id": 61,
+        "dst_i": 89,
+        "id": 66,
         "layer": 0,
         "osm_way_ids": [
           981013927,
           981013928
         ],
-        "src_i": 64,
+        "src_i": 70,
         "type": "road"
       },
       "type": "Feature"
@@ -2289,13 +2283,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 67,
-        "id": 63,
+        "dst_i": 73,
+        "id": 68,
         "layer": 0,
         "osm_way_ids": [
           981013928
         ],
-        "src_i": 83,
+        "src_i": 89,
         "type": "road"
       },
       "type": "Feature"
@@ -2330,13 +2324,13 @@
       },
       "properties": {
         "dst_i": 29,
-        "id": 64,
+        "id": 69,
         "layer": -1,
         "osm_way_ids": [
           981053035,
           981053036
         ],
-        "src_i": 68,
+        "src_i": 74,
         "type": "road"
       },
       "type": "Feature"
@@ -2378,13 +2372,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 56,
-        "id": 66,
+        "dst_i": 62,
+        "id": 71,
         "layer": -1,
         "osm_way_ids": [
           981053037
         ],
-        "src_i": 70,
+        "src_i": 76,
         "type": "road"
       },
       "type": "Feature"
@@ -2418,8 +2412,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 70,
-        "id": 67,
+        "dst_i": 76,
+        "id": 72,
         "layer": -1,
         "osm_way_ids": [
           981053038,
@@ -2459,8 +2453,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 87,
-        "id": 68,
+        "dst_i": 93,
+        "id": 73,
         "layer": 0,
         "osm_way_ids": [
           1000034195
@@ -2499,14 +2493,14 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 93,
-        "id": 69,
+        "dst_i": 99,
+        "id": 74,
         "layer": 0,
         "osm_way_ids": [
           1000034195,
           981013925
         ],
-        "src_i": 87,
+        "src_i": 93,
         "type": "road"
       },
       "type": "Feature"
@@ -2540,8 +2534,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 78,
-        "id": 70,
+        "dst_i": 84,
+        "id": 75,
         "layer": 0,
         "osm_way_ids": [
           1000034196
@@ -2581,12 +2575,12 @@
       },
       "properties": {
         "dst_i": 15,
-        "id": 71,
+        "id": 76,
         "layer": 0,
         "osm_way_ids": [
           1000034196
         ],
-        "src_i": 78,
+        "src_i": 84,
         "type": "road"
       },
       "type": "Feature"
@@ -2620,13 +2614,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 67,
-        "id": 72,
+        "dst_i": 73,
+        "id": 77,
         "layer": 0,
         "osm_way_ids": [
           1000034197
         ],
-        "src_i": 71,
+        "src_i": 77,
         "type": "road"
       },
       "type": "Feature"
@@ -2660,13 +2654,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 73,
-        "id": 73,
+        "dst_i": 79,
+        "id": 78,
         "layer": 0,
         "osm_way_ids": [
           1000034200
         ],
-        "src_i": 72,
+        "src_i": 78,
         "type": "road"
       },
       "type": "Feature"
@@ -2700,13 +2694,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 74,
-        "id": 74,
+        "dst_i": 80,
+        "id": 79,
         "layer": 0,
         "osm_way_ids": [
           1000034200
         ],
-        "src_i": 73,
+        "src_i": 79,
         "type": "road"
       },
       "type": "Feature"
@@ -2740,13 +2734,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 83,
-        "id": 75,
+        "dst_i": 89,
+        "id": 80,
         "layer": 0,
         "osm_way_ids": [
           1000034200
         ],
-        "src_i": 74,
+        "src_i": 80,
         "type": "road"
       },
       "type": "Feature"
@@ -2780,13 +2774,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 72,
-        "id": 76,
+        "dst_i": 78,
+        "id": 81,
         "layer": 0,
         "osm_way_ids": [
           1000034201
         ],
-        "src_i": 76,
+        "src_i": 82,
         "type": "road"
       },
       "type": "Feature"
@@ -2820,13 +2814,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 78,
-        "id": 77,
+        "dst_i": 84,
+        "id": 82,
         "layer": 0,
         "osm_way_ids": [
           1000034202
         ],
-        "src_i": 77,
+        "src_i": 83,
         "type": "road"
       },
       "type": "Feature"
@@ -2860,13 +2854,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 79,
-        "id": 78,
+        "dst_i": 85,
+        "id": 83,
         "layer": 0,
         "osm_way_ids": [
           1000034202
         ],
-        "src_i": 78,
+        "src_i": 84,
         "type": "road"
       },
       "type": "Feature"
@@ -2900,13 +2894,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 59,
-        "id": 79,
+        "dst_i": 65,
+        "id": 84,
         "layer": 0,
         "osm_way_ids": [
           1000034202
         ],
-        "src_i": 79,
+        "src_i": 85,
         "type": "road"
       },
       "type": "Feature"
@@ -2964,13 +2958,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 80,
-        "id": 80,
+        "dst_i": 86,
+        "id": 85,
         "layer": 0,
         "osm_way_ids": [
           1036136082
         ],
-        "src_i": 62,
+        "src_i": 68,
         "type": "road"
       },
       "type": "Feature"
@@ -3004,13 +2998,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 63,
-        "id": 81,
+        "dst_i": 69,
+        "id": 86,
         "layer": 0,
         "osm_way_ids": [
           1036136084
         ],
-        "src_i": 80,
+        "src_i": 86,
         "type": "road"
       },
       "type": "Feature"
@@ -3045,7 +3039,7 @@
       },
       "properties": {
         "dst_i": 17,
-        "id": 82,
+        "id": 87,
         "layer": 0,
         "osm_way_ids": [
           1036136085
@@ -3084,13 +3078,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 81,
-        "id": 83,
+        "dst_i": 87,
+        "id": 88,
         "layer": -1,
         "osm_way_ids": [
           1097566102
         ],
-        "src_i": 56,
+        "src_i": 62,
         "type": "road"
       },
       "type": "Feature"
@@ -3124,13 +3118,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 88,
-        "id": 84,
+        "dst_i": 94,
+        "id": 89,
         "layer": 0,
         "osm_way_ids": [
           1160299033
         ],
-        "src_i": 82,
+        "src_i": 88,
         "type": "road"
       },
       "type": "Feature"
@@ -3164,13 +3158,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 61,
-        "id": 85,
+        "dst_i": 67,
+        "id": 90,
         "layer": 0,
         "osm_way_ids": [
           1160299033
         ],
-        "src_i": 88,
+        "src_i": 94,
         "type": "road"
       },
       "type": "Feature"
@@ -3205,7 +3199,7 @@
       },
       "properties": {
         "dst_i": 13,
-        "id": 86,
+        "id": 91,
         "layer": 0,
         "osm_way_ids": [
           1160303898
@@ -3244,8 +3238,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 76,
-        "id": 87,
+        "dst_i": 82,
+        "id": 92,
         "layer": 0,
         "osm_way_ids": [
           1160303898
@@ -3292,13 +3286,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 77,
-        "id": 88,
+        "dst_i": 83,
+        "id": 93,
         "layer": 0,
         "osm_way_ids": [
           1160303898
         ],
-        "src_i": 76,
+        "src_i": 82,
         "type": "road"
       },
       "type": "Feature"
@@ -3333,7 +3327,7 @@
       },
       "properties": {
         "dst_i": 39,
-        "id": 90,
+        "id": 95,
         "layer": 0,
         "osm_way_ids": [
           1160303901
@@ -3389,12 +3383,12 @@
       },
       "properties": {
         "dst_i": 51,
-        "id": 91,
+        "id": 96,
         "layer": 0,
         "osm_way_ids": [
           1160310196
         ],
-        "src_i": 84,
+        "src_i": 90,
         "type": "road"
       },
       "type": "Feature"
@@ -3429,12 +3423,12 @@
       },
       "properties": {
         "dst_i": 34,
-        "id": 92,
+        "id": 97,
         "layer": 0,
         "osm_way_ids": [
           1179848484
         ],
-        "src_i": 85,
+        "src_i": 91,
         "type": "road"
       },
       "type": "Feature"
@@ -3484,13 +3478,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 87,
-        "id": 93,
+        "dst_i": 93,
+        "id": 98,
         "layer": 0,
         "osm_way_ids": [
           1179848485
         ],
-        "src_i": 86,
+        "src_i": 92,
         "type": "road"
       },
       "type": "Feature"
@@ -3525,12 +3519,12 @@
       },
       "properties": {
         "dst_i": 23,
-        "id": 94,
+        "id": 99,
         "layer": 0,
         "osm_way_ids": [
           1179848485
         ],
-        "src_i": 87,
+        "src_i": 93,
         "type": "road"
       },
       "type": "Feature"
@@ -3564,13 +3558,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 88,
-        "id": 95,
+        "dst_i": 94,
+        "id": 100,
         "layer": 0,
         "osm_way_ids": [
           1191845168
         ],
-        "src_i": 85,
+        "src_i": 91,
         "type": "road"
       },
       "type": "Feature"
@@ -3604,13 +3598,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 89,
-        "id": 96,
+        "dst_i": 95,
+        "id": 101,
         "layer": 0,
         "osm_way_ids": [
           1191845168
         ],
-        "src_i": 88,
+        "src_i": 94,
         "type": "road"
       },
       "type": "Feature"
@@ -3644,13 +3638,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 90,
-        "id": 97,
+        "dst_i": 96,
+        "id": 102,
         "layer": 0,
         "osm_way_ids": [
           1191845169
         ],
-        "src_i": 82,
+        "src_i": 88,
         "type": "road"
       },
       "type": "Feature"
@@ -3684,8 +3678,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 85,
-        "id": 99,
+        "dst_i": 91,
+        "id": 104,
         "layer": 0,
         "osm_way_ids": [
           1243637471
@@ -3724,13 +3718,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 93,
-        "id": 100,
+        "dst_i": 99,
+        "id": 105,
         "layer": 0,
         "osm_way_ids": [
           1249280746
         ],
-        "src_i": 92,
+        "src_i": 98,
         "type": "road"
       },
       "type": "Feature"
@@ -3764,13 +3758,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 94,
-        "id": 101,
+        "dst_i": 100,
+        "id": 106,
         "layer": 0,
         "osm_way_ids": [
           1249280746
         ],
-        "src_i": 93,
+        "src_i": 99,
         "type": "road"
       },
       "type": "Feature"
@@ -3804,8 +3798,8 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 92,
-        "id": 102,
+        "dst_i": 98,
+        "id": 107,
         "layer": 0,
         "osm_way_ids": [
           1249280749,
@@ -3846,12 +3840,12 @@
       },
       "properties": {
         "dst_i": 23,
-        "id": 103,
+        "id": 108,
         "layer": 0,
         "osm_way_ids": [
           1249280749
         ],
-        "src_i": 92,
+        "src_i": 98,
         "type": "road"
       },
       "type": "Feature"
@@ -3885,13 +3879,13 @@
         "type": "Polygon"
       },
       "properties": {
-        "dst_i": 92,
-        "id": 104,
+        "dst_i": 98,
+        "id": 109,
         "layer": 0,
         "osm_way_ids": [
           1249285492
         ],
-        "src_i": 85,
+        "src_i": 91,
         "type": "road"
       },
       "type": "Feature"
@@ -4008,7 +4002,7 @@
         "id": 3,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #1 -> Road #28"
+          "Road #1 -> Road #30"
         ],
         "osm_node_ids": [
           29464212
@@ -4022,16 +4016,16 @@
         "coordinates": [
           [
             [
-              -122.30306083768424,
-              47.64370878699727
+              -122.30305888752332,
+              47.64370874113187
             ],
             [
-              -122.30305616851047,
-              47.643789664785935
+              -122.30305683191223,
+              47.6437896674839
             ],
             [
-              -122.30305676784124,
-              47.64370872764205
+              -122.30305743524744,
+              47.64370873034001
             ],
             [
               -122.30304696898342,
@@ -4042,8 +4036,8 @@
               47.643743673480145
             ],
             [
-              -122.30306083768424,
-              47.64370878699727
+              -122.30305888752332,
+              47.64370874113187
             ]
           ]
         ],
@@ -4055,10 +4049,10 @@
         "id": 4,
         "intersection_kind": "Intersection",
         "movements": [
-          "Road #5 -> Road #6",
+          "Road #5 -> Road #7",
           "Road #5 -> Road #2",
-          "Road #6 -> Road #5",
-          "Road #6 -> Road #2"
+          "Road #7 -> Road #5",
+          "Road #7 -> Road #2"
         ],
         "osm_node_ids": [
           4303556051
@@ -4144,9 +4138,9 @@
         "id": 6,
         "intersection_kind": "Fork",
         "movements": [
-          "Road #4 -> Road #16",
-          "Road #15 -> Road #16",
-          "Road #15 -> Road #4"
+          "Road #4 -> Road #18",
+          "Road #17 -> Road #18",
+          "Road #17 -> Road #4"
         ],
         "osm_node_ids": [
           53128053
@@ -4197,12 +4191,12 @@
         "id": 7,
         "intersection_kind": "Intersection",
         "movements": [
-          "Road #7 -> Road #33",
-          "Road #7 -> Road #9",
-          "Road #33 -> Road #7",
-          "Road #33 -> Road #9",
-          "Road #9 -> Road #7",
-          "Road #9 -> Road #33"
+          "Road #9 -> Road #35",
+          "Road #9 -> Road #11",
+          "Road #35 -> Road #9",
+          "Road #35 -> Road #11",
+          "Road #11 -> Road #9",
+          "Road #11 -> Road #35"
         ],
         "osm_node_ids": [
           53137203
@@ -4323,7 +4317,7 @@
         "id": 10,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #10 -> Road #67"
+          "Road #12 -> Road #72"
         ],
         "osm_node_ids": [
           29447666
@@ -4405,7 +4399,7 @@
         "id": 12,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #11 -> Road #99"
+          "Road #13 -> Road #104"
         ],
         "osm_node_ids": [
           11406900247
@@ -4540,8 +4534,8 @@
         "id": 15,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #13 -> Road #24",
-          "Road #71 -> Road #13"
+          "Road #15 -> Road #26",
+          "Road #76 -> Road #15"
         ],
         "osm_node_ids": [
           3391701887
@@ -4687,21 +4681,21 @@
         "id": 17,
         "intersection_kind": "Intersection",
         "movements": [
-          "Road #82 -> Road #102",
-          "Road #82 -> Road #70",
-          "Road #82 -> Road #19",
-          "Road #82 -> Road #34",
-          "Road #25 -> Road #102",
-          "Road #25 -> Road #70",
-          "Road #25 -> Road #19",
-          "Road #25 -> Road #34",
-          "Road #17 -> Road #102",
-          "Road #17 -> Road #70",
-          "Road #17 -> Road #19",
-          "Road #17 -> Road #34",
-          "Road #38 -> Road #102",
-          "Road #38 -> Road #70",
-          "Road #38 -> Road #34"
+          "Road #87 -> Road #107",
+          "Road #87 -> Road #75",
+          "Road #87 -> Road #21",
+          "Road #87 -> Road #36",
+          "Road #27 -> Road #107",
+          "Road #27 -> Road #75",
+          "Road #27 -> Road #21",
+          "Road #27 -> Road #36",
+          "Road #19 -> Road #107",
+          "Road #19 -> Road #75",
+          "Road #19 -> Road #21",
+          "Road #19 -> Road #36",
+          "Road #40 -> Road #107",
+          "Road #40 -> Road #75",
+          "Road #40 -> Road #36"
         ],
         "osm_node_ids": [
           3391701883,
@@ -4829,8 +4823,8 @@
         "id": 23,
         "intersection_kind": "Fork",
         "movements": [
-          "Road #94 -> Road #21",
-          "Road #103 -> Road #21"
+          "Road #99 -> Road #23",
+          "Road #108 -> Road #23"
         ],
         "osm_node_ids": [
           7010447307
@@ -4990,7 +4984,7 @@
         "id": 27,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #26 -> Road #23"
+          "Road #28 -> Road #25"
         ],
         "osm_node_ids": [
           4136765600
@@ -5072,7 +5066,7 @@
         "id": 29,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #64 -> Road #26"
+          "Road #69 -> Road #28"
         ],
         "osm_node_ids": [
           4240312862
@@ -5115,7 +5109,7 @@
         "id": 31,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #28 -> Road #54"
+          "Road #30 -> Road #59"
         ],
         "osm_node_ids": [
           4240312868
@@ -5158,7 +5152,7 @@
         "id": 32,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #32 -> Road #31"
+          "Road #34 -> Road #33"
         ],
         "osm_node_ids": [
           4240312872
@@ -5201,7 +5195,7 @@
         "id": 33,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #31 -> Road #82"
+          "Road #33 -> Road #87"
         ],
         "osm_node_ids": [
           9546245855
@@ -5244,7 +5238,7 @@
         "id": 34,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #92 -> Road #32"
+          "Road #97 -> Road #34"
         ],
         "osm_node_ids": [
           4240331992
@@ -5465,12 +5459,12 @@
               47.643760004260784
             ],
             [
-              -122.30366421693705,
-              47.643796216343674
+              -122.30365527235917,
+              47.64379656348181
             ],
             [
-              -122.30364838339237,
-              47.64371598426791
+              -122.30365732797026,
+              47.64371563712977
             ],
             [
               -122.30364417873332,
@@ -5819,8 +5813,8 @@
         "id": 48,
         "intersection_kind": "Intersection",
         "movements": [
-          "Road #9 -> Road #8",
-          "Road #8 -> Road #9"
+          "Road #11 -> Road #10",
+          "Road #10 -> Road #11"
         ],
         "osm_node_ids": [
           5760903060,
@@ -6014,8 +6008,8 @@
         "id": 53,
         "intersection_kind": "Intersection",
         "movements": [
-          "Road #6 -> Road #7",
-          "Road #7 -> Road #6"
+          "Road #7 -> Road #9",
+          "Road #9 -> Road #7"
         ],
         "osm_node_ids": [
           10791184639
@@ -6162,11 +6156,11 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 56,
+        "id": 62,
         "intersection_kind": "Fork",
         "movements": [
-          "Road #54 -> Road #83",
-          "Road #66 -> Road #83"
+          "Road #59 -> Road #88",
+          "Road #71 -> Road #88"
         ],
         "osm_node_ids": [
           7010447296
@@ -6206,7 +6200,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 57,
+        "id": 63,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -6245,7 +6239,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 58,
+        "id": 64,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -6284,7 +6278,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 59,
+        "id": 65,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6325,7 +6319,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 61,
+        "id": 67,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6366,7 +6360,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 62,
+        "id": 68,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6407,7 +6401,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 63,
+        "id": 69,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6479,13 +6473,13 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 64,
+        "id": 70,
         "intersection_kind": "Fork",
         "movements": [
-          "Road #34 -> Road #38",
-          "Road #34 -> Road #35",
-          "Road #37 -> Road #38",
-          "Road #37 -> Road #35"
+          "Road #36 -> Road #40",
+          "Road #36 -> Road #37",
+          "Road #39 -> Road #40",
+          "Road #39 -> Road #37"
         ],
         "osm_node_ids": [
           10791184629,
@@ -6526,7 +6520,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 67,
+        "id": 73,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6567,7 +6561,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 68,
+        "id": 74,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -6606,10 +6600,10 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 70,
+        "id": 76,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #67 -> Road #66"
+          "Road #72 -> Road #71"
         ],
         "osm_node_ids": [
           9074894122
@@ -6649,7 +6643,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 71,
+        "id": 77,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -6688,7 +6682,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 72,
+        "id": 78,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6748,10 +6742,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 73,
+        "id": 79,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #16 -> Road #17"
+          "Road #18 -> Road #19"
         ],
         "osm_node_ids": [
           10791184627
@@ -6810,10 +6804,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 74,
+        "id": 80,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #19 -> Road #20"
+          "Road #21 -> Road #22"
         ],
         "osm_node_ids": [
           3702070714
@@ -6865,7 +6859,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 76,
+        "id": 82,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6906,7 +6900,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 77,
+        "id": 83,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -6966,10 +6960,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 78,
+        "id": 84,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #70 -> Road #71"
+          "Road #75 -> Road #76"
         ],
         "osm_node_ids": [
           10791184625
@@ -7024,10 +7018,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 79,
+        "id": 85,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #24 -> Road #25"
+          "Road #26 -> Road #27"
         ],
         "osm_node_ids": [
           10791184626
@@ -7067,7 +7061,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 80,
+        "id": 86,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -7108,7 +7102,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 81,
+        "id": 87,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -7147,7 +7141,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 82,
+        "id": 88,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -7200,7 +7194,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 83,
+        "id": 89,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -7242,7 +7236,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 84,
+        "id": 90,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -7301,11 +7295,11 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 85,
+        "id": 91,
         "intersection_kind": "Fork",
         "movements": [
-          "Road #99 -> Road #92",
-          "Road #99 -> Road #95"
+          "Road #104 -> Road #97",
+          "Road #104 -> Road #100"
         ],
         "osm_node_ids": [
           29463752
@@ -7345,7 +7339,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 86,
+        "id": 92,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -7407,10 +7401,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 87,
+        "id": 93,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #93 -> Road #94"
+          "Road #98 -> Road #99"
         ],
         "osm_node_ids": [
           10791185540
@@ -7469,10 +7463,10 @@
           "has_island": false,
           "kind": "Marked"
         },
-        "id": 88,
+        "id": 94,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #95 -> Road #96"
+          "Road #100 -> Road #101"
         ],
         "osm_node_ids": [
           11304471344
@@ -7512,7 +7506,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 89,
+        "id": 95,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -7551,7 +7545,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 90,
+        "id": 96,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
@@ -7606,10 +7600,10 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 92,
+        "id": 98,
         "intersection_kind": "Connection",
         "movements": [
-          "Road #102 -> Road #103"
+          "Road #107 -> Road #108"
         ],
         "osm_node_ids": [
           11611747350
@@ -7669,7 +7663,7 @@
       "properties": {
         "control": "Signed",
         "crossing": null,
-        "id": 93,
+        "id": 99,
         "intersection_kind": "Connection",
         "movements": [],
         "osm_node_ids": [
@@ -7710,7 +7704,7 @@
       "properties": {
         "control": "Uncontrolled",
         "crossing": null,
-        "id": 94,
+        "id": 100,
         "intersection_kind": "MapEdge",
         "movements": [],
         "osm_node_ids": [],
