@@ -142,17 +142,7 @@ impl OsmExtract {
             }
         }
 
-        // Import most service roads. Always ignore driveways, golf cart paths.
-        if highway == "service" && tags.is_any("service", vec!["driveway"]) {
-            // An exception -- keep driveways signed for bikes
-            if !(tags.is("service", "driveway") && tags.is("bicycle", "designated")) {
-                return false;
-            }
-        }
         if highway == "service" && tags.is("golf", "cartpath") {
-            return false;
-        }
-        if highway == "service" && tags.is("access", "customers") {
             return false;
         }
 
