@@ -7,7 +7,6 @@ mod collapse_short_road;
 mod dual_carriageways;
 mod parallel_sidepaths;
 mod remove_disconnected;
-mod sausage_links;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
@@ -15,7 +14,6 @@ pub enum Transformation {
     RemoveDisconnectedRoads,
     CollapseShortRoads,
     CollapseDegenerateIntersections,
-    CollapseSausageLinks,
     MergeDualCarriageways,
 }
 
@@ -23,34 +21,11 @@ impl Transformation {
     /// Useful for test cases and small clipped areas. Doesn't remove disconnected roads.
     pub fn standard_for_clipped_areas() -> Vec<Self> {
         vec![
-            Transformation::CollapseSausageLinks,
             Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
             // The above may discover more roads to collapse
             Transformation::CollapseShortRoads,
         ]
-    }
-
-    /// A full suite of transformations for A/B Street.
-    ///
-    /// A/B Street doesn't handle separately mapped footways and sidewalks yet, so things to deal
-    /// with that are here.
-    pub fn abstreet() -> Vec<Self> {
-        let mut list = Self::standard_for_clipped_areas();
-
-        // Not working yet
-        if false {
-            let mut prepend = vec![
-                Transformation::ZipSidepaths,
-                Transformation::RemoveDisconnectedRoads,
-            ];
-            prepend.extend(list);
-            list = prepend;
-        } else {
-            list.insert(0, Transformation::RemoveDisconnectedRoads);
-        }
-
-        list
     }
 
     fn name(&self) -> &'static str {
@@ -59,7 +34,6 @@ impl Transformation {
             Transformation::RemoveDisconnectedRoads => "remove disconnected roads",
             Transformation::CollapseShortRoads => "collapse short roads",
             Transformation::CollapseDegenerateIntersections => "collapse degenerate intersections",
-            Transformation::CollapseSausageLinks => "collapse sausage links",
             Transformation::MergeDualCarriageways => "merge dual carriageways",
         }
     }
@@ -78,9 +52,6 @@ impl Transformation {
             }
             Transformation::CollapseDegenerateIntersections => {
                 collapse_intersections::collapse(streets);
-            }
-            Transformation::CollapseSausageLinks => {
-                sausage_links::collapse_sausage_links(streets);
             }
             Transformation::MergeDualCarriageways => {
                 dual_carriageways::merge(streets);

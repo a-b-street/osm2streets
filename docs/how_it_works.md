@@ -93,10 +93,6 @@ A "degenerate" intersection has only two roads connected. Sometimes that interse
 
 There are special cases documented in the code.
 
-### CollapseSausageLinks
-
-A "simple sausage link" is a dual carriageway that split very briefly and then re-joins, with no intermediate roads. These are collapsed into one road between the intersections, with a barrier lane inserted in the middle. The code is well-documented and better reference.
-
 ### MergeDualCarriageways (experimental)
 
 TODO. Explain branches and bridges.
