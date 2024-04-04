@@ -1,10 +1,6 @@
-use std::collections::BTreeSet;
-
 use anyhow::Result;
 
-use geom::Distance;
-
-use crate::{IntersectionID, IntersectionKind, Placement, Road, StreetNetwork};
+use crate::{IntersectionID, Placement, Road, StreetNetwork};
 
 /// Collapse degenerate intersections:
 /// - between two cycleways
@@ -88,41 +84,4 @@ fn should_collapse(road1: &Road, road2: &Road) -> Result<()> {
     }
 
     Ok(())
-}
-
-const SHORT_THRESHOLD: Distance = Distance::const_meters(30.0);
-
-/// Some cycleways intersect footways with detailed curb mapping. The current rules for figuring
-/// out which walking paths also allow bikes are imperfect, so we wind up with short dead-end
-/// "stubs." Trim those.
-///
-/// Also do the same thing for extremely short dead-end service roads.
-pub fn trim_deadends(streets: &mut StreetNetwork) {
-    let mut remove_roads = BTreeSet::new();
-    let mut remove_intersections = BTreeSet::new();
-    for i in streets.intersections.values() {
-        let roads = streets.roads_per_intersection(i.id);
-        if roads.len() != 1 || i.kind == IntersectionKind::MapEdge {
-            continue;
-        }
-        let road = &roads[0];
-        if road.untrimmed_length() < SHORT_THRESHOLD && (road.is_cycleway() || road.is_service()) {
-            remove_roads.insert(roads[0].id);
-            remove_intersections.insert(i.id);
-        }
-    }
-
-    for r in remove_roads {
-        streets.remove_road(r);
-    }
-    for i in remove_intersections {
-        streets.remove_intersection(i);
-    }
-
-    // It's possible we need to do this in a fixed-point until there are no changes, but meh.
-    // Results look good so far.
-
-    // We may have created orphaned intersections. Clean up here.
-    // TODO Anywhere calling remove_road potentially causes this too
-    streets.intersections.retain(|_, i| !i.roads.is_empty());
 }

@@ -75,7 +75,6 @@ impl JsStreetNetwork {
         }
         if input.sidepath_zipping_experiment {
             transformations.push(Transformation::ZipSidepaths);
-            transformations.push(Transformation::TrimDeadendCycleways);
             transformations.push(Transformation::CollapseDegenerateIntersections);
         }
         if input.debug_each_step {

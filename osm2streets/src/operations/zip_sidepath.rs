@@ -190,8 +190,7 @@ impl Sidepath {
         }
 
         // After this transformation, we should run CollapseDegenerateIntersections to handle the
-        // intersection where the side road originally crossed the sidepath, and TrimDeadendCycleways
-        // to clean up any small cycle connection roads.
+        // intersection where the side road originally crossed the sidepath
     }
 }
 

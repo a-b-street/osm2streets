@@ -72,10 +72,6 @@ But it's also confusing in a few ways:
 
 Specific transformations are described below in no particular order. (But that's confusing; they should be)
 
-### TrimDeadendCycleways
-
-We sometimes wind up with short dead-end roads that're nice to remove. One example is short service roads -- I recall these happening in Seattle, maybe related to how driveways are tagged there. Another is also a bit Seattle-specific -- when we try to import separate cyclepaths but not footways there, there are some dangling "stubs" of cycleway leftover sometimes.
-
 ### SnapCycleways (experimental)
 
 See <https://github.com/a-b-street/osm2streets/pull/61> for now
