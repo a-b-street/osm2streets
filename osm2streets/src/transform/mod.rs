@@ -11,7 +11,6 @@ mod sausage_links;
 
 /// An in-place transformation of a `StreetNetwork`.
 pub enum Transformation {
-    TrimDeadendCycleways,
     ZipSidepaths,
     RemoveDisconnectedRoads,
     CollapseShortRoads,
@@ -24,7 +23,6 @@ impl Transformation {
     /// Useful for test cases and small clipped areas. Doesn't remove disconnected roads.
     pub fn standard_for_clipped_areas() -> Vec<Self> {
         vec![
-            Transformation::TrimDeadendCycleways,
             Transformation::CollapseSausageLinks,
             Transformation::CollapseShortRoads,
             Transformation::CollapseDegenerateIntersections,
@@ -44,9 +42,6 @@ impl Transformation {
         if false {
             let mut prepend = vec![
                 Transformation::ZipSidepaths,
-                // More dead-ends can be created after zipping sidepaths. But also, zipping can be
-                // easier to do after trimming some dead-ends. So... just run it twice.
-                Transformation::TrimDeadendCycleways,
                 Transformation::RemoveDisconnectedRoads,
             ];
             prepend.extend(list);
@@ -60,7 +55,6 @@ impl Transformation {
 
     fn name(&self) -> &'static str {
         match self {
-            Transformation::TrimDeadendCycleways => "trim dead-end cycleways",
             Transformation::ZipSidepaths => "zip parallel sidepaths",
             Transformation::RemoveDisconnectedRoads => "remove disconnected roads",
             Transformation::CollapseShortRoads => "collapse short roads",
@@ -73,9 +67,6 @@ impl Transformation {
     fn apply(&self, streets: &mut StreetNetwork, timer: &mut Timer) {
         timer.start(self.name());
         match self {
-            Transformation::TrimDeadendCycleways => {
-                collapse_intersections::trim_deadends(streets);
-            }
             Transformation::ZipSidepaths => {
                 parallel_sidepaths::zip_sidepaths(streets);
             }
