@@ -1,27 +1,24 @@
 use std::collections::HashSet;
 
+use abstutil::wraparound_get;
 use anyhow::Result;
 use geojson::Feature;
 use geom::{Polygon, Ring};
 
 use crate::{
-    Intersection, IntersectionID, LaneType, RoadID, RoadSideID, SideOfRoad, StreetNetwork,
+    Direction, IntersectionID, IntersectionKind, LaneType, RoadID, RoadSideID, SideOfRoad,
+    StreetNetwork,
 };
 
 /// A "tight" cycle of roads and intersections, with a polygon capturing the negative space inside.
 pub struct Block {
     pub kind: BlockKind,
-    pub steps: Vec<Step>,
+    /// First != last, they're not repeated
+    pub boundary: Vec<RoadSideID>,
     pub polygon: Polygon,
     /// Not counting the boundary (described by steps)
     pub member_roads: HashSet<RoadID>,
     pub member_intersections: HashSet<IntersectionID>,
-}
-
-#[derive(Clone, Copy)]
-pub enum Step {
-    Node(IntersectionID),
-    Edge(RoadID),
 }
 
 #[derive(Debug)]
@@ -48,12 +45,10 @@ pub enum BlockKind {
 }
 
 impl StreetNetwork {
-    // Start at road's src_i
     // TODO API is getting messy
-    pub fn find_block(&self, start: RoadID, left: bool, sidewalks: bool) -> Result<Block> {
-        let clockwise = left;
-        let steps = walk_around(self, start, clockwise, sidewalks)?;
-        let polygon = trace_polygon(self, &steps, clockwise)?;
+    pub fn find_block(&self, start: RoadSideID, sidewalks: bool) -> Result<Block> {
+        let (boundary, start_intersection) = walk_around(self, start, sidewalks)?;
+        let polygon = trace_polygon(self, &boundary, start_intersection)?;
 
         let mut member_roads = HashSet::new();
         let mut member_intersections = HashSet::new();
@@ -75,12 +70,12 @@ impl StreetNetwork {
         let kind = if sidewalks {
             classify_bundle(self, &polygon, &member_roads, &member_intersections)
         } else {
-            classify_block(self, &steps)
+            classify_block(self, &boundary)
         };
 
         Ok(Block {
             kind,
-            steps,
+            boundary,
             polygon,
             member_roads,
             member_intersections,
@@ -98,29 +93,12 @@ impl StreetNetwork {
             }
 
             for side in [SideOfRoad::Left, SideOfRoad::Right] {
-                if visited_roads.contains(&RoadSideID { road: *r, side }) {
+                let road_side = RoadSideID { road: *r, side };
+                if visited_roads.contains(&road_side) {
                     continue;
                 }
-                if let Ok(block) = self.find_block(*r, side == SideOfRoad::Left, sidewalks) {
-                    // TODO Put more info in Step to avoid duplicating logic with trace_polygon
-                    for pair in block.steps.windows(2) {
-                        match (pair[0], pair[1]) {
-                            (Step::Edge(r), Step::Node(i)) => {
-                                let road = &self.roads[&r];
-                                if road.dst_i == i {
-                                    visited_roads.insert(RoadSideID { road: r, side });
-                                } else {
-                                    visited_roads.insert(RoadSideID {
-                                        road: r,
-                                        side: side.opposite(),
-                                    });
-                                }
-                            }
-                            // Skip... unless for the last case?
-                            (Step::Node(_), Step::Edge(_)) => {}
-                            _ => unreachable!(),
-                        }
-                    }
+                if let Ok(block) = self.find_block(road_side, sidewalks) {
+                    visited_roads.extend(block.boundary.clone());
                     blocks.push(block);
                 }
             }
@@ -173,96 +151,114 @@ impl Block {
     }
 }
 
+// Also returns the first intersection.
 fn walk_around(
     streets: &StreetNetwork,
-    start_road: RoadID,
-    clockwise: bool,
+    start_road_side: RoadSideID,
     sidewalks: bool,
-) -> Result<Vec<Step>> {
-    let start_i = streets.roads[&start_road].src_i;
+) -> Result<(Vec<RoadSideID>, IntersectionID)> {
+    let mut roads = Vec::new();
 
-    let mut current_i = start_i;
-    let mut current_r = start_road;
+    // We may start on a loop road on the "inner" direction
+    {
+        let start_r = &streets.roads[&start_road_side.road];
+        if start_r.src_i == start_r.dst_i {
+            let i = &streets.intersections[&start_r.src_i];
+            if !i.get_road_sides_sorted(streets).contains(&start_road_side) {
+                bail!("Starting on inner piece of a loop road");
+            }
+        }
+    }
 
-    let mut steps = vec![Step::Edge(current_r)];
+    // We need to track which side of the road we're at, but also which direction we're facing
+    let mut current_road_side = start_road_side;
+    // TODO This is convoluted. When we started with a lane, it was that lane's dst_i
+    let (orig_from_intersection, start_intersection) = {
+        let dir = start_road_side.get_outermost_lane(streets).dir;
+        let road = &streets.roads[&start_road_side.road];
+        if dir == Direction::Forward {
+            (road.src_i, road.dst_i)
+        } else {
+            (road.src_i, road.dst_i)
+        }
+    };
+    let mut current_intersection = start_intersection;
 
-    while current_i != start_i || steps.len() < 2 {
-        // Fail for dead-ends (for now, to avoid tracing around the entire clipped map)
-        if filter_roads(streets, sidewalks, &streets.intersections[&current_i]).len() == 1 {
-            bail!("Found a dead-end at {current_i}");
+    loop {
+        let i = &streets.intersections[&current_intersection];
+        if i.kind == IntersectionKind::MapEdge {
+            bail!("hit a MapEdge at {}", i.id);
+        }
+        let mut sorted_roads = i.get_road_sides_sorted(streets);
+        // When we're limiting to sidewalks, get rid of any roads around the intersection that
+        // aren't crossings or sidewalks
+        if sidewalks {
+            sorted_roads.retain(|r| streets.roads[&r.road].is_footway());
         }
 
-        let next_i = &streets.intersections[&streets.roads[&current_r].other_side(current_i)];
-        let clockwise_roads = filter_roads(streets, sidewalks, next_i);
-        let idx = clockwise_roads
+        let idx = sorted_roads
             .iter()
-            .position(|x| *x == current_r)
-            .unwrap();
-        let next_idx = if clockwise {
-            if idx == clockwise_roads.len() - 1 {
-                0
-            } else {
-                idx + 1
-            }
-        } else {
-            if idx == 0 {
-                clockwise_roads.len() - 1
-            } else {
-                idx - 1
-            }
-        };
-        let next_r = clockwise_roads[next_idx];
-        steps.push(Step::Node(next_i.id));
-        steps.push(Step::Edge(next_r));
-        current_i = next_i.id;
-        current_r = next_r;
-    }
-
-    Ok(steps)
-}
-
-// When we're limiting to sidewalks, get rid of any roads around the intersection that aren't
-// crossings or sidewalks
-fn filter_roads(
-    streets: &StreetNetwork,
-    sidewalks: bool,
-    intersection: &Intersection,
-) -> Vec<RoadID> {
-    let mut roads = intersection.roads.clone();
-    if !sidewalks {
-        return roads;
-    }
-    roads.retain(|r| streets.roads[r].is_footway());
-    roads
-}
-
-fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) -> Result<Polygon> {
-    let shift_dir = if clockwise { -1.0 } else { 1.0 };
-    let mut pts = Vec::new();
-
-    // steps will begin and end with an edge
-    for pair in steps.windows(2) {
-        match (pair[0], pair[1]) {
-            (Step::Edge(r), Step::Node(i)) => {
-                let road = &streets.roads[&r];
-                if road.dst_i == i {
-                    pts.extend(
-                        road.center_line
-                            .shift_either_direction(shift_dir * road.half_width())?
-                            .into_points(),
-                    );
-                } else {
-                    pts.extend(
-                        road.center_line
-                            .reversed()
-                            .shift_either_direction(shift_dir * road.half_width())?
-                            .into_points(),
-                    );
+            .position(|x| *x == current_road_side)
+            .unwrap() as isize;
+        // Do we go clockwise or counter-clockwise around the intersection? Well, unless we're
+        // at a dead-end, we want to avoid the other side of the same road.
+        let mut next = *wraparound_get(&sorted_roads, idx + 1);
+        assert_ne!(next, current_road_side);
+        if next.road == current_road_side.road {
+            next = *wraparound_get(&sorted_roads, idx - 1);
+            assert_ne!(next, current_road_side);
+            if next.road == current_road_side.road {
+                if sorted_roads.len() != 2 {
+                    bail!("Looped back on the same road, but not at a dead-end");
                 }
             }
-            // Skip... unless for the last case?
-            (Step::Node(_), Step::Edge(_)) => {}
-            _ => unreachable!(),
+        }
+        roads.push(current_road_side);
+        current_road_side = next;
+        current_intersection =
+            streets.roads[&current_road_side.road].other_side(current_intersection);
+
+        if current_road_side == start_road_side {
+            roads.push(start_road_side);
+            break;
+        }
+    }
+    assert_eq!(roads[0], *roads.last().unwrap());
+    roads.pop();
+    Ok((roads, orig_from_intersection))
+}
+
+fn trace_polygon(
+    streets: &StreetNetwork,
+    road_sides: &Vec<RoadSideID>,
+    start_intersection: IntersectionID,
+) -> Result<Polygon> {
+    let mut pts = Vec::new();
+
+    let mut last_i = start_intersection;
+    for road_side in road_sides {
+        //info!("{:?}", last_i);
+        //info!("{:?}", road_side);
+        let road = &streets.roads[&road_side.road];
+
+        // First handle the side
+        let shift_dir = if road_side.side == SideOfRoad::Left {
+            -1.0
+        } else {
+            1.0
+        };
+        let pl = road
+            .center_line
+            .shift_either_direction(shift_dir * road.half_width())?;
+
+        // Then figure out the direction
+        // TODO Track this along the way instead, if possible
+        if road.src_i == last_i {
+            pts.extend(pl.into_points());
+            last_i = road.dst_i;
+        } else {
+            pts.extend(pl.reversed().into_points());
+            last_i = road.src_i;
         }
     }
 
@@ -270,26 +266,22 @@ fn trace_polygon(streets: &StreetNetwork, steps: &Vec<Step>, clockwise: bool) ->
     Ok(Ring::deduping_new(pts)?.into_polygon())
 }
 
-fn classify_block(streets: &StreetNetwork, steps: &Vec<Step>) -> BlockKind {
+fn classify_block(streets: &StreetNetwork, boundary: &Vec<RoadSideID>) -> BlockKind {
     let mut has_road = false;
     let mut has_cycle_lane = false;
     let mut has_sidewalk = false;
 
-    for step in steps {
-        if let Step::Edge(r) = step {
-            let road = &streets.roads[r];
-            if road.is_driveable() {
-                // TODO Or bus lanes?
-                has_road = true;
-            } else if road.lane_specs_ltr.len() == 1
-                && road.lane_specs_ltr[0].lt == LaneType::Biking
-            {
-                has_cycle_lane = true;
-            } else if road.lane_specs_ltr.len() == 1
-                && road.lane_specs_ltr[0].lt == LaneType::Sidewalk
-            {
-                has_sidewalk = true;
-            }
+    for road_side in boundary {
+        // TODO All of this logic is wrong. Look at the outermost lane, not the whole road.
+        let road = &streets.roads[&road_side.road];
+        if road.is_driveable() {
+            // TODO Or bus lanes?
+            has_road = true;
+        } else if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt == LaneType::Biking {
+            has_cycle_lane = true;
+        } else if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt == LaneType::Sidewalk
+        {
+            has_sidewalk = true;
         }
     }
 

@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, Sidepath,
-    StreetNetwork, Transformation,
+    osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, RoadSideID,
+    SideOfRoad, Sidepath, StreetNetwork, Transformation,
 };
 
 static SETUP_LOGGER: Once = Once::new();
@@ -252,7 +252,17 @@ impl JsStreetNetwork {
     #[wasm_bindgen(js_name = findBlock)]
     pub fn find_block(&self, road: usize, left: bool, sidewalks: bool) -> Result<String, JsValue> {
         self.inner
-            .find_block(RoadID(road), left, sidewalks)
+            .find_block(
+                RoadSideID {
+                    road: RoadID(road),
+                    side: if left {
+                        SideOfRoad::Left
+                    } else {
+                        SideOfRoad::Right
+                    },
+                },
+                sidewalks,
+            )
             .map_err(err_to_js)?
             .render_polygon(&self.inner)
             .map_err(err_to_js)
