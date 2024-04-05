@@ -69,7 +69,7 @@ mod tests {
         }
 
         // Manually enable to do diff-testing on blocks.
-        if true {
+        if false {
             let prior_blocks = std::fs::read_to_string(format!("{path}/blocks.json"))
                 .unwrap_or_else(|_| String::new());
             std::fs::write(
