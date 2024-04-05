@@ -4,7 +4,9 @@ use anyhow::Result;
 use geojson::Feature;
 use geom::{Polygon, Ring};
 
-use crate::{Intersection, IntersectionID, LaneType, RoadID, StreetNetwork};
+use crate::{
+    Intersection, IntersectionID, LaneType, RoadID, RoadSideID, SideOfRoad, StreetNetwork,
+};
 
 /// A "tight" cycle of roads and intersections, with a polygon capturing the negative space inside.
 pub struct Block {
@@ -26,6 +28,7 @@ pub enum Step {
 pub enum BlockKind {
     /// A "city" block; the space in between sidewals, probably just containing buildings and not
     /// roads
+    // TODO Or just "not related to roads". Could be parks/water
     LandUseBlock,
     /// The space between a road and sidewalk. It might be a wide sidewalk or contain grass.
     RoadAndSidewalk,
@@ -86,8 +89,7 @@ impl StreetNetwork {
 
     // TODO Messy API again
     pub fn find_all_blocks(&self, sidewalks: bool) -> Result<String> {
-        // TODO consider a Left/Right enum instead of bool
-        let mut visited_roads: HashSet<(RoadID, bool)> = HashSet::new();
+        let mut visited_roads: HashSet<RoadSideID> = HashSet::new();
         let mut blocks = Vec::new();
 
         for r in self.roads.keys() {
@@ -95,20 +97,23 @@ impl StreetNetwork {
                 continue;
             }
 
-            for left in [true, false] {
-                if visited_roads.contains(&(*r, left)) {
+            for side in [SideOfRoad::Left, SideOfRoad::Right] {
+                if visited_roads.contains(&RoadSideID { road: *r, side }) {
                     continue;
                 }
-                if let Ok(block) = self.find_block(*r, left, sidewalks) {
+                if let Ok(block) = self.find_block(*r, side == SideOfRoad::Left, sidewalks) {
                     // TODO Put more info in Step to avoid duplicating logic with trace_polygon
                     for pair in block.steps.windows(2) {
                         match (pair[0], pair[1]) {
                             (Step::Edge(r), Step::Node(i)) => {
                                 let road = &self.roads[&r];
                                 if road.dst_i == i {
-                                    visited_roads.insert((r, left));
+                                    visited_roads.insert(RoadSideID { road: r, side });
                                 } else {
-                                    visited_roads.insert((r, !left));
+                                    visited_roads.insert(RoadSideID {
+                                        road: r,
+                                        side: side.opposite(),
+                                    });
                                 }
                             }
                             // Skip... unless for the last case?

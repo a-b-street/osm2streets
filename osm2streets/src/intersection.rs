@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use osm2lanes::osm;
 
 use crate::utils::{deserialize_btreemap, serialize_btreemap};
-use crate::{DrivingSide, IntersectionID, RoadID, StreetNetwork};
+use crate::{DrivingSide, IntersectionID, RoadID, RoadSideID, SideOfRoad, StreetNetwork};
 use TrafficConflict::*;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -130,6 +130,56 @@ impl Intersection {
             format!("{} ({})", self.id, osm_ids)
         }
     }
+
+    // TODO Use RoadEdge?
+    // This skips the "interior" piece of any loop roads
+    pub fn get_road_sides_sorted(&self, streets: &StreetNetwork) -> Vec<RoadSideID> {
+        // TODO For loop roads, the roads are repeated! Consider fixing
+        let mut deduped = self.roads.clone();
+        deduped.dedup();
+
+        let mut sides = Vec::new();
+        for r in deduped {
+            let r = &streets.roads[&r];
+            if r.src_i == r.dst_i {
+                // For loop roads, one of the sides is "interior" and should just be skipped. The
+                // side depends on clockwise orientation -- just sketching it out on paper is
+                // enough to be convincing.
+                if r.center_line.is_clockwise() {
+                    sides.push(RoadSideID {
+                        road: r.id,
+                        side: SideOfRoad::Left,
+                    });
+                } else {
+                    sides.push(RoadSideID {
+                        road: r.id,
+                        side: SideOfRoad::Right,
+                    });
+                }
+                continue;
+            }
+            if r.dst_i == self.id {
+                sides.push(RoadSideID {
+                    road: r.id,
+                    side: SideOfRoad::Right,
+                });
+                sides.push(RoadSideID {
+                    road: r.id,
+                    side: SideOfRoad::Left,
+                });
+            } else {
+                sides.push(RoadSideID {
+                    road: r.id,
+                    side: SideOfRoad::Left,
+                });
+                sides.push(RoadSideID {
+                    road: r.id,
+                    side: SideOfRoad::Right,
+                });
+            }
+        }
+        sides
+    }
 }
 
 impl StreetNetwork {
@@ -182,7 +232,7 @@ impl StreetNetwork {
         let mut endpoints_for_center = Vec::new();
         for r in &intersection.roads {
             let road = &self.roads[r];
-            // road.center_pts is unadjusted; it doesn't handle unequal widths yet. But that
+            // road.center_line is unadjusted; it doesn't handle unequal widths yet. But that
             // shouldn't matter for sorting.
             let center_pl = if road.src_i == i {
                 road.reference_line.reversed()
