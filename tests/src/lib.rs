@@ -21,10 +21,6 @@ mod tests {
         let mut timer = Timer::new("test osm2streets");
 
         println!("Working on {path}");
-        // Read the output file before modifying it. If it doesn't exist, then we're creating a new
-        // test case.
-        let prior_json = std::fs::read_to_string(format!("{path}/geometry.json"))
-            .unwrap_or_else(|_| String::new());
 
         let clip_pts = if Path::new(format!("{path}/boundary.json").as_str()).exists() {
             Some(LonLat::read_geojson_polygon(&format!(
@@ -54,20 +50,42 @@ mod tests {
             Transformation::standard_for_clipped_areas(),
             &mut timer,
         );
+
+        // Read the output file before modifying it. If it doesn't exist, then we're creating a new
+        // test case.
+        let prior_geometry = std::fs::read_to_string(format!("{path}/geometry.json"))
+            .unwrap_or_else(|_| String::new());
         std::fs::write(
             format!("{path}/geometry.json"),
             street_network.to_geojson(&Filter::All)?,
         )?;
-
-        let current_json = std::fs::read_to_string(format!("{path}/geometry.json"))?;
-        if prior_json != current_json {
-            std::fs::write(format!("{path}/geometry.orig.json"), prior_json)?;
+        let current_geometry = std::fs::read_to_string(format!("{path}/geometry.json"))?;
+        if prior_geometry != current_geometry {
+            std::fs::write(format!("{path}/geometry.orig.json"), prior_geometry)?;
             bail!(
-                "./{}/geometry.json is different! If it is OK, commit it. \
-                ./{0}/geometry.orig.json is previous result. Compare it on https://geojson.io",
-                path
+                "./{path}/geometry.json is different! If it is OK, commit it. Compare to
+                ./{path}/geometry.orig.json or use two versions of Street Explorer"
             );
         }
+
+        // Manually enable to do diff-testing on blocks.
+        if false {
+            let prior_blocks = std::fs::read_to_string(format!("{path}/blocks.json"))
+                .unwrap_or_else(|_| String::new());
+            std::fs::write(
+                format!("{path}/blocks.json"),
+                street_network.find_all_blocks(false)?,
+            )?;
+            let current_blocks = std::fs::read_to_string(format!("{path}/blocks.json"))?;
+            if prior_blocks != current_blocks {
+                std::fs::write(format!("{path}/blocks.orig.json"), prior_blocks)?;
+                bail!(
+                    "./{path}/blocks.json is different! If it is OK, commit it. Compare to
+                ./{path}/blocks.orig.json or use two versions of Street Explorer"
+                );
+            }
+        }
+
         Ok(())
     }
 }
