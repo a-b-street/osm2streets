@@ -2,8 +2,10 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
+use osm2lanes::LaneSpec;
+
 use crate::utils::{deserialize_usize, serialize_usize};
-use crate::Road;
+use crate::{Road, StreetNetwork};
 
 /// Opaque and non-contiguous
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -112,5 +114,37 @@ impl CommonEndpoint {
             return Self::One(obj1.1);
         }
         Self::None
+    }
+}
+
+/// See https://wiki.openstreetmap.org/wiki/Forward_%26_backward,_left_%26_right.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub enum SideOfRoad {
+    Left,
+    Right,
+}
+
+impl SideOfRoad {
+    pub fn opposite(self) -> Self {
+        match self {
+            Self::Left => Self::Right,
+            Self::Right => Self::Left,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct RoadSideID {
+    pub road: RoadID,
+    pub side: SideOfRoad,
+}
+
+impl RoadSideID {
+    pub fn get_outermost_lane(self, streets: &StreetNetwork) -> &LaneSpec {
+        let road = &streets.roads[&self.road];
+        match self.side {
+            SideOfRoad::Right => road.lane_specs_ltr.last().unwrap(),
+            SideOfRoad::Left => &road.lane_specs_ltr[0],
+        }
     }
 }

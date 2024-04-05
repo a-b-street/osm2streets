@@ -562,6 +562,7 @@ pub(crate) struct RoadEdge {
     pub lane: LaneSpec,
     /// Which edge of a road? Note this is an abuse of DrivingSide; this just means the left or
     /// right side
+    // TODO Use SideofRoad
     pub _side: DrivingSide,
 }
 
