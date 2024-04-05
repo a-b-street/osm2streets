@@ -33,6 +33,7 @@
     LandUseBlock: "grey",
     RoadBundle: "green",
     IntersectionBundle: "orange",
+    Unknown: "blue",
   };
 
   $: colors = $showingBundles ? bundleColors : blockColors;
