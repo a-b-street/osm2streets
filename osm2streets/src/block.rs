@@ -272,15 +272,12 @@ fn classify_block(streets: &StreetNetwork, boundary: &Vec<RoadSideID>) -> BlockK
     let mut has_sidewalk = false;
 
     for road_side in boundary {
-        // TODO All of this logic is wrong. Look at the outermost lane, not the whole road.
-        let road = &streets.roads[&road_side.road];
-        if road.is_driveable() {
-            // TODO Or bus lanes?
+        let lt = road_side.get_outermost_lane(streets).lt;
+        if lt == LaneType::Driving || lt == LaneType::Bus {
             has_road = true;
-        } else if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt == LaneType::Biking {
+        } else if lt == LaneType::Biking {
             has_cycle_lane = true;
-        } else if road.lane_specs_ltr.len() == 1 && road.lane_specs_ltr[0].lt == LaneType::Sidewalk
-        {
+        } else if lt == LaneType::Sidewalk {
             has_sidewalk = true;
         }
     }
