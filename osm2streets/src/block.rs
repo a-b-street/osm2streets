@@ -311,6 +311,28 @@ fn classify_bundle(
     member_roads: &HashSet<RoadID>,
     member_intersections: &HashSet<IntersectionID>,
 ) -> BlockKind {
+    // See how many "major" named roads are inside
+    if true {
+        let mut major_road_names = HashSet::new();
+
+        for r in member_roads {
+            let road = &streets.roads[r];
+            if let Some(name) = road.name.clone() {
+                if road.highway_type != "service" {
+                    major_road_names.insert(name);
+                }
+            }
+        }
+
+        return if major_road_names.len() == 0 {
+            BlockKind::LandUseBlock
+        } else if major_road_names.len() == 1 {
+            BlockKind::RoadBundle
+        } else {
+            BlockKind::IntersectionBundle
+        };
+    }
+
     if member_intersections.is_empty() && member_roads.is_empty() {
         return BlockKind::LandUseBlock;
     }
@@ -335,16 +357,19 @@ fn classify_bundle(
         }
     }
 
-    // TODO Check member road names and ignore service roads?
-
-    // See how "square" the block polygon is. Even if it's not axis-aligned, this sometimes works
-    let bounds = polygon.get_bounds();
-    let ratio = bounds.width() / bounds.height();
-    if ratio > 0.5 && ratio < 2.0 {
-        return BlockKind::IntersectionBundle;
-    } else {
-        return BlockKind::RoadBundle;
+    // See how "square" the block polygon is.
+    // TODO Need to axis-align this first for it to have hope
+    if false {
+        let bounds = polygon.get_bounds();
+        let ratio = bounds.width() / bounds.height();
+        if ratio > 0.5 && ratio < 2.0 {
+            return BlockKind::IntersectionBundle;
+        } else {
+            return BlockKind::RoadBundle;
+        }
     }
+
+    BlockKind::Unknown
 }
 
 fn serialize_features(features: Vec<Feature>) -> Result<String> {
