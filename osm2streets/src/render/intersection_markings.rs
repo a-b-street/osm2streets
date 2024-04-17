@@ -46,6 +46,10 @@ fn make_sidewalk_corners(streets: &StreetNetwork, intersection: &Intersection) -
         streets.roads_per_intersection(intersection.id),
         intersection.id,
     );
+    if edges.is_empty() {
+        error!("Intersection {:?} has no edges", intersection.osm_ids);
+        return Vec::new();
+    }
     edges.push(edges[0].clone());
     let mut results = Vec::new();
     for pair in edges.windows(2) {
