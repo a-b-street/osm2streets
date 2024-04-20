@@ -4,7 +4,7 @@
   import { layerId, emptyGeojson } from "../utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
 
-  let show = true;
+  let show = false;
 
   $: gj =
     $network && $hoveredIntersection
