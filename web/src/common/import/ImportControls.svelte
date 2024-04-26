@@ -12,7 +12,7 @@
   } from "../store";
   import { bbox, downloadGeneratedFile } from "../utils";
   import Osm2streetsSettings from "./Osm2streetsSettings.svelte";
-  import { Loading } from "../";
+  import { Loading } from "svelte-utils";
 
   // This component manages a state machine for importing OSM data (from
   // Overpass or built-in files) and letting the user change import settings. It
@@ -157,7 +157,7 @@
     {#if imported.kind === "nothing"}
       <p>Choose an option above to import somewhere</p>
     {:else if imported.kind === "loading"}
-      <Loading msg={imported.msg} />
+      <Loading loading={imported.msg} />
     {:else if imported.kind === "done"}
       <div>
         <button type="button" on:click={update}>Update OSM data</button>
