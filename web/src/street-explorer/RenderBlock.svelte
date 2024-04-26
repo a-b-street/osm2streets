@@ -8,7 +8,8 @@
     GeoJSON,
   } from "svelte-maplibre";
   import { showingBundles, blockGj } from "./stores";
-  import { network, Legend } from "../common";
+  import { network } from "../common";
+  import { Legend } from "svelte-utils";
 
   $: active = $blockGj.features.length > 0;
 
