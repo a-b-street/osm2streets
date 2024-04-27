@@ -6,7 +6,7 @@
   import init from "osm2streets-js";
   import { onMount } from "svelte";
   import AppSwitcher from "../AppSwitcher.svelte";
-  import { Geocoder, Layout, Map } from "../common";
+  import { Layout, Map } from "../common";
   import ImportControls from "../common/import/ImportControls.svelte";
   import EditWayControls from "./EditWayControls.svelte";
   import RenderBoundary from "../common/layers/RenderBoundary.svelte";
@@ -96,7 +96,6 @@
           />
         </GeoJSON>
       </div>
-      <Geocoder />
     </Map>
   </div>
 </Layout>

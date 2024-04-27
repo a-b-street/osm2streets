@@ -3,6 +3,7 @@
   import type { Map, StyleSpecification } from "maplibre-gl";
   import { map as mapStore, basemap, maptilerApiKey } from "./store";
   import { PolygonToolLayer } from "maplibre-draw-polygon";
+  import { Geocoder } from "svelte-utils";
 
   let map: Map;
   let loaded = false;
@@ -39,6 +40,7 @@
       <ScaleControl />
       <NavigationControl position="bottom-right" visualizePitch />
       <PolygonToolLayer />
+      <Geocoder {map} apiKey={maptilerApiKey} />
       <slot />
     {/if}
   </MapLibre>

@@ -30,7 +30,6 @@
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "dependencies": {
-    "@maptiler/geocoding-control": "^1.1.1",
     "@turf/bbox": "^6.5.0",
     "maplibre-draw-polygon": "github:dabreegster/maplibre-draw-polygon",
     "maplibre-gl": "^4.1.0",

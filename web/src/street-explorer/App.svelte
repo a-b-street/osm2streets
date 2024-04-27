@@ -8,7 +8,6 @@
     StreetView,
     ThemePicker,
     BasemapPicker,
-    Geocoder,
     Layout,
     Map,
   } from "../common";
@@ -106,7 +105,6 @@
         <ThemePicker />
         <StreetView />
       </div>
-      <Geocoder />
     </Map>
   </div>
 </Layout>
