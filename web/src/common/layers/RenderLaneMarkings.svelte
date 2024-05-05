@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { layerId, caseHelper } from "../utils";
-  import { emptyGeojson } from "svelte-utils";
+  import { layerId } from "../utils";
+  import { emptyGeojson, constructMatchExpression } from "svelte-utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";
@@ -21,8 +21,8 @@
       visibility: show ? "visible" : "none",
     }}
     paint={{
-      "fill-color": caseHelper(
-        "type",
+      "fill-color": constructMatchExpression(
+        ["get", "type"],
         {
           "center line": "yellow",
           "lane separator": general_road_marking,

@@ -1,22 +1,6 @@
 import type { Feature, Geometry } from "geojson";
 import { get } from "svelte/store";
-import type { ExpressionSpecification } from "maplibre-gl";
 import { map as mapStore } from "./store";
-
-// Helper for https://maplibre.org/maplibre-style-spec/expressions#case based on one property
-export function caseHelper(
-  getKey: string,
-  map: { [name: string]: string },
-  backup: string,
-): ExpressionSpecification {
-  let x: any[] = ["case"];
-  for (let [key, value] of Object.entries(map)) {
-    x.push(["==", ["get", getKey], key]);
-    x.push(value);
-  }
-  x.push(backup);
-  return x as ExpressionSpecification;
-}
 
 export function featureStateToggle(
   key: string,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { caseHelper, layerId } from "../common/utils";
+  import { layerId } from "../common/utils";
   import {
     hoverStateFilter,
     Popup,
@@ -9,7 +9,7 @@
   } from "svelte-maplibre";
   import { showingBundles, blockGj } from "./stores";
   import { network } from "../common";
-  import { emptyGeojson, Legend } from "svelte-utils";
+  import { constructMatchExpression, emptyGeojson, Legend } from "svelte-utils";
 
   $: active = $blockGj.features.length > 0;
 
@@ -46,7 +46,7 @@
     filter={["==", ["get", "type"], "block"]}
     manageHoverState
     paint={{
-      "fill-color": caseHelper("kind", colors, "red"),
+      "fill-color": constructMatchExpression(["get", "kind"], colors, "red"),
       "fill-opacity": hoverStateFilter(0.8, 0.4),
     }}
   >

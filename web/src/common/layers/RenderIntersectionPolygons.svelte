@@ -1,8 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { theme, hoveredIntersection, network } from "../store";
-  import { caseHelper, layerId } from "../utils";
-  import { emptyGeojson } from "svelte-utils";
+  import { layerId } from "../utils";
+  import { emptyGeojson, constructMatchExpression } from "svelte-utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
   export let hoverCursor: string | undefined = undefined;
@@ -24,8 +24,8 @@
     filter={["==", ["get", "type"], "intersection"]}
     paint={{
       "fill-color": {
-        debug: caseHelper(
-          "intersection_kind",
+        debug: constructMatchExpression(
+          ["get", "intersection_kind"],
           {
             MapEdge: "#696",
             Terminus: "#999",

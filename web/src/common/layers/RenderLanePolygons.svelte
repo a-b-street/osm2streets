@@ -1,8 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { hoveredLane, network } from "../store";
-  import { layerId, caseHelper } from "../utils";
-  import { emptyGeojson } from "svelte-utils";
+  import { layerId } from "../utils";
+  import { constructMatchExpression, emptyGeojson } from "svelte-utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
   export let hoverCursor: string | undefined = undefined;
@@ -25,8 +25,8 @@
     {hoverCursor}
     on:click
     paint={{
-      "fill-color": caseHelper(
-        "type",
+      "fill-color": constructMatchExpression(
+        ["get", "type"],
         // TODO Could we express the Rust enum in TS and be type-safe here?
         {
           Driving: "black",

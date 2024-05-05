@@ -1,8 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";
-  import { layerId, caseHelper } from "../utils";
-  import { emptyGeojson } from "svelte-utils";
+  import { layerId } from "../utils";
+  import { emptyGeojson, constructMatchExpression } from "svelte-utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
 
   let show = true;
@@ -19,8 +19,8 @@
       visibility: show ? "visible" : "none",
     }}
     paint={{
-      "fill-color": caseHelper(
-        "type",
+      "fill-color": constructMatchExpression(
+        ["get", "type"],
         {
           "sidewalk corner": "#CCCCCC",
           "marked crossing line": "white",
