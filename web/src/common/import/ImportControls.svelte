@@ -10,9 +10,8 @@
     network as networkStore,
     importCounter,
   } from "../store";
-  import { bbox, downloadGeneratedFile } from "../utils";
   import Osm2streetsSettings from "./Osm2streetsSettings.svelte";
-  import { Loading } from "svelte-utils";
+  import { bbox, downloadGeneratedFile, Loading } from "svelte-utils";
 
   // This component manages a state machine for importing OSM data (from
   // Overpass or built-in files) and letting the user change import settings. It

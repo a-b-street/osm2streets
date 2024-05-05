@@ -1,6 +1,6 @@
 <script lang="ts">
   import { network, importCounter } from "../common";
-  import { downloadGeneratedFile } from "../common/utils";
+  import { downloadGeneratedFile } from "svelte-utils";
 
   let editedWays: Set<bigint> = new Set();
 

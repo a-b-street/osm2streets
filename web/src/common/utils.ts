@@ -1,21 +1,7 @@
-import turfBbox from "@turf/bbox";
-import type { Feature, FeatureCollection, GeoJSON, Geometry } from "geojson";
+import type { Feature, Geometry } from "geojson";
 import { get } from "svelte/store";
 import type { ExpressionSpecification } from "maplibre-gl";
 import { map as mapStore } from "./store";
-
-// TODO Why can't I find an NPM package to do this?
-export function downloadGeneratedFile(filename: string, textInput: string) {
-  var element = document.createElement("a");
-  element.setAttribute(
-    "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(textInput),
-  );
-  element.setAttribute("download", filename);
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-}
 
 // Helper for https://maplibre.org/maplibre-style-spec/expressions#case based on one property
 export function caseHelper(
@@ -43,18 +29,6 @@ export function featureStateToggle(
     trueCase,
     falseCase,
   ];
-}
-
-export function emptyGeojson(): FeatureCollection {
-  return {
-    type: "FeatureCollection",
-    features: [],
-  };
-}
-
-// Suitable for passing to map.fitBounds. Work around https://github.com/Turfjs/turf/issues/1807.
-export function bbox(gj: GeoJSON): [number, number, number, number] {
-  return turfBbox(gj) as [number, number, number, number];
 }
 
 // Properties are guaranteed to exist

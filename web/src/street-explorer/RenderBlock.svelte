@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { caseHelper, layerId, emptyGeojson } from "../common/utils";
+  import { caseHelper, layerId } from "../common/utils";
   import {
     hoverStateFilter,
     Popup,
@@ -9,7 +9,7 @@
   } from "svelte-maplibre";
   import { showingBundles, blockGj } from "./stores";
   import { network } from "../common";
-  import { Legend } from "svelte-utils";
+  import { emptyGeojson, Legend } from "svelte-utils";
 
   $: active = $blockGj.features.length > 0;
 

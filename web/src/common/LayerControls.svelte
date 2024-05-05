@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { GeoJSON } from "geojson";
-  import { downloadGeneratedFile } from "./utils";
+  import { downloadGeneratedFile } from "svelte-utils";
 
   export let gj: GeoJSON;
   export let name: string;

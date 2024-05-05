@@ -1,7 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { boundaryGj, map } from "../store";
-  import { layerId, bbox, emptyGeojson } from "../utils";
+  import { layerId } from "../utils";
+  import { bbox, emptyGeojson } from "svelte-utils";
   import { LineLayer, GeoJSON } from "svelte-maplibre";
 
   let show = true;

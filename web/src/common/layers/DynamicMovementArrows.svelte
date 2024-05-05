@@ -1,7 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { hoveredLane, network } from "../store";
-  import { layerId, emptyGeojson } from "../utils";
+  import { layerId } from "../utils";
+  import { emptyGeojson } from "svelte-utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
 
   let show = true;

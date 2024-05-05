@@ -1,7 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";
-  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { layerId, caseHelper } from "../utils";
+  import { emptyGeojson } from "svelte-utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
 
   let show = true;

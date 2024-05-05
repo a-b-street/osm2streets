@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { layerId, caseHelper } from "../utils";
+  import { emptyGeojson } from "svelte-utils";
   import { FillLayer, GeoJSON } from "svelte-maplibre";
   import LayerControls from "../LayerControls.svelte";
   import { network } from "../store";

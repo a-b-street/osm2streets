@@ -1,6 +1,6 @@
 import type { FeatureCollection } from "geojson";
 import { writable, type Writable } from "svelte/store";
-import { emptyGeojson } from "../common/utils";
+import { emptyGeojson } from "svelte-utils";
 import { network } from "../common";
 
 export const blockGj: Writable<FeatureCollection> = writable(emptyGeojson());

@@ -1,7 +1,8 @@
 <script lang="ts">
   import LayerControls from "../LayerControls.svelte";
   import { hoveredLane, network } from "../store";
-  import { layerId, emptyGeojson, caseHelper } from "../utils";
+  import { layerId, caseHelper } from "../utils";
+  import { emptyGeojson } from "svelte-utils";
   import { hoverStateFilter, FillLayer, GeoJSON } from "svelte-maplibre";
 
   export let hoverCursor: string | undefined = undefined;

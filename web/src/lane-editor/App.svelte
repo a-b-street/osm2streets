@@ -1,7 +1,8 @@
 <script lang="ts">
   import { map } from "../common/store";
   import { GeoJSON, FillLayer, type LayerClickInfo } from "svelte-maplibre";
-  import { emptyGeojson, layerId } from "../common/utils";
+  import { layerId } from "../common/utils";
+  import { emptyGeojson } from "svelte-utils";
   import { network, StreetView } from "../common";
   import init from "osm2streets-js";
   import { onMount } from "svelte";
