@@ -889,11 +889,12 @@ dependencies = [
 [[package]]
 name = "muv-osm"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#2fb6ac174dff7904f61fdb2f8bba4cac05af1471"
+source = "git+https://gitlab.com/LeLuxNet/Muv#dab50962ce0c8e178ca4473d08af5f427c8d8a72"
 dependencies = [
  "chrono",
  "muv-osm-derive",
  "opening-hours",
+ "osmpbf",
  "rustc-hash",
  "serde",
  "smallvec",
@@ -902,7 +903,7 @@ dependencies = [
 [[package]]
 name = "muv-osm-derive"
 version = "0.1.0"
-source = "git+https://gitlab.com/LeLuxNet/Muv#2fb6ac174dff7904f61fdb2f8bba4cac05af1471"
+source = "git+https://gitlab.com/LeLuxNet/Muv#dab50962ce0c8e178ca4473d08af5f427c8d8a72"
 dependencies = [
  "proc-macro2",
  "quote",
