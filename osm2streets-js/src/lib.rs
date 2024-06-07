@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use osm2streets::{
-    osm, DebugStreets, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID, RoadSideID,
-    SideOfRoad, Sidepath, StreetNetwork, Transformation,
+    osm, DebugStreets, DrivingSide, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID,
+    RoadSideID, SideOfRoad, Sidepath, StreetNetwork, Transformation,
 };
 
 static SETUP_LOGGER: Once = Once::new();
@@ -22,6 +22,7 @@ pub struct ImportOptions {
     inferred_sidewalks: bool,
     inferred_kerbs: bool,
     date_time: Option<NaiveDateTime>,
+    override_driving_side: String,
 }
 
 #[wasm_bindgen]
@@ -62,6 +63,16 @@ impl JsStreetNetwork {
         cfg.inferred_sidewalks = input.inferred_sidewalks;
         cfg.inferred_kerbs = input.inferred_kerbs;
         cfg.date_time = input.date_time;
+        cfg.override_driving_side = match input.override_driving_side.as_str() {
+            "" => None,
+            "Left" => Some(DrivingSide::Left),
+            "Right" => Some(DrivingSide::Right),
+            x => {
+                return Err(JsValue::from_str(&format!(
+                    "Unknown override_driving_side = {x}"
+                )))
+            }
+        };
 
         let mut timer = Timer::throwaway();
         let (mut street_network, doc) =

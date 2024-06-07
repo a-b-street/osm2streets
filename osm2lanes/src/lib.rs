@@ -551,6 +551,8 @@ pub struct MapConfig {
     /// Note this is calculated by osm2streets! The value passed in is ignored; don't do any work
     /// to set it.
     pub driving_side: DrivingSide,
+    /// If set, will override the automatic calculation
+    pub override_driving_side: Option<DrivingSide>,
     /// The [two-letter ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) where
     /// this network exists. Note osm2streets doesn't support areas that cross country boundaries.
     ///
@@ -580,6 +582,7 @@ impl MapConfig {
         Self {
             // Just a dummy value that'll be set later
             driving_side: DrivingSide::Right,
+            override_driving_side: None,
             country_code: String::new(),
             bikes_can_use_bus_lanes: true,
             inferred_sidewalks: false,

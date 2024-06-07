@@ -6,6 +6,7 @@
     inferred_sidewalks: false,
     inferred_kerbs: true,
     date_time: undefined as string | undefined,
+    override_driving_side: "",
   };
 
   let date_time: string;
@@ -14,10 +15,12 @@
 
 <details>
   <summary>Processing Options</summary>
+
   <label>
     <input type="checkbox" bind:checked={settings.debug_each_step} />
     Debug each transformation step
   </label>
+
   <label>
     <input
       type="checkbox"
@@ -25,6 +28,7 @@
     />
     Enable dual carriageway experiment
   </label>
+
   <label>
     <input
       type="checkbox"
@@ -32,6 +36,7 @@
     />
     Enable sidepath zipping experiment
   </label>
+
   <div>
     Sidewalks:
     <label>
@@ -51,15 +56,26 @@
       infer on roads
     </label>
   </div>
+
   <label>
     <input type="checkbox" bind:checked={settings.inferred_kerbs} />
     Infer kerbs
   </label>
+
   <div>
     Change the time and date:
     <label>
       <input type="datetime-local" bind:value={date_time} />
     </label>
+  </div>
+
+  <div>
+    Override the driving side:
+    <select bind:value={settings.override_driving_side}>
+      <option value="">Auto-detect based on country</option>
+      <option value="Left">Left</option>
+      <option value="Right">Right</option>
+    </select>
   </div>
 </details>
 

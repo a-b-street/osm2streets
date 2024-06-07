@@ -24,6 +24,7 @@
     inferred_sidewalks: boolean;
     inferred_kerbs: boolean;
     date_time: string | undefined;
+    override_driving_side: string;
   }
 
   type Imported =

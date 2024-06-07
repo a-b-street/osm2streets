@@ -46,6 +46,12 @@ pub fn osm_to_street_network(
 /// Set up country code and driving side, using an arbitrary point. This must be called after
 /// `gps_bounds` is set.
 pub fn detect_country_code(streets: &mut StreetNetwork) {
+    if let Some(dir) = streets.config.override_driving_side {
+        info!("Ignoring country for driving side; using override {dir:?}");
+        streets.config.driving_side = dir;
+        return;
+    }
+
     let geocoder = country_geocoder::CountryGeocoder::new();
     let pt = streets.gps_bounds.get_rectangle()[0].into();
 
