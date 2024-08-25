@@ -1,5 +1,5 @@
 {
-  "country_code": "",
+  "country_code": "AU",
   "features": [
     {
       "geometry": {
@@ -3194,7 +3194,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 8,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Fork",
         "movements": [
           "Road #12 -> Road #5",
           "Road #12 -> Road #13",
@@ -4287,7 +4287,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 32,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Fork",
         "movements": [
           "Road #31 -> Road #63",
           "Road #31 -> Road #32",
