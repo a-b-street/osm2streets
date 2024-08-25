@@ -267,14 +267,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "country-geocoder"
-version = "0.1.0"
-source = "git+https://github.com/a-b-street/country-geocoder#4a9b736340f7824f24f4e35cede1ffbceac2ec84"
-dependencies = [
- "geo",
- "geojson",
- "serde",
-]
+name = "country-boundaries"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a949524fd9d83cd48e5046cd6212c1e533477d376b82570b6c0bcc4c6775625"
 
 [[package]]
 name = "cpufeatures"
@@ -1538,9 +1534,10 @@ version = "0.1.0"
 dependencies = [
  "abstutil",
  "anyhow",
- "country-geocoder",
+ "country-boundaries",
  "geom",
  "log",
+ "muv-osm",
  "osm-reader",
  "osm2streets",
 ]

@@ -7,8 +7,9 @@ edition = "2021"
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
 anyhow = { workspace = true }
-country-geocoder = { git = "https://github.com/a-b-street/country-geocoder" }
+country-boundaries = "1.2.0"
 geom = { workspace = true }
 log = "0.4.14"
+muv-osm = { git = "https://gitlab.com/LeLuxNet/Muv", features = ["lanes"] }
 osm-reader = { git = "https://github.com/a-b-street/osm-reader" }
 osm2streets = { path = "../osm2streets" }
