@@ -5,8 +5,10 @@ extern crate log;
 
 use abstutil::Timer;
 use anyhow::Result;
+use country_boundaries::{CountryBoundaries, BOUNDARIES_ODBL_60X30};
 use geom::{GPSBounds, LonLat, Ring};
 
+use muv_osm::lanes::highway::driving_side;
 use osm2streets::{DrivingSide, MapConfig, StreetNetwork};
 use osm_reader::Document;
 
@@ -52,16 +54,21 @@ pub fn detect_country_code(streets: &mut StreetNetwork) {
         return;
     }
 
-    let geocoder = country_geocoder::CountryGeocoder::new();
-    let pt = streets.gps_bounds.get_rectangle()[0].into();
+    let geocoder = CountryBoundaries::from_reader(BOUNDARIES_ODBL_60X30).unwrap();
+    let pt = streets.gps_bounds.get_rectangle()[0];
 
-    if let (Some(code), Some(left_handed)) = (geocoder.iso_a2(pt), geocoder.drives_on_left(pt)) {
-        streets.config.driving_side = if left_handed {
-            DrivingSide::Left
-        } else {
-            DrivingSide::Right
-        };
+    // Obtain the possible list of country codes, ordered by their size ascending.
+    let codes = geocoder.ids(country_boundaries::LatLon::new(pt.y(), pt.x()).unwrap());
+    // Use the first code, since it is most specific.
+    if let Some(code) = codes.first() {
         streets.config.country_code = code.to_string();
+        let driving_side = match driving_side(&code) {
+            Some(muv_osm::lanes::Side::Left) => DrivingSide::Left,
+            Some(muv_osm::lanes::Side::Right) => DrivingSide::Right,
+            // Default to driving on the right.
+            None => DrivingSide::Right,
+        };
+        streets.config.driving_side = driving_side;
     } else {
         error!("detect_country_code failed -- {:?} didn't match to any country. Driving side may be wrong!", pt);
     }
