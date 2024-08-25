@@ -1,5 +1,5 @@
 {
-  "country_code": "",
+  "country_code": "VI",
   "features": [
     {
       "geometry": {
@@ -4815,7 +4815,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 3,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Intersection",
         "movements": [
           "Road #13 -> Road #1",
           "Road #0 -> Road #1",
@@ -4860,7 +4860,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 4,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #57 -> Road #18",
           "Road #18 -> Road #57"
@@ -4908,7 +4908,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 5,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Intersection",
         "movements": [
           "Road #19 -> Road #2",
           "Road #1 -> Road #2",
@@ -5009,7 +5009,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 7,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Intersection",
         "movements": [
           "Road #24 -> Road #3",
           "Road #2 -> Road #3",
@@ -5564,7 +5564,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 16,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #68 -> Road #35",
           "Road #35 -> Road #68"
@@ -7724,7 +7724,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 54,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #92 -> Road #91",
           "Road #91 -> Road #92"
@@ -7858,7 +7858,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 57,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Fork",
         "movements": [
           "Road #5 -> Road #6",
           "Road #5 -> Road #87",
@@ -7907,7 +7907,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 58,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #87 -> Road #88",
           "Road #88 -> Road #87"
@@ -7996,7 +7996,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 60,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Fork",
         "movements": [
           "Road #3 -> Road #4",
           "Road #3 -> Road #90",
@@ -8045,7 +8045,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 61,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #90 -> Road #91",
           "Road #91 -> Road #90"
@@ -8227,7 +8227,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 65,
-        "intersection_kind": "Intersection",
+        "intersection_kind": "Connection",
         "movements": [
           "Road #42 -> Road #41",
           "Road #41 -> Road #42"
@@ -8335,7 +8335,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 67,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Intersection",
         "movements": [
           "Road #96 -> Road #7",
           "Road #6 -> Road #7",
@@ -8384,7 +8384,7 @@
         "control": "Signed",
         "crossing": null,
         "id": 68,
-        "intersection_kind": "Fork",
+        "intersection_kind": "Intersection",
         "movements": [
           "Road #97 -> Road #5",
           "Road #4 -> Road #5",

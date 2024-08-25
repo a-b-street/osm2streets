@@ -59,19 +59,18 @@ pub fn detect_country_code(streets: &mut StreetNetwork) {
 
     // Obtain the possible list of country codes, ordered by their size ascending.
     let codes = geocoder.ids(country_boundaries::LatLon::new(pt.y(), pt.x()).unwrap());
-    // Use the first code, since it is most specific.
-    if let Some(code) = codes.first() {
-        streets.config.country_code = code.to_string();
-        let driving_side = match driving_side(&code) {
-            Some(muv_osm::lanes::Side::Left) => DrivingSide::Left,
-            Some(muv_osm::lanes::Side::Right) => DrivingSide::Right,
-            // Default to driving on the right.
-            None => DrivingSide::Right,
-        };
-        streets.config.driving_side = driving_side;
-    } else {
+
+    // Use the most specific country code for which we know a driving side.
+    let Some((code, side)) = codes.into_iter().find_map(|code| driving_side(code).map(|s| (code, s))) else {
         error!("detect_country_code failed -- {:?} didn't match to any country. Driving side may be wrong!", pt);
-    }
+        return;
+    };
+
+    streets.config.country_code = code.to_string();
+    streets.config.driving_side = match side {
+        muv_osm::lanes::Side::Left => DrivingSide::Left,
+        muv_osm::lanes::Side::Right => DrivingSide::Right,
+    };
 }
 
 fn extract_osm(
