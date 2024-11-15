@@ -31,7 +31,7 @@ pub struct PyStreetNetwork {
     ways: BTreeMap<osm::WayID, streets_reader::osm_reader::Way>,
 }
 
-#[pymethods] // Changed from #[pyfunction] to #[pymethods]
+#[pymethods]
 impl PyStreetNetwork {
     /// Creates a new instance of `PyStreetNetwork`.
     /// 
