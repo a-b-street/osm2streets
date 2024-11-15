@@ -34,9 +34,8 @@ conda install -c conda-forge geopandas geopy
 4.	Install osm2streets_python using the following command:
 
 ```bash
-pip install --no-cache-dir -e git+https://github.com/lukasbeuster/osm2streets.git@python_wrap#egg=osm2streets_python\&subdirectory=osm2streets-py
+pip install --no-cache-dir -e git+https://github.com/a-b-street/osm2streets.git#egg=osm2streets_python\&subdirectory=osm2streets-py
 ```
-
 
 5. Verifying the Installation
 
