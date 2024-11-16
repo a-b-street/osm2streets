@@ -4,13 +4,13 @@ use std::sync::Once;
 use abstutil::{Tags, Timer};
 use chrono::NaiveDateTime;
 use geom::{Distance, LonLat, PolyLine, Polygon};
-use serde::{Deserialize, Serialize};
-use serde_json; // Added serde_json import
-use pyo3::prelude::*;
 use osm2streets::{
     osm, DebugStreets, DrivingSide, Filter, IntersectionID, LaneID, MapConfig, Placement, RoadID,
     RoadSideID, SideOfRoad, Sidepath, StreetNetwork, Transformation,
 };
+use pyo3::prelude::*;
+use serde::{Deserialize, Serialize};
+use serde_json; // Added serde_json import
 
 static SETUP_LOGGER: Once = Once::new();
 
@@ -34,10 +34,10 @@ pub struct PyStreetNetwork {
 #[pymethods]
 impl PyStreetNetwork {
     /// Creates a new instance of `PyStreetNetwork`.
-    /// 
+    ///
     /// - `osm_input`: Byte array representing OSM data input.
     /// - `clip_pts_geojson`: Optional GeoJSON string representing a polygon to clip the input data.
-    /// - `input`: JSON string that sets configuration options for the import, including `debug_each_step`, 
+    /// - `input`: JSON string that sets configuration options for the import, including `debug_each_step`,
     ///   `dual_carriageway_experiment`, `sidepath_zipping_experiment`, `inferred_sidewalks`, `inferred_kerbs`,
     ///   `date_time`, and `override_driving_side`.
     #[new]
@@ -49,8 +49,10 @@ impl PyStreetNetwork {
     ) -> PyResult<Self> {
         SETUP_LOGGER.call_once(|| env_logger::init());
 
-        let input: ImportOptions = serde_json::from_str(input.extract::<&str>(py)?)
-            .map_err(|e| pyo3::exceptions::PyValueError::new_err(format!("Failed to parse input: {}", e)))?;
+        let input: ImportOptions =
+            serde_json::from_str(input.extract::<&str>(py)?).map_err(|e| {
+                pyo3::exceptions::PyValueError::new_err(format!("Failed to parse input: {}", e))
+            })?;
 
         // Parse clip points if provided
         let clip_pts = if clip_pts_geojson.is_empty() {
@@ -74,12 +76,17 @@ impl PyStreetNetwork {
             "" => None,
             "Left" => Some(DrivingSide::Left),
             "Right" => Some(DrivingSide::Right),
-            x => return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Unknown driving side: {x}"))),
+            x => {
+                return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                    "Unknown driving side: {x}"
+                )))
+            }
         };
 
         let mut timer = Timer::throwaway();
-        let (mut street_network, doc) = streets_reader::osm_to_street_network(osm_input, clip_pts, cfg, &mut timer)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("{}", e)))?;
+        let (mut street_network, doc) =
+            streets_reader::osm_to_street_network(osm_input, clip_pts, cfg, &mut timer)
+                .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("{}", e)))?;
 
         let mut transformations = Transformation::standard_for_clipped_areas();
         if input.dual_carriageway_experiment {
@@ -107,28 +114,36 @@ impl PyStreetNetwork {
     ///
     /// Returns a GeoJSON string representing all elements in the street network.
     pub fn to_geojson_plain(&self) -> PyResult<String> {
-        self.inner.to_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .to_geojson(&Filter::All)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
 
     /// Converts lane polygons in the `StreetNetwork` to a GeoJSON format.
     ///
     /// Returns a GeoJSON string representing the polygons of each lane.
     pub fn to_lane_polygons_geojson(&self) -> PyResult<String> {
-        self.inner.to_lane_polygons_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .to_lane_polygons_geojson(&Filter::All)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
 
     /// Converts lane markings in the `StreetNetwork` to a GeoJSON format.
     ///
     /// Returns a GeoJSON string representing the lane markings, such as dashed or solid lines.
     pub fn to_lane_markings_geojson(&self) -> PyResult<String> {
-        self.inner.to_lane_markings_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .to_lane_markings_geojson(&Filter::All)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
 
     /// Converts intersection markings in the `StreetNetwork` to a GeoJSON format.
     ///
     /// Returns a GeoJSON string representing the markings at intersections.
     pub fn to_intersection_markings_geojson(&self) -> PyResult<String> {
-        self.inner.to_intersection_markings_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .to_intersection_markings_geojson(&Filter::All)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
 
     /// Retrieves debugging steps for each modification applied to the `StreetNetwork`.
@@ -137,35 +152,41 @@ impl PyStreetNetwork {
     /// in the network transformation process.
     pub fn get_debug_steps(&self) -> PyResult<Vec<PyObject>> {
         Python::with_gil(|py| {
-            Ok(self.inner
+            Ok(self
+                .inner
                 .debug_steps
                 .iter()
                 .map(|x| PyDebugStreets { inner: x.clone() }.into_py(py))
                 .collect())
         })
     }
-    
+
     /// Converts the clockwise ordering debug information to a GeoJSON format.
     ///
     /// Returns a GeoJSON string showing the ordering of intersections in a clockwise manner, which
     /// can be helpful for debugging road connections.
     pub fn debug_clockwise_ordering_geojson(&self) -> PyResult<String> {
-        self.inner.debug_clockwise_ordering_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .debug_clockwise_ordering_geojson(&Filter::All)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Converts clockwise ordering information for a specific intersection to GeoJSON format.
     ///
     /// - `intersection`: ID of the intersection to be debugged.
     ///
     /// Returns a GeoJSON string with clockwise ordering for the given intersection.
-    pub fn debug_clockwise_ordering_for_intersection_geojson(&self, intersection: usize) -> PyResult<String> {
+    pub fn debug_clockwise_ordering_for_intersection_geojson(
+        &self,
+        intersection: usize,
+    ) -> PyResult<String> {
         let mut intersections = BTreeSet::new();
         intersections.insert(IntersectionID(intersection));
         self.inner
             .debug_clockwise_ordering_geojson(&Filter::Filtered(BTreeSet::new(), intersections))
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Converts movement information from a specific lane to GeoJSON format.
     ///
     /// - `road`: ID of the road containing the lane.
@@ -180,7 +201,7 @@ impl PyStreetNetwork {
             })
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Retrieves information about roads connected to a given intersection as a GeoJSON format.
     ///
     /// - `i`: ID of the intersection.
@@ -196,9 +217,10 @@ impl PyStreetNetwork {
                     .to_geojson(Some(&self.inner.gps_bounds)),
             );
         }
-        serde_json::to_string_pretty(&geom::geometries_to_geojson(polygons)).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        serde_json::to_string_pretty(&geom::geometries_to_geojson(polygons))
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Retrieves OSM tags for a given way (road or path).
     ///
     /// - `id`: The OSM ID of the way.
@@ -208,17 +230,21 @@ impl PyStreetNetwork {
         if let Some(ref way) = self.ways.get(&osm::WayID(id)) {
             Ok(serde_json::to_string_pretty(&way.tags).unwrap())
         } else {
-            Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("unknown way {}", id)))
+            Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                "unknown way {}",
+                id
+            )))
         }
     }
-    
+
     /// Converts the entire `StreetNetwork` to a JSON format.
     ///
     /// Returns a JSON string representing the full `StreetNetwork` data structure.
     pub fn to_json(&self) -> PyResult<String> {
-        serde_json::to_string_pretty(&self.inner).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        serde_json::to_string_pretty(&self.inner)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Retrieves the geometry of a way (road or path) as a buffered polygon in GeoJSON format.
     ///
     /// - `id`: The OSM ID of the way.
@@ -227,22 +253,39 @@ impl PyStreetNetwork {
     /// for indicating directionality.
     pub fn get_geometry_for_way(&self, id: i64) -> PyResult<String> {
         let id = osm::WayID(id);
-        let width = self.inner.roads.values().find(|r| r.from_osm_way(id)).map(|r| r.total_width()).unwrap();
+        let width = self
+            .inner
+            .roads
+            .values()
+            .find(|r| r.from_osm_way(id))
+            .map(|r| r.total_width())
+            .unwrap();
         let polyline = PolyLine::unchecked_new(self.ways[&id].pts.clone());
         let mut polygon = polyline.make_polygons(1.5 * width);
-        let num_chevrons = std::cmp::max(1, (polyline.length() / Distance::meters(50.0)).floor() as i64);
-        let chevrons = (1..=num_chevrons).map(|i| {
-            let (top_pt, angle) = polyline.dist_along((i as f64 / (num_chevrons as f64 + 1.0)) * polyline.length()).unwrap();
-            PolyLine::must_new(vec![
-                top_pt.project_away(width / 2.0, angle.rotate_degs(135.0)),
-                top_pt,
-                top_pt.project_away(width / 2.0, angle.rotate_degs(-135.0)),
-            ]).make_polygons(width * 0.2)
-        }).collect::<Vec<Polygon>>();
-        chevrons.iter().for_each(|c| polygon = polygon.difference(c).unwrap()[0].clone());
-        serde_json::to_string_pretty(&polygon.to_geojson(Some(&self.inner.gps_bounds))).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        let num_chevrons = std::cmp::max(
+            1,
+            (polyline.length() / Distance::meters(50.0)).floor() as i64,
+        );
+        let chevrons = (1..=num_chevrons)
+            .map(|i| {
+                let (top_pt, angle) = polyline
+                    .dist_along((i as f64 / (num_chevrons as f64 + 1.0)) * polyline.length())
+                    .unwrap();
+                PolyLine::must_new(vec![
+                    top_pt.project_away(width / 2.0, angle.rotate_degs(135.0)),
+                    top_pt,
+                    top_pt.project_away(width / 2.0, angle.rotate_degs(-135.0)),
+                ])
+                .make_polygons(width * 0.2)
+            })
+            .collect::<Vec<Polygon>>();
+        chevrons
+            .iter()
+            .for_each(|c| polygon = polygon.difference(c).unwrap()[0].clone());
+        serde_json::to_string_pretty(&polygon.to_geojson(Some(&self.inner.gps_bounds)))
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Converts a way to an XML representation reflecting OSM tags.
     ///
     /// - `id`: The OSM ID of the way.
@@ -250,7 +293,10 @@ impl PyStreetNetwork {
     /// Returns an XML string for the way, or an error if the way does not exist.
     pub fn way_to_xml(&self, id: i64) -> PyResult<String> {
         let Some(ref way) = self.ways.get(&osm::WayID(id)) else {
-            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("unknown way {}", id)));
+            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                "unknown way {}",
+                id
+            )));
         };
         let mut out = format!(r#"<way id="{}""#, id);
         if let Some(version) = way.version {
@@ -266,7 +312,7 @@ impl PyStreetNetwork {
         out.push_str("</way>");
         Ok(out)
     }
-    
+
     /// Finds and returns a block for a specified road side as a polygon.
     ///
     /// - `road`: ID of the road.
@@ -279,7 +325,11 @@ impl PyStreetNetwork {
             .find_block(
                 RoadSideID {
                     road: RoadID(road),
-                    side: if left { SideOfRoad::Left } else { SideOfRoad::Right },
+                    side: if left {
+                        SideOfRoad::Left
+                    } else {
+                        SideOfRoad::Right
+                    },
                 },
                 sidewalks,
             )
@@ -287,14 +337,16 @@ impl PyStreetNetwork {
             .render_polygon(&self.inner)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
-    
+
     /// Finds and returns all blocks in the network as polygons.
     ///
     /// - `sidewalks`: Boolean indicating if sidewalks should be included in the blocks.
     ///
     /// Returns a GeoJSON string representing all blocks.    
     pub fn find_all_blocks(&self, sidewalks: bool) -> PyResult<String> {
-        self.inner.find_all_blocks(sidewalks).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
+        self.inner
+            .find_all_blocks(sidewalks)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
     }
 
     // Moved all mutations methods into a single block to handle python implementation where everything needs to be in the same struct
@@ -307,8 +359,9 @@ impl PyStreetNetwork {
     /// Updates the roads and intersections connected to this way based on the new tags.
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: &str) -> PyResult<()> {
         let id = osm::WayID(id);
-        let tags: Tags = serde_json::from_str(tags)
-            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Failed to parse tags: {}", e)))?;
+        let tags: Tags = serde_json::from_str(tags).map_err(|e| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Failed to parse tags: {}", e))
+        })?;
 
         let mut intersections = BTreeSet::new();
         for road in self.inner.roads.values_mut() {
@@ -330,11 +383,13 @@ impl PyStreetNetwork {
         if let Some(way) = self.ways.get_mut(&id) {
             way.tags = tags;
         } else {
-            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("Unknown way ID {}", id)));
+            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
+                "Unknown way ID {}",
+                id
+            )));
         }
         Ok(())
     }
-
 
     /// Collapses a short road by merging it into its neighboring road segments.
     ///
@@ -342,7 +397,8 @@ impl PyStreetNetwork {
     ///
     /// Collapsing short roads can help clean up unnecessary segments in the network.
     pub fn collapse_short_road(&mut self, road: usize) -> PyResult<()> {
-        self.inner.collapse_short_road(RoadID(road))
+        self.inner
+            .collapse_short_road(RoadID(road))
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))?;
         Ok(())
     }
@@ -373,7 +429,6 @@ impl PyStreetNetwork {
     }
 }
 
-
 #[pyclass]
 pub struct PyDebugStreets {
     inner: DebugStreets,
@@ -384,7 +439,7 @@ impl PyDebugStreets {
     pub fn get_label(&self) -> String {
         self.inner.label.clone()
     }
-//TODO: add get_network
+    //TODO: add get_network
     pub fn to_debug_geojson(&self) -> Option<String> {
         self.inner.to_debug_geojson()
     }

@@ -1,6 +1,6 @@
 # osm2streets_test.py
 
-#Import necessary modules
+# Import necessary modules
 import osm2streets_python
 import json
 import os
@@ -9,7 +9,7 @@ import os
 os.environ["RUST_LOG"] = "off"
 print("osm2streets_python imported successfully.")
 
-#Load OSM XML data as bytes
+# Load OSM XML data as bytes
 osm_file_path = "../tests/src/neukolln/input.osm"
 with open(osm_file_path, "rb") as file:
     osm_input = file.read()
@@ -22,7 +22,7 @@ with open("../tests/src/neukolln/boundary.json", "r") as f:
 # Convert the JSON object to a string format for input
 clip_pts_geojson = json.dumps(clip_pts_geojson)
 
-#Define input options for PyStreetNetwork
+# Define input options for PyStreetNetwork
 input_options = {
     "debug_each_step": False,
     "dual_carriageway_experiment": False,
@@ -30,13 +30,17 @@ input_options = {
     "inferred_sidewalks": True,
     "inferred_kerbs": True,
     "date_time": None,
-    "override_driving_side": "Right"
+    "override_driving_side": "Right",
 }
 input_options_json = json.dumps(input_options)
 
-#Initialize PyStreetNetwork
+# Initialize PyStreetNetwork
 try:
-    network = osm2streets_python.PyStreetNetwork(osm_input, clip_pts_geojson, input_options_json)
-    print("PyStreetNetwork instance created successfully! - package installed correctly")
+    network = osm2streets_python.PyStreetNetwork(
+        osm_input, clip_pts_geojson, input_options_json
+    )
+    print(
+        "PyStreetNetwork instance created successfully! - package installed correctly"
+    )
 except Exception as e:
     print(f"Error during initialization: {e}")
