@@ -45,7 +45,14 @@ Once installed, you can verify that the package works by running the osm2streets
 python3 osm2streets_test.py
 ```
 This should result in the following output: 
-![alt text](test_output.png)
+
+```
+> python3 osm2streets_test.py
+osm2streets_python imported successfully.
+Loaded 1466704 bytes from ../tests/src/neukolln/input.osm.
+PyStreetNetwork instance created successfully! - package installed correctly
+```
+
 Success! You've installed the package and are now ready to use its functions. 
 
 
