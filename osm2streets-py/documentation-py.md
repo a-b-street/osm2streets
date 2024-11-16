@@ -155,7 +155,7 @@ Your `Cargo.toml` is already set up. It should specify pyo3 and be configured to
 [package]
 name = "osm2streets_python"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 abstutil = { git = "https://github.com/a-b-street/abstreet" }
