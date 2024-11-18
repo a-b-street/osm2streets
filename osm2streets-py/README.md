@@ -1,43 +1,38 @@
-# osm2streets Python Module Documentation
 
-The osm2streets_python module provides Python bindings for the osm2streets library using pyo3, allowing users to interact with OpenStreetMap (OSM) data and convert it into street network representations. The main classes, PyStreetNetwork and PyDebugStreets, offer methods for creating, transforming, and exporting street networks in GeoJSON format.
+# osm2streets Python module documentation
 
+The osm2streets_python module provides Python bindings for the osm2streets library using [pyo3](https://pyo3.rs), allowing users to interact with OpenStreetMap (OSM) data and convert it into street network representations. 
+The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer methods for creating, transforming, and exporting street networks in GeoJSON format.
 
 ![alt text](sample_output.png)
 
-## Installation:
 
-### Prerequisites
+## Installation
 
-Before getting started, ensure that you have the following installed:
-1.	Rust – Install using rustup.
+### If you want to compile it yourself
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
+  1. install latest [Rust](https://www.rust-lang.org/)
+  2. install [maturin](https://github.com/PyO3/maturin)
+  3. `maturin build --release`
+  4. `cd ./target/wheels/`
+  5. `pip install [name-wheel].whl` will install it to your local Python
 
-If you're using mac, make sure to also install:
+### Development
 
-```bash
-rustup target add x86_64-apple-darwin
-```
+  1. install [Rust](https://www.rust-lang.org/) (v1.39+)
+  2. install [maturin](https://github.com/PyO3/maturin)
+  3. `maturin develop`
+  4. move to another folder, and `import osm2streets_python` shouldn't return any error
 
-2. Set Up a Virtual Environment Using Conda/Venv (replace osm2streets-env with your environment name):
 
-```bash
-conda create -n osm2streets-env
-conda activate osm2streets-env
-conda install pip
-conda install -c conda-forge geopandas geopy
-```
 
-4.	Install osm2streets_python using the following command:
+## Usage
+
+You need to install [geopandas](https://geopandas.org) and [geopy](https://geopy.readthedocs.io/en/stable/) in your environment:
 
 ```bash
-pip install --no-cache-dir -e git+https://github.com/a-b-street/osm2streets.git#egg=osm2streets_python\&subdirectory=osm2streets-py
+pip install geopandas geopy
 ```
-
-5. Verifying the Installation
 
 Once installed, you can verify that the package works by running the osm2streets_test.py in the osm2streets-py folder:
 
@@ -53,15 +48,14 @@ Loaded 1466704 bytes from ../tests/src/neukolln/input.osm.
 PyStreetNetwork instance created successfully! - package installed correctly
 ```
 
-Success! You've installed the package and are now ready to use its functions. 
+Success 🚀 
+You've installed the package and are now ready to use its functions. 
 
+
+## Examples
 
 For some examples have a look at `osm2streets_py_test.ipynb`
 
-Once installed you can import the module using:
-```python
-import osm2streets_python
-```
 
 ### Currently available Classes and Methods in osm2streets_python
 
@@ -136,97 +130,3 @@ PyDebugStreets provides debugging utilities for inspecting and visualizing speci
 - **`.get_label()`**: Returns a label for the debug street.
 - **`.to_debug_geojson()`**: Exports debug information as GeoJSON, if available.
 
-
-### Extending the python package (Compiling a Python Package from Rust Using maturin)
-
-#### Step 1: Install maturin in your virtual environment.
-
-```bash
-pip install maturin
-```
-
-#### Step 2: Check that the Rust Project is Organised for Building
-
-In your Rust project, ensure the following structure for Python bindings using pyo3:
-```
-osm2streets-py/
-├── Cargo.toml          # Contains the package information
-├── pyproject.toml      # Contains build information for pip
-└── src/
-    └── lib.rs          # Main Rust library file where Python bindings are defined
-```
-
-Your `Cargo.toml` is already set up. It should specify pyo3 and be configured to building as a Python package. Here’s the current status. Add dependencies and additions where needed:
-
-```toml
-[package]
-name = "osm2streets_python"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-abstutil = { git = "https://github.com/a-b-street/abstreet" }
-geom = { workspace = true }
-osm2streets = { path = "../osm2streets" }
-streets_reader = { path = "../streets_reader" }
-pyo3 = { version = "0.17", features = ["extension-module"] }
-serde = { version = "1.0", features = ["derive"] }
-chrono = { version = "0.4", features = ["serde"] }
-serde_json = "1.0"
-env_logger = "0.10"
-
-[lib]
-crate-type = ["cdylib"]
-```
-
-In your `src/lib.rs`, set up the pyo3 bindings. Here’s a simple example:
-
-```rust
-use pyo3::prelude::*;
-use osm2streets::{
-    StreetNetwork,
-};
-
-#[pyclass]
-pub struct PyStreetNetwork {
-    inner: StreetNetwork,
-    ways: BTreeMap<osm::WayID, streets_reader::osm_reader::Way>,
-}
-
-#[pymethods]
-impl PyStreetNetwork {
-pub fn to_geojson_plain(&self) -> PyResult<String> {
-        self.inner.to_geojson(&Filter::All).map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!("{}", e)))
-    }
-}
-
-#[pymodule]
-fn osm2streets_python(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<PyStreetNetwork>()?;
-    Ok(())
-}
-```
-
-#### Step 3: Build the Python Package with maturin
-
-1.	Build and Install the Package:
-Inside the project directory, run maturin develop to compile and install the package in your active environment.
-
-```bash
-maturin develop
-```
-- `maturin develop` compiles the package in development mode and installs it in the environment, allowing you to test it directly.
-
-2.	Check the Installation:
-Verify the package is installed and accessible by importing it in Python:
-
-
-```python
-import osm2streets_python
-```
-
-### Troubleshooting Tips
-
-- Compilation Errors: Ensure that Rust and Python versions match the requirements and that pyo3 is configured correctly.
-- Dependency Errors: Double-check dependencies in Cargo.toml and install any missing Python packages in the virtual environment.
-- Testing Errors: Run maturin develop again if you modify the Rust code to ensure changes are updated in the environment.
