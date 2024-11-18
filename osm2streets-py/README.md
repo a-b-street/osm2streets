@@ -1,7 +1,7 @@
 
 # osm2streets Python module documentation
 
-The osm2streets_python module provides Python bindings for the osm2streets library using [pyo3](https://pyo3.rs), allowing users to interact with OpenStreetMap (OSM) data and convert it into street network representations. 
+The osm2streets_python module provides Python bindings for the osm2streets library using [PyO3](https://pyo3.rs), allowing users to interact with OpenStreetMap (OSM) data and convert it into street network representations. 
 The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer methods for creating, transforming, and exporting street networks in GeoJSON format.
 
 ![alt text](sample_output.png)
