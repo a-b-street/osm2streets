@@ -12,21 +12,28 @@ The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer 
 ### If you want to compile it yourself
 
   1. install latest [Rust](https://www.rust-lang.org/)
-  2. install [maturin](https://github.com/PyO3/maturin)
-  3. `maturin build --release`
-  4. `cd ./target/wheels/`
-  5. `pip install [name-wheel].whl` will install it to your local Python
+  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
+  1. install [maturin](https://github.com/PyO3/maturin)
+  1. `maturin build --release`
+  1. `cd ./target/wheels/`
+  1. `pip install [name-wheel].whl` will install it to your local Python
 
-### Development
+### Development (to be able to change the code and test it)
 
-  1. install [Rust](https://www.rust-lang.org/) (v1.39+)
-  2. install [maturin](https://github.com/PyO3/maturin)
-  3. `maturin develop`
-  4. move to another folder, and `import osm2streets_python` shouldn't return any error
+  1. install [Rust](https://www.rust-lang.org/) 
+  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
+  1. install [maturin](https://github.com/PyO3/maturin)
+  1. `maturin develop`
+  1. move to another folder, and `import osm2streets_python` shouldn't return any error
+
+### Using pip (which compiles with Rust the wheels and install them)
+
+  1. install [Rust](https://www.rust-lang.org/) 
+  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
+  1. `pip install --no-cache-dir -e git+https://github.com/a-b-street/osm2streets.git#egg=osm2streets_python\&subdirectory=osm2streets-py`
 
 
-
-## Usage
+## Testing the installation
 
 You need to install [geopandas](https://geopandas.org) and [geopy](https://geopy.readthedocs.io/en/stable/) in your environment:
 
@@ -37,12 +44,13 @@ pip install geopandas geopy
 Once installed, you can verify that the package works by running the osm2streets_test.py in the osm2streets-py folder:
 
 ```bash
-python3 osm2streets_test.py
+python osm2streets_test.py
 ```
+
 This should result in the following output: 
 
-```
-> python3 osm2streets_test.py
+```bash
+python osm2streets_test.py
 osm2streets_python imported successfully.
 Loaded 1466704 bytes from ../tests/src/neukolln/input.osm.
 PyStreetNetwork instance created successfully! - package installed correctly
