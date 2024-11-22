@@ -12,7 +12,6 @@ The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer 
 ### If you want to compile it yourself
 
   1. install latest [Rust](https://www.rust-lang.org/)
-  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
   1. install [maturin](https://github.com/PyO3/maturin)
   1. `maturin build --release`
   1. `cd ./target/wheels/`
@@ -21,7 +20,6 @@ The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer 
 ### Development (to be able to change the code and test it)
 
   1. install [Rust](https://www.rust-lang.org/) 
-  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
   1. install [maturin](https://github.com/PyO3/maturin)
   1. `maturin develop`
   1. move to another folder, and `import osm2streets_python` shouldn't return any error
@@ -29,7 +27,6 @@ The main classes of osm2streets (`PyStreetNetwork` and `PyDebugStreets`), offer 
 ### Using pip (which compiles with Rust the wheels and install them)
 
   1. install [Rust](https://www.rust-lang.org/) 
-  1. If you're using mac, make sure to also install: `rustup target add x86_64-apple-darwin`
   1. `pip install --no-cache-dir -e git+https://github.com/a-b-street/osm2streets.git#egg=osm2streets_python\&subdirectory=osm2streets-py`
 
 
