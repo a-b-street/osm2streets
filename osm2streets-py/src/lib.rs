@@ -150,6 +150,10 @@ impl PyStreetNetwork {
     ///
     /// Returns a vector of `PyDebugStreets` objects, which represent intermediate states or steps
     /// in the network transformation process.
+    ///
+    /// The GIL (Global Interpreter Lock) is required here because `PyObject` operations,
+    /// such as converting Rust data to Python objects (`into_py(py)`), must be performed
+    /// while holding the GIL to ensure thread safety in Python's memory management.
     pub fn get_debug_steps(&self) -> PyResult<Vec<PyObject>> {
         Python::with_gil(|py| {
             Ok(self
