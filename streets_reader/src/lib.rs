@@ -61,7 +61,10 @@ pub fn detect_country_code(streets: &mut StreetNetwork) {
     let codes = geocoder.ids(country_boundaries::LatLon::new(pt.y(), pt.x()).unwrap());
 
     // Use the most specific country code for which we know a driving side.
-    let Some((code, side)) = codes.into_iter().find_map(|code| driving_side(code).map(|s| (code, s))) else {
+    let Some((code, side)) = codes
+        .into_iter()
+        .find_map(|code| driving_side(code).map(|s| (code, s)))
+    else {
         error!("detect_country_code failed -- {:?} didn't match to any country. Driving side may be wrong!", pt);
         return;
     };
@@ -85,10 +88,11 @@ fn extract_osm(
         timer,
     )?;
     // If GPSBounds aren't provided, they'll be computed in the Document
-    // LB 241209 - Added proper error handling due to processing errors, so it doesn't stop processing. 
-    streets.gps_bounds = doc.gps_bounds.clone().ok_or_else(|| {
-        anyhow::anyhow!("Failed to extract GPS bounds from the OSM input")
-    })?;
+    // LB 241209 - Added proper error handling due to processing errors, so it doesn't stop processing.
+    streets.gps_bounds = doc
+        .gps_bounds
+        .clone()
+        .ok_or_else(|| anyhow::anyhow!("Failed to extract GPS bounds from the OSM input"))?;
 
     if let Some(pts) = clip_pts {
         streets.boundary_polygon =
