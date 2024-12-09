@@ -49,8 +49,8 @@ impl PyStreetNetwork {
     ) -> PyResult<Self> {
         SETUP_LOGGER.call_once(|| env_logger::init());
 
-        let input: ImportOptions =
-            serde_json::from_str(input.extract::<&str>(py)?).map_err(|e| err_to_py_value(format!("Failed to parse input: {}", e)))?;
+        let input: ImportOptions = serde_json::from_str(input.extract::<&str>(py)?)
+            .map_err(|e| err_to_py_value(format!("Failed to parse input: {}", e)))?;
 
         // Parse clip points if provided
         let clip_pts = if clip_pts_geojson.is_empty() {
@@ -230,10 +230,7 @@ impl PyStreetNetwork {
         if let Some(ref way) = self.ways.get(&osm::WayID(id)) {
             Ok(serde_json::to_string_pretty(&way.tags).unwrap())
         } else {
-            Err(err_to_py_value(format!(
-                "unknown way {}",
-                id
-            )))
+            Err(err_to_py_value(format!("unknown way {}", id)))
         }
     }
 
@@ -241,8 +238,7 @@ impl PyStreetNetwork {
     ///
     /// Returns a JSON string representing the full `StreetNetwork` data structure.
     pub fn to_json(&self) -> PyResult<String> {
-        serde_json::to_string_pretty(&self.inner)
-            .map_err(err_to_py_runtime)
+        serde_json::to_string_pretty(&self.inner).map_err(err_to_py_runtime)
     }
 
     /// Retrieves the geometry of a way (road or path) as a buffered polygon in GeoJSON format.
@@ -293,10 +289,7 @@ impl PyStreetNetwork {
     /// Returns an XML string for the way, or an error if the way does not exist.
     pub fn way_to_xml(&self, id: i64) -> PyResult<String> {
         let Some(ref way) = self.ways.get(&osm::WayID(id)) else {
-            return Err(err_to_py_value(format!(
-                "unknown way {}",
-                id
-            )));
+            return Err(err_to_py_value(format!("unknown way {}", id)));
         };
         let mut out = format!(r#"<way id="{}""#, id);
         if let Some(version) = way.version {
@@ -359,8 +352,8 @@ impl PyStreetNetwork {
     /// Updates the roads and intersections connected to this way based on the new tags.
     pub fn overwrite_osm_tags_for_way(&mut self, id: i64, tags: &str) -> PyResult<()> {
         let id = osm::WayID(id);
-        let tags: Tags = serde_json::from_str(tags).map_err(|e| err_to_py_value(format!("Failed to parse tags: {}", e))
-        )?;
+        let tags: Tags = serde_json::from_str(tags)
+            .map_err(|e| err_to_py_value(format!("Failed to parse tags: {}", e)))?;
 
         let mut intersections = BTreeSet::new();
         for road in self.inner.roads.values_mut() {
@@ -382,10 +375,7 @@ impl PyStreetNetwork {
         if let Some(way) = self.ways.get_mut(&id) {
             way.tags = tags;
         } else {
-            return Err(err_to_py_value(format!(
-                "Unknown way ID {}",
-                id
-            )));
+            return Err(err_to_py_value(format!("Unknown way ID {}", id)));
         }
         Ok(())
     }
@@ -457,7 +447,6 @@ fn osm2streets_python(_py: Python, m: &PyModule) -> PyResult<()> {
 fn err_to_py_runtime<E: std::fmt::Display>(err: E) -> PyErr {
     pyo3::exceptions::PyRuntimeError::new_err(err.to_string())
 }
-
 
 /// Converts any error implementing `std::fmt::Display` into a `PyValueError`.
 /// Used for invalid inputs or incorrect arguments passed by the user.
