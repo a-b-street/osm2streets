@@ -85,7 +85,10 @@ fn extract_osm(
         timer,
     )?;
     // If GPSBounds aren't provided, they'll be computed in the Document
-    streets.gps_bounds = doc.gps_bounds.clone().unwrap();
+    // LB 241209 - Added proper error handling due to processing errors, so it doesn't stop processing. 
+    streets.gps_bounds = doc.gps_bounds.clone().ok_or_else(|| {
+        anyhow::anyhow!("Failed to extract GPS bounds from the OSM input")
+    })?;
 
     if let Some(pts) = clip_pts {
         streets.boundary_polygon =
