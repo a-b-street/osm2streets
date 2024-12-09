@@ -79,10 +79,12 @@ web map frameworks. The [osm2streets Javascript
 API](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-js) can
 render to GeoJSON.
 
+There are [Python bindings](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-py), complete with an [example notebook](https://github.com/a-b-street/osm2streets/blob/main/osm2streets-py/osm2streets_py_test.ipynb).
+
 Since the API isn't stable yet, please [get in
 touch](https://github.com/a-b-street/osm2streets/issues/new) first.
 
-[Java bindings](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-java) are also in progress, with Python and C++ planned.
+[Java bindings](https://github.com/a-b-street/osm2streets/tree/main/osm2streets-java) are also in progress, with C++ planned.
 
 ## Architecture
 
