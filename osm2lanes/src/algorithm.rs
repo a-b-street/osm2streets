@@ -3,7 +3,7 @@ use chrono::NaiveDateTime;
 use enumset::EnumSet;
 use geom::Distance;
 use muv_osm::{
-    conditional::MatchSituation,
+    conditional::{MatchDateTime, MatchSituation},
     lanes::{
         lanes,
         parking::{ParkingLane, ParkingOrientation},
@@ -60,7 +60,7 @@ pub fn get_lane_specs_ltr(tags: &Tags, cfg: &MapConfig) -> Vec<LaneSpec> {
         // Therefore we push the left curb to the right edge of that lane by "rounding up",
         // and the right curb to the left edge of that lane by "rounding down".
         if cfg.inferred_kerbs
-            && (lanes.kerb_left.is_some_and(|kerb| (kerb + 1) / 2 == i)
+            && (lanes.kerb_left.is_some_and(|kerb| kerb.div_ceil(2) == i)
                 || lanes.kerb_right.is_some_and(|kerb| kerb / 2 == i))
         {
             let lt = LaneType::Buffer(BufferType::Curb);
@@ -169,7 +169,7 @@ impl Rank {
     ) -> Option<&AccessLevel> {
         if let Some(date_time) = date_time {
             let situation = MatchSituation {
-                date_time,
+                date_time: MatchDateTime::Local(date_time),
                 location: Location::new(0.0, 0.0),
                 vehicle: &Vehicle::new(mode),
                 stay: None,
