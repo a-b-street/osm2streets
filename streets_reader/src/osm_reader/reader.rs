@@ -35,6 +35,7 @@ impl Document {
 
         timer.start("scrape objects");
         osm_reader::parse(input_bytes, |elem| match elem {
+            Element::Timestamp(_) => {}
             Element::Bounds {
                 min_lon,
                 min_lat,
