@@ -1,8 +1,10 @@
 {
-  "country_code": "US",
+  "type": "FeatureCollection",
   "features": [
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -26,8 +28,7 @@
               33.421825445365855
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 20,
@@ -38,11 +39,12 @@
         ],
         "src_i": 2,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -66,8 +68,7 @@
               33.42177771477464
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 1,
@@ -78,11 +79,12 @@
         ],
         "src_i": 20,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -106,8 +108,7 @@
               33.42202025369908
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 17,
@@ -118,11 +119,12 @@
         ],
         "src_i": 2,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -146,8 +148,7 @@
               33.422079968649086
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 36,
@@ -158,11 +159,12 @@
         ],
         "src_i": 17,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -194,8 +196,7 @@
               33.42243550732456
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 3,
@@ -206,11 +207,12 @@
         ],
         "src_i": 36,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -234,8 +236,7 @@
               33.421524054840084
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 21,
@@ -246,11 +247,12 @@
         ],
         "src_i": 4,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -274,8 +276,7 @@
               33.42180917933723
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 2,
@@ -286,11 +287,12 @@
         ],
         "src_i": 21,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -314,8 +316,7 @@
               33.422662532053174
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 6,
@@ -326,11 +327,12 @@
         ],
         "src_i": 5,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -354,8 +356,7 @@
               33.422518835760144
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 18,
@@ -366,11 +367,12 @@
         ],
         "src_i": 6,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -394,8 +396,7 @@
               33.422054278630085
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 2,
@@ -406,11 +407,12 @@
         ],
         "src_i": 18,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -434,8 +436,7 @@
               33.42204396251274
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 22,
@@ -446,11 +447,12 @@
         ],
         "src_i": 7,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -474,8 +476,7 @@
               33.4220425370881
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 14,
@@ -486,11 +487,12 @@
         ],
         "src_i": 22,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -514,8 +516,7 @@
               33.42199956210917
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 2,
@@ -526,11 +527,12 @@
         ],
         "src_i": 14,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -554,8 +556,7 @@
               33.422042824871
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 26,
@@ -566,11 +567,12 @@
         ],
         "src_i": 2,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -594,8 +596,7 @@
               33.422040415588604
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 8,
@@ -606,11 +607,12 @@
         ],
         "src_i": 26,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -634,8 +636,7 @@
               33.4219073186992
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 14,
@@ -646,11 +647,12 @@
         ],
         "src_i": 2,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -674,8 +676,7 @@
               33.42185954673919
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 40,
@@ -686,11 +687,12 @@
         ],
         "src_i": 14,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -714,8 +716,7 @@
               33.421863986689615
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 9,
@@ -726,11 +727,12 @@
         ],
         "src_i": 40,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -754,8 +756,7 @@
               33.42201960438893
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 27,
@@ -766,11 +767,12 @@
         ],
         "src_i": 10,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -794,8 +796,7 @@
               33.42201734169595
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 7,
@@ -806,11 +807,12 @@
         ],
         "src_i": 27,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -842,8 +844,7 @@
               33.42206322508073
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 28,
@@ -854,11 +855,12 @@
         ],
         "src_i": 11,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -890,8 +892,7 @@
               33.42207212386733
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 23,
@@ -902,11 +903,12 @@
         ],
         "src_i": 28,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -930,8 +932,7 @@
               33.42207788851837
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 16,
@@ -942,11 +943,12 @@
         ],
         "src_i": 23,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -970,8 +972,7 @@
               33.422079030656725
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 32,
@@ -982,11 +983,12 @@
         ],
         "src_i": 16,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1010,8 +1012,7 @@
               33.4224362564594
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 12,
@@ -1022,11 +1023,12 @@
         ],
         "src_i": 32,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1050,8 +1052,7 @@
               33.42182492375937
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 14,
@@ -1062,11 +1063,12 @@
         ],
         "src_i": 13,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1090,8 +1092,7 @@
               33.422041150334294
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 16,
@@ -1102,11 +1103,12 @@
         ],
         "src_i": 14,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1130,8 +1132,7 @@
               33.422079334627405
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 17,
@@ -1142,11 +1143,12 @@
         ],
         "src_i": 16,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1170,8 +1172,7 @@
               33.42207980407325
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 18,
@@ -1182,11 +1183,12 @@
         ],
         "src_i": 17,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1210,8 +1212,7 @@
               33.42205379029849
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 2,
@@ -1222,11 +1223,12 @@
         ],
         "src_i": 18,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1258,8 +1260,7 @@
               33.421825141395175
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 20,
@@ -1270,11 +1271,12 @@
         ],
         "src_i": 2,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1298,8 +1300,7 @@
               33.421779097031845
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 21,
@@ -1310,11 +1311,12 @@
         ],
         "src_i": 20,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1338,8 +1340,7 @@
               33.421782557621114
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 13,
@@ -1350,11 +1351,12 @@
         ],
         "src_i": 21,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1378,8 +1380,7 @@
               33.4220426872748
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 23,
@@ -1390,11 +1391,12 @@
         ],
         "src_i": 22,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1418,8 +1420,7 @@
               33.422077939779705
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 31,
@@ -1430,11 +1431,12 @@
         ],
         "src_i": 23,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1458,8 +1460,7 @@
               33.42237997152173
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 33,
@@ -1470,11 +1471,12 @@
         ],
         "src_i": 31,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1498,8 +1500,7 @@
               33.42243515748848
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 35,
@@ -1510,11 +1511,12 @@
         ],
         "src_i": 33,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1538,8 +1540,7 @@
               33.42260082960257
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 24,
@@ -1550,11 +1551,12 @@
         ],
         "src_i": 35,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1578,8 +1580,7 @@
               33.42160269421318
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 48,
@@ -1590,11 +1591,12 @@
         ],
         "src_i": 25,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1618,8 +1620,7 @@
               33.421798845233454
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 26,
@@ -1630,11 +1631,12 @@
         ],
         "src_i": 48,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1658,8 +1660,7 @@
               33.422017605197155
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 28,
@@ -1670,11 +1671,12 @@
         ],
         "src_i": 27,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1706,8 +1708,7 @@
               33.42207067865762
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 31,
@@ -1720,11 +1721,12 @@
         ],
         "src_i": 28,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1748,8 +1750,7 @@
               33.42240028359795
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 33,
@@ -1760,11 +1761,12 @@
         ],
         "src_i": 32,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1788,8 +1790,7 @@
               33.4226024258983
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 35,
@@ -1800,11 +1801,12 @@
         ],
         "src_i": 34,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1828,8 +1830,7 @@
               33.422399547952935
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 32,
@@ -1840,11 +1841,12 @@
         ],
         "src_i": 36,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1884,8 +1886,7 @@
               33.421813145345205
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 39,
@@ -1896,11 +1897,12 @@
         ],
         "src_i": 13,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1924,8 +1926,7 @@
               33.421833499689534
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 37,
@@ -1936,11 +1937,12 @@
         ],
         "src_i": 39,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -1964,8 +1966,7 @@
               33.42160284170191
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 39,
@@ -1976,11 +1977,12 @@
         ],
         "src_i": 38,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2004,8 +2006,7 @@
               33.42184761544037
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 40,
@@ -2016,11 +2017,12 @@
         ],
         "src_i": 39,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2068,8 +2070,7 @@
               33.42265878997626
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 44,
@@ -2080,11 +2081,12 @@
         ],
         "src_i": 41,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2116,8 +2118,7 @@
               33.42211771137532
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 42,
@@ -2128,11 +2129,12 @@
         ],
         "src_i": 44,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2196,8 +2198,7 @@
               33.42265134539259
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 44,
@@ -2208,11 +2209,12 @@
         ],
         "src_i": 43,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2236,8 +2238,7 @@
               33.42210628909249
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 18,
@@ -2248,11 +2249,12 @@
         ],
         "src_i": 44,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2276,8 +2278,7 @@
               33.42158011494737
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 13,
@@ -2288,11 +2289,12 @@
         ],
         "src_i": 46,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2316,8 +2318,7 @@
               33.421785980438884
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 48,
@@ -2328,11 +2329,12 @@
         ],
         "src_i": 47,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2364,8 +2366,7 @@
               33.42178511529156
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 49,
@@ -2376,11 +2377,12 @@
         ],
         "src_i": 48,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2404,8 +2406,7 @@
               33.42154424820586
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2415,11 +2416,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2499,8 +2501,7 @@
               33.422042824871
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signalled",
@@ -2533,11 +2534,12 @@
           2239876831
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2561,8 +2563,7 @@
               33.42266910519429
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2572,11 +2573,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2600,8 +2602,7 @@
               33.421388473125276
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2611,11 +2612,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2639,8 +2641,7 @@
               33.422729979369755
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2650,11 +2651,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2678,8 +2680,7 @@
               33.422536155793615
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -2693,11 +2694,12 @@
           4346581618
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2721,8 +2723,7 @@
               33.42204396251274
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -2736,11 +2737,12 @@
           4346605157
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2764,8 +2766,7 @@
               33.42182658930285
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2775,11 +2776,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2803,8 +2805,7 @@
               33.421931669628435
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2814,11 +2815,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2842,8 +2844,7 @@
               33.4220202042364
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2853,11 +2854,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2881,8 +2883,7 @@
               33.42206336357624
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2892,11 +2893,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2920,8 +2922,7 @@
               33.42267122489515
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -2931,11 +2932,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -2975,8 +2977,7 @@
               33.42182379061423
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -2988,11 +2989,12 @@
           5415307213
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3040,8 +3042,7 @@
               33.42204213868867
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3062,11 +3063,12 @@
           2860653268
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3106,8 +3108,7 @@
               33.42206136078718
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3119,11 +3120,12 @@
           5415307197
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3163,8 +3165,7 @@
               33.4220807834344
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3181,11 +3182,12 @@
           2941419918
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3237,8 +3239,7 @@
               33.42205750359711
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3256,11 +3257,12 @@
           9934553365
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3300,8 +3302,7 @@
               33.42177771477464
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3318,11 +3319,12 @@
           2239876816
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3358,8 +3360,7 @@
               33.42179839737133
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3376,11 +3377,12 @@
           2941419915
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3408,8 +3410,7 @@
               33.42204298944684
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3425,11 +3426,12 @@
           5707494413
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3465,8 +3467,7 @@
               33.422077887619054
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3481,11 +3482,12 @@
           5717678154
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3509,8 +3511,7 @@
               33.42269071858877
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -3520,11 +3521,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3548,8 +3550,7 @@
               33.42156672225105
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -3559,11 +3560,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3599,8 +3601,7 @@
               33.42182278337411
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3619,11 +3620,12 @@
           10760299174
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3651,8 +3653,7 @@
               33.42201734079662
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3668,11 +3669,12 @@
           6672807661
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3708,8 +3710,7 @@
               33.422058731171006
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3727,11 +3728,12 @@
           8444581036
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3763,8 +3765,7 @@
               33.4223791477432
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3783,11 +3784,12 @@
           6672807663
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3823,8 +3825,7 @@
               33.42243616922521
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3842,11 +3843,12 @@
           7069576316
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3878,8 +3880,7 @@
               33.42239869629544
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3898,11 +3899,12 @@
           7069576315
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3926,8 +3928,7 @@
               33.42260251223317
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -3937,11 +3938,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -3969,8 +3971,7 @@
               33.42260082960257
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -3989,11 +3990,12 @@
           7121900772
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4021,8 +4023,7 @@
               33.42243793639203
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4038,11 +4039,12 @@
           7069576314
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4066,8 +4068,7 @@
               33.42184794549137
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4077,11 +4078,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4105,8 +4107,7 @@
               33.42156687423639
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4116,11 +4117,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4164,8 +4166,7 @@
               33.42184693645261
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4180,11 +4181,12 @@
           10271040773
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4212,8 +4214,7 @@
               33.42193143580484
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4229,11 +4230,12 @@
           1698683885
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4257,8 +4259,7 @@
               33.42267216018954
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4268,11 +4269,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4296,8 +4298,7 @@
               33.422059222200566
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4307,11 +4308,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4335,8 +4337,7 @@
               33.42266837404588
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4346,11 +4347,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4390,8 +4392,7 @@
               33.42211828424314
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4403,11 +4404,12 @@
           9934553247
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4431,8 +4433,7 @@
               33.42156662782229
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4442,11 +4443,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4470,8 +4472,7 @@
               33.42178620886655
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -4481,11 +4482,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4521,8 +4523,7 @@
               33.42178516385493
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4537,11 +4538,12 @@
           11345417996
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -4565,8 +4567,7 @@
               33.42178557394555
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -4578,9 +4579,8 @@
           11345417998
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     }
   ],
-  "type": "FeatureCollection"
+  "country_code": "US"
 }

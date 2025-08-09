@@ -1,8 +1,10 @@
 {
-  "country_code": "US",
+  "type": "FeatureCollection",
   "features": [
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -66,8 +68,7 @@
               33.63681734984364
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 1,
@@ -78,11 +79,12 @@
         ],
         "src_i": 0,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -146,8 +148,7 @@
               33.63685157443594
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 0,
@@ -158,11 +159,12 @@
         ],
         "src_i": 1,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -186,8 +188,7 @@
               33.636797631312774
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 2,
@@ -198,11 +199,12 @@
         ],
         "src_i": 1,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -250,8 +252,7 @@
               33.637623884161144
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "dst_i": 0,
@@ -262,11 +263,12 @@
         ],
         "src_i": 3,
         "type": "road"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -298,8 +300,7 @@
               33.6368209372385
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -315,11 +316,12 @@
           2435502177
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -351,8 +353,7 @@
               33.63679755037381
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Signed",
@@ -368,11 +369,12 @@
           2435502175
         ],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -396,8 +398,7 @@
               33.636876032392955
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -407,11 +408,12 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     },
     {
+      "type": "Feature",
       "geometry": {
+        "type": "Polygon",
         "coordinates": [
           [
             [
@@ -435,8 +437,7 @@
               33.63767779041211
             ]
           ]
-        ],
-        "type": "Polygon"
+        ]
       },
       "properties": {
         "control": "Uncontrolled",
@@ -446,9 +447,8 @@
         "movements": [],
         "osm_node_ids": [],
         "type": "intersection"
-      },
-      "type": "Feature"
+      }
     }
   ],
-  "type": "FeatureCollection"
+  "country_code": "US"
 }
