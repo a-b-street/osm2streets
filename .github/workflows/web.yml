@@ -32,6 +32,10 @@ jobs:
           npm ci
           npm run build --if-present
 
+          # TODO Vite suddenly broke and I have no idea why. Hack around it.
+          # new URL('backend_bg.wasm', import.meta.url) doesn't exist at build time, it will remain unchanged to be resolved at runtime
+          ln -s assets/osm2streets_js_bg.wasm dist/
+
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
