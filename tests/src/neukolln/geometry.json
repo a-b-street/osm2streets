@@ -15018,8 +15018,11 @@
         "control": "Signed",
         "crossing": null,
         "id": 29,
-        "intersection_kind": "Terminus",
-        "movements": [],
+        "intersection_kind": "Intersection",
+        "movements": [
+          "Road #32 -> Road #72",
+          "Road #72 -> Road #32"
+        ],
         "osm_node_ids": [
           283035553
         ],

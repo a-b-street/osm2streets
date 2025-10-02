@@ -225,6 +225,7 @@ fn access_level_allowed(access: AccessLevel) -> bool {
             | AccessLevel::Destination
             | AccessLevel::Customers
             | AccessLevel::Private
+            | AccessLevel::Permit
     )
 }
 
